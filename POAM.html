@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMMC Plan of Action & Milestone (POA&M) Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header .subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .organization-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .org-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 5px;
+            font-size: 13px;
+        }
+
+        .form-control {
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #e74c3c;
+            box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.2);
+        }
+
+        .dashboard-metrics {
+            background: #ffffff;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            border-left: 4px solid #e74c3c;
+            transition: transform 0.3s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .metric-card h3 {
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .metric-card .number {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .metric-card .description {
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        .controls-section {
+            padding: 20px;
+        }
+
+        .controls-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .search-filter-container {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            padding: 8px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            width: 250px;
+            font-size: 13px;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #e74c3c;
+        }
+
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .poam-table-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .poam-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .poam-table th {
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+            color: white;
+            padding: 15px 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .poam-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e9ecef;
+            vertical-align: top;
+        }
+
+        .poam-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-open {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-in-progress {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .priority-badge {
+            padding: 3px 6px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .priority-critical {
+            background: #dc3545;
+            color: white;
+        }
+
+        .priority-high {
+            background: #fd7e14;
+            color: white;
+        }
+
+        .priority-medium {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .priority-low {
+            background: #28a745;
+            color: white;
+        }
+
+        .level-indicator {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .level-1 { background: #28a745; }
+        .level-2 { background: #ffc107; color: #212529; }
+        .level-3 { background: #dc3545; }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745 0%, #20c997 100%);
+            transition: width 0.3s ease;
+        }
+
+        .btn-sm {
+            padding: 4px 8px;
+            font-size: 11px;
+            border-radius: 4px;
+        }
+
+        .charts-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .chart-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .chart-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .export-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .export-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 6px;
+            color: white;
+            font-weight: 500;
+            z-index: 10000;
+            transition: all 0.3s ease;
+        }
+
+        .notification.success {
+            background: #28a745;
+        }
+
+        @media (max-width: 768px) {
+            .controls-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-filter-container {
+                justify-content: center;
+            }
+
+            .search-input {
+                width: 100%;
+            }
+
+            .poam-table-container {
+                overflow-x: auto;
+            }
+
+            .org-form {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-metrics {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>CMMC Plan of Action & Milestone (POA&M) Tracker</h1>
+            <div class="subtitle">Compliance Remediation Management & Progress Tracking</div>
+        </div>
+
+        <div class="organization-info">
+            <div class="org-form">
+                <div class="form-group">
+                    <label class="form-label">Organization Name *</label>
+                    <input type="text" class="form-control" id="orgName" placeholder="Enter organization name">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">System Name *</label>
+                    <input type="text" class="form-control" id="systemName" placeholder="Enter system name">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">POA&M Manager</label>
+                    <input type="text" class="form-control" id="poamManager" placeholder="Enter POA&M manager name">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Target CMMC Level</label>
+                    <select class="form-control" id="targetLevel">
+                        <option value="1">Level 1 - Foundational</option>
+                        <option value="2" selected>Level 2 - Advanced</option>
+                        <option value="3">Level 3 - Expert</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Assessment Date</label>
+                    <input type="date" class="form-control" id="assessmentDate">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Contract Award Date</label>
+                    <input type="date" class="form-control" id="contractDate">
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-metrics">
+            <div class="metric-card">
+                <h3>Total POA&M Items</h3>
+                <div class="number" id="totalItems" style="color: #e74c3c;">1</div>
+                <div class="description">Active Remediation Items</div>
+            </div>
+            <div class="metric-card">
+                <h3>Open Items</h3>
+                <div class="number" id="openItems" style="color: #dc3545;">0</div>
+                <div class="description">Requiring Action</div>
+            </div>
+            <div class="metric-card">
+                <h3>In Progress</h3>
+                <div class="number" id="inProgressItems" style="color: #ffc107;">1</div>
+                <div class="description">Under Remediation</div>
+            </div>
+            <div class="metric-card">
+                <h3>Completed</h3>
+                <div class="number" id="completedItems" style="color: #28a745;">0</div>
+                <div class="description">Successfully Remediated</div>
+            </div>
+            <div class="metric-card">
+                <h3>Overdue Items</h3>
+                <div class="number" id="overdueItems" style="color: #dc3545;">0</div>
+                <div class="description">Past Due Date</div>
+            </div>
+            <div class="metric-card">
+                <h3>Avg Days to Close</h3>
+                <div class="number" id="avgDaysToClose" style="color: #17a2b8;">0</div>
+                <div class="description">Completion Trend</div>
+            </div>
+        </div>
+
+        <div class="controls-section">
+            <div class="controls-header">
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="showAlert('New POA&M Item')">+ New POA&M Item</button>
+                    <button class="btn btn-secondary" onclick="showAlert('Import functionality')">Import from Assessment</button>
+                    <button class="btn btn-success" onclick="showAlert('Bulk update functionality')">Bulk Update</button>
+                    <button class="btn btn-warning" onclick="generateReport()">Generate Report</button>
+                    <button class="btn btn-info" onclick="showAlert('Dashboard view')">Dashboard View</button>
+                </div>
+                
+                <div class="search-filter-container">
+                    <input type="text" class="search-input" placeholder="Search POA&M items..." onkeyup="searchItems(this.value)">
+                    <select class="filter-select" onchange="filterByStatus(this.value)">
+                        <option value="all">All Statuses</option>
+                        <option value="open">Open</option>
+                        <option value="in-progress">In Progress</option>
+                        <option value="completed">Completed</option>
+                        <option value="overdue">Overdue</option>
+                    </select>
+                    <select class="filter-select" onchange="filterByPriority(this.value)">
+                        <option value="all">All Priorities</option>
+                        <option value="critical">Critical</option>
+                        <option value="high">High</option>
+                        <option value="medium">Medium</option>
+                        <option value="low">Low</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="poam-table-container">
+                <table class="poam-table" id="poamTable">
+                    <thead>
+                        <tr>
+                            <th>POA&M ID</th>
+                            <th>Control ID</th>
+                            <th>Description</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th>Owner</th>
+                            <th>Due Date</th>
+                            <th>Progress</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="poamTableBody">
+                        <!-- POA&M items will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="charts-section">
+            <h3>POA&M Analytics</h3>
+            <div class="chart-container">
+                <div class="chart-card">
+                    <h4>Status Distribution</h4>
+                    <div id="statusChart"></div>
+                </div>
+                <div class="chart-card">
+                    <h4>Priority Breakdown</h4>
+                    <div id="priorityChart"></div>
+                </div>
+                <div class="chart-card">
+                    <h4>Completion Timeline</h4>
+                    <div id="timelineChart"></div>
+                </div>
+                <div class="chart-card">
+                    <h4>Risk Assessment</h4>
+                    <div id="riskChart"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="export-section">
+            <div class="export-controls">
+                <button class="btn btn-info" onclick="exportPOAM('csv')">Export CSV</button>
+                <button class="btn btn-info" onclick="exportPOAM('excel')">Export Excel</button>
+                <button class="btn btn-info" onclick="exportPOAM('pdf')">Export PDF Report</button>
+                <button class="btn btn-success" onclick="exportPOAM('cmmc')">Export for CMMC Assessment</button>
+                <button class="btn btn-warning" onclick="showAlert('Schedule reports')">Schedule Reports</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Application state
+        let poamItems = [];
+        let currentFilter = { status: 'all', priority: 'all' };
+
+        // Sample data
+        const sampleData = [
+            {
+                id: 'POAM-001',
+                controlId: 'AC.L2-3.1.3',
+                cmmcLevel: 2,
+                priority: 'high',
+                status: 'in-progress',
+                owner: 'John Smith',
+                dueDate: '2025-08-15',
+                estimatedCost: 15000,
+                progress: 45,
+                weaknessDescription: 'CUI flow controls not properly implemented across all systems',
+                remediationPlan: 'Implement data flow mapping and configure DLP solutions to monitor CUI movement',
+                resourcesRequired: 'DLP software license, 2 FTE for 3 months, security training',
+                riskLevel: 'high',
+                businessImpact: 'high',
+                riskDescription: 'Potential unauthorized disclosure of CUI to external parties',
+                createdDate: '2025-06-01',
+                lastUpdated: '2025-06-14'
+            }
+        ];
+
+        // Initialize application
+        function initializeApp() {
+            const today = new Date();
+            document.getElementById('assessmentDate').value = today.toISOString().split('T')[0];
+            
+            const contractDate = new Date();
+            contractDate.setMonth(contractDate.getMonth() + 6);
+            document.getElementById('contractDate').value = contractDate.toISOString().split('T')[0];
+
+            poamItems = [...sampleData];
+            updateMetrics();
+            updateTable();
+            updateCharts();
+        }
+
+        // Calculate metrics
+        function calculateMetrics() {
+            const today = new Date();
+            const metrics = {
+                total: poamItems.length,
+                open: 0,
+                inProgress: 0,
+                completed: 0,
+                overdue: 0,
+                avgDaysToClose: 0
+            };
+
+            poamItems.forEach(item => {
+                switch (item.status) {
+                    case 'open': metrics.open++; break;
+                    case 'in-progress': metrics.inProgress++; break;
+                    case 'completed': metrics.completed++; break;
+                }
+
+                const dueDate = new Date(item.dueDate);
+                if (dueDate < today && item.status !== 'completed') {
+                    metrics.overdue++;
+                }
+            });
+
+            return metrics;
+        }
+
+        // Update metrics display
+        function updateMetrics() {
+            const metrics = calculateMetrics();
+            document.getElementById('totalItems').textContent = metrics.total;
+            document.getElementById('openItems').textContent = metrics.open;
+            document.getElementById('inProgressItems').textContent = metrics.inProgress;
+            document.getElementById('completedItems').textContent = metrics.completed;
+            document.getElementById('overdueItems').textContent = metrics.overdue;
+            document.getElementById('avgDaysToClose').textContent = metrics.avgDaysToClose;
+        }
+
+        // Update table
+        function updateTable() {
+            const tbody = document.getElementById('poamTableBody');
+            tbody.innerHTML = '';
+
+            poamItems.forEach(item => {
+                const row = createTableRow(item);
+                tbody.appendChild(row);
+            });
+        }
+
+        // Create table row
+        function createTableRow(item) {
+            const row = document.createElement('tr');
+            const today = new Date();
+            const dueDate = new Date(item.dueDate);
+            const isOverdue = dueDate < today && item.status !== 'completed';
+            
+            row.innerHTML = `
+                <td><strong>${item.id}</strong></td>
+                <td>${item.controlId} <span class="level-indicator level-${item.cmmcLevel}">L${item.cmmcLevel}</span></td>
+                <td style="max-width: 200px;">${item.weaknessDescription}</td>
+                <td><span class="priority-badge priority-${item.priority}">${item.priority}</span></td>
+                <td><span class="status-badge status-${item.status}">${item.status.replace('-', ' ')}</span></td>
+                <td>${item.owner}</td>
+                <td>${formatDate(item.dueDate)}</td>
+                <td>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${item.progress}%"></div>
+                    </div>
+                    <div style="text-align: center; font-size: 11px;">${item.progress}%</div>
+                </td>
+                <td>
+                    <button class="btn btn-info btn-sm" onclick="viewItem('${item.id}')">View</button>
+                    <button class="btn btn-warning btn-sm" onclick="editItem('${item.id}')">Edit</button>
+                </td>
+            `;
+            return row;
+        }
+
+        // Format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric' 
+            });
+        }
+
+        // Update charts
+        function updateCharts() {
+            const metrics = calculateMetrics();
+            
+            document.getElementById('statusChart').innerHTML = `
+                <div style="font-size: 12px; text-align: left;">
+                    <div style="margin: 5px 0;">Open: ${metrics.open}</div>
+                    <div style="margin: 5px 0;">In Progress: ${metrics.inProgress}</div>
+                    <div style="margin: 5px 0;">Completed: ${metrics.completed}</div>
+                    <div style="margin: 5px 0;">Overdue: ${metrics.overdue}</div>
+                </div>
+            `;
+
+            const priorityCounts = { critical: 0, high: 0, medium: 0, low: 0 };
+            poamItems.forEach(item => priorityCounts[item.priority]++);
+            
+            document.getElementById('priorityChart').innerHTML = `
+                <div style="font-size: 12px; text-align: left;">
+                    <div style="margin: 5px 0;">Critical: ${priorityCounts.critical}</div>
+                    <div style="margin: 5px 0;">High: ${priorityCounts.high}</div>
+                    <div style="margin: 5px 0;">Medium: ${priorityCounts.medium}</div>
+                    <div style="margin: 5px 0;">Low: ${priorityCounts.low}</div>
+                </div>
+            `;
+
+            document.getElementById('timelineChart').innerHTML = `
+                <div style="text-align: center;">
+                    <div style="font-size: 24px; font-weight: bold; color: #e74c3c;">0</div>
+                    <div style="font-size: 12px; color: #6c757d;">Items due in next 30 days</div>
+                </div>
+            `;
+
+            document.getElementById('riskChart').innerHTML = `
+                <div style="font-size: 12px; text-align: left;">
+                    <div style="margin: 5px 0;">Critical Risk: 0</div>
+                    <div style="margin: 5px 0;">High Risk: ${priorityCounts.high}</div>
+                    <div style="margin: 5px 0;">Medium Risk: 0</div>
+                    <div style="margin: 5px 0;">Low Risk: 0</div>
+                </div>
+            `;
+        }
+
+        // Filter functions
+        function filterByStatus(status) {
+            currentFilter.status = status;
+            updateTable();
+        }
+
+        function filterByPriority(priority) {
+            currentFilter.priority = priority;
+            updateTable();
+        }
+
+        // Search function
+        function searchItems(query) {
+            const rows = document.querySelectorAll('#poamTableBody tr');
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(query.toLowerCase()) ? '' : 'none';
+            });
+        }
+
+        // View and edit functions
+        function viewItem(itemId) {
+            showAlert(`View details for POA&M item: ${itemId}`);
+        }
+
+        function editItem(itemId) {
+            showAlert(`Edit POA&M item: ${itemId}`);
+        }
+
+        // Export functions
+        function exportPOAM(format) {
+            const orgName = document.getElementById('orgName').value || 'Organization';
+            
+            let content = `CMMC POA&M Export - ${orgName}\n`;
+            content += `Export Date: ${new Date().toLocaleDateString()}\n\n`;
+            content += `POA&M ID,Control ID,Priority,Status,Owner,Due Date,Progress\n`;
+
+            poamItems.forEach(item => {
+                content += `${item.id},${item.controlId},${item.priority},${item.status},${item.owner},${item.dueDate},${item.progress}%\n`;
+            });
+
+            downloadFile(content, `${orgName}_POA&M_${format.toUpperCase()}.csv`, 'text/csv');
+            showNotification(`POA&M exported as ${format.toUpperCase()} successfully`, 'success');
+        }
+
+        function generateReport() {
+            const orgName = document.getElementById('orgName').value || 'Organization';
+            const metrics = calculateMetrics();
+            
+            let report = `CMMC POA&M Status Report\n`;
+            report += `Organization: ${orgName}\n`;
+            report += `Generated: ${new Date().toLocaleDateString()}\n\n`;
+            report += `Summary:\n`;
+            report += `Total Items: ${metrics.total}\n`;
+            report += `Open: ${metrics.open}\n`;
+            report += `In Progress: ${metrics.inProgress}\n`;
+            report += `Completed: ${metrics.completed}\n`;
+            report += `Overdue: ${metrics.overdue}\n\n`;
+            
+            report += `Detailed Items:\n`;
+            poamItems.forEach(item => {
+                report += `\n${item.id} - ${item.controlId}\n`;
+                report += `Priority: ${item.priority} | Status: ${item.status}\n`;
+                report += `Owner: ${item.owner} | Due: ${item.dueDate}\n`;
+                report += `Progress: ${item.progress}%\n`;
+                report += `Description: ${item.weaknessDescription}\n`;
+                report += `---\n`;
+            });
+
+            downloadFile(report, `${orgName}_POA&M_Report.txt`, 'text/plain');
+            showNotification('Report generated successfully', 'success');
+        }
+
+        // Utility functions
+        function downloadFile(content, filename, type) {
+            const blob = new Blob([content], { type: type });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        function showAlert(message) {
+            alert(message + ' - This functionality would be fully implemented in a production environment.');
+        }
+
+        // Initialize when DOM loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+        });
+    </script>
+</body>
+</html>
