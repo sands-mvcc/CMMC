@@ -1,1 +1,1331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMMC Evidence Guide - Interactive Assessment Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .assessment-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .method-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .method-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            border-color: #667eea;
+        }
+
+        .method-card h3 {
+            color: #2c3e50;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .method-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        .examine { background: linear-gradient(45deg, #4CAF50, #45a049); }
+        .interview { background: linear-gradient(45deg, #2196F3, #1976D2); }
+        .test { background: linear-gradient(45deg, #FF9800, #F57C00); }
+
+        .evidence-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .evidence-category {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .evidence-category:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .category-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .category-header:hover {
+            background: linear-gradient(135deg, #5a6fd8, #6a4190);
+        }
+
+        .category-header h3 {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+        }
+
+        .category-header p {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .evidence-items {
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.5s ease;
+        }
+
+        .evidence-items.expanded {
+            max-height: 2000px;
+        }
+
+        .evidence-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .evidence-item:hover {
+            background: #f8f9ff;
+            padding-left: 25px;
+        }
+
+        .evidence-item:last-child {
+            border-bottom: none;
+        }
+
+        .evidence-name {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .evidence-type {
+            font-size: 0.8rem;
+            color: #666;
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -60%);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+
+        .close:hover {
+            color: #333;
+            transform: scale(1.1);
+        }
+
+        .modal h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .info-section {
+            margin-bottom: 25px;
+        }
+
+        .info-section h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .info-section p, .info-section ul {
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .info-section ul {
+            padding-left: 20px;
+        }
+
+        .info-section li {
+            margin-bottom: 8px;
+        }
+
+        .importance-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin: 5px 5px 5px 0;
+        }
+
+        .critical { background: #ffebee; color: #c62828; }
+        .high { background: #fff3e0; color: #ef6c00; }
+        .medium { background: #f3e5f5; color: #7b1fa2; }
+        .low { background: #e8f5e8; color: #2e7d32; }
+
+        .search-box {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .search-input {
+            padding: 15px 20px;
+            border: 2px solid #ddd;
+            border-radius: 50px;
+            width: 100%;
+            max-width: 500px;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .search-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .expand-all {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .expand-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .expand-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .modal-content {
+                margin: 20px;
+                padding: 20px;
+                max-width: calc(100% - 40px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛡️ CMMC Evidence Guide</h1>
+            <p>Interactive guide to understanding evidence types, documentation requirements, and assessment methods for DoD CMMC program audits. Click on any evidence type to learn more about its importance and usage.</p>
+        </div>
+
+        <div class="assessment-methods">
+            <div class="method-card">
+                <h3><span class="method-icon examine">📋</span>Examine Method</h3>
+                <p>The process of reviewing, inspecting, observing, studying, or analyzing assessment objects (specifications, mechanisms, activities). Used to review documents, policies, configurations, and artifacts that demonstrate compliance.</p>
+            </div>
+            <div class="method-card">
+                <h3><span class="method-icon interview">👥</span>Interview Method</h3>
+                <p>Conducting discussions with individuals or groups to facilitate understanding, achieve clarification, or obtain evidence. Interviews must be with personnel who implement, perform, or support the practices.</p>
+            </div>
+            <div class="method-card">
+                <h3><span class="method-icon test">⚡</span>Test Method</h3>
+                <p>The process of exercising assessment objects under specified conditions to compare actual with expected behavior. Includes live demonstrations, penetration tests, and system validations.</p>
+            </div>
+        </div>
+
+        <div class="search-box">
+            <input type="text" class="search-input" placeholder="🔍 Search evidence types, documents, or procedures..." id="searchInput">
+        </div>
+
+        <div class="expand-all">
+            <button class="expand-btn" onclick="toggleAllCategories()">Expand All Categories</button>
+        </div>
+
+        <div class="evidence-grid">
+            <div class="evidence-category">
+                <div class="category-header" onclick="toggleCategory(this)">
+                    <h3>📝 Organizational Documents</h3>
+                    <p>Policies, procedures, standards, and governance documents</p>
+                </div>
+                <div class="evidence-items">
+                    <div class="evidence-item" onclick="showModal('ssp')">
+                        <div class="evidence-name">System Security Plan (SSP) <span class="evidence-type">Critical</span></div>
+                    </div>
+                    <div class="evidence-item" onclick="showModal('policies')">
+                        <div class="evidence-name">Cybersecurity Policies <span class="evidence-type">Critical</span></div>
+                    </div>
+                    <div class="evidence-item" onclick="showModal('procedures')">
+                        <div class="evidence-name">Security Procedures <span class="evidence-type">High</span></div>
+                    </div>
+                    <div class="evidence-item" onclick="showModal('incident-response')">
+                        <div class="evidence-name">Incident Response Plan <span class="evidence-type">High</span></div>
+                    </div>
+                    <div class="evidence-item" onclick="showModal('risk-assessment')">
+                        <div class="evidence-name">Risk Assessment Reports <span class="evidence-type">High</span></div>
+                    </div>
+                    <div class="evidence-item" onclick="showModal('poam')">
+                        <div class="evidence-name">Plan of Action & Milestones (POA&M) <span class="evidence-type">Critical</span></div>
+                    </div>
+                    <div class="evidence-item" onclick="showModal('training-records')">
+                        <div class="evidence-name">Security Training Records <span class="evidence-type">Medium</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="evidence-category">
+                <div class="category-header" onclick="toggleCategory(this)">
+                    <h3>🔧 Technical Test Results</h3>
+                    <p>Firewall configs, penetration tests, and system validations</p>
+                </div>
+                <div class="evidence-items">
+                    <div class="evidence-item" onclick="showModal('penetration-tests')">
+                        <div class="evidence-name">Penetration Test Results <span class="evidence-type">High</span></div>
+                    </div>
+                    <div class="evidence-item" onclick="showModal('vulnerability-scans')">
+                        <div class="evidence-name">Vulnerability Scan Reports <span class="evidence-type">High</span></div>
+                    </div>
+                    <div class="evidence-item" onclick="showModal('firewall-config')">
+                        <div class="evidence-name">Firewall Configurations <span class="evidence-type">Critical</span></div>
+                    </div>
+                    <div class="evidence-item" onclick="showModal('access-control-lists')">
+                        <div class="evidence-name">Access Control Lists (ACLs) <span class="evidence-type">Critical</span></div>
+                    </div>
+                    <div class="evidence-item" onclick="showModal('system-hardening')">
+                        <div class="evidence-name">System Hardening Evidence <span class="evidence-type">Medium</span></div>
+                    </div>
+                    <div class="evidence-item" onclick="showModal('backup-tests')">
+                        <div class="evidence-name">Backup and Recovery Tests <span class="evidence-type">Medium</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="evidence-category">
+                <div class="category-header" onclick="toggleCategory(this)">
+                    <h3>📊 Logs & Monitoring</h3>
+                    <p>Audit logs, error reports, and continuous monitoring evidence</p>
+                </div>
+                <div class="evidence-items">
+                    <div class="evidence-item" onclick="showModal('audit-logs')">
+                        <div class="evidence-name">Audit Logs <span class="evidence-type">Critical</span></div>
+                    </div>
+                    <div class="evidence-item" onclick="showModal('security-events')">
+                        <div class="evidence-name">Security Event Logs <span class="evidence-type">High</span></div>
+                    </div>
+                    <div class="evidence-item" onclick="showModal('error-reports')">
+                        <div class="evidence-name">Error Reports <span class="evidence-type">Medium</span></div>
+                    </div>
+                    <div class="evidence-item" onclick="showModal('monitoring-reports')">
+                        <div class="evidence-name">Continuous Monitoring Reports <span class="evidence-type">High</span></div>
+                    </div>
+                    <div class="evidence-item" onclick="showModal('siem-outputs')">
+                        <div class="evidence-name">SIEM System Outputs <span class="evidence-type">High</span></div>
+                    </div>
+                    <div class="evidence-item" onclick="showModal('network-traffic')">
+                        <div class="evidence-name">Network Traffic Analysis <span class="evidence-type">Medium</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="evidence-category">
+                <div class="category-header" onclick="toggleCategory(this)">
+                    <h3>👥 Personnel & Interviews</h3>
+                    <p>Interview summaries, training records, and personnel documentation</p>
+                </div>
+                <div class="evidence-items">
+                    <div class="evidence-item" onclick="showModal('interview-summaries')">
+                        <div class="evidence-name">Interview Summaries <span class="evidence-type">High</span></div>
+                    </div>
+                    <div class="evidence-item" onclick="showModal('personnel-screening')">
+                        <div class="evidence-name">Personnel Screening Records <span class="evidence-type">Medium</span></div>
+                    </div>
+                    <div class="evidence-item" onclick="showModal('role-definitions')">
+                        <div class="evidence-name">Role & Responsibility Definitions <span class="evidence-type">Medium</span></div>
+                    </div>
+                    <div class="evidence-item" onclick="showModal('access-reviews')">
+                        <div class="evidence-name">Access Review Documentation <span class="evidence-type">High</span></div>
+                    </div>
+                    <div class="evidence-item" onclick="showModal('surveys')">
+                        <div class="evidence-name">Security Awareness Surveys <span class="evidence-type">Low</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="evidence-category">
+                <div class="category-header" onclick="toggleCategory(this)">
+                    <h3>🔐 Access Control Evidence</h3>
+                    <p>User management, authentication, and authorization documentation</p>
+                </div>
+                <div class="evidence-items">
+                    <div class="evidence-item" onclick="showModal('user-accounts')">
+                        <div class="evidence-name">User Account Management <span class="evidence-type">Critical</span></div>
+                    </div>
+                    <div class="evidence-item" onclick="showModal('privileged-access')">
+                        <div class="evidence-name">Privileged Access Management <span class="evidence-type">Critical</span></div>
+                    </div>
+                    <div class="evidence-item" onclick="showModal('authentication-config')">
+                        <div class="evidence-name">Authentication Configuration <span class="evidence-type">High</span></div>
+                    </div>
+                    <div class="evidence-item" onclick="showModal('session-management')">
+                        <div class="evidence-name">Session Management Evidence <span class="evidence-type">Medium</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="evidence-category">
+                <div class="category-header" onclick="toggleCategory(this)">
+                    <h3>🏢 Physical Security</h3>
+                    <p>Physical access controls, environmental protections, and facility security</p>
+                </div>
+                <div class="evidence-items">
+                    <div class="evidence-item" onclick="showModal('physical-access')">
+                        <div class="evidence-name">Physical Access Controls <span class="evidence-type">High</span></div>
+                    </div>
+                    <div class="evidence-item" onclick="showModal('visitor-logs')">
+                        <div class="evidence-name">Visitor Access Logs <span class="evidence-type">Medium</span></div>
+                    </div>
+                    <div class="evidence-item" onclick="showModal('environmental-controls')">
+                        <div class="evidence-name">Environmental Controls <span class="evidence-type">Medium</span></div>
+                    </div>
+                    <div class="evidence-item" onclick="showModal('surveillance-systems')">
+                        <div class="evidence-name">Surveillance System Evidence <span class="evidence-type">Medium</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <script>
+        const evidenceData = {
+            'ssp': {
+                title: 'System Security Plan (SSP)',
+                importance: 'critical',
+                description: 'The foundational document for CMMC compliance that describes the cybersecurity plan for protecting CUI.',
+                whatItIs: 'A comprehensive document that details how your organization implements each NIST SP 800-171 security requirement. It serves as the roadmap for your entire cybersecurity program.',
+                howUsed: [
+                    'Primary reference document during CMMC assessments',
+                    'Maps each security control to implementation details',
+                    'Defines the assessment scope and boundaries',
+                    'Documents inherited controls from service providers',
+                    'Required for self-assessment scoring'
+                ],
+                whyImportant: [
+                    'Foundation for all CMMC certification activities',
+                    'Demonstrates understanding of security requirements',
+                    'Required by DFARS 252.204-7012 contract clause',
+                    'Guides assessor evaluation methodology',
+                    'Critical for achieving passing SPRS scores'
+                ],
+                assessorUse: 'Assessors use the SSP to understand your implementation approach, validate control effectiveness, and determine assessment focus areas. Any gaps between the SSP and actual implementation will result in findings.'
+            },
+            'policies': {
+                title: 'Cybersecurity Policies',
+                importance: 'critical',
+                description: 'High-level organizational directives that establish cybersecurity requirements and governance.',
+                whatItIs: 'Formal statements approved by senior management that define organizational cybersecurity requirements, roles, responsibilities, and compliance expectations.',
+                howUsed: [
+                    'Establish organizational cybersecurity governance',
+                    'Define roles and responsibilities for security controls',
+                    'Set mandatory requirements for all personnel',
+                    'Provide framework for implementing procedures',
+                    'Support legal and regulatory compliance'
+                ],
+                whyImportant: [
+                    'Demonstrate management commitment to cybersecurity',
+                    'Provide legal protection and due diligence evidence',
+                    'Essential for many NIST 800-171 control families',
+                    'Foundation for all security procedures and practices',
+                    'Required for effective governance and oversight'
+                ],
+                assessorUse: 'Assessors examine policies to verify management commitment, adequate coverage of security domains, proper approval signatures, and alignment with implemented practices.'
+            },
+            'penetration-tests': {
+                title: 'Penetration Test Results',
+                importance: 'high',
+                description: 'Results from simulated cyberattacks to identify vulnerabilities and validate security controls.',
+                whatItIs: 'Comprehensive reports from authorized security testing that simulate real-world attacks to identify vulnerabilities, test incident response, and validate security control effectiveness.',
+                howUsed: [
+                    'Validate effectiveness of implemented security controls',
+                    'Identify vulnerabilities before malicious actors do',
+                    'Test incident detection and response capabilities',
+                    'Provide evidence for CA.L2-3.12.3 security control monitoring',
+                    'Support continuous improvement efforts'
+                ],
+                whyImportant: [
+                    'Required evidence for CMMC Level 3 assessments',
+                    'Demonstrates proactive security validation approach',
+                    'Identifies gaps in technical and procedural controls',
+                    'Validates boundary protection effectiveness',
+                    'Critical for high-value CUI environments'
+                ],
+                assessorUse: 'Assessors review penetration test results to validate that security controls are working as intended, vulnerabilities are being identified and remediated, and the organization has mature security testing practices.'
+            },
+            'firewall-config': {
+                title: 'Firewall Configurations',
+                importance: 'critical',
+                description: 'Network security device configurations that control traffic flow and protect network boundaries.',
+                whatItIs: 'Technical configurations of firewalls including rules, access control lists, logging settings, and change management documentation that demonstrate boundary protection implementation.',
+                howUsed: [
+                    'Implement network boundary protection (SC.L1-3.13.1)',
+                    'Control communications at external boundaries',
+                    'Monitor and log network traffic',
+                    'Prevent unauthorized network access',
+                    'Segment internal networks and systems'
+                ],
+                whyImportant: [
+                    'Fundamental for network security and CUI protection',
+                    'Required evidence for multiple SC (System Communications) controls',
+                    'Demonstrates technical implementation of boundary protection',
+                    'Critical for preventing data exfiltration',
+                    'Essential for network segmentation strategies'
+                ],
+                assessorUse: 'Assessors examine firewall configurations to verify proper rule implementation, adequate logging, change management processes, and alignment with documented security policies and procedures.'
+            },
+            'access-control-lists': {
+                title: 'Access Control Lists (ACLs)',
+                importance: 'critical',
+                description: 'Documentation of user permissions, access rights, and authorization matrices for systems and data.',
+                whatItIs: 'Detailed records of who has access to what systems, applications, and data, including permission levels, access justification, and regular review documentation.',
+                howUsed: [
+                    'Implement principle of least privilege (AC.L2-3.1.5)',
+                    'Control access to CUI and sensitive systems',
+                    'Support regular access reviews and recertification',
+                    'Document authorized personnel and their permissions',
+                    'Enable rapid access revocation when needed'
+                ],
+                whyImportant: [
+                    'Core requirement for Access Control (AC) domain compliance',
+                    'Critical for CUI protection and data security',
+                    'Required for demonstrating least privilege implementation',
+                    'Essential for insider threat mitigation',
+                    'Fundamental to identity and access management'
+                ],
+                assessorUse: 'Assessors review ACLs to verify proper access controls, least privilege implementation, regular reviews, and appropriate segregation of duties for critical systems and CUI.'
+            },
+            'audit-logs': {
+                title: 'Audit Logs',
+                importance: 'critical',
+                description: 'Comprehensive records of system activities, user actions, and security events for monitoring and investigation.',
+                whatItIs: 'Detailed electronic records of system events, user activities, administrative actions, and security-relevant events that provide accountability and enable incident investigation.',
+                howUsed: [
+                    'Enable security monitoring and anomaly detection',
+                    'Support incident response and forensic analysis',
+                    'Demonstrate compliance with AU (Audit) controls',
+                    'Provide accountability for user and system actions',
+                    'Enable detection of unauthorized activities'
+                ],
+                whyImportant: [
+                    'Required for AU.L2-3.3.1 through AU.L2-3.3.9 controls',
+                    'Critical for incident detection and response',
+                    'Essential for forensic analysis and attribution',
+                    'Demonstrates organizational security monitoring maturity',
+                    'Required for regulatory compliance and investigations'
+                ],
+                assessorUse: 'Assessors examine audit logs to verify comprehensive logging coverage, proper log protection, regular review processes, and adequate retention periods for security accountability.'
+            },
+            'interview-summaries': {
+                title: 'Interview Summaries',
+                importance: 'high',
+                description: 'Documented records of personnel interviews conducted during CMMC assessments.',
+                whatItIs: 'Formal documentation of discussions with organizational personnel that validate understanding, implementation, and operation of security controls and procedures.',
+                howUsed: [
+                    'Validate personnel understanding of security responsibilities',
+                    'Confirm actual implementation of documented procedures',
+                    'Assess organizational security culture and awareness',
+                    'Verify role-based training and competency',
+                    'Identify gaps between documentation and practice'
+                ],
+                whyImportant: [
+                    'Required assessment method for most CMMC practices',
+                    'Validates that controls are not just documented but understood',
+                    'Demonstrates organizational security culture maturity',
+                    'Identifies training and awareness gaps',
+                    'Critical for people-dependent security controls'
+                ],
+                assessorUse: 'Assessors conduct interviews to verify that personnel understand their security responsibilities, can explain how they implement controls, and demonstrate competency in their assigned security roles.'
+            },
+            'user-accounts': {
+                title: 'User Account Management',
+                importance: 'critical',
+                description: 'Documentation of user account lifecycle management, including creation, modification, and deactivation processes.',
+                whatItIs: 'Comprehensive records showing how user accounts are managed throughout their lifecycle, including provisioning, access reviews, modifications, and termination procedures.',
+                howUsed: [
+                    'Implement AC.L2-3.1.1 account management requirements',
+                    'Control user access to systems and CUI',
+                    'Support regular access recertification',
+                    'Enable rapid account deactivation for terminated personnel',
+                    'Maintain principle of least privilege'
+                ],
+                whyImportant: [
+                    'Fundamental to access control and CUI protection',
+                    'Required for multiple AC domain controls',
+                    'Critical for insider threat prevention',
+                    'Essential for maintaining security accountability',
+                    'Mandatory for personnel security requirements'
+                ],
+                assessorUse: 'Assessors examine user account management processes to verify proper provisioning procedures, regular reviews, timely deactivation, and appropriate access levels based on job responsibilities.'
+            },
+            'physical-access': {
+                title: 'Physical Access Controls',
+                importance: 'high',
+                description: 'Documentation and evidence of physical security measures protecting facilities and systems.',
+                whatItIs: 'Records of physical security implementations including access control systems, visitor management, environmental protections, and facility security measures.',
+                howUsed: [
+                    'Implement PE (Physical Environment) controls',
+                    'Protect systems and media from physical threats',
+                    'Control facility access to authorized personnel only',
+                    'Monitor and log physical access events',
+                    'Protect against environmental hazards'
+                ],
+                whyImportant: [
+                    'Required for PE.L1-3.10.1 through PE.L2-3.10.6 controls',
+                    'Critical for protecting CUI from physical compromise',
+                    'Mandatory for on-site CMMC assessment validation',
+                    'Foundation for overall security architecture',
+                    'Required for facility and system protection'
+                ],
+                assessorUse: 'Assessors must physically observe and validate physical access controls during on-site visits, including door locks, visitor processes, monitoring systems, and environmental protections.'
+            },
+            'procedures': {
+                title: 'Security Procedures',
+                importance: 'high',
+                description: 'Detailed step-by-step instructions for implementing security controls and responding to security events.',
+                whatItIs: 'Operational documents that provide specific, actionable steps for implementing security controls, handling incidents, and maintaining security posture.',
+                howUsed: [
+                    'Provide detailed implementation guidance for policies',
+                    'Enable consistent security control implementation',
+                    'Support training and competency development',
+                    'Guide incident response and emergency actions',
+                    'Ensure repeatable security processes'
+                ],
+                whyImportant: [
+                    'Bridge between high-level policies and actual implementation',
+                    'Required for demonstrating operational security maturity',
+                    'Critical for training and competency validation',
+                    'Essential for consistent security control execution',
+                    'Support evidence for process-oriented controls'
+                ],
+                assessorUse: 'Assessors review procedures to verify they provide adequate implementation guidance, are current and approved, and align with actual organizational practices and policy requirements.'
+            },
+            'incident-response': {
+                title: 'Incident Response Plan',
+                importance: 'high',
+                description: 'Comprehensive plan for detecting, responding to, and recovering from cybersecurity incidents.',
+                whatItIs: 'Formal document outlining organizational processes for incident detection, analysis, containment, eradication, recovery, and lessons learned activities.',
+                howUsed: [
+                    'Implement IR (Incident Response) controls',
+                    'Guide response to cybersecurity incidents',
+                    'Define roles and responsibilities during incidents',
+                    'Establish communication and escalation procedures',
+                    'Support business continuity and recovery'
+                ],
+                whyImportant: [
+                    'Required for IR.L2-3.6.1 through IR.L2-3.6.3 controls',
+                    'Critical for minimizing incident impact on CUI',
+                    'Mandatory for DoD incident reporting requirements',
+                    'Essential for organizational resilience',
+                    'Required for contractual incident response obligations'
+                ],
+                assessorUse: 'Assessors examine incident response plans to verify comprehensive coverage, clear procedures, defined roles, regular testing, and alignment with DoD reporting requirements.'
+            },
+            'risk-assessment': {
+                title: 'Risk Assessment Reports',
+                importance: 'high',
+                description: 'Formal analysis of cybersecurity risks, threats, and vulnerabilities affecting organizational systems and data.',
+                whatItIs: 'Systematic evaluation of potential cybersecurity risks, including threat identification, vulnerability analysis, impact assessment, and risk mitigation strategies.',
+                howUsed: [
+                    'Implement RA (Risk Assessment) controls',
+                    'Inform security control selection and implementation',
+                    'Support risk-based decision making',
+                    'Guide security investment priorities',
+                    'Demonstrate due diligence and compliance'
+                ],
+                whyImportant: [
+                    'Required for RA.L2-3.11.1 through RA.L2-3.11.3 controls',
+                    'Foundation for risk-based cybersecurity programs',
+                    'Critical for demonstrating mature security governance',
+                    'Required for informed security control implementation',
+                    'Essential for continuous risk management'
+                ],
+                assessorUse: 'Assessors review risk assessments to verify comprehensive risk identification, appropriate analysis methodology, reasonable mitigation strategies, and regular updates.'
+            },
+            'poam': {
+                title: 'Plan of Action & Milestones (POA&M)',
+                importance: 'critical',
+                description: 'Formal documentation of identified security weaknesses and remediation plans with specific timelines.',
+                whatItIs: 'Structured document identifying security control deficiencies, planned corrective actions, resources required, milestones, and completion timelines.',
+                howUsed: [
+                    'Document security control implementation gaps',
+                    'Track remediation progress and milestones',
+                    'Support conditional CMMC certification',
+                    'Provide accountability for security improvements',
+                    'Enable risk-based remediation prioritization'
+                ],
+                whyImportant: [
+                    'Required for CMMC conditional certification pathway',
+                    'Critical for demonstrating commitment to remediation',
+                    'Enables systematic approach to security improvement',
+                    'Required for CA.L2-3.12.2 control implementation',
+                    'Essential for maintaining certification status'
+                ],
+                assessorUse: 'Assessors review POA&Ms to verify realistic remediation plans, appropriate timelines, adequate resources, and proper tracking mechanisms for security improvements.'
+            },
+            'training-records': {
+                title: 'Security Training Records',
+                importance: 'medium',
+                description: 'Documentation of cybersecurity awareness training, role-based training, and competency validation.',
+                whatItIs: 'Records showing personnel have received appropriate cybersecurity training, including awareness training, role-specific training, and ongoing competency validation.',
+                howUsed: [
+                    'Implement AT (Awareness and Training) controls',
+                    'Demonstrate personnel security competency',
+                    'Support role-based access control decisions',
+                    'Validate security awareness program effectiveness',
+                    'Enable tracking of training compliance'
+                ],
+                whyImportant: [
+                    'Required for AT.L2-3.2.1 through AT.L2-3.2.3 controls',
+                    'Critical for human-factor security controls',
+                    'Foundation for security culture development',
+                    'Required for demonstrating security program maturity',
+                    'Essential for personnel security requirements'
+                ],
+                assessorUse: 'Assessors examine training records to verify appropriate training content, regular delivery, role-based customization, and documented competency validation.'
+            },
+            'vulnerability-scans': {
+                title: 'Vulnerability Scan Reports',
+                importance: 'high',
+                description: 'Regular automated scanning results identifying security vulnerabilities in systems and applications.',
+                whatItIs: 'Technical reports from automated tools that identify known vulnerabilities, misconfigurations, and security weaknesses in network systems and applications.',
+                howUsed: [
+                    'Implement SI (System and Information Integrity) controls',
+                    'Identify and track security vulnerabilities',
+                    'Support patch management and remediation',
+                    'Enable proactive security posture improvement',
+                    'Demonstrate continuous security monitoring'
+                ],
+                whyImportant: [
+                    'Required for SI.L2-3.14.1 through SI.L2-3.14.5 controls',
+                    'Critical for identifying and managing vulnerabilities',
+                    'Essential for maintaining secure system configurations',
+                    'Required for demonstrating proactive security management',
+                    'Foundation for risk-based vulnerability management'
+                ],
+                assessorUse: 'Assessors review vulnerability scan reports to verify regular scanning, appropriate coverage, timely remediation, and integration with patch management processes.'
+            },
+            'system-hardening': {
+                title: 'System Hardening Evidence',
+                importance: 'medium',
+                description: 'Documentation showing systems are configured according to security baselines and hardening standards.',
+                whatItIs: 'Evidence that systems are configured according to established security baselines, including configuration settings, security patches, and hardening measures.',
+                howUsed: [
+                    'Implement CM (Configuration Management) controls',
+                    'Demonstrate secure system configurations',
+                    'Support baseline configuration management',
+                    'Enable consistent security settings across systems',
+                    'Validate adherence to security standards'
+                ],
+                whyImportant: [
+                    'Required for CM.L2-3.4.1 through CM.L2-3.4.9 controls',
+                    'Critical for maintaining secure system baselines',
+                    'Essential for preventing configuration drift',
+                    'Required for demonstrating system security maturity',
+                    'Foundation for secure system deployment'
+                ],
+                assessorUse: 'Assessors examine hardening evidence to verify systems follow established baselines, configurations are properly managed, and security settings are consistently applied.'
+            },
+            'backup-tests': {
+                title: 'Backup and Recovery Tests',
+                importance: 'medium',
+                description: 'Evidence of regular backup operations and recovery testing to ensure data availability and integrity.',
+                whatItIs: 'Documentation showing regular backup operations, recovery testing, and validation that backup systems can successfully restore critical data and systems.',
+                howUsed: [
+                    'Implement CP (Contingency Planning) controls',
+                    'Ensure data availability and business continuity',
+                    'Validate backup system effectiveness',
+                    'Support disaster recovery capabilities',
+                    'Demonstrate data protection measures'
+                ],
+                whyImportant: [
+                    'Required for CP.L2-3.4.1 through CP.L2-3.4.9 controls',
+                    'Critical for CUI availability and integrity',
+                    'Essential for business continuity planning',
+                    'Required for demonstrating data protection maturity',
+                    'Foundation for disaster recovery capabilities'
+                ],
+                assessorUse: 'Assessors review backup and recovery evidence to verify regular backup operations, successful recovery testing, and adequate protection of backup data.'
+            },
+            'security-events': {
+                title: 'Security Event Logs',
+                importance: 'high',
+                description: 'Detailed logs of security-relevant events including authentication, authorization, and system security activities.',
+                whatItIs: 'Specific logs capturing security-relevant events such as login attempts, privilege escalations, security tool alerts, and other activities critical for security monitoring.',
+                howUsed: [
+                    'Enable real-time security monitoring',
+                    'Support incident detection and analysis',
+                    'Demonstrate security control effectiveness',
+                    'Provide evidence for security investigations',
+                    'Enable correlation and trend analysis'
+                ],
+                whyImportant: [
+                    'Critical subset of audit logging requirements',
+                    'Essential for security incident detection',
+                    'Required for demonstrating active monitoring',
+                    'Foundation for security analytics and SIEM',
+                    'Critical for threat hunting and investigation'
+                ],
+                assessorUse: 'Assessors examine security event logs to verify appropriate event capture, real-time monitoring capabilities, and integration with security monitoring processes.'
+            },
+            'error-reports': {
+                title: 'Error Reports',
+                importance: 'medium',
+                description: 'System error logs and reports that may indicate security issues or system integrity problems.',
+                whatItIs: 'Documentation of system errors, application failures, and other anomalous events that could indicate security issues or system compromise.',
+                howUsed: [
+                    'Support system integrity monitoring',
+                    'Identify potential security indicators',
+                    'Enable proactive system maintenance',
+                    'Support root cause analysis',
+                    'Demonstrate system health monitoring'
+                ],
+                whyImportant: [
+                    'Provides indicators of potential security issues',
+                    'Supports system and information integrity controls',
+                    'Critical for identifying system anomalies',
+                    'Required for comprehensive monitoring programs',
+                    'Foundation for proactive security management'
+                ],
+                assessorUse: 'Assessors review error reports to verify organizations monitor system health, investigate anomalies, and correlate errors with potential security events.'
+            },
+            'monitoring-reports': {
+                title: 'Continuous Monitoring Reports',
+                importance: 'high',
+                description: 'Regular reports showing ongoing security monitoring activities and security posture status.',
+                whatItIs: 'Periodic reports demonstrating continuous monitoring of security controls, system status, threat indicators, and overall security posture.',
+                howUsed: [
+                    'Implement CA.L2-3.12.3 security control monitoring',
+                    'Demonstrate ongoing security oversight',
+                    'Support risk management decisions',
+                    'Enable trend analysis and improvement',
+                    'Provide management visibility into security status'
+                ],
+                whyImportant: [
+                    'Required for demonstrating continuous monitoring maturity',
+                    'Critical for CA (Security Assessment) controls',
+                    'Essential for ongoing risk management',
+                    'Required for maintaining security awareness',
+                    'Foundation for continuous improvement'
+                ],
+                assessorUse: 'Assessors examine monitoring reports to verify ongoing security oversight, regular reporting cadence, appropriate metrics, and management review processes.'
+            },
+            'siem-outputs': {
+                title: 'SIEM System Outputs',
+                importance: 'high',
+                description: 'Security Information and Event Management system reports, alerts, and analytical outputs.',
+                whatItIs: 'Reports, dashboards, alerts, and analytical outputs from SIEM systems that correlate security events and provide centralized security monitoring.',
+                howUsed: [
+                    'Enable centralized security monitoring',
+                    'Support real-time threat detection',
+                    'Provide security event correlation',
+                    'Generate security metrics and reporting',
+                    'Support incident response activities'
+                ],
+                whyImportant: [
+                    'Demonstrates advanced security monitoring capabilities',
+                    'Critical for real-time threat detection',
+                    'Essential for large-scale log management',
+                    'Required for sophisticated threat analysis',
+                    'Foundation for security operations centers'
+                ],
+                assessorUse: 'Assessors review SIEM outputs to verify comprehensive event collection, effective correlation rules, appropriate alerting, and integration with response processes.'
+            },
+            'network-traffic': {
+                title: 'Network Traffic Analysis',
+                importance: 'medium',
+                description: 'Analysis of network communications to identify security threats and validate network controls.',
+                whatItIs: 'Technical analysis of network traffic patterns, communications, and flows to identify security threats, validate controls, and monitor network behavior.',
+                howUsed: [
+                    'Support network boundary protection validation',
+                    'Enable threat detection and analysis',
+                    'Validate firewall and network control effectiveness',
+                    'Support incident investigation',
+                    'Demonstrate network monitoring capabilities'
+                ],
+                whyImportant: [
+                    'Critical for validating network security controls',
+                    'Essential for threat detection and hunting',
+                    'Required for network boundary protection evidence',
+                    'Foundation for network security monitoring',
+                    'Critical for incident investigation'
+                ],
+                assessorUse: 'Assessors review network traffic analysis to verify effective network monitoring, appropriate traffic analysis, and integration with security monitoring processes.'
+            },
+            'personnel-screening': {
+                title: 'Personnel Screening Records',
+                importance: 'medium',
+                description: 'Documentation of background checks and security clearance verification for personnel with access to CUI.',
+                whatItIs: 'Records showing appropriate background investigations, security clearance verification, and suitability determinations for personnel accessing CUI.',
+                howUsed: [
+                    'Implement PS (Personnel Security) controls',
+                    'Verify personnel trustworthiness',
+                    'Support access control decisions',
+                    'Demonstrate due diligence in personnel security',
+                    'Enable insider threat mitigation'
+                ],
+                whyImportant: [
+                    'Required for PS.L2-3.9.1 through PS.L2-3.9.2 controls',
+                    'Critical for personnel with CUI access',
+                    'Essential for insider threat prevention',
+                    'Required for demonstrating personnel security maturity',
+                    'Foundation for trustworthy workforce'
+                ],
+                assessorUse: 'Assessors review personnel screening records to verify appropriate background checks, clearance verification, and ongoing suitability monitoring for CUI access.'
+            },
+            'role-definitions': {
+                title: 'Role & Responsibility Definitions',
+                importance: 'medium',
+                description: 'Documentation defining cybersecurity roles, responsibilities, and accountability within the organization.',
+                whatItIs: 'Formal documentation defining cybersecurity roles, specific responsibilities, authority levels, and accountability for security controls and processes.',
+                howUsed: [
+                    'Support AC (Access Control) implementation',
+                    'Enable appropriate access control decisions',
+                    'Define security accountability',
+                    'Support segregation of duties',
+                    'Guide training and competency requirements'
+                ],
+                whyImportant: [
+                    'Foundation for access control and personnel security',
+                    'Critical for demonstrating security governance',
+                    'Essential for segregation of duties',
+                    'Required for accountability and responsibility',
+                    'Foundation for role-based security controls'
+                ],
+                assessorUse: 'Assessors review role definitions to verify clear security responsibilities, appropriate authority levels, adequate segregation of duties, and alignment with access controls.'
+            },
+            'access-reviews': {
+                title: 'Access Review Documentation',
+                importance: 'high',
+                description: 'Regular reviews of user access rights to ensure appropriate permissions and remove unnecessary access.',
+                whatItIs: 'Documentation of periodic access reviews including review procedures, results, remediation actions, and approval of continued access rights.',
+                howUsed: [
+                    'Implement AC.L2-3.1.3 account management reviews',
+                    'Ensure continued appropriateness of access',
+                    'Remove unnecessary or excessive permissions',
+                    'Support principle of least privilege',
+                    'Enable access recertification processes'
+                ],
+                whyImportant: [
+                    'Required for ongoing access control effectiveness',
+                    'Critical for maintaining least privilege',
+                    'Essential for preventing access creep',
+                    'Required for demonstrating access control maturity',
+                    'Foundation for continuous access governance'
+                ],
+                assessorUse: 'Assessors examine access review documentation to verify regular review cycles, appropriate review scope, timely remediation, and proper approval processes.'
+            },
+            'surveys': {
+                title: 'Security Awareness Surveys',
+                importance: 'low',
+                description: 'Surveys measuring personnel security awareness levels and training effectiveness.',
+                whatItIs: 'Questionnaires and assessments measuring personnel understanding of security policies, awareness of threats, and effectiveness of training programs.',
+                howUsed: [
+                    'Measure security awareness program effectiveness',
+                    'Identify training gaps and needs',
+                    'Support continuous improvement of training',
+                    'Demonstrate personnel security competency',
+                    'Validate training program outcomes'
+                ],
+                whyImportant: [
+                    'Supports AT (Awareness and Training) controls',
+                    'Demonstrates training program effectiveness',
+                    'Enables targeted training improvements',
+                    'Provides metrics for security culture assessment',
+                    'Supports continuous training enhancement'
+                ],
+                assessorUse: 'Assessors review survey results to verify training effectiveness measurement, identification of training gaps, and continuous improvement of awareness programs.'
+            },
+            'privileged-access': {
+                title: 'Privileged Access Management',
+                importance: 'critical',
+                description: 'Documentation and controls for managing elevated access rights and administrative privileges.',
+                whatItIs: 'Comprehensive documentation of privileged account management including creation, monitoring, review, and termination of accounts with elevated system access.',
+                howUsed: [
+                    'Implement AC.L2-3.1.4 separation of duties',
+                    'Control administrative and system access',
+                    'Monitor privileged account usage',
+                    'Enforce additional authentication for privileged access',
+                    'Support insider threat mitigation'
+                ],
+                whyImportant: [
+                    'Critical for protecting high-value systems and data',
+                    'Required for AC (Access Control) domain compliance',
+                    'Essential for preventing privilege escalation attacks',
+                    'Foundation for administrative account security',
+                    'Critical for system integrity protection'
+                ],
+                assessorUse: 'Assessors examine privileged access management to verify appropriate controls, monitoring, review processes, and additional security measures for elevated privileges.'
+            },
+            'authentication-config': {
+                title: 'Authentication Configuration',
+                importance: 'high',
+                description: 'Configuration and documentation of authentication mechanisms and multi-factor authentication systems.',
+                whatItIs: 'Technical documentation showing configuration of authentication systems, multi-factor authentication, password policies, and identity verification mechanisms.',
+                howUsed: [
+                    'Implement IA (Identification and Authentication) controls',
+                    'Enforce strong authentication requirements',
+                    'Enable multi-factor authentication',
+                    'Support identity verification processes',
+                    'Prevent unauthorized access attempts'
+                ],
+                whyImportant: [
+                    'Required for IA.L2-3.5.1 through IA.L2-3.5.11 controls',
+                    'Critical for preventing unauthorized access',
+                    'Foundation for identity and access management',
+                    'Essential for CUI protection',
+                    'Required for authentication control validation'
+                ],
+                assessorUse: 'Assessors review authentication configurations to verify strong authentication mechanisms, proper multi-factor implementation, and alignment with security requirements.'
+            },
+            'session-management': {
+                title: 'Session Management Evidence',
+                importance: 'medium',
+                description: 'Documentation of user session controls including timeouts, concurrent sessions, and session security.',
+                whatItIs: 'Evidence showing how user sessions are managed including automatic timeouts, concurrent session limits, session encryption, and session termination procedures.',
+                howUsed: [
+                    'Implement AC.L2-3.1.11 session controls',
+                    'Prevent unauthorized session usage',
+                    'Control concurrent user sessions',
+                    'Enable automatic session termination',
+                    'Protect session data and communications'
+                ],
+                whyImportant: [
+                    'Required for session-based access controls',
+                    'Critical for preventing session hijacking',
+                    'Essential for remote access security',
+                    'Foundation for user activity monitoring',
+                    'Required for secure session management'
+                ],
+                assessorUse: 'Assessors examine session management evidence to verify appropriate session controls, automatic timeouts, concurrent session limits, and secure session handling.'
+            },
+            'visitor-logs': {
+                title: 'Visitor Access Logs',
+                importance: 'medium',
+                description: 'Records of visitor access to facilities including escort procedures and access monitoring.',
+                whatItIs: 'Documentation of visitor management including entry logs, escort assignments, access restrictions, and monitoring of non-employee facility access.',
+                howUsed: [
+                    'Implement PE.L1-3.10.3 visitor access control',
+                    'Monitor and control facility access',
+                    'Ensure proper visitor escort procedures',
+                    'Maintain accountability for facility access',
+                    'Support physical security monitoring'
+                ],
+                whyImportant: [
+                    'Required for PE (Physical Environment) controls',
+                    'Critical for facility security and CUI protection',
+                    'Essential for controlling unauthorized physical access',
+                    'Foundation for physical security accountability',
+                    'Required for visitor management validation'
+                ],
+                assessorUse: 'Assessors review visitor logs to verify proper visitor management, escort procedures, access restrictions, and monitoring of non-employee facility access.'
+            },
+            'environmental-controls': {
+                title: 'Environmental Controls',
+                importance: 'medium',
+                description: 'Documentation of environmental protections including fire suppression, climate control, and power systems.',
+                whatItIs: 'Evidence of environmental protection systems including fire suppression, HVAC controls, power management, and other systems protecting facility infrastructure.',
+                howUsed: [
+                    'Implement PE.L2-3.10.2 facility monitoring',
+                    'Protect systems from environmental threats',
+                    'Ensure continuous system availability',
+                    'Support business continuity planning',
+                    'Demonstrate infrastructure protection'
+                ],
+                whyImportant: [
+                    'Required for comprehensive facility protection',
+                    'Critical for system availability and integrity',
+                    'Essential for protecting CUI processing systems',
+                    'Foundation for environmental risk mitigation',
+                    'Required for facility security validation'
+                ],
+                assessorUse: 'Assessors examine environmental controls to verify adequate protection systems, monitoring capabilities, and maintenance of environmental protection measures.'
+            },
+            'surveillance-systems': {
+                title: 'Surveillance System Evidence',
+                importance: 'medium',
+                description: 'Documentation of video surveillance, intrusion detection, and physical monitoring systems.',
+                whatItIs: 'Evidence of surveillance and monitoring systems including video cameras, intrusion detection, access monitoring, and other physical security monitoring capabilities.',
+                howUsed: [
+                    'Implement PE.L2-3.10.2 facility monitoring',
+                    'Detect unauthorized physical access attempts',
+                    'Monitor facility security status',
+                    'Support incident investigation',
+                    'Provide deterrent effect for physical threats'
+                ],
+                whyImportant: [
+                    'Required for comprehensive facility monitoring',
+                    'Critical for detecting physical security breaches',
+                    'Essential for physical security incident response',
+                    'Foundation for physical threat detection',
+                    'Required for facility security validation'
+                ],
+                assessorUse: 'Assessors examine surveillance systems to verify adequate monitoring coverage, proper system operation, recording capabilities, and integration with security procedures.'
+            }
+        };
+
+        let allExpanded = false;
+
+        function toggleCategory(header) {
+            const items = header.nextElementSibling;
+            items.classList.toggle('expanded');
+        }
+
+        function toggleAllCategories() {
+            const items = document.querySelectorAll('.evidence-items');
+            const btn = document.querySelector('.expand-btn');
+            
+            allExpanded = !allExpanded;
+            
+            items.forEach(item => {
+                if (allExpanded) {
+                    item.classList.add('expanded');
+                } else {
+                    item.classList.remove('expanded');
+                }
+            });
+            
+            btn.textContent = allExpanded ? 'Collapse All Categories' : 'Expand All Categories';
+        }
+
+        function showModal(evidenceType) {
+            const data = evidenceData[evidenceType];
+            if (!data) return;
+
+            const modalBody = document.getElementById('modal-body');
+            modalBody.innerHTML = `
+                <h2>${data.title}</h2>
+                <div class="importance-badge ${data.importance}">${data.importance.toUpperCase()} IMPORTANCE</div>
+                
+                <div class="info-section">
+                    <h4>📝 What It Is</h4>
+                    <p>${data.whatItIs}</p>
+                </div>
+
+                <div class="info-section">
+                    <h4>🔧 How It's Used</h4>
+                    <ul>
+                        ${data.howUsed.map(item => `<li>${item}</li>`).join('')}
+                    </ul>
+                </div>
+
+                <div class="info-section">
+                    <h4>⭐ Why It's Important</h4>
+                    <ul>
+                        ${data.whyImportant.map(item => `<li>${item}</li>`).join('')}
+                    </ul>
+                </div>
+
+                <div class="info-section">
+                    <h4>👁️ How Assessors Use This Evidence</h4>
+                    <p>${data.assessorUse}</p>
+                </div>
+            `;
+
+            document.getElementById('modal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const evidenceItems = document.querySelectorAll('.evidence-item');
+            const categories = document.querySelectorAll('.evidence-category');
+
+            categories.forEach(category => {
+                const items = category.querySelectorAll('.evidence-item');
+                let hasVisibleItems = false;
+
+                items.forEach(item => {
+                    const evidenceName = item.querySelector('.evidence-name').textContent.toLowerCase();
+                    if (evidenceName.includes(searchTerm)) {
+                        item.style.display = 'block';
+                        hasVisibleItems = true;
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+
+                if (hasVisibleItems && searchTerm) {
+                    category.querySelector('.evidence-items').classList.add('expanded');
+                    category.style.display = 'block';
+                } else if (!searchTerm) {
+                    category.style.display = 'block';
+                } else {
+                    category.style.display = 'none';
+                }
+            });
+        });
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function(e) {
+            const modal = document.getElementById('modal');
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
