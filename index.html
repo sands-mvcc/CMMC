@@ -3,93 +3,190 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home | CMMC Audit Prep</title>
+    <title>DoD CMMC Program Portal</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
         .header {
-            background-color: #0044cc;
-            color: white;
-            padding: 20px;
             text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         }
-        .navbar {
-            display: flex;
-            justify-content: space-around;
-            background-color: #333;
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: #1e3c72;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
         }
-        .navbar a {
-            color: white;
-            padding: 14px 20px;
+
+        .header .subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            font-weight: 300;
+        }
+
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .nav-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
             text-decoration: none;
-            text-align: center;
+            color: inherit;
+            border: 2px solid transparent;
         }
-        .navbar a:hover {
-            background-color: #ddd;
-            color: black;
+
+        .nav-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+            border-color: #2a5298;
         }
-        .main-content {
-            padding: 20px;
-            text-align: center;
+
+        .nav-card .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
         }
-        .cta-buttons {
-            margin-top: 20px;
+
+        .nav-card h3 {
+            font-size: 1.4rem;
+            color: #1e3c72;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
         }
-        .cta-buttons a {
-            display: inline-block;
-            padding: 15px 30px;
-            margin: 10px;
-            background-color: #0044cc;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
+
+        .nav-card p {
+            color: #666;
+            line-height: 1.5;
+            font-size: 0.95rem;
         }
-        .cta-buttons a:hover {
-            background-color: #0033aa;
-        }
+
         .footer {
-            background-color: #333;
-            color: white;
             text-align: center;
-            padding: 10px;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            color: white;
+            margin-top: 2rem;
+        }
+
+        .footer p {
+            margin-bottom: 0.5rem;
+        }
+
+        .security-badge {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .nav-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .nav-card {
+                padding: 1.5rem;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="container">
+        <div class="header">
+            <h1>DoD CMMC Program Portal</h1>
+            <p class="subtitle">Cybersecurity Maturity Model Certification Management System</p>
+            <div class="security-badge">🔒 SECURE ACCESS</div>
+        </div>
 
-<div class="header">
-    <h1>CMMC Audit Preparation</h1>
-    <p>Helping Organizations Prepare for CMMC Security Audits</p>
-</div>
+        <div class="nav-grid">
+            <a href="roles.html" class="nav-card">
+                <span class="icon">👥</span>
+                <h3>Cybersecurity Data Management Roles</h3>
+                <p>Define and manage user roles, responsibilities, and access controls for cybersecurity data management within your organization.</p>
+            </a>
 
-<div class="navbar">
-    <a href="#">Home</a>
-    <a href="#">Domains Overview</a>
-    <a href="#">Progress Dashboard</a>
-    <a href="#">Roles & Responsibilities</a>
-    <a href="#">Evidence Management</a>
-    <a href="#">Reports</a>
-</div>
+            <a href="POAM.html" class="nav-card">
+                <span class="icon">📋</span>
+                <h3>CMMC Plan of Action & Milestone Tracker</h3>
+                <p>Track remediation efforts, milestone progress, and action items required for CMMC compliance and certification readiness.</p>
+            </a>
 
-<div class="main-content">
-    <h2>Welcome to CMMC Audit Preparation</h2>
-    <p>Our platform provides all the tools you need to ensure your organization is ready for the CMMC audit.</p>
-    <div class="cta-buttons">
-        <a href="#">Get Started</a>
-        <a href="#">Learn More</a>
+            <a href="applicability.html" class="nav-card">
+                <span class="icon">✅</span>
+                <h3>NIST SP 800-171 Applicability Checklist</h3>
+                <p>Comprehensive checklist to determine which NIST SP 800-171 security requirements apply to your organization and systems.</p>
+            </a>
+
+            <a href="dashboard.html" class="nav-card">
+                <span class="icon">📊</span>
+                <h3>CMMC Auditor Progress Dashboard</h3>
+                <p>Real-time dashboard displaying audit progress, compliance status, findings, and overall certification readiness metrics.</p>
+            </a>
+
+            <a href="evidence.html" class="nav-card">
+                <span class="icon">📁</span>
+                <h3>CMMC Evidence Guide</h3>
+                <p>Guidance and templates for collecting, organizing, and presenting evidence required for CMMC assessment and audit processes.</p>
+            </a>
+
+            <a href="reports.html" class="nav-card">
+                <span class="icon">📄</span>
+                <h3>CMMC Required Documents Explorer</h3>
+                <p>Explore and access all required documentation, policies, procedures, and reports necessary for CMMC compliance.</p>
+            </a>
+        </div>
+
+        <div class="footer">
+            <p><strong>Department of Defense</strong></p>
+            <p>Cybersecurity Maturity Model Certification (CMMC) Program</p>
+            <p>For official use only - Authorized personnel access required</p>
+            <p style="font-size: 0.8rem; margin-top: 1rem; opacity: 0.8;">
+                Last updated: June 14, 2025 | Version 2.0
+            </p>
+        </div>
     </div>
-</div>
-
-<div class="footer">
-    <p>&copy; 2024 CMMC Audit Preparation. All rights reserved.</p>
-</div>
-
 </body>
 </html>
