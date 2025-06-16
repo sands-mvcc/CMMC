@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPRS Submission Score Sheet</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.5;
+            color: #333;
+            background: #f5f7fa;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .header .subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .company-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .info-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .info-group label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .info-group input {
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+        
+        .info-group input:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
+        }
+        
+        .score-summary {
+            padding: 30px;
+            text-align: center;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+        
+        .total-score {
+            font-size: 3em;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .score-range {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .controls-section {
+            padding: 30px;
+        }
+        
+        .control-family {
+            margin-bottom: 40px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .family-header {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            color: white;
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s ease;
+        }
+        
+        .family-header:hover {
+            background: linear-gradient(135deg, #495057 0%, #343a40 100%);
+        }
+        
+        .family-title {
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+        
+        .family-score {
+            font-size: 1.2em;
+            font-weight: 700;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+        }
+        
+        .controls-grid {
+            display: none;
+            padding: 25px;
+            background: #f8f9fa;
+        }
+        
+        .controls-grid.expanded {
+            display: block;
+        }
+        
+        .control-item {
+            display: grid;
+            grid-template-columns: 120px 1fr 150px 120px;
+            gap: 15px;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #dee2e6;
+            transition: all 0.3s ease;
+        }
+        
+        .control-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .control-id {
+            font-weight: 700;
+            color: #2a5298;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .control-description {
+            color: #495057;
+        }
+        
+        .control-select {
+            padding: 8px;
+            border: 2px solid #dee2e6;
+            border-radius: 4px;
+            background: white;
+            transition: border-color 0.3s ease;
+        }
+        
+        .control-select:focus {
+            outline: none;
+            border-color: #2a5298;
+        }
+        
+        .control-points {
+            font-weight: 700;
+            text-align: center;
+            padding: 8px;
+            border-radius: 4px;
+        }
+        
+        .points-positive {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .points-negative {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .points-zero {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .submission-section {
+            padding: 30px;
+            background: #f8f9fa;
+            border-top: 2px solid #e9ecef;
+        }
+        
+        .submission-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(40, 167, 69, 0.3);
+        }
+        
+        .legend {
+            margin-top: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .legend h3 {
+            margin-bottom: 15px;
+            color: #495057;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>SPRS Submission Score Sheet</h1>
+            <div class="subtitle">Supplier Performance Risk System - NIST SP 800-171 Assessment</div>
+        </div>
+
+        <div class="company-info">
+            <div class="info-group">
+                <label>Company Name</label>
+                <input type="text" id="companyName" value="ACME Technology Services Corporation">
+            </div>
+            <div class="info-group">
+                <label>CAGE Code</label>
+                <input type="text" id="cageCode" value="A1B2C">
+            </div>
+            <div class="info-group">
+                <label>DUNS Number</label>
+                <input type="text" id="dunsNumber" value="123456789">
+            </div>
+            <div class="info-group">
+                <label>Assessment Date</label>
+                <input type="date" id="assessmentDate" value="2024-06-15">
+            </div>
+            <div class="info-group">
+                <label>Assessor Name</label>
+                <input type="text" id="assessorName" value="Raymond Lawrence">
+            </div>
+            <div class="info-group">
+                <label>Assessor Title</label>
+                <input type="text" id="assessorTitle" value="Chief Information Security Officer">
+            </div>
+        </div>
+
+        <div class="score-summary">
+            <div class="total-score" id="totalScore">95</div>
+            <div class="score-range">Total SPRS Score (Range: -203 to +110)</div>
+        </div>
+
+        <div class="controls-section">
+            <div class="control-family" data-family="ac">
+                <div class="family-header" onclick="toggleFamily('ac')">
+                    <div class="family-title">Access Control (AC) - 22 Controls</div>
+                    <div class="family-score" id="ac-score">20</div>
+                </div>
+                <div class="controls-grid" id="ac-controls">
+                    <div class="control-item">
+                        <div class="control-id">AC.1.001</div>
+                        <div class="control-description">Limit information system access to authorized users</div>
+                        <select class="control-select" onchange="updateScore()" data-control="ac1001">
+                            <option value="5" selected>Fully Implemented</option>
+                            <option value="0">Partially Implemented</option>
+                            <option value="-5">Not Implemented</option>
+                        </select>
+                        <div class="control-points points-positive">+5</div>
+                    </div>
+                    <div class="control-item">
+                        <div class="control-id">AC.1.002</div>
+                        <div class="control-description">Limit information system access to authorized processes</div>
+                        <select class="control-select" onchange="updateScore()" data-control="ac1002">
+                            <option value="5" selected>Fully Implemented</option>
+                            <option value="0">Partially Implemented</option>
+                            <option value="-5">Not Implemented</option>
+                        </select>
+                        <div class="control-points points-positive">+5</div>
+                    </div>
+                    <div class="control-item">
+                        <div class="control-id">AC.1.003</div>
+                        <div class="control-description">Verify and control connections to external systems</div>
+                        <select class="control-select" onchange="updateScore()" data-control="ac1003">
+                            <option value="5" selected>Fully Implemented</option>
+                            <option value="0">Partially Implemented</option>
+                            <option value="-5">Not Implemented</option>
+                        </select>
+                        <div class="control-points points-positive">+5</div>
+                    </div>
+                    <div class="control-item">
+                        <div class="control-id">AC.2.004</div>
+                        <div class="control-description">Control public access to information system</div>
+                        <select class="control-select" onchange="updateScore()" data-control="ac2004">
+                            <option value="5" selected>Fully Implemented</option>
+                            <option value="0">Partially Implemented</option>
+                            <option value="-3">Not Implemented</option>
+                        </select>
+                        <div class="control-points points-positive">+5</div>
+                    </div>
+                    <!-- Additional AC controls would continue here... -->
+                </div>
+            </div>
+
+            <div class="control-family" data-family="au">
+                <div class="family-header" onclick="toggleFamily('au')">
+                    <div class="family-title">Audit and Accountability (AU) - 12 Controls</div>
+                    <div class="family-score" id="au-score">12</div>
+                </div>
+                <div class="controls-grid" id="au-controls">
+                    <div class="control-item">
+                        <div class="control-id">AU.1.001</div>
+                        <div class="control-description">Create and retain system audit logs</div>
+                        <select class="control-select" onchange="updateScore()" data-control="au1001">
+                            <option value="1" selected>Fully Implemented</option>
+                            <option value="0">Partially Implemented</option>
+                            <option value="-1">Not Implemented</option>
+                        </select>
+                        <div class="control-points points-positive">+1</div>
+                    </div>
+                    <div class="control-item">
+                        <div class="control-id">AU.2.002</div>
+                        <div class="control-description">Ensure audit events are compiled from multiple sources</div>
+                        <select class="control-select" onchange="updateScore()" data-control="au2002">
+                            <option value="1" selected>Fully Implemented</option>
+                            <option value="0">Partially Implemented</option>
+                            <option value="-1">Not Implemented</option>
+                        </select>
+                        <div class="control-points points-positive">+1</div>
+                    </div>
+                    <!-- Additional AU controls would continue here... -->
+                </div>
+            </div>
+
+            <div class="control-family" data-family="sc">
+                <div class="family-header" onclick="toggleFamily('sc')">
+                    <div class="family-title">System and Communications Protection (SC) - 13 Controls</div>
+                    <div class="family-score" id="sc-score">13</div>
+                </div>
+                <div class="controls-grid" id="sc-controls">
+                    <div class="control-item">
+                        <div class="control-id">SC.1.001</div>
+                        <div class="control-description">Monitor, control, and protect communications</div>
+                        <select class="control-select" onchange="updateScore()" data-control="sc1001">
+                            <option value="1" selected>Fully Implemented</option>
+                            <option value="0">Partially Implemented</option>
+                            <option value="-1">Not Implemented</option>
+                        </select>
+                        <div class="control-points points-positive">+1</div>
+                    </div>
+                    <div class="control-item">
+                        <div class="control-id">SC.2.002</div>
+                        <div class="control-description">Implement cryptographic mechanisms</div>
+                        <select class="control-select" onchange="updateScore()" data-control="sc2002">
+                            <option value="1" selected>Fully Implemented</option>
+                            <option value="0">Partially Implemented</option>
+                            <option value="-1">Not Implemented</option>
+                        </select>
+                        <div class="control-points points-positive">+1</div>
+                    </div>
+                    <!-- Additional SC controls would continue here... -->
+                </div>
+            </div>
+        </div>
+
+        <div class="submission-section">
+            <h2 style="margin-bottom: 20px; color: #495057;">Submission Information</h2>
+            <div class="submission-info">
+                <div class="info-group">
+                    <label>Submission Date</label>
+                    <input type="date" id="submissionDate" value="2024-06-16">
+                </div>
+                <div class="info-group">
+                    <label>Next Assessment Due</label>
+                    <input type="date" id="nextAssessment" value="2025-06-16">
+                </div>
+                <div class="info-group">
+                    <label>POA&M Status</label>
+                    <select id="poamStatus">
+                        <option value="current">Current</option>
+                        <option value="pending">Pending Update</option>
+                        <option value="none">Not Required</option>
+                    </select>
+                </div>
+                <div class="info-group">
+                    <label>Contract Requirement</label>
+                    <select id="contractReq">
+                        <option value="7012">DFARS 252.204-7012</option>
+                        <option value="7019">DFARS 252.204-7019</option>
+                        <option value="7020">DFARS 252.204-7020</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div style="text-align: center;">
+                <button class="btn" onclick="generateReport()">Generate SPRS Submission Report</button>
+            </div>
+
+            <div class="legend">
+                <h3>Scoring Legend</h3>
+                <div class="legend-item">
+                    <div class="legend-color points-positive"></div>
+                    <span>Fully Implemented: Positive points awarded</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color points-zero"></div>
+                    <span>Partially Implemented: No points awarded</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color points-negative"></div>
+                    <span>Not Implemented: Negative points assessed</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleFamily(familyId) {
+            const controls = document.getElementById(familyId + '-controls');
+            controls.classList.toggle('expanded');
+        }
+
+        function updateScore() {
+            let totalScore = 0;
+            
+            // Calculate scores for each family
+            const families = ['ac', 'au', 'sc'];
+            families.forEach(family => {
+                let familyScore = 0;
+                const selects = document.querySelectorAll(`#${family}-controls .control-select`);
+                
+                selects.forEach(select => {
+                    const value = parseInt(select.value);
+                    familyScore += value;
+                    totalScore += value;
+                    
+                    // Update visual indicator
+                    const pointsDiv = select.parentNode.querySelector('.control-points');
+                    pointsDiv.textContent = value > 0 ? `+${value}` : value.toString();
+                    pointsDiv.className = `control-points ${value > 0 ? 'points-positive' : value < 0 ? 'points-negative' : 'points-zero'}`;
+                });
+                
+                // Update family score
+                document.getElementById(`${family}-score`).textContent = familyScore;
+            });
+            
+            // Update total score
+            document.getElementById('totalScore').textContent = totalScore;
+        }
+
+        function generateReport() {
+            const companyName = document.getElementById('companyName').value;
+            const totalScore = document.getElementById('totalScore').textContent;
+            const assessmentDate = document.getElementById('assessmentDate').value;
+            
+            alert(`SPRS Report Generated for ${companyName}\nTotal Score: ${totalScore}\nAssessment Date: ${assessmentDate}\n\nThis would normally generate a formal submission document for the SPRS system.`);
+        }
+
+        // Initialize with current scores
+        updateScore();
+    </script>
+</body>
+</html>
