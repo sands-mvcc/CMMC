@@ -249,6 +249,88 @@
             z-index: 10;
         }
         
+        .dynamic-controls {
+            position: relative;
+            margin: 10px 0;
+            padding: 10px;
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .dynamic-controls.show {
+            display: block;
+        }
+        
+        .add-btn, .delete-btn {
+            padding: 5px 10px;
+            margin: 2px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .add-btn {
+            background: #28a745;
+            color: white;
+        }
+        
+        .add-btn:hover {
+            background: #1e7e34;
+        }
+        
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .delete-btn:hover {
+            background: #c82333;
+        }
+        
+        .delete-row-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 2px 6px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.7em;
+            margin-left: 5px;
+        }
+        
+        .delete-row-btn:hover {
+            background: #c82333;
+        }
+        
+        .delete-item-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 1px 4px;
+            border-radius: 2px;
+            cursor: pointer;
+            font-size: 0.6em;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+        
+        .delete-item-btn:hover {
+            background: #c82333;
+        }
+        
+        .editable-row {
+            position: relative;
+        }
+        
+        .editable-item {
+            position: relative;
+        }
+        
         .edit-btn, .save-btn, .cancel-btn {
             padding: 5px 10px;
             margin-left: 5px;
@@ -488,6 +570,12 @@
         </div>
         <h3>Maintenance Activities Summary - Q2 2025 <span class="edit-indicator" style="display: none;">EDITING</span></h3>
         
+        <div class="dynamic-controls" id="section-2-controls">
+            <strong>Manage Activities:</strong>
+            <button class="add-btn" onclick="addTableRow('section-2')">+ Add Activity</button>
+            <button class="delete-btn" onclick="toggleDeleteMode('section-2')">🗑️ Delete Mode</button>
+        </div>
+        
         <table class="editable-table-container">
             <thead>
                 <tr>
@@ -496,50 +584,57 @@
                     <th>Completed</th>
                     <th>Pending</th>
                     <th>Compliance Rate</th>
+                    <th class="delete-column" style="display: none;">Action</th>
                 </tr>
             </thead>
             <tbody class="editable-table-body">
-                <tr>
+                <tr class="editable-row">
                     <td><span class="editable-content" data-field="activity-1-type">Server Preventive Maintenance</span></td>
                     <td><span class="editable-content" data-field="activity-1-scheduled">6</span></td>
                     <td><span class="editable-content" data-field="activity-1-completed">6</span></td>
                     <td><span class="editable-content" data-field="activity-1-pending">0</span></td>
                     <td><span class="editable-content" data-field="activity-1-compliance">100%</span></td>
+                    <td class="delete-column" style="display: none;"><button class="delete-row-btn" onclick="deleteTableRow(this)">Delete</button></td>
                 </tr>
-                <tr>
+                <tr class="editable-row">
                     <td><span class="editable-content" data-field="activity-2-type">Network Equipment Maintenance</span></td>
                     <td><span class="editable-content" data-field="activity-2-scheduled">18</span></td>
                     <td><span class="editable-content" data-field="activity-2-completed">18</span></td>
                     <td><span class="editable-content" data-field="activity-2-pending">0</span></td>
                     <td><span class="editable-content" data-field="activity-2-compliance">100%</span></td>
+                    <td class="delete-column" style="display: none;"><button class="delete-row-btn" onclick="deleteTableRow(this)">Delete</button></td>
                 </tr>
-                <tr>
+                <tr class="editable-row">
                     <td><span class="editable-content" data-field="activity-3-type">Workstation Updates</span></td>
                     <td><span class="editable-content" data-field="activity-3-scheduled">76</span></td>
                     <td><span class="editable-content" data-field="activity-3-completed">76</span></td>
                     <td><span class="editable-content" data-field="activity-3-pending">0</span></td>
                     <td><span class="editable-content" data-field="activity-3-compliance">100%</span></td>
+                    <td class="delete-column" style="display: none;"><button class="delete-row-btn" onclick="deleteTableRow(this)">Delete</button></td>
                 </tr>
-                <tr>
+                <tr class="editable-row">
                     <td><span class="editable-content" data-field="activity-4-type">Security Patch Deployment</span></td>
                     <td><span class="editable-content" data-field="activity-4-scheduled">24</span></td>
                     <td><span class="editable-content" data-field="activity-4-completed">24</span></td>
                     <td><span class="editable-content" data-field="activity-4-pending">0</span></td>
                     <td><span class="editable-content" data-field="activity-4-compliance">100%</span></td>
+                    <td class="delete-column" style="display: none;"><button class="delete-row-btn" onclick="deleteTableRow(this)">Delete</button></td>
                 </tr>
-                <tr>
+                <tr class="editable-row">
                     <td><span class="editable-content" data-field="activity-5-type">Emergency Repairs</span></td>
                     <td><span class="editable-content" data-field="activity-5-scheduled">N/A</span></td>
                     <td><span class="editable-content" data-field="activity-5-completed">7</span></td>
                     <td><span class="editable-content" data-field="activity-5-pending">0</span></td>
                     <td><span class="editable-content" data-field="activity-5-compliance">100%</span></td>
+                    <td class="delete-column" style="display: none;"><button class="delete-row-btn" onclick="deleteTableRow(this)">Delete</button></td>
                 </tr>
-                <tr>
+                <tr class="editable-row">
                     <td><span class="editable-content" data-field="activity-6-type">Off-site Equipment Returns</span></td>
                     <td><span class="editable-content" data-field="activity-6-scheduled">16</span></td>
                     <td><span class="editable-content" data-field="activity-6-completed">16</span></td>
                     <td><span class="editable-content" data-field="activity-6-pending">0</span></td>
                     <td><span class="editable-content" data-field="activity-6-compliance">100%</span></td>
+                    <td class="delete-column" style="display: none;"><button class="delete-row-btn" onclick="deleteTableRow(this)">Delete</button></td>
                 </tr>
             </tbody>
         </table>
@@ -553,6 +648,12 @@
         </div>
         <h3>Asset Lifecycle Management <span class="edit-indicator" style="display: none;">EDITING</span></h3>
         
+        <div class="dynamic-controls" id="section-3-controls">
+            <strong>Manage Assets:</strong>
+            <button class="add-btn" onclick="addTableRow('section-3')">+ Add Asset</button>
+            <button class="delete-btn" onclick="toggleDeleteMode('section-3')">🗑️ Delete Mode</button>
+        </div>
+        
         <h4>Current Asset Status</h4>
         <table class="editable-table-container">
             <thead>
@@ -563,40 +664,45 @@
                     <th>Maintenance</th>
                     <th>End of Life</th>
                     <th>Replacement Planned</th>
+                    <th class="delete-column" style="display: none;">Action</th>
                 </tr>
             </thead>
             <tbody class="editable-table-body">
-                <tr>
+                <tr class="editable-row">
                     <td><span class="editable-content" data-field="asset-1-category">Laptops</span></td>
                     <td><span class="editable-content" data-field="asset-1-total">38</span></td>
                     <td><span class="editable-content" data-field="asset-1-active">37</span></td>
                     <td><span class="editable-content" data-field="asset-1-maintenance">1</span></td>
                     <td><span class="editable-content" data-field="asset-1-eol">3</span></td>
                     <td><span class="editable-content" data-field="asset-1-replacement">Q4 2025</span></td>
+                    <td class="delete-column" style="display: none;"><button class="delete-row-btn" onclick="deleteTableRow(this)">Delete</button></td>
                 </tr>
-                <tr>
+                <tr class="editable-row">
                     <td><span class="editable-content" data-field="asset-2-category">Servers</span></td>
                     <td><span class="editable-content" data-field="asset-2-total">2</span></td>
                     <td><span class="editable-content" data-field="asset-2-active">2</span></td>
                     <td><span class="editable-content" data-field="asset-2-maintenance">0</span></td>
                     <td><span class="editable-content" data-field="asset-2-eol">0</span></td>
                     <td><span class="editable-content" data-field="asset-2-replacement">Q2 2027</span></td>
+                    <td class="delete-column" style="display: none;"><button class="delete-row-btn" onclick="deleteTableRow(this)">Delete</button></td>
                 </tr>
-                <tr>
+                <tr class="editable-row">
                     <td><span class="editable-content" data-field="asset-3-category">Network Printers</span></td>
                     <td><span class="editable-content" data-field="asset-3-total">8</span></td>
                     <td><span class="editable-content" data-field="asset-3-active">8</span></td>
                     <td><span class="editable-content" data-field="asset-3-maintenance">0</span></td>
                     <td><span class="editable-content" data-field="asset-3-eol">1</span></td>
                     <td><span class="editable-content" data-field="asset-3-replacement">Q3 2025</span></td>
+                    <td class="delete-column" style="display: none;"><button class="delete-row-btn" onclick="deleteTableRow(this)">Delete</button></td>
                 </tr>
-                <tr>
+                <tr class="editable-row">
                     <td><span class="editable-content" data-field="asset-4-category">Network Equipment</span></td>
                     <td><span class="editable-content" data-field="asset-4-total">12</span></td>
                     <td><span class="editable-content" data-field="asset-4-active">12</span></td>
                     <td><span class="editable-content" data-field="asset-4-maintenance">0</span></td>
                     <td><span class="editable-content" data-field="asset-4-eol">0</span></td>
                     <td><span class="editable-content" data-field="asset-4-replacement">Q1 2026</span></td>
+                    <td class="delete-column" style="display: none;"><button class="delete-row-btn" onclick="deleteTableRow(this)">Delete</button></td>
                 </tr>
             </tbody>
         </table>
@@ -638,6 +744,13 @@
         </div>
         <h3>Third-Party Maintenance Oversight <span class="edit-indicator" style="display: none;">EDITING</span></h3>
         
+        <div class="dynamic-controls" id="section-4-controls">
+            <strong>Manage Vendors:</strong>
+            <button class="add-btn" onclick="addTableRow('section-4')">+ Add Vendor</button>
+            <button class="add-btn" onclick="addListItem('section-4', 'vendor-requirements')">+ Add Requirement</button>
+            <button class="delete-btn" onclick="toggleDeleteMode('section-4')">🗑️ Delete Mode</button>
+        </div>
+        
         <table class="editable-table-container">
             <thead>
                 <tr>
@@ -646,47 +759,52 @@
                     <th>Access Level</th>
                     <th>Last Activity</th>
                     <th>Compliance Status</th>
+                    <th class="delete-column" style="display: none;">Action</th>
                 </tr>
             </thead>
             <tbody class="editable-table-body">
-                <tr>
+                <tr class="editable-row">
                     <td><span class="editable-content" data-field="vendor-1-name">Dell Technologies</span></td>
                     <td><span class="editable-content" data-field="vendor-1-service">Server Hardware Support</span></td>
                     <td><span class="editable-content" data-field="vendor-1-access">Supervised Physical</span></td>
                     <td><span class="editable-content" data-field="vendor-1-activity">May 15, 2025</span></td>
                     <td><span class="editable-content" data-field="vendor-1-compliance">Compliant</span></td>
+                    <td class="delete-column" style="display: none;"><button class="delete-row-btn" onclick="deleteTableRow(this)">Delete</button></td>
                 </tr>
-                <tr>
+                <tr class="editable-row">
                     <td><span class="editable-content" data-field="vendor-2-name">Cisco Systems</span></td>
                     <td><span class="editable-content" data-field="vendor-2-service">Network Equipment Support</span></td>
                     <td><span class="editable-content" data-field="vendor-2-access">Remote with MFA</span></td>
                     <td><span class="editable-content" data-field="vendor-2-activity">June 8, 2025</span></td>
                     <td><span class="editable-content" data-field="vendor-2-compliance">Compliant</span></td>
+                    <td class="delete-column" style="display: none;"><button class="delete-row-btn" onclick="deleteTableRow(this)">Delete</button></td>
                 </tr>
-                <tr>
+                <tr class="editable-row">
                     <td><span class="editable-content" data-field="vendor-3-name">Microsoft</span></td>
                     <td><span class="editable-content" data-field="vendor-3-service">Cloud Infrastructure</span></td>
                     <td><span class="editable-content" data-field="vendor-3-access">API-based</span></td>
                     <td><span class="editable-content" data-field="vendor-3-activity">Ongoing</span></td>
                     <td><span class="editable-content" data-field="vendor-3-compliance">Compliant</span></td>
+                    <td class="delete-column" style="display: none;"><button class="delete-row-btn" onclick="deleteTableRow(this)">Delete</button></td>
                 </tr>
-                <tr>
+                <tr class="editable-row">
                     <td><span class="editable-content" data-field="vendor-4-name">Local Printer Repair</span></td>
                     <td><span class="editable-content" data-field="vendor-4-service">Printer Maintenance</span></td>
                     <td><span class="editable-content" data-field="vendor-4-access">Supervised Physical</span></td>
                     <td><span class="editable-content" data-field="vendor-4-activity">April 22, 2025</span></td>
                     <td><span class="editable-content" data-field="vendor-4-compliance">Compliant</span></td>
+                    <td class="delete-column" style="display: none;"><button class="delete-row-btn" onclick="deleteTableRow(this)">Delete</button></td>
                 </tr>
             </tbody>
         </table>
 
         <p><strong>All third-party vendors:</strong></p>
-        <ul>
-            <li><span class="editable-content" data-field="vendor-requirement-1">Have signed CMMC-compliant service agreements</span></li>
-            <li><span class="editable-content" data-field="vendor-requirement-2">Undergo background verification where applicable</span></li>
-            <li><span class="editable-content" data-field="vendor-requirement-3">Receive security awareness briefings before access</span></li>
-            <li><span class="editable-content" data-field="vendor-requirement-4">Are continuously supervised during maintenance activities</span></li>
-            <li><span class="editable-content" data-field="vendor-requirement-5">Complete sanitization verification when required</span></li>
+        <ul class="vendor-requirements editable-list">
+            <li class="editable-item"><span class="editable-content" data-field="vendor-requirement-1">Have signed CMMC-compliant service agreements</span><button class="delete-item-btn" onclick="deleteListItem(this)" style="display: none;">✕</button></li>
+            <li class="editable-item"><span class="editable-content" data-field="vendor-requirement-2">Undergo background verification where applicable</span><button class="delete-item-btn" onclick="deleteListItem(this)" style="display: none;">✕</button></li>
+            <li class="editable-item"><span class="editable-content" data-field="vendor-requirement-3">Receive security awareness briefings before access</span><button class="delete-item-btn" onclick="deleteListItem(this)" style="display: none;">✕</button></li>
+            <li class="editable-item"><span class="editable-content" data-field="vendor-requirement-4">Are continuously supervised during maintenance activities</span><button class="delete-item-btn" onclick="deleteListItem(this)" style="display: none;">✕</button></li>
+            <li class="editable-item"><span class="editable-content" data-field="vendor-requirement-5">Complete sanitization verification when required</span><button class="delete-item-btn" onclick="deleteListItem(this)" style="display: none;">✕</button></li>
         </ul>
     </div>
 
@@ -698,12 +816,19 @@
         </div>
         <h3>CUI Protection During Maintenance <span class="edit-indicator" style="display: none;">EDITING</span></h3>
         
+        <div class="dynamic-controls" id="section-5-controls">
+            <strong>Manage Sanitization:</strong>
+            <button class="add-btn" onclick="addTableRow('section-5')">+ Add Activity</button>
+            <button class="add-btn" onclick="addListItem('section-5', 'sanitization-procedures')">+ Add Procedure</button>
+            <button class="delete-btn" onclick="toggleDeleteMode('section-5')">🗑️ Delete Mode</button>
+        </div>
+        
         <h4>Sanitization Procedures</h4>
         <p>ACME follows NIST SP 800-88 Rev. 1 guidelines for media sanitization:</p>
-        <ul>
-            <li><strong>Clear:</strong> <span class="editable-content" data-field="sanitization-clear">Logical overwriting for internal maintenance</span></li>
-            <li><strong>Purge:</strong> <span class="editable-content" data-field="sanitization-purge">Cryptographic erasure for off-site maintenance</span></li>
-            <li><strong>Destroy:</strong> <span class="editable-content" data-field="sanitization-destroy">Physical destruction for end-of-life equipment</span></li>
+        <ul class="sanitization-procedures editable-list">
+            <li class="editable-item"><strong>Clear:</strong> <span class="editable-content" data-field="sanitization-clear">Logical overwriting for internal maintenance</span><button class="delete-item-btn" onclick="deleteListItem(this)" style="display: none;">✕</button></li>
+            <li class="editable-item"><strong>Purge:</strong> <span class="editable-content" data-field="sanitization-purge">Cryptographic erasure for off-site maintenance</span><button class="delete-item-btn" onclick="deleteListItem(this)" style="display: none;">✕</button></li>
+            <li class="editable-item"><strong>Destroy:</strong> <span class="editable-content" data-field="sanitization-destroy">Physical destruction for end-of-life equipment</span><button class="delete-item-btn" onclick="deleteListItem(this)" style="display: none;">✕</button></li>
         </ul>
 
         <h4>Sanitization Activities - Q2 2025</h4>
@@ -715,36 +840,41 @@
                     <th>Method</th>
                     <th>Reason</th>
                     <th>Certificate ID</th>
+                    <th class="delete-column" style="display: none;">Action</th>
                 </tr>
             </thead>
             <tbody class="editable-table-body">
-                <tr>
+                <tr class="editable-row">
                     <td><span class="editable-content" data-field="sanitization-1-date">April 12, 2025</span></td>
                     <td><span class="editable-content" data-field="sanitization-1-asset">Laptop-WS-0012</span></td>
                     <td><span class="editable-content" data-field="sanitization-1-method">Cryptographic Purge</span></td>
                     <td><span class="editable-content" data-field="sanitization-1-reason">Off-site Repair</span></td>
                     <td><span class="editable-content" data-field="sanitization-1-cert">CERT-2025-041201</span></td>
+                    <td class="delete-column" style="display: none;"><button class="delete-row-btn" onclick="deleteTableRow(this)">Delete</button></td>
                 </tr>
-                <tr>
+                <tr class="editable-row">
                     <td><span class="editable-content" data-field="sanitization-2-date">May 3, 2025</span></td>
                     <td><span class="editable-content" data-field="sanitization-2-asset">Server-SRV-0001 HDD</span></td>
                     <td><span class="editable-content" data-field="sanitization-2-method">Physical Destruction</span></td>
                     <td><span class="editable-content" data-field="sanitization-2-reason">Drive Replacement</span></td>
                     <td><span class="editable-content" data-field="sanitization-2-cert">DEST-2025-050301</span></td>
+                    <td class="delete-column" style="display: none;"><button class="delete-row-btn" onclick="deleteTableRow(this)">Delete</button></td>
                 </tr>
-                <tr>
+                <tr class="editable-row">
                     <td><span class="editable-content" data-field="sanitization-3-date">May 28, 2025</span></td>
                     <td><span class="editable-content" data-field="sanitization-3-asset">Printer-PR-0005</span></td>
                     <td><span class="editable-content" data-field="sanitization-3-method">Memory Clear</span></td>
                     <td><span class="editable-content" data-field="sanitization-3-reason">Firmware Update</span></td>
                     <td><span class="editable-content" data-field="sanitization-3-cert">CLEAR-2025-052801</span></td>
+                    <td class="delete-column" style="display: none;"><button class="delete-row-btn" onclick="deleteTableRow(this)">Delete</button></td>
                 </tr>
-                <tr>
+                <tr class="editable-row">
                     <td><span class="editable-content" data-field="sanitization-4-date">June 10, 2025</span></td>
                     <td><span class="editable-content" data-field="sanitization-4-asset">Laptop-WS-0025</span></td>
                     <td><span class="editable-content" data-field="sanitization-4-method">Cryptographic Purge</span></td>
                     <td><span class="editable-content" data-field="sanitization-4-reason">Off-site Repair</span></td>
                     <td><span class="editable-content" data-field="sanitization-4-cert">CERT-2025-061001</span></td>
+                    <td class="delete-column" style="display: none;"><button class="delete-row-btn" onclick="deleteTableRow(this)">Delete</button></td>
                 </tr>
             </tbody>
         </table>
@@ -758,6 +888,13 @@
         </div>
         <h3>Maintenance Tools and Security <span class="edit-indicator" style="display: none;">EDITING</span></h3>
         
+        <div class="dynamic-controls" id="section-6-controls">
+            <strong>Manage Tools:</strong>
+            <button class="add-btn" onclick="addTableRow('section-6')">+ Add Tool</button>
+            <button class="add-btn" onclick="addListItem('section-6', 'tool-security-measures')">+ Add Measure</button>
+            <button class="delete-btn" onclick="toggleDeleteMode('section-6')">🗑️ Delete Mode</button>
+        </div>
+        
         <h4>Approved Maintenance Tools Registry</h4>
         <table class="editable-table-container">
             <thead>
@@ -767,47 +904,52 @@
                     <th>Purpose</th>
                     <th>Last Scanned</th>
                     <th>Approval Status</th>
+                    <th class="delete-column" style="display: none;">Action</th>
                 </tr>
             </thead>
             <tbody class="editable-table-body">
-                <tr>
+                <tr class="editable-row">
                     <td><span class="editable-content" data-field="tool-1-name">Dell OpenManage</span></td>
                     <td><span class="editable-content" data-field="tool-1-version">v3.8.1</span></td>
                     <td><span class="editable-content" data-field="tool-1-purpose">Server Management</span></td>
                     <td><span class="editable-content" data-field="tool-1-scanned">June 14, 2025</span></td>
                     <td><span class="editable-content" data-field="tool-1-status">Approved</span></td>
+                    <td class="delete-column" style="display: none;"><button class="delete-row-btn" onclick="deleteTableRow(this)">Delete</button></td>
                 </tr>
-                <tr>
+                <tr class="editable-row">
                     <td><span class="editable-content" data-field="tool-2-name">Cisco Prime</span></td>
                     <td><span class="editable-content" data-field="tool-2-version">v3.2.0</span></td>
                     <td><span class="editable-content" data-field="tool-2-purpose">Network Diagnostics</span></td>
                     <td><span class="editable-content" data-field="tool-2-scanned">June 12, 2025</span></td>
                     <td><span class="editable-content" data-field="tool-2-status">Approved</span></td>
+                    <td class="delete-column" style="display: none;"><button class="delete-row-btn" onclick="deleteTableRow(this)">Delete</button></td>
                 </tr>
-                <tr>
+                <tr class="editable-row">
                     <td><span class="editable-content" data-field="tool-3-name">Microsoft SCCM</span></td>
                     <td><span class="editable-content" data-field="tool-3-version">v2203</span></td>
                     <td><span class="editable-content" data-field="tool-3-purpose">Patch Management</span></td>
                     <td><span class="editable-content" data-field="tool-3-scanned">June 15, 2025</span></td>
                     <td><span class="editable-content" data-field="tool-3-status">Approved</span></td>
+                    <td class="delete-column" style="display: none;"><button class="delete-row-btn" onclick="deleteTableRow(this)">Delete</button></td>
                 </tr>
-                <tr>
+                <tr class="editable-row">
                     <td><span class="editable-content" data-field="tool-4-name">Symantec Ghost</span></td>
                     <td><span class="editable-content" data-field="tool-4-version">v12.0</span></td>
                     <td><span class="editable-content" data-field="tool-4-purpose">System Imaging</span></td>
                     <td><span class="editable-content" data-field="tool-4-scanned">June 1, 2025</span></td>
                     <td><span class="editable-content" data-field="tool-4-status">Approved</span></td>
+                    <td class="delete-column" style="display: none;"><button class="delete-row-btn" onclick="deleteTableRow(this)">Delete</button></td>
                 </tr>
             </tbody>
         </table>
 
         <p><strong>Tool Security Measures:</strong></p>
-        <ul>
-            <li><span class="editable-content" data-field="tool-security-1">All tools undergo malware scanning before first use and monthly thereafter</span></li>
-            <li><span class="editable-content" data-field="tool-security-2">Tool access restricted to authorized maintenance personnel only</span></li>
-            <li><span class="editable-content" data-field="tool-security-3">Usage logs maintained in centralized SIEM system</span></li>
-            <li><span class="editable-content" data-field="tool-security-4">Regular vulnerability assessments performed on diagnostic tools</span></li>
-            <li><span class="editable-content" data-field="tool-security-5">Tool inventory updated and audited quarterly</span></li>
+        <ul class="tool-security-measures editable-list">
+            <li class="editable-item"><span class="editable-content" data-field="tool-security-1">All tools undergo malware scanning before first use and monthly thereafter</span><button class="delete-item-btn" onclick="deleteListItem(this)" style="display: none;">✕</button></li>
+            <li class="editable-item"><span class="editable-content" data-field="tool-security-2">Tool access restricted to authorized maintenance personnel only</span><button class="delete-item-btn" onclick="deleteListItem(this)" style="display: none;">✕</button></li>
+            <li class="editable-item"><span class="editable-content" data-field="tool-security-3">Usage logs maintained in centralized SIEM system</span><button class="delete-item-btn" onclick="deleteListItem(this)" style="display: none;">✕</button></li>
+            <li class="editable-item"><span class="editable-content" data-field="tool-security-4">Regular vulnerability assessments performed on diagnostic tools</span><button class="delete-item-btn" onclick="deleteListItem(this)" style="display: none;">✕</button></li>
+            <li class="editable-item"><span class="editable-content" data-field="tool-security-5">Tool inventory updated and audited quarterly</span><button class="delete-item-btn" onclick="deleteListItem(this)" style="display: none;">✕</button></li>
         </ul>
     </div>
 
@@ -819,6 +961,13 @@
         </div>
         <h3>Risk Assessment and Mitigation <span class="edit-indicator" style="display: none;">EDITING</span></h3>
         
+        <div class="dynamic-controls" id="section-7-controls">
+            <strong>Manage Risks:</strong>
+            <button class="add-btn" onclick="addTableRow('section-7')">+ Add Risk</button>
+            <button class="add-btn" onclick="addListItem('section-7', 'mitigation-strategies')">+ Add Strategy</button>
+            <button class="delete-btn" onclick="toggleDeleteMode('section-7')">🗑️ Delete Mode</button>
+        </div>
+        
         <h4>Identified Risks</h4>
         <table class="editable-table-container">
             <thead>
@@ -828,46 +977,51 @@
                     <th>Impact</th>
                     <th>Risk Level</th>
                     <th>Mitigation Status</th>
+                    <th class="delete-column" style="display: none;">Action</th>
                 </tr>
             </thead>
             <tbody class="editable-table-body">
-                <tr>
+                <tr class="editable-row">
                     <td><span class="editable-content" data-field="risk-1-description">Unauthorized access during maintenance</span></td>
                     <td><span class="editable-content" data-field="risk-1-likelihood">Low</span></td>
                     <td><span class="editable-content" data-field="risk-1-impact">High</span></td>
                     <td><span class="editable-content" data-field="risk-1-level">Medium</span></td>
                     <td><span class="editable-content" data-field="risk-1-status">Mitigated</span></td>
+                    <td class="delete-column" style="display: none;"><button class="delete-row-btn" onclick="deleteTableRow(this)">Delete</button></td>
                 </tr>
-                <tr>
+                <tr class="editable-row">
                     <td><span class="editable-content" data-field="risk-2-description">Malware introduction via diagnostic tools</span></td>
                     <td><span class="editable-content" data-field="risk-2-likelihood">Low</span></td>
                     <td><span class="editable-content" data-field="risk-2-impact">High</span></td>
                     <td><span class="editable-content" data-field="risk-2-level">Medium</span></td>
                     <td><span class="editable-content" data-field="risk-2-status">Mitigated</span></td>
+                    <td class="delete-column" style="display: none;"><button class="delete-row-btn" onclick="deleteTableRow(this)">Delete</button></td>
                 </tr>
-                <tr>
+                <tr class="editable-row">
                     <td><span class="editable-content" data-field="risk-3-description">Data exposure during off-site maintenance</span></td>
                     <td><span class="editable-content" data-field="risk-3-likelihood">Low</span></td>
                     <td><span class="editable-content" data-field="risk-3-impact">High</span></td>
                     <td><span class="editable-content" data-field="risk-3-level">Medium</span></td>
                     <td><span class="editable-content" data-field="risk-3-status">Mitigated</span></td>
+                    <td class="delete-column" style="display: none;"><button class="delete-row-btn" onclick="deleteTableRow(this)">Delete</button></td>
                 </tr>
-                <tr>
+                <tr class="editable-row">
                     <td><span class="editable-content" data-field="risk-4-description">System downtime during maintenance</span></td>
                     <td><span class="editable-content" data-field="risk-4-likelihood">Medium</span></td>
                     <td><span class="editable-content" data-field="risk-4-impact">Medium</span></td>
                     <td><span class="editable-content" data-field="risk-4-level">Medium</span></td>
                     <td><span class="editable-content" data-field="risk-4-status">Mitigated</span></td>
+                    <td class="delete-column" style="display: none;"><button class="delete-row-btn" onclick="deleteTableRow(this)">Delete</button></td>
                 </tr>
             </tbody>
         </table>
 
         <h4>Mitigation Strategies</h4>
-        <ul>
-            <li><strong>Access Control:</strong> <span class="editable-content" data-field="mitigation-1">Continuous supervision and role-based access restrictions</span></li>
-            <li><strong>Tool Security:</strong> <span class="editable-content" data-field="mitigation-2">Mandatory scanning and approved tool registry</span></li>
-            <li><strong>Data Protection:</strong> <span class="editable-content" data-field="mitigation-3">Comprehensive sanitization procedures</span></li>
-            <li><strong>Business Continuity:</strong> <span class="editable-content" data-field="mitigation-4">Scheduled maintenance windows and redundancy planning</span></li>
+        <ul class="mitigation-strategies editable-list">
+            <li class="editable-item"><strong>Access Control:</strong> <span class="editable-content" data-field="mitigation-1">Continuous supervision and role-based access restrictions</span><button class="delete-item-btn" onclick="deleteListItem(this)" style="display: none;">✕</button></li>
+            <li class="editable-item"><strong>Tool Security:</strong> <span class="editable-content" data-field="mitigation-2">Mandatory scanning and approved tool registry</span><button class="delete-item-btn" onclick="deleteListItem(this)" style="display: none;">✕</button></li>
+            <li class="editable-item"><strong>Data Protection:</strong> <span class="editable-content" data-field="mitigation-3">Comprehensive sanitization procedures</span><button class="delete-item-btn" onclick="deleteListItem(this)" style="display: none;">✕</button></li>
+            <li class="editable-item"><strong>Business Continuity:</strong> <span class="editable-content" data-field="mitigation-4">Scheduled maintenance windows and redundancy planning</span><button class="delete-item-btn" onclick="deleteListItem(this)" style="display: none;">✕</button></li>
         </ul>
     </div>
 
@@ -879,25 +1033,32 @@
         </div>
         <h3>Performance Metrics and KPIs <span class="edit-indicator" style="display: none;">EDITING</span></h3>
         
+        <div class="dynamic-controls" id="section-8-controls">
+            <strong>Manage Metrics:</strong>
+            <button class="add-btn" onclick="addListItem('section-8', 'achievements')">+ Add Achievement</button>
+            <button class="add-btn" onclick="addListItem('section-8', 'improvements')">+ Add Improvement</button>
+            <button class="delete-btn" onclick="toggleDeleteMode('section-8')">🗑️ Delete Mode</button>
+        </div>
+        
         <div class="grid">
             <div>
                 <h4>Q2 2025 Achievements</h4>
-                <ul>
-                    <li>✅ <span class="editable-content" data-field="achievement-1">100% maintenance activities completed on schedule</span></li>
-                    <li>✅ <span class="editable-content" data-field="achievement-2">Zero security incidents during maintenance</span></li>
-                    <li>✅ <span class="editable-content" data-field="achievement-3">100% sanitization compliance for off-site equipment</span></li>
-                    <li>✅ <span class="editable-content" data-field="achievement-4">All third-party vendors maintained compliance</span></li>
-                    <li>✅ <span class="editable-content" data-field="achievement-5">Average system uptime: 99.7%</span></li>
-                    <li>✅ <span class="editable-content" data-field="achievement-6">Emergency response time: < 2 hours</span></li>
+                <ul class="achievements editable-list">
+                    <li class="editable-item">✅ <span class="editable-content" data-field="achievement-1">100% maintenance activities completed on schedule</span><button class="delete-item-btn" onclick="deleteListItem(this)" style="display: none;">✕</button></li>
+                    <li class="editable-item">✅ <span class="editable-content" data-field="achievement-2">Zero security incidents during maintenance</span><button class="delete-item-btn" onclick="deleteListItem(this)" style="display: none;">✕</button></li>
+                    <li class="editable-item">✅ <span class="editable-content" data-field="achievement-3">100% sanitization compliance for off-site equipment</span><button class="delete-item-btn" onclick="deleteListItem(this)" style="display: none;">✕</button></li>
+                    <li class="editable-item">✅ <span class="editable-content" data-field="achievement-4">All third-party vendors maintained compliance</span><button class="delete-item-btn" onclick="deleteListItem(this)" style="display: none;">✕</button></li>
+                    <li class="editable-item">✅ <span class="editable-content" data-field="achievement-5">Average system uptime: 99.7%</span><button class="delete-item-btn" onclick="deleteListItem(this)" style="display: none;">✕</button></li>
+                    <li class="editable-item">✅ <span class="editable-content" data-field="achievement-6">Emergency response time: < 2 hours</span><button class="delete-item-btn" onclick="deleteListItem(this)" style="display: none;">✕</button></li>
                 </ul>
             </div>
             <div>
                 <h4>Improvement Areas</h4>
-                <ul>
-                    <li>🔄 <span class="editable-content" data-field="improvement-1">Implement automated patch deployment for non-critical systems</span></li>
-                    <li>🔄 <span class="editable-content" data-field="improvement-2">Enhance monitoring for maintenance tool usage</span></li>
-                    <li>🔄 <span class="editable-content" data-field="improvement-3">Develop predictive maintenance capabilities</span></li>
-                    <li>🔄 <span class="editable-content" data-field="improvement-4">Update maintenance procedures for cloud environments</span></li>
+                <ul class="improvements editable-list">
+                    <li class="editable-item">🔄 <span class="editable-content" data-field="improvement-1">Implement automated patch deployment for non-critical systems</span><button class="delete-item-btn" onclick="deleteListItem(this)" style="display: none;">✕</button></li>
+                    <li class="editable-item">🔄 <span class="editable-content" data-field="improvement-2">Enhance monitoring for maintenance tool usage</span><button class="delete-item-btn" onclick="deleteListItem(this)" style="display: none;">✕</button></li>
+                    <li class="editable-item">🔄 <span class="editable-content" data-field="improvement-3">Develop predictive maintenance capabilities</span><button class="delete-item-btn" onclick="deleteListItem(this)" style="display: none;">✕</button></li>
+                    <li class="editable-item">🔄 <span class="editable-content" data-field="improvement-4">Update maintenance procedures for cloud environments</span><button class="delete-item-btn" onclick="deleteListItem(this)" style="display: none;">✕</button></li>
                 </ul>
             </div>
         </div>
@@ -911,20 +1072,27 @@
         </div>
         <h3>Recommendations and Next Steps <span class="edit-indicator" style="display: none;">EDITING</span></h3>
         
+        <div class="dynamic-controls" id="section-9-controls">
+            <strong>Manage Recommendations:</strong>
+            <button class="add-btn" onclick="addListItem('section-9', 'short-term-actions')">+ Add Short-term Action</button>
+            <button class="add-btn" onclick="addListItem('section-9', 'long-term-initiatives')">+ Add Long-term Initiative</button>
+            <button class="delete-btn" onclick="toggleDeleteMode('section-9')">🗑️ Delete Mode</button>
+        </div>
+        
         <h4>Short-term Actions (Next 90 Days)</h4>
-        <ol>
-            <li><span class="editable-content" data-field="short-term-1">Complete replacement of 3 end-of-life laptops by September 30, 2025</span></li>
-            <li><span class="editable-content" data-field="short-term-2">Update maintenance procedures to include new cloud infrastructure components</span></li>
-            <li><span class="editable-content" data-field="short-term-3">Conduct refresher training for maintenance personnel on CUI handling procedures</span></li>
-            <li><span class="editable-content" data-field="short-term-4">Implement automated tool scanning workflow to reduce manual processes</span></li>
+        <ol class="short-term-actions editable-list">
+            <li class="editable-item"><span class="editable-content" data-field="short-term-1">Complete replacement of 3 end-of-life laptops by September 30, 2025</span><button class="delete-item-btn" onclick="deleteListItem(this)" style="display: none;">✕</button></li>
+            <li class="editable-item"><span class="editable-content" data-field="short-term-2">Update maintenance procedures to include new cloud infrastructure components</span><button class="delete-item-btn" onclick="deleteListItem(this)" style="display: none;">✕</button></li>
+            <li class="editable-item"><span class="editable-content" data-field="short-term-3">Conduct refresher training for maintenance personnel on CUI handling procedures</span><button class="delete-item-btn" onclick="deleteListItem(this)" style="display: none;">✕</button></li>
+            <li class="editable-item"><span class="editable-content" data-field="short-term-4">Implement automated tool scanning workflow to reduce manual processes</span><button class="delete-item-btn" onclick="deleteListItem(this)" style="display: none;">✕</button></li>
         </ol>
 
         <h4>Long-term Strategic Initiatives (Next 12 Months)</h4>
-        <ol>
-            <li><span class="editable-content" data-field="long-term-1">Develop predictive maintenance program using AI/ML analytics</span></li>
-            <li><span class="editable-content" data-field="long-term-2">Enhance integration between maintenance systems and SIEM platform</span></li>
-            <li><span class="editable-content" data-field="long-term-3">Establish redundant systems to minimize maintenance-related downtime</span></li>
-            <li><span class="editable-content" data-field="long-term-4">Conduct annual review and update of all maintenance policies and procedures</span></li>
+        <ol class="long-term-initiatives editable-list">
+            <li class="editable-item"><span class="editable-content" data-field="long-term-1">Develop predictive maintenance program using AI/ML analytics</span><button class="delete-item-btn" onclick="deleteListItem(this)" style="display: none;">✕</button></li>
+            <li class="editable-item"><span class="editable-content" data-field="long-term-2">Enhance integration between maintenance systems and SIEM platform</span><button class="delete-item-btn" onclick="deleteListItem(this)" style="display: none;">✕</button></li>
+            <li class="editable-item"><span class="editable-content" data-field="long-term-3">Establish redundant systems to minimize maintenance-related downtime</span><button class="delete-item-btn" onclick="deleteListItem(this)" style="display: none;">✕</button></li>
+            <li class="editable-item"><span class="editable-content" data-field="long-term-4">Conduct annual review and update of all maintenance policies and procedures</span><button class="delete-item-btn" onclick="deleteListItem(this)" style="display: none;">✕</button></li>
         </ol>
     </div>
 
@@ -936,14 +1104,20 @@
         </div>
         <h3>Compliance Attestation <span class="edit-indicator" style="display: none;">EDITING</span></h3>
         
+        <div class="dynamic-controls" id="section-10-controls">
+            <strong>Manage Attestation:</strong>
+            <button class="add-btn" onclick="addListItem('section-10', 'attestation-points')">+ Add Attestation Point</button>
+            <button class="delete-btn" onclick="toggleDeleteMode('section-10')">🗑️ Delete Mode</button>
+        </div>
+        
         <p><span class="editable-content" data-field="attestation-intro">Based on this comprehensive review of maintenance activities for Q2 2025, I attest that:</span></p>
-        <ul>
-            <li><span class="editable-content" data-field="attestation-1">All CMMC 2.0 Level 2 maintenance controls (MA.L2-3.7.1 through MA.L2-3.7.6) are fully implemented and operational</span></li>
-            <li><span class="editable-content" data-field="attestation-2">Maintenance activities are conducted in accordance with approved procedures that protect CUI</span></li>
-            <li><span class="editable-content" data-field="attestation-3">All maintenance personnel are properly authorized and supervised as required</span></li>
-            <li><span class="editable-content" data-field="attestation-4">Equipment sanitization procedures meet NIST standards and CMMC requirements</span></li>
-            <li><span class="editable-content" data-field="attestation-5">Maintenance tools and diagnostic media are properly controlled and scanned for malicious code</span></li>
-            <li><span class="editable-content" data-field="attestation-6">Remote maintenance sessions utilize required multi-factor authentication and proper session management</span></li>
+        <ul class="attestation-points editable-list">
+            <li class="editable-item"><span class="editable-content" data-field="attestation-1">All CMMC 2.0 Level 2 maintenance controls (MA.L2-3.7.1 through MA.L2-3.7.6) are fully implemented and operational</span><button class="delete-item-btn" onclick="deleteListItem(this)" style="display: none;">✕</button></li>
+            <li class="editable-item"><span class="editable-content" data-field="attestation-2">Maintenance activities are conducted in accordance with approved procedures that protect CUI</span><button class="delete-item-btn" onclick="deleteListItem(this)" style="display: none;">✕</button></li>
+            <li class="editable-item"><span class="editable-content" data-field="attestation-3">All maintenance personnel are properly authorized and supervised as required</span><button class="delete-item-btn" onclick="deleteListItem(this)" style="display: none;">✕</button></li>
+            <li class="editable-item"><span class="editable-content" data-field="attestation-4">Equipment sanitization procedures meet NIST standards and CMMC requirements</span><button class="delete-item-btn" onclick="deleteListItem(this)" style="display: none;">✕</button></li>
+            <li class="editable-item"><span class="editable-content" data-field="attestation-5">Maintenance tools and diagnostic media are properly controlled and scanned for malicious code</span><button class="delete-item-btn" onclick="deleteListItem(this)" style="display: none;">✕</button></li>
+            <li class="editable-item"><span class="editable-content" data-field="attestation-6">Remote maintenance sessions utilize required multi-factor authentication and proper session management</span><button class="delete-item-btn" onclick="deleteListItem(this)" style="display: none;">✕</button></li>
         </ul>
 
         <div class="alert info">
@@ -962,6 +1136,23 @@
     <script>
         // Store original content for cancellation
         let originalContent = {};
+        let deleteMode = {};
+        let itemCounters = {};
+        
+        // Initialize counters for different sections
+        function initializeCounters() {
+            itemCounters = {
+                'section-2': { activity: 7 }, // Start from 7 since we have 6 activities
+                'section-3': { asset: 5 }, // Start from 5 since we have 4 assets
+                'section-4': { vendor: 5, 'vendor-requirement': 6 },
+                'section-5': { sanitization: 5, 'sanitization-procedure': 4 },
+                'section-6': { tool: 5, 'tool-security': 6 },
+                'section-7': { risk: 5, mitigation: 5 },
+                'section-8': { achievement: 7, improvement: 5 },
+                'section-9': { 'short-term': 5, 'long-term': 5 },
+                'section-10': { attestation: 7 }
+            };
+        }
         
         // Toggle edit mode for a section
         function toggleEdit(sectionId) {
@@ -971,6 +1162,7 @@
             const cancelBtn = section.querySelector('.cancel-btn');
             const editIndicator = section.querySelector('.edit-indicator');
             const editableElements = section.querySelectorAll('.editable-content');
+            const dynamicControls = section.querySelector('.dynamic-controls');
             
             // Store original content
             originalContent[sectionId] = {};
@@ -985,6 +1177,11 @@
             saveBtn.style.display = 'inline-block';
             cancelBtn.style.display = 'inline-block';
             editIndicator.style.display = 'inline-block';
+            
+            // Show dynamic controls
+            if (dynamicControls) {
+                dynamicControls.classList.add('show');
+            }
             
             // Make elements editable
             editableElements.forEach(element => {
@@ -1022,6 +1219,7 @@
             const cancelBtn = section.querySelector('.cancel-btn');
             const editIndicator = section.querySelector('.edit-indicator');
             const editableElements = section.querySelectorAll('.editable-content');
+            const dynamicControls = section.querySelector('.dynamic-controls');
             
             // Switch back to view mode
             section.classList.remove('editing');
@@ -1029,6 +1227,13 @@
             saveBtn.style.display = 'none';
             cancelBtn.style.display = 'none';
             editIndicator.style.display = 'none';
+            
+            // Hide dynamic controls and delete mode
+            if (dynamicControls) {
+                dynamicControls.classList.remove('show');
+            }
+            hideDeleteButtons(sectionId);
+            deleteMode[sectionId] = false;
             
             // Make elements non-editable and restore styling
             editableElements.forEach(element => {
@@ -1062,6 +1267,7 @@
             const cancelBtn = section.querySelector('.cancel-btn');
             const editIndicator = section.querySelector('.edit-indicator');
             const editableElements = section.querySelectorAll('.editable-content');
+            const dynamicControls = section.querySelector('.dynamic-controls');
             
             // Restore original content
             editableElements.forEach(element => {
@@ -1077,6 +1283,13 @@
             saveBtn.style.display = 'none';
             cancelBtn.style.display = 'none';
             editIndicator.style.display = 'none';
+            
+            // Hide dynamic controls and delete mode
+            if (dynamicControls) {
+                dynamicControls.classList.remove('show');
+            }
+            hideDeleteButtons(sectionId);
+            deleteMode[sectionId] = false;
             
             // Make elements non-editable and restore styling
             editableElements.forEach(element => {
@@ -1102,6 +1315,177 @@
             showNotification('Changes cancelled', 'info');
         }
         
+        // Add a new table row
+        function addTableRow(sectionId) {
+            const section = document.getElementById(sectionId);
+            const tableBody = section.querySelector('.editable-table-body');
+            const existingRows = tableBody.querySelectorAll('tr');
+            
+            if (!existingRows.length) return;
+            
+            // Clone the last row
+            const lastRow = existingRows[existingRows.length - 1];
+            const newRow = lastRow.cloneNode(true);
+            
+            // Update data-field attributes and clear content
+            const editableElements = newRow.querySelectorAll('.editable-content');
+            editableElements.forEach((element, index) => {
+                const oldField = element.getAttribute('data-field');
+                const fieldPrefix = oldField.split('-').slice(0, -1).join('-');
+                const newField = fieldPrefix + '-' + getNextCounter(sectionId, fieldPrefix.split('-')[0]);
+                element.setAttribute('data-field', newField);
+                element.textContent = 'New Entry';
+                
+                // Apply edit styling if in edit mode
+                if (section.classList.contains('editing')) {
+                    makeElementEditable(element);
+                }
+            });
+            
+            tableBody.appendChild(newRow);
+            showNotification('New row added', 'success');
+        }
+        
+        // Add a new list item
+        function addListItem(sectionId, listClass) {
+            const section = document.getElementById(sectionId);
+            const list = section.querySelector('.' + listClass);
+            
+            if (!list) return;
+            
+            const existingItems = list.querySelectorAll('li');
+            if (!existingItems.length) return;
+            
+            // Clone the last item
+            const lastItem = existingItems[existingItems.length - 1];
+            const newItem = lastItem.cloneNode(true);
+            
+            // Update data-field attribute and clear content
+            const editableElement = newItem.querySelector('.editable-content');
+            if (editableElement) {
+                const oldField = editableElement.getAttribute('data-field');
+                const fieldPrefix = oldField.split('-').slice(0, -1).join('-');
+                const newField = fieldPrefix + '-' + getNextCounter(sectionId, fieldPrefix.split('-')[0]);
+                editableElement.setAttribute('data-field', newField);
+                editableElement.textContent = 'New item';
+                
+                // Apply edit styling if in edit mode
+                if (section.classList.contains('editing')) {
+                    makeElementEditable(editableElement);
+                }
+            }
+            
+            list.appendChild(newItem);
+            showNotification('New item added', 'success');
+        }
+        
+        // Toggle delete mode
+        function toggleDeleteMode(sectionId) {
+            deleteMode[sectionId] = !deleteMode[sectionId];
+            
+            if (deleteMode[sectionId]) {
+                showDeleteButtons(sectionId);
+                showNotification('Delete mode enabled - click items to remove', 'warning');
+            } else {
+                hideDeleteButtons(sectionId);
+                showNotification('Delete mode disabled', 'info');
+            }
+        }
+        
+        // Show delete buttons
+        function showDeleteButtons(sectionId) {
+            const section = document.getElementById(sectionId);
+            
+            // Show delete buttons for table rows
+            const deleteColumns = section.querySelectorAll('.delete-column');
+            deleteColumns.forEach(col => {
+                col.style.display = 'table-cell';
+            });
+            
+            // Show delete buttons for list items
+            const deleteItemBtns = section.querySelectorAll('.delete-item-btn');
+            deleteItemBtns.forEach(btn => {
+                btn.style.display = 'inline-block';
+            });
+        }
+        
+        // Hide delete buttons
+        function hideDeleteButtons(sectionId) {
+            const section = document.getElementById(sectionId);
+            
+            // Hide delete buttons for table rows
+            const deleteColumns = section.querySelectorAll('.delete-column');
+            deleteColumns.forEach(col => {
+                col.style.display = 'none';
+            });
+            
+            // Hide delete buttons for list items
+            const deleteItemBtns = section.querySelectorAll('.delete-item-btn');
+            deleteItemBtns.forEach(btn => {
+                btn.style.display = 'none';
+            });
+        }
+        
+        // Delete a table row
+        function deleteTableRow(button) {
+            const row = button.closest('tr');
+            const tableBody = row.closest('tbody');
+            
+            // Don't delete if it's the only row
+            if (tableBody.querySelectorAll('tr').length <= 1) {
+                showNotification('Cannot delete the last row', 'warning');
+                return;
+            }
+            
+            row.remove();
+            showNotification('Row deleted', 'success');
+        }
+        
+        // Delete a list item
+        function deleteListItem(button) {
+            const listItem = button.closest('li');
+            const list = listItem.closest('ul, ol');
+            
+            // Don't delete if it's the only item
+            if (list.querySelectorAll('li').length <= 1) {
+                showNotification('Cannot delete the last item', 'warning');
+                return;
+            }
+            
+            listItem.remove();
+            showNotification('Item deleted', 'success');
+        }
+        
+        // Get next counter for field naming
+        function getNextCounter(sectionId, prefix) {
+            if (!itemCounters[sectionId]) {
+                itemCounters[sectionId] = {};
+            }
+            if (!itemCounters[sectionId][prefix]) {
+                itemCounters[sectionId][prefix] = 1;
+            }
+            return itemCounters[sectionId][prefix]++;
+        }
+        
+        // Make an element editable
+        function makeElementEditable(element) {
+            element.contentEditable = true;
+            element.style.backgroundColor = '#fff';
+            element.style.border = '1px solid #007bff';
+            element.style.padding = '2px 4px';
+            element.style.borderRadius = '3px';
+            element.style.minHeight = '20px';
+            element.style.outline = 'none';
+            
+            element.addEventListener('focus', function() {
+                this.style.backgroundColor = '#f0f8ff';
+            });
+            
+            element.addEventListener('blur', function() {
+                this.style.backgroundColor = '#fff';
+            });
+        }
+        
         // Show notification messages
         function showNotification(message, type) {
             const notification = document.createElement('div');
@@ -1121,6 +1505,9 @@
                 notification.style.backgroundColor = '#28a745';
             } else if (type === 'info') {
                 notification.style.backgroundColor = '#17a2b8';
+            } else if (type === 'warning') {
+                notification.style.backgroundColor = '#ffc107';
+                notification.style.color = '#212529';
             } else {
                 notification.style.backgroundColor = '#dc3545';
             }
@@ -1152,6 +1539,9 @@
         
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
+            // Initialize counters
+            initializeCounters();
+            
             // Add keyboard shortcuts
             document.addEventListener('keydown', function(e) {
                 // Escape key to cancel editing
@@ -1180,7 +1570,7 @@
             
             // Show initial instructions
             setTimeout(() => {
-                showNotification('Training mode active! Use Edit buttons to modify sections.', 'info');
+                showNotification('Training mode active! Click Edit buttons and use + Add/Delete controls.', 'info');
             }, 1000);
         });
     </script>
