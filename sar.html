@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMMC Level 2 System Assessment Report - Training Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .header .subtitle {
+            color: #7f8c8d;
+            font-size: 1.2em;
+            font-weight: 300;
+        }
+        
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .controls h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .controls h3::before {
+            content: "⚙️";
+            font-size: 1.2em;
+        }
+        
+        .control-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .btn {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+        }
+        
+        .btn.danger {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+        }
+        
+        .btn.danger:hover {
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+        }
+        
+        .btn.success {
+            background: linear-gradient(45deg, #27ae60, #229954);
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+        }
+        
+        .btn.success:hover {
+            box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+        }
+        
+        .sar-content {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .section {
+            border-bottom: 2px solid #ecf0f1;
+            position: relative;
+        }
+        
+        .section:last-child {
+            border-bottom: none;
+        }
+        
+        .section-header {
+            background: linear-gradient(135deg, #34495e, #2c3e50);
+            color: white;
+            padding: 20px 30px;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .section-header:hover {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+        }
+        
+        .section-header h2 {
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .section-number {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 12px;
+            border-radius: 50%;
+            font-weight: bold;
+            min-width: 40px;
+            text-align: center;
+        }
+        
+        .toggle-icon {
+            font-size: 1.5em;
+            transition: transform 0.3s ease;
+        }
+        
+        .section.collapsed .toggle-icon {
+            transform: rotate(-90deg);
+        }
+        
+        .section-content {
+            padding: 30px;
+            transition: all 0.3s ease;
+            background: #fafbfc;
+        }
+        
+        .section.collapsed .section-content {
+            display: none;
+        }
+        
+        .editable {
+            border: 2px dashed transparent;
+            padding: 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            min-height: 50px;
+        }
+        
+        .editable:hover {
+            border-color: #3498db;
+            background: rgba(52, 152, 219, 0.05);
+        }
+        
+        .editable[contenteditable="true"] {
+            border-color: #27ae60;
+            background: rgba(39, 174, 96, 0.05);
+            outline: none;
+        }
+        
+        .finding-item {
+            background: white;
+            margin: 15px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+            border-left: 5px solid #3498db;
+        }
+        
+        .finding-header {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .finding-id {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 1.1em;
+        }
+        
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .status-met {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-not-met {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .status-conditional {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .finding-content {
+            padding: 20px;
+        }
+        
+        .assessment-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .assessment-table th {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .assessment-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e9ecef;
+            background: white;
+        }
+        
+        .assessment-table tr:hover td {
+            background: #f8f9fa;
+        }
+        
+        .risk-level {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .risk-high {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .risk-medium {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .risk-low {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .add-item-btn {
+            background: linear-gradient(45deg, #27ae60, #229954);
+            color: white;
+            border: 2px dashed #27ae60;
+            padding: 15px;
+            width: 100%;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 15px 0;
+            transition: all 0.3s ease;
+        }
+        
+        .add-item-btn:hover {
+            background: linear-gradient(45deg, #229954, #27ae60);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+        }
+        
+        .delete-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            float: right;
+            margin-left: 10px;
+        }
+        
+        .delete-btn:hover {
+            background: #c0392b;
+        }
+        
+        .score-display {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
+        }
+        
+        .score-display h3 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .edit-mode-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #27ae60;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            display: none;
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+            z-index: 1000;
+        }
+        
+        .edit-mode-indicator.active {
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .control-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .btn {
+                margin: 5px 0;
+            }
+        }
+        
+        .print-styles {
+            display: none;
+        }
+        
+        @media print {
+            body {
+                background: white;
+            }
+            
+            .controls, .edit-mode-indicator {
+                display: none !important;
+            }
+            
+            .section-content {
+                display: block !important;
+            }
+            
+            .sar-content {
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="edit-mode-indicator" id="editModeIndicator">
+        🔧 EDIT MODE ACTIVE
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>CMMC Level 2 System Assessment Report</h1>
+            <div class="subtitle">Training Tool - ACME Technology Services Corporation</div>
+        </div>
+
+        <div class="controls">
+            <h3>Instructor Controls</h3>
+            <div class="control-group">
+                <button class="btn" onclick="toggleEditMode()">Toggle Edit Mode</button>
+                <button class="btn success" onclick="saveReport()">Save Report</button>
+                <button class="btn" onclick="loadReport()">Load Report</button>
+                <button class="btn" onclick="exportReport()">Export PDF</button>
+                <button class="btn danger" onclick="resetReport()">Reset to Default</button>
+            </div>
+        </div>
+
+        <div class="sar-content">
+            <!-- Section 1: Executive Summary -->
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <h2><span class="section-number">1</span>Executive Summary</h2>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="editable" data-section="exec-summary">
+                        <h3>Assessment Overview</h3>
+                        <p>This System Assessment Report (SAR) documents the independent evaluation of ACME Technology Services Corporation's cybersecurity controls implementation for CMMC Level 2 compliance. The assessment was conducted by certified C3PAO assessors in accordance with NIST SP 800-171 Rev 2 requirements and CMMC 2.0 standards.</p>
+                        
+                        <h4>Organization Information</h4>
+                        <ul>
+                            <li><strong>Organization:</strong> ACME Technology Services Corporation</li>
+                            <li><strong>Location:</strong> El Paso, Texas</li>
+                            <li><strong>Employees:</strong> 64</li>
+                            <li><strong>Business Type:</strong> Defense contractor providing uniform and textile logistics services to U.S. Army</li>
+                            <li><strong>Assessment Level:</strong> CMMC Level 2</li>
+                            <li><strong>Assessment Date:</strong> June 15, 2025</li>
+                        </ul>
+
+                        <div class="score-display">
+                            <h3>Overall Score: 92/110 (84%)</h3>
+                            <p>Conditional Certification Achieved</p>
+                        </div>
+
+                        <h4>Key Findings</h4>
+                        <p>ACME Technology Services Corporation has demonstrated strong cybersecurity posture with 84% compliance rate. The organization has successfully implemented 92 out of 110 required NIST SP 800-171 controls. The remaining 18 controls require remediation within 180 days through POA&M closeout.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Assessment Methodology -->
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <h2><span class="section-number">2</span>Assessment Methodology & Scope</h2>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="editable" data-section="methodology">
+                        <h3>Assessment Approach</h3>
+                        <p>The assessment followed the CMMC Assessment Process (CAP) version 2.0 methodology, employing multiple evaluation methods:</p>
+                        <ul>
+                            <li><strong>Document Review:</strong> System Security Plan (SSP), policies, procedures, and technical documentation</li>
+                            <li><strong>Interviews:</strong> Key personnel responsible for security control implementation</li>
+                            <li><strong>System Testing:</strong> Technical validation of security controls and configurations</li>
+                            <li><strong>Physical Inspection:</strong> On-site evaluation of physical security measures</li>
+                        </ul>
+
+                        <h3>Assessment Scope</h3>
+                        <p>The assessment scope included all systems and assets that process, store, or transmit Controlled Unclassified Information (CUI):</p>
+                        
+                        <h4>In-Scope CUI Assets</h4>
+                        <ul>
+                            <li>Primary Data Server (CUI-001)</li>
+                            <li>Azure Cloud Backup Repository (CUI-002)</li>
+                            <li>Contract Coordinator Workstations (CUI-003 to CUI-005)</li>
+                            <li>CISO Management Workstation (CUI-006)</li>
+                            <li>Secure File Server (CUI-007)</li>
+                        </ul>
+
+                        <h4>Security Protection Assets</h4>
+                        <ul>
+                            <li>Enterprise Firewall (SPA-001)</li>
+                            <li>VPN Gateway (SPA-002)</li>
+                            <li>Endpoint Protection System (SPA-004)</li>
+                            <li>SIEM Platform (SPA-005)</li>
+                            <li>Badge Access Control System (SPA-006)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Assessment Team -->
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <h2><span class="section-number">3</span>Assessment Team Credentials</h2>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="editable" data-section="team-credentials">
+                        <h3>C3PAO Information</h3>
+                        <p><strong>Assessment Organization:</strong> SecureAssess C3PAO LLC</p>
+                        <p><strong>C3PAO Authorization Number:</strong> C3PAO-2025-001</p>
+                        <p><strong>ISO 17020 Certification:</strong> Valid through December 2026</p>
+
+                        <h3>Assessment Team Members</h3>
+                        <table class="assessment-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Role</th>
+                                    <th>Certification</th>
+                                    <th>Experience</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Sarah Mitchell</td>
+                                    <td>Lead Certified CMMC Assessor (CCA)</td>
+                                    <td>CCA-2024-156</td>
+                                    <td>8 years cybersecurity, 3 years CMMC</td>
+                                </tr>
+                                <tr>
+                                    <td>James Rodriguez</td>
+                                    <td>Certified CMMC Professional (CCP)</td>
+                                    <td>CCP-2024-342</td>
+                                    <td>12 years IT security, 2 years CMMC</td>
+                                </tr>
+                                <tr>
+                                    <td>Dr. Emily Chen</td>
+                                    <td>Quality Control Lead</td>
+                                    <td>CCA-2023-089</td>
+                                    <td>15 years security assessments</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 4: Detailed Findings -->
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <h2><span class="section-number">4</span>Detailed Security Control Findings</h2>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="editable" data-section="findings">
+                        <h3>Control Assessment Results</h3>
+                        
+                        <div class="finding-item">
+                            <div class="finding-header">
+                                <span class="finding-id">AC.1.001 - Account Management</span>
+                                <span class="status-badge status-met">MET</span>
+                            </div>
+                            <div class="finding-content">
+                                <p><strong>Control Description:</strong> Limit information system access to authorized users, processes, and devices.</p>
+                                <p><strong>Implementation Status:</strong> ACME has implemented Active Directory-based account management with proper user lifecycle management processes.</p>
+                                <p><strong>Evidence Reviewed:</strong> Account creation procedures, termination checklists, regular access reviews</p>
+                                <p><strong>Assessment Method:</strong> Document review, system inspection, staff interviews</p>
+                            </div>
+                        </div>
+
+                        <div class="finding-item">
+                            <div class="finding-header">
+                                <span class="finding-id">AC.1.002 - Access Enforcement</span>
+                                <span class="status-badge status-met">MET</span>
+                            </div>
+                            <div class="finding-content">
+                                <p><strong>Control Description:</strong> Limit information system access to the types of transactions and functions authorized users are permitted to execute.</p>
+                                <p><strong>Implementation Status:</strong> Role-based access controls properly implemented through Active Directory groups and application-level permissions.</p>
+                                <p><strong>Evidence Reviewed:</strong> Role matrices, permission configurations, access testing results</p>
+                            </div>
+                        </div>
+
+                        <div class="finding-item">
+                            <div class="finding-header">
+                                <span class="finding-id">AU.2.041 - Audit Record Correlation</span>
+                                <span class="status-badge status-not-met">NOT MET</span>
+                            </div>
+                            <div class="finding-content">
+                                <p><strong>Control Description:</strong> Correlate audit record review, analysis, and reporting processes for investigation and response to indications of unlawful, unauthorized, or unusual activity.</p>
+                                <p><strong>Implementation Status:</strong> While SIEM platform is deployed, correlation rules for investigative processes are incomplete.</p>
+                                <p><strong>Gap Identified:</strong> Missing formal correlation procedures and insufficient automated alerting rules.</p>
+                                <p><strong>Remediation Required:</strong> Develop correlation procedures and implement additional SIEM rules within 180 days.</p>
+                            </div>
+                        </div>
+
+                        <div class="finding-item">
+                            <div class="finding-header">
+                                <span class="finding-id">SC.1.175 - Collaborative Computing</span>
+                                <span class="status-badge status-conditional">CONDITIONAL</span>
+                            </div>
+                            <div class="finding-content">
+                                <p><strong>Control Description:</strong> Prohibit remote activation of collaborative computing devices and provide indication of devices in use.</p>
+                                <p><strong>Implementation Status:</strong> Partially implemented - webcam disable policies in place but microphone controls need enhancement.</p>
+                                <p><strong>POA&M Item:</strong> Complete microphone access controls configuration by September 15, 2025.</p>
+                            </div>
+                        </div>
+
+                        <button class="add-item-btn" onclick="addFinding()">
+                            ➕ Add New Finding
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 5: Risk Assessment -->
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <h2><span class="section-number">5</span>Risk Assessment & Impact Analysis</h2>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="editable" data-section="risk-assessment">
+                        <h3>Risk Summary</h3>
+                        <table class="assessment-table">
+                            <thead>
+                                <tr>
+                                    <th>Risk Category</th>
+                                    <th>Risk Level</th>
+                                    <th>Count</th>
+                                    <th>Impact</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Access Control Gaps</td>
+                                    <td><span class="risk-level risk-medium">Medium</span></td>
+                                    <td>3</td>
+                                    <td>Potential unauthorized access to CUI systems</td>
+                                </tr>
+                                <tr>
+                                    <td>Audit & Monitoring</td>
+                                    <td><span class="risk-level risk-medium">Medium</span></td>
+                                    <td>5</td>
+                                    <td>Reduced incident detection capability</td>
+                                </tr>
+                                <tr>
+                                    <td>Configuration Management</td>
+                                    <td><span class="risk-level risk-low">Low</span></td>
+                                    <td>4</td>
+                                    <td>Minor compliance documentation gaps</td>
+                                </tr>
+                                <tr>
+                                    <td>Incident Response</td>
+                                    <td><span class="risk-level risk-medium">Medium</span></td>
+                                    <td>2</td>
+                                    <td>Delayed response to security incidents</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h3>Overall Risk Determination</h3>
+                        <p>The residual risk to ACME Technology Services Corporation is assessed as <strong>MODERATE</strong>. While the organization has implemented a strong cybersecurity foundation, the identified gaps primarily relate to monitoring and audit capabilities that could impact incident detection and response times.</p>
+
+                        <h3>Risk Mitigation Recommendations</h3>
+                        <ul>
+                            <li>Prioritize completion of audit correlation procedures and SIEM tuning</li>
+                            <li>Enhance monitoring coverage for CUI processing systems</li>
+                            <li>Implement automated alerting for critical security events</li>
+                            <li>Conduct tabletop exercises to validate incident response procedures</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 6: POA&M -->
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <h2><span class="section-number">6</span>Plan of Action & Milestones (POA&M)</h2>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="editable" data-section="poam">
+                        <h3>Required Remediation Items</h3>
+                        <p>The following 18 security controls require remediation within 180 days to achieve final CMMC Level 2 certification:</p>
+
+                        <table class="assessment-table">
+                            <thead>
+                                <tr>
+                                    <th>Control ID</th>
+                                    <th>Control Name</th>
+                                    <th>Priority</th>
+                                    <th>Target Date</th>
+                                    <th>Responsible Party</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>AU.2.041</td>
+                                    <td>Audit Record Correlation</td>
+                                    <td>High</td>
+                                    <td>August 15, 2025</td>
+                                    <td>Raymond Lawrence, CISO</td>
+                                </tr>
+                                <tr>
+                                    <td>IR.2.092</td>
+                                    <td>Incident Handling</td>
+                                    <td>High</td>
+                                    <td>September 1, 2025</td>
+                                    <td>IT Security Team</td>
+                                </tr>
+                                <tr>
+                                    <td>SC.1.175</td>
+                                    <td>Collaborative Computing</td>
+                                    <td>Medium</td>
+                                    <td>September 15, 2025</td>
+                                    <td>IT Operations</td>
+                                </tr>
+                                <tr>
+                                    <td>SI.1.210</td>
+                                    <td>Information Input Validation</td>
+                                    <td>Medium</td>
+                                    <td>October 1, 2025</td>
+                                    <td>Application Development</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h3>POA&M Closeout Requirements</h3>
+                        <ul>
+                            <li>All items must be completed within 180 days (by December 12, 2025)</li>
+                            <li>C3PAO closeout assessment required for certification finalization</li>
+                            <li>Evidence packages must be submitted for each remediated control</li>
+                            <li>Final assessment report will be generated upon successful closeout</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 7: Recommendations -->
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <h2><span class="section-number">7</span>Recommendations for Improvement</h2>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="editable" data-section="recommendations">
+                        <h3>Strategic Recommendations</h3>
+                        <ol>
+                            <li><strong>Enhance Security Monitoring:</strong> Implement 24/7 SOC capabilities or engage managed security services to improve incident detection and response times.</li>
+                            <li><strong>Automate Compliance Monitoring:</strong> Deploy automated compliance monitoring tools to continuously assess control effectiveness and identify drift.</li>
+                            <li><strong>Strengthen Incident Response:</strong> Conduct regular tabletop exercises and update incident response procedures based on current threat landscape.</li>
+                            <li><strong>Employee Training:</strong> Implement comprehensive cybersecurity awareness training program with regular phishing simulations.</li>
+                            <li><strong>Supply Chain Security:</strong> Extend CMMC requirements to subcontractors and implement supply chain risk management procedures.</li>
+                        </ol>
+
+                        <h3>Technical Improvements</h3>
+                        <ul>
+                            <li>Implement privileged access management (PAM) solution for administrative accounts</li>
+                            <li>Deploy network segmentation monitoring tools to detect lateral movement</li>
+                            <li>Enhance endpoint detection and response (EDR) capabilities</li>
+                            <li>Implement automated patch management for critical security updates</li>
+                            <li>Deploy data loss prevention (DLP) solutions for CUI protection</li>
+                        </ul>
+
+                        <h3>Process Improvements</h3>
+                        <ul>
+                            <li>Establish formal change management procedures for security configurations</li>
+                            <li>Implement regular vulnerability assessment and penetration testing schedule</li>
+                            <li>Create security metrics dashboard for executive reporting</li>
+                            <li>Develop business continuity and disaster recovery testing program</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 8: Certification Decision -->
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <h2><span class="section-number">8</span>Certification Decision</h2>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="editable" data-section="certification">
+                        <h3>Assessment Conclusion</h3>
+                        <p>Based on the comprehensive assessment conducted from June 10-14, 2025, ACME Technology Services Corporation has demonstrated substantial compliance with CMMC Level 2 requirements.</p>
+
+                        <div class="score-display">
+                            <h3>CONDITIONAL LEVEL 2 CERTIFICATE ISSUED</h3>
+                            <p>Valid subject to POA&M closeout by December 12, 2025</p>
+                        </div>
+
+                        <h3>Certification Details</h3>
+                        <ul>
+                            <li><strong>Certificate Number:</strong> CMMC-L2-2025-ACME-001</li>
+                            <li><strong>Issue Date:</strong> June 16, 2025</li>
+                            <li><strong>Expiration Date:</strong> June 16, 2028 (3 years)</li>
+                            <li><strong>Annual Reaffirmation Required:</strong> June 16, 2026 and June 16, 2027</li>
+                            <li><strong>Re-assessment Required:</strong> June 16, 2028</li>
+                        </ul>
+
+                        <h3>Conditions for Final Certification</h3>
+                        <p>To convert this conditional certification to final status, ACME Technology Services Corporation must:</p>
+                        <ol>
+                            <li>Complete all 18 POA&M items within 180 days</li>
+                            <li>Engage a C3PAO for POA&M closeout assessment</li>
+                            <li>Demonstrate full implementation of all 110 NIST SP 800-171 controls</li>
+                            <li>Submit evidence packages for all remediated controls</li>
+                        </ol>
+
+                        <h3>Assessor Signature</h3>
+                        <p><strong>Lead Certified CMMC Assessor:</strong> Sarah Mitchell, CCA-2024-156</p>
+                        <p><strong>Date:</strong> June 16, 2025</p>
+                        <p><strong>C3PAO:</strong> SecureAssess C3PAO LLC</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let editMode = false;
+
+        function toggleEditMode() {
+            editMode = !editMode;
+            const editables = document.querySelectorAll('.editable');
+            const indicator = document.getElementById('editModeIndicator');
+            
+            editables.forEach(el => {
+                el.contentEditable = editMode;
+            });
+            
+            indicator.classList.toggle('active', editMode);
+        }
+
+        function toggleSection(header) {
+            const section = header.parentElement;
+            section.classList.toggle('collapsed');
+        }
+
+        function addFinding() {
+            const findingsContainer = document.querySelector('[data-section="findings"]');
+            const newFinding = document.createElement('div');
+            newFinding.className = 'finding-item';
+            newFinding.innerHTML = `
+                <div class="finding-header">
+                    <span class="finding-id">NEW.1.001 - New Control</span>
+                    <span class="status-badge status-not-met">NOT MET</span>
+                    <button class="delete-btn" onclick="deleteFinding(this)">Delete</button>
+                </div>
+                <div class="finding-content">
+                    <p><strong>Control Description:</strong> [Enter control description]</p>
+                    <p><strong>Implementation Status:</strong> [Enter implementation status]</p>
+                    <p><strong>Evidence Reviewed:</strong> [Enter evidence reviewed]</p>
+                    <p><strong>Assessment Method:</strong> [Enter assessment method]</p>
+                </div>
+            `;
+            
+            const addButton = findingsContainer.querySelector('.add-item-btn');
+            findingsContainer.insertBefore(newFinding, addButton);
+        }
+
+        function deleteFinding(button) {
+            if (confirm('Are you sure you want to delete this finding?')) {
+                button.closest('.finding-item').remove();
+            }
+        }
+
+        function saveReport() {
+            const reportData = {
+                timestamp: new Date().toISOString(),
+                sections: {}
+            };
+            
+            document.querySelectorAll('.editable').forEach(el => {
+                const sectionName = el.getAttribute('data-section');
+                reportData.sections[sectionName] = el.innerHTML;
+            });
+            
+            localStorage.setItem('cmmc_sar_report', JSON.stringify(reportData));
+            alert('Report saved successfully!');
+        }
+
+        function loadReport() {
+            const saved = localStorage.getItem('cmmc_sar_report');
+            if (saved) {
+                const reportData = JSON.parse(saved);
+                
+                Object.keys(reportData.sections).forEach(sectionName => {
+                    const element = document.querySelector(`[data-section="${sectionName}"]`);
+                    if (element) {
+                        element.innerHTML = reportData.sections[sectionName];
+                    }
+                });
+                
+                alert('Report loaded successfully!');
+            } else {
+                alert('No saved report found.');
+            }
+        }
+
+        function exportReport() {
+            window.print();
+        }
+
+        function resetReport() {
+            if (confirm('Are you sure you want to reset the report to default values? This will lose all changes.')) {
+                location.reload();
+            }
+        }
+
+        // Initialize collapsed sections
+        document.addEventListener('DOMContentLoaded', function() {
+            // Collapse sections 3-8 by default for better overview
+            const sectionsToCollapse = [3, 4, 5, 6, 7, 8];
+            sectionsToCollapse.forEach(num => {
+                const section = document.querySelector(`.section:nth-child(${num + 2})`); // +2 because of controls div
+                if (section) {
+                    section.classList.add('collapsed');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
