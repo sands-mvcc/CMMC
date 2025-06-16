@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMMC 2.0 Configuration Management Plan</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .header .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #f093fb, #f5576c);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(45deg, #43e97b, #38f9d7);
+            color: #333;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        .section {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(248, 249, 250, 0.8);
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+        }
+
+        .section h2 {
+            color: #2c3e50;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section h3 {
+            color: #34495e;
+            font-size: 1.4em;
+            margin: 20px 0 15px;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 5px;
+        }
+
+        .editable {
+            border: 2px dashed transparent;
+            padding: 10px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            min-height: 40px;
+        }
+
+        .editable:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .editable[contenteditable="true"] {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+            outline: none;
+        }
+
+        .item-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .item-list li {
+            background: white;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .delete-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .delete-btn:hover {
+            background: #c0392b;
+        }
+
+        .add-item {
+            background: #2ecc71;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        .add-item:hover {
+            background: #27ae60;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .status-complete {
+            background: #2ecc71;
+        }
+
+        .status-pending {
+            background: #f39c12;
+        }
+
+        .status-not-started {
+            background: #e74c3c;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        th {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .print-styles {
+            display: none;
+        }
+
+        @media print {
+            body {
+                background: white;
+                color: black;
+            }
+            .controls, .modal {
+                display: none !important;
+            }
+            .content, .header, .section {
+                background: white;
+                box-shadow: none;
+                border: 1px solid #ccc;
+            }
+            .print-styles {
+                display: block;
+            }
+        }
+
+        .compliance-badge {
+            display: inline-block;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            margin: 5px;
+        }
+
+        .icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛡️ Configuration Management Plan (CMP)</h1>
+            <p class="subtitle">CMMC 2.0 Level 2 Compliance Framework</p>
+            <div class="controls">
+                <button class="btn btn-primary" onclick="toggleEdit()">📝 Edit Mode</button>
+                <button class="btn btn-secondary" onclick="exportPlan()">📄 Export PDF</button>
+                <button class="btn btn-success" onclick="savePlan()">💾 Save Plan</button>
+                <button class="btn btn-warning" onclick="loadTemplate()">📋 Load Template</button>
+            </div>
+            <div style="text-align: center; margin-top: 20px;">
+                <span class="compliance-badge">NIST SP 800-171</span>
+                <span class="compliance-badge">CMMC 2.0 Level 2</span>
+                <span class="compliance-badge">DoD Approved</span>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Organization Information -->
+            <div class="section">
+                <h2>🏢 Organization Information</h2>
+                <table>
+                    <tr>
+                        <th>Organization Name</th>
+                        <td class="editable" contenteditable="false">ACME Technology Services Corporation</td>
+                    </tr>
+                    <tr>
+                        <th>Location</th>
+                        <td class="editable" contenteditable="false">El Paso, Texas</td>
+                    </tr>
+                    <tr>
+                        <th>Employee Count</th>
+                        <td class="editable" contenteditable="false">64 employees</td>
+                    </tr>
+                    <tr>
+                        <th>Primary Mission</th>
+                        <td class="editable" contenteditable="false">Uniform and textile logistics services for U.S. Army</td>
+                    </tr>
+                    <tr>
+                        <th>CMMC Level Required</th>
+                        <td class="editable" contenteditable="false">Level 2 - Advanced</td>
+                    </tr>
+                    <tr>
+                        <th>Plan Version</th>
+                        <td class="editable" contenteditable="false">1.0</td>
+                    </tr>
+                    <tr>
+                        <th>Effective Date</th>
+                        <td class="editable" contenteditable="false">June 16, 2025</td>
+                    </tr>
+                    <tr>
+                        <th>Review Cycle</th>
+                        <td class="editable" contenteditable="false">Quarterly</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Executive Summary -->
+            <div class="section">
+                <h2>📋 Executive Summary</h2>
+                <div class="editable" contenteditable="false">
+                    <p>This Configuration Management Plan (CMP) establishes the policies, procedures, and controls necessary to achieve and maintain CMMC 2.0 Level 2 compliance for ACME Technology Services Corporation. The plan addresses all nine NIST SP 800-171 configuration management controls required for protecting Controlled Unclassified Information (CUI) and Federal Contract Information (FCI).</p>
+                    
+                    <p>Our organization handles sensitive defense contract information and requires robust configuration management to ensure system security, integrity, and compliance with DoD cybersecurity requirements. This plan provides the framework for establishing baseline configurations, implementing change control procedures, and maintaining continuous compliance monitoring.</p>
+                </div>
+            </div>
+
+            <!-- CMMC 2.0 Configuration Management Controls -->
+            <div class="section">
+                <h2>🔒 CMMC 2.0 Configuration Management Controls</h2>
+                <p>This plan addresses all nine configuration management controls from NIST SP 800-171 required for CMMC 2.0 Level 2:</p>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Control ID</th>
+                            <th>Control Name</th>
+                            <th>Implementation Status</th>
+                            <th>Priority</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>3.4.1 (CM-2)</td>
+                            <td class="editable" contenteditable="false">Baseline Configurations</td>
+                            <td><span class="status-indicator status-complete"></span>Implemented</td>
+                            <td>High</td>
+                        </tr>
+                        <tr>
+                            <td>3.4.2 (CM-6)</td>
+                            <td class="editable" contenteditable="false">Configuration Settings</td>
+                            <td><span class="status-indicator status-complete"></span>Implemented</td>
+                            <td>High</td>
+                        </tr>
+                        <tr>
+                            <td>3.4.3 (CM-7)</td>
+                            <td class="editable" contenteditable="false">Least Functionality</td>
+                            <td><span class="status-indicator status-pending"></span>In Progress</td>
+                            <td>High</td>
+                        </tr>
+                        <tr>
+                            <td>3.4.4 (CM-11)</td>
+                            <td class="editable" contenteditable="false">User-Installed Software</td>
+                            <td><span class="status-indicator status-complete"></span>Implemented</td>
+                            <td>Medium</td>
+                        </tr>
+                        <tr>
+                            <td>3.4.5 (CM-3)</td>
+                            <td class="editable" contenteditable="false">Configuration Change Control</td>
+                            <td><span class="status-indicator status-complete"></span>Implemented</td>
+                            <td>High</td>
+                        </tr>
+                        <tr>
+                            <td>3.4.6 (CM-4)</td>
+                            <td class="editable" contenteditable="false">Security Impact Analysis</td>
+                            <td><span class="status-indicator status-pending"></span>In Progress</td>
+                            <td>High</td>
+                        </tr>
+                        <tr>
+                            <td>3.4.7 (CM-5)</td>
+                            <td class="editable" contenteditable="false">Access Restrictions for Change</td>
+                            <td><span class="status-indicator status-complete"></span>Implemented</td>
+                            <td>High</td>
+                        </tr>
+                        <tr>
+                            <td>3.4.8 (CM-8)</td>
+                            <td class="editable" contenteditable="false">Information System Component Inventory</td>
+                            <td><span class="status-indicator status-complete"></span>Implemented</td>
+                            <td>High</td>
+                        </tr>
+                        <tr>
+                            <td>3.4.9 (CM-8)</td>
+                            <td class="editable" contenteditable="false">Information System Component Inventory (Enhanced)</td>
+                            <td><span class="status-indicator status-not-started"></span>Planned</td>
+                            <td>Medium</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Roles and Responsibilities -->
+            <div class="section">
+                <h2>👥 Roles and Responsibilities</h2>
+                
+                <h3>Configuration Control Board (CCB)</h3>
+                <ul class="item-list" id="ccb-members">
+                    <li>
+                        <span><strong>Chief Information Security Officer (CISO):</strong> Raymond Lawrence - CCB Chair, final approval authority</span>
+                        <button class="delete-btn" onclick="deleteItem(this)">Delete</button>
+                    </li>
+                    <li>
+                        <span><strong>IT Operations Manager:</strong> Responsible for implementation and technical oversight</span>
+                        <button class="delete-btn" onclick="deleteItem(this)">Delete</button>
+                    </li>
+                    <li>
+                        <span><strong>Systems Administrator:</strong> Daily configuration management and monitoring</span>
+                        <button class="delete-btn" onclick="deleteItem(this)">Delete</button>
+                    </li>
+                    <li>
+                        <span><strong>Security Officer:</strong> Security impact assessment and compliance validation</span>
+                        <button class="delete-btn" onclick="deleteItem(this)">Delete</button>
+                    </li>
+                    <li>
+                        <span><strong>Contract Coordinator:</strong> Business impact assessment for CUI systems</span>
+                        <button class="delete-btn" onclick="deleteItem(this)">Delete</button>
+                    </li>
+                </ul>
+                <button class="add-item" onclick="addCCBMember()">+ Add CCB Member</button>
+
+                <h3>Configuration Management Team</h3>
+                <ul class="item-list" id="cm-team">
+                    <li>
+                        <span><strong>Configuration Manager:</strong> Maintains configuration baselines and change documentation</span>
+                        <button class="delete-btn" onclick="deleteItem(this)">Delete</button>
+                    </li>
+                    <li>
+                        <span><strong>System Administrators:</strong> Implement approved configuration changes</span>
+                        <button class="delete-btn" onclick="deleteItem(this)">Delete</button>
+                    </li>
+                    <li>
+                        <span><strong>Network Administrator:</strong> Network device configuration management</span>
+                        <button class="delete-btn" onclick="deleteItem(this)">Delete</button>
+                    </li>
+                    <li>
+                        <span><strong>Security Analyst:</strong> Security configuration monitoring and compliance</span>
+                        <button class="delete-btn" onclick="deleteItem(this)">Delete</button>
+                    </li>
+                </ul>
+                <button class="add-item" onclick="addCMTeamMember()">+ Add Team Member</button>
+            </div>
+
+            <!-- Configuration Baselines -->
+            <div class="section">
+                <h2>⚙️ Configuration Baselines (NIST 3.4.1 & 3.4.2)</h2>
+                
+                <h3>CUI Processing Systems</h3>
+                <ul class="item-list" id="cui-systems">
+                    <li>
+                        <span><strong>Primary Data Server (CUI-001):</strong> Windows Server 2022, DISA STIG hardened, encrypted storage</span>
+                        <button class="delete-btn" onclick="deleteItem(this)">Delete</button>
+                    </li>
+                    <li>
+                        <span><strong>Azure Cloud Backup (CUI-002):</strong> Azure Government Cloud, FedRAMP Moderate, encrypted backups</span>
+                        <button class="delete-btn" onclick="deleteItem(this)">Delete</button>
+                    </li>
+                    <li>
+                        <span><strong>Contract Coordinator Workstations (CUI-003 to CUI-005):</strong> Windows 11 Enterprise, BitLocker encryption, endpoint protection</span>
+                        <button class="delete-btn" onclick="deleteItem(this)">Delete</button>
+                    </li>
+                    <li>
+                        <span><strong>CISO Management Workstation (CUI-006):</strong> Privileged access workstation, multi-factor authentication required</span>
+                        <button class="delete-btn" onclick="deleteItem(this)">Delete</button>
+                    </li>
+                    <li>
+                        <span><strong>Secure File Server (CUI-007):</strong> Network-attached storage with access logging and encryption</span>
+                        <button class="delete-btn" onclick="deleteItem(this)">Delete</button>
+                    </li>
+                </ul>
+                <button class="add-item" onclick="addCUISystem()">+ Add CUI System</button>
+
+                <h3>Security Configuration Standards</h3>
+                <div class="editable" contenteditable="false">
+                    <p><strong>Windows Systems:</strong> DISA Security Technical Implementation Guides (STIGs) for Windows Server 2022 and Windows 11</p>
+                    <p><strong>Network Devices:</strong> CIS Benchmarks for network infrastructure components</p>
+                    <p><strong>Cloud Services:</strong> FedRAMP Moderate baseline controls for Azure Government services</p>
+                    <p><strong>Encryption Standards:</strong> FIPS 140-2 validated cryptographic modules for all CUI processing</p>
+                    <p><strong>Access Controls:</strong> Multi-factor authentication for privileged accounts, role-based access controls via Active Directory</p>
+                </div>
+            </div>
+
+            <!-- Change Control Procedures -->
+            <div class="section">
+                <h2>🔄 Change Control Procedures (NIST 3.4.5 & 3.4.6)</h2>
+                
+                <h3>Change Classification</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Change Type</th>
+                            <th>Approval Authority</th>
+                            <th>Documentation Required</th>
+                            <th>Testing Required</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="editable" contenteditable="false">Emergency Security Patch</td>
+                            <td class="editable" contenteditable="false">CISO (within 24 hours)</td>
+                            <td class="editable" contenteditable="false">Post-implementation documentation</td>
+                            <td class="editable" contenteditable="false">Production validation</td>
+                        </tr>
+                        <tr>
+                            <td class="editable" contenteditable="false">Routine Maintenance</td>
+                            <td class="editable" contenteditable="false">IT Operations Manager</td>
+                            <td class="editable" contenteditable="false">Change request form, test results</td>
+                            <td class="editable" contenteditable="false">Development/staging environment</td>
+                        </tr>
+                        <tr>
+                            <td class="editable" contenteditable="false">Major System Change</td>
+                            <td class="editable" contenteditable="false">CCB Full Review</td>
+                            <td class="editable" contenteditable="false">Security impact assessment, rollback plan</td>
+                            <td class="editable" contenteditable="false">Full UAT and security testing</td>
+                        </tr>
+                        <tr>
+                            <td class="editable" contenteditable="false">Configuration Baseline Update</td>
+                            <td class="editable" contenteditable="false">CCB Chair (CISO)</td>
+                            <td class="editable" contenteditable="false">Baseline documentation, change log</td>
+                            <td class="editable" contenteditable="false">Compliance validation</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Change Request Process</h3>
+                <ol style="padding-left: 20px;">
+                    <li class="editable" contenteditable="false">Requestor submits formal change request with business justification</li>
+                    <li class="editable" contenteditable="false">Security impact assessment performed by Security Officer</li>
+                    <li class="editable" contenteditable="false">Technical feasibility review by IT Operations Manager</li>
+                    <li class="editable" contenteditable="false">CCB review and approval/denial decision</li>
+                    <li class="editable" contenteditable="false">Implementation planning and scheduling</li>
+                    <li class="editable" contenteditable="false">Testing in non-production environment</li>
+                    <li class="editable" contenteditable="false">Production implementation with rollback plan</li>
+                    <li class="editable" contenteditable="false">Post-implementation validation and documentation</li>
+                </ol>
+            </div>
+
+            <!-- Monitoring and Compliance -->
+            <div class="section">
+                <h2>📊 Monitoring and Compliance (NIST 3.4.8)</h2>
+                
+                <h3>Automated Monitoring Tools</h3>
+                <ul class="item-list" id="monitoring-tools">
+                    <li>
+                        <span><strong>Microsoft System Center Configuration Manager (SCCM):</strong> Automated baseline compliance monitoring</span>
+                        <button class="delete-btn" onclick="deleteItem(this)">Delete</button>
+                    </li>
+                    <li>
+                        <span><strong>SIEM Log Management System (ALMR-010):</strong> Centralized security event monitoring and alerting</span>
+                        <button class="delete-btn" onclick="deleteItem(this)">Delete</button>
+                    </li>
+                    <li>
+                        <span><strong>Endpoint Protection Server (ALMR-015):</strong> Continuous endpoint configuration monitoring</span>
+                        <button class="delete-btn" onclick="deleteItem(this)">Delete</button>
+                    </li>
+                    <li>
+                        <span><strong>Azure Security Center:</strong> Cloud infrastructure compliance monitoring</span>
+                        <button class="delete-btn" onclick="deleteItem(this)">Delete</button>
+                    </li>
+                    <li>
+                        <span><strong>Active Directory Security Auditing:</strong> Account and group policy change monitoring</span>
+                        <button class="delete-btn" onclick="deleteItem(this)">Delete</button>
+                    </li>
+                </ul>
+                <button class="add-item" onclick="addMonitoringTool()">+ Add Monitoring Tool</button>
+
+                <h3>Compliance Monitoring Schedule</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Activity</th>
+                            <th>Frequency</th>
+                            <th>Responsible Party</th>
+                            <th>Documentation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="editable" contenteditable="false">Baseline Compliance Scan</td>
+                            <td class="editable" contenteditable="false">Daily (Automated)</td>
+                            <td class="editable" contenteditable="false">Systems Administrator</td>
+                            <td class="editable" contenteditable="false">Automated compliance reports</td>
+                        </tr>
+                        <tr>
+                            <td class="editable" contenteditable="false">Configuration Drift Analysis</td>
+                            <td class="editable" contenteditable="false">Weekly</td>
+                            <td class="editable" contenteditable="false">Security Analyst</td>
+                            <td class="editable" contenteditable="false">Weekly drift reports</td>
+                        </tr>
+                        <tr>
+                            <td class="editable" contenteditable="false">Asset Inventory Validation</td>
+                            <td class="editable" contenteditable="false">Monthly</td>
+                            <td class="editable" contenteditable="false">Configuration Manager</td>
+                            <td class="editable" contenteditable="false">Updated asset inventory</td>
+                        </tr>
+                        <tr>
+                            <td class="editable" contenteditable="false">Baseline Review and Update</td>
+                            <td class="editable" contenteditable="false">Quarterly</td>
+                            <td class="editable" contenteditable="false">CCB</td>
+                            <td class="editable" contenteditable="false">Baseline update documentation</td>
+                        </tr>
+                        <tr>
+                            <td class="editable" contenteditable="false">Full Compliance Assessment</td>
+                            <td class="editable" contenteditable="false">Annually</td>
+                            <td class="editable" contenteditable="false">External Assessor</td>
+                            <td class="editable" contenteditable="false">CMMC assessment report</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Software and Access Control -->
+            <div class="section">
+                <h2>💻 Software and Access Control (NIST 3.4.4 & 3.4.7)</h2>
+                
+                <h3>Approved Software List</h3>
+                <ul class="item-list" id="approved-software">
+                    <li>
+                        <span><strong>Microsoft Office 365 Government:</strong> Productivity suite for CUI processing</span>
+                        <button class="delete-btn" onclick="deleteItem(this)">Delete</button>
+                    </li>
+                    <li>
+                        <span><strong>Microsoft Windows 11 Enterprise:</strong> Operating system for workstations</span>
+                        <button class="delete-btn" onclick="deleteItem(this)">Delete</button>
+                    </li>
+                    <li>
+                        <span><strong>Symantec Endpoint Protection:</strong> Antivirus and endpoint security</span>
+                        <button class="delete-btn" onclick="deleteItem(this)">Delete</button>
+                    </li>
+                    <li>
+                        <span><strong>Adobe Acrobat Pro DC:</strong> PDF processing for contract documents</span>
+                        <button class="delete-btn" onclick="deleteItem(this)">Delete</button>
+                    </li>
+                    <li>
+                        <span><strong>FileZilla Pro:</strong> Secure file transfer for approved use cases</span>
+                        <button class="delete-btn" onclick="deleteItem(this)">Delete</button>
+                    </li>
+                </ul>
+                <button class="add-item" onclick="addApprovedSoftware()">+ Add Approved Software</button>
+
+                <h3>Change Access Restrictions</h3>
+                <div class="editable" contenteditable="false">
+                    <p><strong>Administrative Access:</strong> Limited to designated system administrators with multi-factor authentication</p>
+                    <p><strong>Configuration Changes:</strong> Require approval from CCB and implementation by authorized personnel only</p>
+                    <p><strong>Privileged Account Management:</strong> Regular review and rotation of privileged credentials</p>
+                    <p><strong>Audit Trail:</strong> All configuration changes logged and reviewed monthly</p>
+                    <p><strong>Separation of Duties:</strong> Change requestors cannot implement their own changes</p>
+                </div>
+            </div>
+
+            <!-- Incident Response -->
+            <div class="section">
+                <h2>🚨 Configuration Incident Response</h2>
+                
+                <h3>Unauthorized Configuration Changes</h3>
+                <ol style="padding-left: 20px;">
+                    <li class="editable" contenteditable="false">Automated detection and alerting through SIEM system</li>
+                    <li class="editable" contenteditable="false">Immediate isolation of affected system if security impact detected</li>
+                    <li class="editable" contenteditable="false">Security incident investigation and documentation</li>
+                    <li class="editable" contenteditable="false">Rollback to approved baseline configuration</li>
+                    <li class="editable" contenteditable="false">Root cause analysis and corrective action implementation</li>
+                    <li class="editable" contenteditable="false">Process improvement recommendations to CCB</li>
+                </ol>
+
+                <h3>Emergency Change Procedures</h3>
+                <div class="editable" contenteditable="false">
+                    <p><strong>Security Emergency:</strong> CISO has authority to approve immediate changes to address critical security vulnerabilities</p>
+                    <p><strong>Business Continuity:</strong> Designated emergency contacts can authorize changes to restore critical business operations</p>
+                    <p><strong>Documentation:</strong> All emergency changes must be documented within 24 hours and reviewed by CCB within 72 hours</p>
+                    <p><strong>Validation:</strong> Emergency changes require post-implementation security validation and compliance verification</p>
+                </div>
+            </div>
+
+            <!-- Training and Awareness -->
+            <div class="section">
+                <h2>🎓 Training and Awareness</h2>
+                
+                <h3>Required Training Programs</h3>
+                <ul class="item-list" id="training-programs">
+                    <li>
+                        <span><strong>CMMC 2.0 Awareness Training:</strong> Annual training for all personnel handling CUI</span>
+                        <button class="delete-btn" onclick="deleteItem(this)">Delete</button>
+                    </li>
+                    <li>
+                        <span><strong>Configuration Management Procedures:</strong> Quarterly training for IT staff and administrators</span>
+                        <button class="delete-btn" onclick="deleteItem(this)">Delete</button>
+                    </li>
+                    <li>
+                        <span><strong>Change Control Process:</strong> Training for all personnel authorized to request system changes</span>
+                        <button class="delete-btn" onclick="deleteItem(this)">Delete</button>
+                    </li>
+                    <li>
+                        <span><strong>Incident Response:</strong> Annual tabletop exercises for configuration-related security incidents</span>
+                        <button class="delete-btn" onclick="deleteItem(this)">Delete</button>
+                    </li>
+                </ul>
+                <button class="add-item" onclick="addTrainingProgram()">+ Add Training Program</button>
+            </div>
+
+            <!-- Continuous Improvement -->
+            <div class="section">
+                <h2>📈 Continuous Improvement</h2>
+                
+                <h3>Performance Metrics</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Target</th>
+                            <th>Current Status</th>
+                            <th>Reporting Frequency</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="editable" contenteditable="false">Baseline Compliance Rate</td>
+                            <td class="editable" contenteditable="false">98%</td>
+                            <td class="editable" contenteditable="false">96.5%</td>
+                            <td class="editable" contenteditable="false">Monthly</td>
+                        </tr>
+                        <tr>
+                            <td class="editable" contenteditable="false">Average Change Implementation Time</td>
+                            <td class="editable" contenteditable="false">5 business days</td>
+                            <td class="editable" contenteditable="false">4.2 business days</td>
+                            <td class="editable" contenteditable="false">Monthly</td>
+                        </tr>
+                        <tr>
+                            <td class="editable" contenteditable="false">Unauthorized Changes Detected</td>
+                            <td class="editable" contenteditable="false">0 per month</td>
+                            <td class="editable" contenteditable="false">1 per quarter</td>
+                            <td class="editable" contenteditable="false">Monthly</td>
+                        </tr>
+                        <tr>
+                            <td class="editable" contenteditable="false">Configuration Documentation Accuracy</td>
+                            <td class="editable" contenteditable="false">100%</td>
+                            <td class="editable" contenteditable="false">99.2%</td>
+                            <td class="editable" contenteditable="false">Quarterly</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Review and Update Schedule</h3>
+                <div class="editable" contenteditable="false">
+                    <p><strong>Monthly:</strong> Performance metrics review and trend analysis</p>
+                    <p><strong>Quarterly:</strong> Configuration baseline review and updates as needed</p>
+                    <p><strong>Semi-Annually:</strong> CCB effectiveness review and process improvements</p>
+                    <p><strong>Annually:</strong> Complete CMP review and major updates based on lessons learned</p>
+                    <p><strong>Ad-Hoc:</strong> Updates following significant security incidents or regulatory changes</p>
+                </div>
+            </div>
+
+            <!-- Plan Approval -->
+            <div class="section">
+                <h2>✅ Plan Approval and Signature</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Role</th>
+                            <th>Name</th>
+                            <th>Signature</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Chief Information Security Officer</td>
+                            <td class="editable" contenteditable="false">Raymond Lawrence</td>
+                            <td class="editable" contenteditable="false">[Digital Signature Required]</td>
+                            <td class="editable" contenteditable="false">June 15, 2025</td>
+                        </tr>
+                        <tr>
+                            <td>IT Operations Manager</td>
+                            <td class="editable" contenteditable="false">[To be assigned]</td>
+                            <td class="editable" contenteditable="false">[Digital Signature Required]</td>
+                            <td class="editable" contenteditable="false">[Date TBD]</td>
+                        </tr>
+                        <tr>
+                            <td>General Manager</td>
+                            <td class="editable" contenteditable="false">[To be assigned]</td>
+                            <td class="editable" contenteditable="false">[Digital Signature Required]</td>
+                            <td class="editable" contenteditable="false">[Date TBD]</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for adding items -->
+    <div id="itemModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle">Add New Item</h2>
+            <input type="text" id="itemInput" placeholder="Enter item description" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px;">
+            <button class="btn btn-primary" onclick="confirmAddItem()" style="margin-top: 10px;">Add Item</button>
+        </div>
+    </div>
+
+    <script>
+        let isEditMode = false;
+        let currentAddFunction = null;
+
+        function toggleEdit() {
+            isEditMode = !isEditMode;
+            const editables = document.querySelectorAll('.editable');
+            const button = document.querySelector('.btn-primary');
+            
+            editables.forEach(el => {
+                el.contentEditable = isEditMode;
+                if (isEditMode) {
+                    el.style.border = '2px dashed #667eea';
+                    el.style.background = 'rgba(102, 126, 234, 0.1)';
+                } else {
+                    el.style.border = '2px dashed transparent';
+                    el.style.background = 'transparent';
+                }
+            });
+            
+            button.textContent = isEditMode ? '🔒 Lock Mode' : '📝 Edit Mode';
+            button.className = isEditMode ? 'btn btn-warning' : 'btn btn-primary';
+        }
+
+        function exportPlan() {
+            window.print();
+        }
+
+        function savePlan() {
+            const planData = {
+                timestamp: new Date().toISOString(),
+                content: document.querySelector('.content').innerHTML
+            };
+            
+            const blob = new Blob([JSON.stringify(planData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'cmmc_configuration_plan.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            alert('Configuration Management Plan saved successfully!');
+        }
+
+        function loadTemplate() {
+            if (confirm('This will reset the current plan to the default template. Continue?')) {
+                location.reload();
+            }
+        }
+
+        function deleteItem(button) {
+            if (confirm('Are you sure you want to delete this item?')) {
+                button.parentElement.remove();
+            }
+        }
+
+        function showModal(title, addFunction) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('itemInput').value = '';
+            document.getElementById('itemModal').style.display = 'block';
+            currentAddFunction = addFunction;
+        }
+
+        function closeModal() {
+            document.getElementById('itemModal').style.display = 'none';
+        }
+
+        function confirmAddItem() {
+            const input = document.getElementById('itemInput').value.trim();
+            if (input && currentAddFunction) {
+                currentAddFunction(input);
+                closeModal();
+            }
+        }
+
+        function addItemToList(listId, content) {
+            const list = document.getElementById(listId);
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <span>${content}</span>
+                <button class="delete-btn" onclick="deleteItem(this)">Delete</button>
+            `;
+            list.appendChild(li);
+        }
+
+        function addCCBMember() {
+            showModal('Add CCB Member', (content) => {
+                addItemToList('ccb-members', content);
+            });
+        }
+
+        function addCMTeamMember() {
+            showModal('Add CM Team Member', (content) => {
+                addItemToList('cm-team', content);
+            });
+        }
+
+        function addCUISystem() {
+            showModal('Add CUI System', (content) => {
+                addItemToList('cui-systems', content);
+            });
+        }
+
+        function addMonitoringTool() {
+            showModal('Add Monitoring Tool', (content) => {
+                addItemToList('monitoring-tools', content);
+            });
+        }
+
+        function addApprovedSoftware() {
+            showModal('Add Approved Software', (content) => {
+                addItemToList('approved-software', content);
+            });
+        }
+
+        function addTrainingProgram() {
+            showModal('Add Training Program', (content) => {
+                addItemToList('training-programs', content);
+            });
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('itemModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        // Add keyboard shortcut for edit mode
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'e') {
+                e.preventDefault();
+                toggleEdit();
+            }
+        });
+
+        // Initialize tooltips and interaction hints
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('CMMC 2.0 Configuration Management Plan loaded successfully');
+            console.log('Press Ctrl+E to toggle edit mode');
+        });
+    </script>
+</body>
+</html>
