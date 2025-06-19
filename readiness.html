@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMMC 2.0 Organizational Readiness Assessment - ACME Technology Services</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            font-weight: 700;
+        }
+
+        .header h2 {
+            color: #7f8c8d;
+            font-weight: 400;
+            margin-bottom: 20px;
+        }
+
+        .company-info {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .info-item {
+            padding: 10px;
+            background: rgba(52, 152, 219, 0.1);
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+        }
+
+        .assessment-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .domain-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #ecf0f1;
+        }
+
+        .domain-title {
+            font-size: 1.4em;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .readiness-score {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .score-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 1.1em;
+        }
+
+        .score-high { background: #27ae60; }
+        .score-medium { background: #f39c12; }
+        .score-low { background: #e74c3c; }
+
+        .assessment-item {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid #3498db;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .assessment-item:hover {
+            background: #e3f2fd;
+            transform: translateX(5px);
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .item-title {
+            font-weight: 600;
+            color: #2c3e50;
+            flex-grow: 1;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-left: 10px;
+        }
+
+        .status-compliant { background: #27ae60; }
+        .status-partial { background: #f39c12; }
+        .status-missing { background: #e74c3c; }
+
+        .item-content {
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .item-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .btn-edit {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #2980b9;
+        }
+
+        .btn-delete {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #c0392b;
+        }
+
+        .btn-add {
+            background: #27ae60;
+            color: white;
+            padding: 12px 20px;
+            margin-top: 15px;
+        }
+
+        .btn-add:hover {
+            background: #229954;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #bdc3c7;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            font-family: inherit;
+        }
+
+        .textarea-field {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #bdc3c7;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .select-field {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #bdc3c7;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            font-family: inherit;
+        }
+
+        .overall-score {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+
+        .overall-score h2 {
+            margin-bottom: 15px;
+            font-size: 2em;
+        }
+
+        .score-number {
+            font-size: 4em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .recommendations {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .recommendations h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .recommendation-item {
+            background: #fef9e7;
+            border: 1px solid #f39c12;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .priority-high { border-color: #e74c3c; background: #fdedec; }
+        .priority-medium { border-color: #f39c12; background: #fef9e7; }
+        .priority-low { border-color: #27ae60; background: #eafaf1; }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .export-section {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .btn-export {
+            background: #9b59b6;
+            color: white;
+            padding: 15px 30px;
+            font-size: 1.1em;
+        }
+
+        .btn-export:hover {
+            background: #8e44ad;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .company-info {
+                grid-template-columns: 1fr;
+            }
+            
+            .domain-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .item-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>CMMC 2.0 Organizational Readiness Assessment</h1>
+            <h2>ACME Technology Services Corporation</h2>
+            <p>Assessment Date: <span id="currentDate"></span></p>
+        </div>
+
+        <div class="company-info">
+            <div class="info-item">
+                <strong>Company:</strong> ACME Technology Services Corporation
+            </div>
+            <div class="info-item">
+                <strong>Location:</strong> El Paso, Texas
+            </div>
+            <div class="info-item">
+                <strong>Employees:</strong> 64
+            </div>
+            <div class="info-item">
+                <strong>Industry:</strong> Defense Contractor - Uniform & Textile Logistics
+            </div>
+            <div class="info-item">
+                <strong>Target Level:</strong> CMMC 2.0 Level 2
+            </div>
+            <div class="info-item">
+                <strong>Assessment Type:</strong> Self-Assessment / Gap Analysis
+            </div>
+        </div>
+
+        <div class="overall-score">
+            <h2>Overall Readiness Score</h2>
+            <div class="score-number" id="overallScore">78%</div>
+            <p>Your organization shows strong foundational security practices with areas for improvement</p>
+        </div>
+
+        <div id="assessmentDomains">
+            <!-- Domains will be populated by JavaScript -->
+        </div>
+
+        <div class="recommendations">
+            <h3>Priority Recommendations</h3>
+            <div id="recommendationsList">
+                <!-- Recommendations will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <div class="export-section">
+            <button class="btn btn-export" onclick="exportAssessment()">Export Assessment Report</button>
+        </div>
+    </div>
+
+    <!-- Modal for editing items -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h3 id="modalTitle">Edit Assessment Item</h3>
+            <form id="editForm">
+                <input type="text" id="editTitle" class="input-field" placeholder="Title" required>
+                <textarea id="editDescription" class="textarea-field" placeholder="Description" required></textarea>
+                <select id="editStatus" class="select-field" required>
+                    <option value="compliant">Compliant</option>
+                    <option value="partial">Partially Compliant</option>
+                    <option value="missing">Not Compliant</option>
+                </select>
+                <textarea id="editEvidence" class="textarea-field" placeholder="Evidence/Documentation"></textarea>
+                <textarea id="editRecommendations" class="textarea-field" placeholder="Recommendations for Improvement"></textarea>
+                <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                    <button type="button" class="btn btn-delete" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-edit">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Assessment data structure
+        let assessmentData = {
+            domains: [
+                {
+                    id: 'ac',
+                    name: 'Access Control (AC)',
+                    description: 'Limit system access to authorized users, processes, and devices',
+                    score: 85,
+                    items: [
+                        {
+                            title: 'Account Management (AC.L2-3.1.1)',
+                            description: 'Limit system access to authorized users, processes acting on behalf of authorized users, or devices.',
+                            status: 'compliant',
+                            evidence: 'Active Directory implemented with role-based access controls. 38 laptops and servers managed centrally.',
+                            recommendations: 'Continue regular access reviews quarterly.'
+                        },
+                        {
+                            title: 'Access Enforcement (AC.L2-3.1.2)',
+                            description: 'Limit system access to the types of transactions and functions that authorized users are permitted to execute.',
+                            status: 'compliant',
+                            evidence: 'Role-based permissions enforced through AD. Principle of least privilege applied.',
+                            recommendations: 'Document access matrices for all CUI systems.'
+                        },
+                        {
+                            title: 'Remote Access (AC.L2-3.1.12)',
+                            description: 'Control remote access sessions and monitor for unauthorized access.',
+                            status: 'partial',
+                            evidence: 'VPN gateway in place with encryption. Some remote access monitoring gaps identified.',
+                            recommendations: 'Implement comprehensive remote access logging and monitoring for all CUI access.'
+                        }
+                    ]
+                },
+                {
+                    id: 'at',
+                    name: 'Awareness and Training (AT)',
+                    description: 'Ensure personnel are trained in cybersecurity awareness and responsibilities',
+                    score: 70,
+                    items: [
+                        {
+                            title: 'Security Awareness Training (AT.L2-3.2.1)',
+                            description: 'Provide security awareness training to personnel.',
+                            status: 'partial',
+                            evidence: 'Basic cybersecurity training provided to all 64 employees annually.',
+                            recommendations: 'Implement role-specific CUI handling training and phishing simulation programs.'
+                        },
+                        {
+                            title: 'Privileged User Training (AT.L2-3.2.2)',
+                            description: 'Provide training for privileged users regarding their responsibilities.',
+                            status: 'missing',
+                            evidence: 'No specific training program for privileged users identified.',
+                            recommendations: 'Develop and implement privileged user training program covering CUI handling responsibilities.'
+                        }
+                    ]
+                },
+                {
+                    id: 'au',
+                    name: 'Audit and Accountability (AU)',
+                    description: 'Create, protect, and retain system audit logs and records',
+                    score: 90,
+                    items: [
+                        {
+                            title: 'Audit Event Logging (AU.L2-3.3.1)',
+                            description: 'Create and retain system audit logs and records to enable monitoring of unauthorized access.',
+                            status: 'compliant',
+                            evidence: 'SIEM system (SPA-005) in place. Centralized logging from all CUI systems.',
+                            recommendations: 'Ensure log retention policy meets CMMC requirements (minimum 1 year).'
+                        },
+                        {
+                            title: 'Audit Review and Analysis (AU.L2-3.3.4)',
+                            description: 'Review and analyze audit records to identify inappropriate or unusual activity.',
+                            status: 'compliant',
+                            evidence: 'Regular SIEM alert review process in place. Monthly security log analysis conducted.',
+                            recommendations: 'Consider automated anomaly detection capabilities.'
+                        }
+                    ]
+                },
+                {
+                    id: 'cm',
+                    name: 'Configuration Management (CM)',
+                    description: 'Establish and maintain baseline configurations and inventories',
+                    score: 95,
+                    items: [
+                        {
+                            title: 'Baseline Configuration (CM.L2-3.4.1)',
+                            description: 'Establish and maintain baseline configurations and inventories of organizational systems.',
+                            status: 'compliant',
+                            evidence: 'Complete asset inventory maintained. All CUI systems documented with baseline configurations.',
+                            recommendations: 'Maintain quarterly inventory updates and configuration drift monitoring.'
+                        },
+                        {
+                            title: 'Configuration Change Control (CM.L2-3.4.2)',
+                            description: 'Establish and enforce security configuration settings for information technology products.',
+                            status: 'compliant',
+                            evidence: 'Change management process in place. All systems configured per security baselines.',
+                            recommendations: 'Document configuration standards for new technology acquisitions.'
+                        }
+                    ]
+                },
+                {
+                    id: 'ia',
+                    name: 'Identification and Authentication (IA)',
+                    description: 'Identify and authenticate users and devices before granting access',
+                    score: 80,
+                    items: [
+                        {
+                            title: 'User Identification and Authentication (IA.L2-3.5.1)',
+                            description: 'Identify system users, processes acting on behalf of users, or devices.',
+                            status: 'compliant',
+                            evidence: 'Active Directory authentication for all users. Unique accounts for each individual.',
+                            recommendations: 'Continue maintaining user account lifecycle management.'
+                        },
+                        {
+                            title: 'Multi-Factor Authentication (IA.L2-3.5.3)',
+                            description: 'Use multifactor authentication for local and network access to privileged accounts.',
+                            status: 'partial',
+                            evidence: 'MFA implemented for VPN access and some administrative accounts.',
+                            recommendations: 'Implement MFA for all privileged accounts and CUI system access.'
+                        }
+                    ]
+                },
+                {
+                    id: 'ir',
+                    name: 'Incident Response (IR)',
+                    description: 'Establish operational incident handling capability',
+                    score: 65,
+                    items: [
+                        {
+                            title: 'Incident Response Plan (IR.L2-3.6.1)',
+                            description: 'Establish an operational incident-handling capability for organizational systems.',
+                            status: 'partial',
+                            evidence: 'Basic incident response procedures documented. CISO manages incident response.',
+                            recommendations: 'Develop comprehensive incident response plan specific to CUI incidents. Conduct tabletop exercises.'
+                        },
+                        {
+                            title: 'Incident Reporting (IR.L2-3.6.2)',
+                            description: 'Track, document, and report incidents to designated officials.',
+                            status: 'partial',
+                            evidence: 'Incident tracking process in place but needs enhancement for CUI-specific requirements.',
+                            recommendations: 'Implement formal incident reporting procedures including DoD cyber incident reporting.'
+                        }
+                    ]
+                },
+                {
+                    id: 'ma',
+                    name: 'Maintenance (MA)',
+                    description: 'Perform maintenance on systems and control maintenance tools',
+                    score: 75,
+                    items: [
+                        {
+                            title: 'System Maintenance (MA.L2-3.7.1)',
+                            description: 'Perform maintenance on organizational systems.',
+                            status: 'compliant',
+                            evidence: 'Regular system maintenance schedule in place. IT support workstations (CRMA-001 to CRMA-003) used.',
+                            recommendations: 'Ensure maintenance activities are logged and reviewed for CUI systems.'
+                        },
+                        {
+                            title: 'Maintenance Tools (MA.L2-3.7.2)',
+                            description: 'Control nonlocal maintenance sessions and terminate such connections when nonlocal maintenance is complete.',
+                            status: 'partial',
+                            evidence: 'Some remote maintenance capabilities but controls need strengthening.',
+                            recommendations: 'Implement stronger controls for remote maintenance sessions on CUI systems.'
+                        }
+                    ]
+                }
+            ]
+        };
+
+        // Initialize the assessment
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('currentDate').textContent = new Date().toLocaleDateString();
+            renderAssessment();
+            updateOverallScore();
+            generateRecommendations();
+        });
+
+        function renderAssessment() {
+            const container = document.getElementById('assessmentDomains');
+            container.innerHTML = '';
+
+            assessmentData.domains.forEach(domain => {
+                const domainDiv = document.createElement('div');
+                domainDiv.className = 'assessment-section';
+                
+                const scoreClass = domain.score >= 80 ? 'score-high' : domain.score >= 60 ? 'score-medium' : 'score-low';
+                
+                domainDiv.innerHTML = `
+                    <div class="domain-header">
+                        <div>
+                            <div class="domain-title">${domain.name}</div>
+                            <div style="color: #7f8c8d; font-size: 0.9em;">${domain.description}</div>
+                        </div>
+                        <div class="readiness-score">
+                            <div class="score-circle ${scoreClass}">${domain.score}%</div>
+                        </div>
+                    </div>
+                    <div id="domain-${domain.id}-items">
+                        ${domain.items.map((item, index) => renderAssessmentItem(domain.id, item, index)).join('')}
+                    </div>
+                    <button class="btn btn-add" onclick="addNewItem('${domain.id}')">Add New Assessment Item</button>
+                `;
+                
+                container.appendChild(domainDiv);
+            });
+        }
+
+        function renderAssessmentItem(domainId, item, index) {
+            const statusClass = item.status === 'compliant' ? 'status-compliant' : 
+                               item.status === 'partial' ? 'status-partial' : 'status-missing';
+            
+            return `
+                <div class="assessment-item">
+                    <div class="item-header">
+                        <div class="item-title">${item.title}</div>
+                        <div class="status-indicator ${statusClass}"></div>
+                    </div>
+                    <div class="item-content">
+                        <p><strong>Description:</strong> ${item.description}</p>
+                        <p><strong>Current Status:</strong> ${item.status.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</p>
+                        <p><strong>Evidence:</strong> ${item.evidence}</p>
+                        <p><strong>Recommendations:</strong> ${item.recommendations}</p>
+                    </div>
+                    <div class="item-controls">
+                        <button class="btn btn-edit" onclick="editItem('${domainId}', ${index})">Edit</button>
+                        <button class="btn btn-delete" onclick="deleteItem('${domainId}', ${index})">Delete</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateOverallScore() {
+            const totalScore = assessmentData.domains.reduce((sum, domain) => sum + domain.score, 0);
+            const averageScore = Math.round(totalScore / assessmentData.domains.length);
+            document.getElementById('overallScore').textContent = averageScore + '%';
+        }
+
+        function generateRecommendations() {
+            const recommendations = [];
+            
+            assessmentData.domains.forEach(domain => {
+                domain.items.forEach(item => {
+                    if (item.status === 'missing') {
+                        recommendations.push({
+                            priority: 'high',
+                            text: `${domain.name}: ${item.recommendations}`,
+                            domain: domain.name
+                        });
+                    } else if (item.status === 'partial') {
+                        recommendations.push({
+                            priority: 'medium',
+                            text: `${domain.name}: ${item.recommendations}`,
+                            domain: domain.name
+                        });
+                    }
+                });
+                
+                if (domain.score < 70) {
+                    recommendations.push({
+                        priority: 'high',
+                        text: `${domain.name}: Overall domain score below 70% - requires immediate attention`,
+                        domain: domain.name
+                    });
+                }
+            });
+
+            // Add general recommendations
+            recommendations.push({
+                priority: 'low',
+                text: 'Continue quarterly reviews of asset inventory and documentation',
+                domain: 'General'
+            });
+
+            const container = document.getElementById('recommendationsList');
+            container.innerHTML = recommendations.map(rec => `
+                <div class="recommendation-item priority-${rec.priority}">
+                    <strong>[${rec.priority.toUpperCase()} PRIORITY]</strong> ${rec.text}
+                </div>
+            `).join('');
+        }
+
+        function editItem(domainId, itemIndex) {
+            const domain = assessmentData.domains.find(d => d.id === domainId);
+            const item = domain.items[itemIndex];
+            
+            document.getElementById('modalTitle').textContent = 'Edit Assessment Item';
+            document.getElementById('editTitle').value = item.title;
+            document.getElementById('editDescription').value = item.description;
+            document.getElementById('editStatus').value = item.status;
+            document.getElementById('editEvidence').value = item.evidence;
+            document.getElementById('editRecommendations').value = item.recommendations;
+            
+            document.getElementById('editModal').style.display = 'block';
+            
+            document.getElementById('editForm').onsubmit = function(e) {
+                e.preventDefault();
+                
+                item.title = document.getElementById('editTitle').value;
+                item.description = document.getElementById('editDescription').value;
+                item.status = document.getElementById('editStatus').value;
+                item.evidence = document.getElementById('editEvidence').value;
+                item.recommendations = document.getElementById('editRecommendations').value;
+                
+                updateDomainScore(domainId);
+                renderAssessment();
+                updateOverallScore();
+                generateRecommendations();
+                closeModal();
+            };
+        }
+
+        function addNewItem(domainId) {
+            document.getElementById('modalTitle').textContent = 'Add New Assessment Item';
+            document.getElementById('editTitle').value = '';
+            document.getElementById('editDescription').value = '';
+            document.getElementById('editStatus').value = 'missing';
+            document.getElementById('editEvidence').value = '';
+            document.getElementById('editRecommendations').value = '';
+            
+            document.getElementById('editModal').style.display = 'block';
+            
+            document.getElementById('editForm').onsubmit = function(e) {
+                e.preventDefault();
+                
+                const domain = assessmentData.domains.find(d => d.id === domainId);
+                domain.items.push({
+                    title: document.getElementById('editTitle').value,
+                    description: document.getElementById('editDescription').value,
+                    status: document.getElementById('editStatus').value,
+                    evidence: document.getElementById('editEvidence').value,
+                    recommendations: document.getElementById('editRecommendations').value
+                });
+                
+                updateDomainScore(domainId);
+                renderAssessment();
+                updateOverallScore();
+                generateRecommendations();
+                closeModal();
+            };
+        }
+
+        function deleteItem(domainId, itemIndex) {
+            if (confirm('Are you sure you want to delete this assessment item?')) {
+                const domain = assessmentData.domains.find(d => d.id === domainId);
+                domain.items.splice(itemIndex, 1);
+                
+                updateDomainScore(domainId);
+                renderAssessment();
+                updateOverallScore();
+                generateRecommendations();
+            }
+        }
+
+        function updateDomainScore(domainId) {
+            const domain = assessmentData.domains.find(d => d.id === domainId);
+            if (domain.items.length === 0) {
+                domain.score = 0;
+                return;
+            }
+            
+            const compliantCount = domain.items.filter(item => item.status === 'compliant').length;
+            const partialCount = domain.items.filter(item => item.status === 'partial').length;
+            
+            // Calculate score: compliant = 100%, partial = 50%, missing = 0%
+            domain.score = Math.round(((compliantCount * 100) + (partialCount * 50)) / domain.items.length);
+        }
+
+        function closeModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+
+        function exportAssessment() {
+            const reportData = {
+                company: 'ACME Technology Services Corporation',
+                assessmentDate: new Date().toLocaleDateString(),
+                overallScore: document.getElementById('overallScore').textContent,
+                domains: assessmentData.domains
+            };
+            
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(reportData, null, 2));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", "ACME_CMMC_Readiness_Assessment.json");
+            document.body.appendChild(downloadAnchorNode);
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+            
+            alert('Assessment report exported successfully!');
+        }
+
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            const modal = document.getElementById('editModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>
