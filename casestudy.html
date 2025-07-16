@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMMC 2.0 Level 2 Training Tool - ACME Technology Services</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+            opacity: 0.3;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+            overflow-x: auto;
+        }
+
+        .nav-tab {
+            padding: 15px 25px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            color: #495057;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            position: relative;
+        }
+
+        .nav-tab:hover {
+            background: #e9ecef;
+            color: #007bff;
+        }
+
+        .nav-tab.active {
+            color: #007bff;
+            background: white;
+        }
+
+        .nav-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #007bff;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 30px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .company-overview {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .asset-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .asset-card {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .asset-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .asset-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .asset-type {
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #2c3e50;
+        }
+
+        .asset-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .cui-asset { background: #dc3545; color: white; }
+        .spa-asset { background: #28a745; color: white; }
+        .crma-asset { background: #ffc107; color: #212529; }
+        .oos-asset { background: #6c757d; color: white; }
+
+        .asset-details {
+            color: #6c757d;
+            line-height: 1.6;
+        }
+
+        .network-diagram {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .network-zones {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .zone-card {
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .cui-zone { background: #dc3545; }
+        .mgmt-zone { background: #007bff; }
+        .guest-zone { background: #6c757d; }
+        .ot-zone { background: #fd7e14; }
+
+        .employee-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .employee-card {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .employee-card:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .employee-name {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .employee-title {
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 25px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        .compliance-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .compliance-table th {
+            background: #007bff;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .compliance-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .compliance-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .status-complete {
+            background: #28a745;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .status-compliant {
+            background: #007bff;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 2px solid #dee2e6;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .nav-tabs {
+                flex-direction: column;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .asset-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>ACME Technology Services Corporation</h1>
+            <p>CMMC 2.0 Level 2 Training Case Study</p>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showTab('overview')">Company Overview</button>
+            <button class="nav-tab" onclick="showTab('assets')">Asset Inventory</button>
+            <button class="nav-tab" onclick="showTab('network')">Network Architecture</button>
+            <button class="nav-tab" onclick="showTab('employees')">Employee Directory</button>
+            <button class="nav-tab" onclick="showTab('compliance')">Compliance Status</button>
+        </div>
+
+        <div id="overview" class="tab-content active">
+            <div class="company-overview">
+                <h2>Defense Contractor Profile</h2>
+                <p>ACME Technology Services Corporation is a medium-sized defense contractor headquartered in El Paso, Texas. The company specializes in uniform and textile logistics services for the U.S. Army, operating from a connected office complex and warehouse facility.</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">64</div>
+                    <div class="stat-label">Total Employees</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">38</div>
+                    <div class="stat-label">Laptops</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">2</div>
+                    <div class="stat-label">Physical Servers</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">8</div>
+                    <div class="stat-label">Network Printers</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">Level 2</div>
+                    <div class="stat-label">CMMC Target</div>
+                </div>
+            </div>
+
+            <h3>Key Infrastructure Components</h3>
+            <div class="asset-grid">
+                <div class="asset-card">
+                    <div class="asset-header">
+                        <div class="asset-type">Secure Network</div>
+                        <span class="asset-badge spa-asset">Security</span>
+                    </div>
+                    <div class="asset-details">
+                        Segmented network with VPN gateway, wireless and Ethernet connectivity across office and warehouse facilities.
+                    </div>
+                </div>
+                <div class="asset-card">
+                    <div class="asset-header">
+                        <div class="asset-type">Cloud Services</div>
+                        <span class="asset-badge cui-asset">CUI</span>
+                    </div>
+                    <div class="asset-details">
+                        Microsoft Azure and Amazon Web Services for secure cloud backups with FIPS 140-2 encryption.
+                    </div>
+                </div>
+                <div class="asset-card">
+                    <div class="asset-header">
+                        <div class="asset-type">Access Control</div>
+                        <span class="asset-badge spa-asset">Security</span>
+                    </div>
+                    <div class="asset-details">
+                        Active Directory for identity management and role-based access controls with badge access system.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="assets" class="tab-content">
+            <h2>Asset Inventory & Classification</h2>
+            
+            <div class="filter-buttons">
+                <button class="filter-btn active" onclick="filterAssets('all')">All Assets</button>
+                <button class="filter-btn" onclick="filterAssets('cui')">CUI Assets</button>
+                <button class="filter-btn" onclick="filterAssets('spa')">Security Assets</button>
+                <button class="filter-btn" onclick="filterAssets('crma')">Risk Managed</button>
+                <button class="filter-btn" onclick="filterAssets('oos')">Out of Scope</button>
+            </div>
+
+            <div class="asset-grid" id="assetGrid">
+                <!-- CUI Assets -->
+                <div class="asset-card cui-asset-card">
+                    <div class="asset-header">
+                        <div class="asset-type">Primary Data Server</div>
+                        <span class="asset-badge cui-asset">CUI-001</span>
+                    </div>
+                    <div class="asset-details">
+                        Hosts contract files and specifications. Requires FIPS 140-2 encryption and strict access controls.
+                    </div>
+                </div>
+
+                <div class="asset-card cui-asset-card">
+                    <div class="asset-header">
+                        <div class="asset-type">Azure Cloud Backup</div>
+                        <span class="asset-badge cui-asset">CUI-002</span>
+                    </div>
+                    <div class="asset-details">
+                        Cloud repository for CUI data backup with encrypted storage and controlled access.
+                    </div>
+                </div>
+
+                <div class="asset-card cui-asset-card">
+                    <div class="asset-header">
+                        <div class="asset-type">Contract Coordinator Workstations</div>
+                        <span class="asset-badge cui-asset">CUI-003-005</span>
+                    </div>
+                    <div class="asset-details">
+                        Three workstations used by contract coordinators for CUI processing and management.
+                    </div>
+                </div>
+
+                <div class="asset-card cui-asset-card">
+                    <div class="asset-header">
+                        <div class="asset-type">CISO Management Workstation</div>
+                        <span class="asset-badge cui-asset">CUI-006</span>
+                    </div>
+                    <div class="asset-details">
+                        Chief Information Security Officer's workstation for security management and CUI oversight.
+                    </div>
+                </div>
+
+                <div class="asset-card cui-asset-card">
+                    <div class="asset-header">
+                        <div class="asset-type">Secure File Server</div>
+                        <span class="asset-badge cui-asset">CUI-007</span>
+                    </div>
+                    <div class="asset-details">
+                        Document archiving server with encrypted storage for long-term CUI retention.
+                    </div>
+                </div>
+
+                <!-- Security Protection Assets -->
+                <div class="asset-card spa-asset-card">
+                    <div class="asset-header">
+                        <div class="asset-type">Enterprise Firewall</div>
+                        <span class="asset-badge spa-asset">SPA-001</span>
+                    </div>
+                    <div class="asset-details">
+                        Network perimeter protection with advanced threat detection and filtering capabilities.
+                    </div>
+                </div>
+
+                <div class="asset-card spa-asset-card">
+                    <div class="asset-header">
+                        <div class="asset-type">VPN Gateway</div>
+                        <span class="asset-badge spa-asset">SPA-002</span>
+                    </div>
+                    <div class="asset-details">
+                        Secure remote access gateway with multi-factor authentication and encrypted tunneling.
+                    </div>
+                </div>
+
+                <div class="asset-card spa-asset-card">
+                    <div class="asset-header">
+                        <div class="asset-type">Endpoint Protection Suite</div>
+                        <span class="asset-badge spa-asset">SPA-004</span>
+                    </div>
+                    <div class="asset-details">
+                        Comprehensive endpoint security including antivirus, EDR, and threat intelligence.
+                    </div>
+                </div>
+
+                <div class="asset-card spa-asset-card">
+                    <div class="asset-header">
+                        <div class="asset-type">SIEM System</div>
+                        <span class="asset-badge spa-asset">SPA-005</span>
+                    </div>
+                    <div class="asset-details">
+                        Security Information and Event Management system for centralized monitoring and logging.
+                    </div>
+                </div>
+
+                <div class="asset-card spa-asset-card">
+                    <div class="asset-header">
+                        <div class="asset-type">Badge Access Control</div>
+                        <span class="asset-badge spa-asset">SPA-006</span>
+                    </div>
+                    <div class="asset-details">
+                        Physical access control system for controlled spaces and secure areas.
+                    </div>
+                </div>
+
+                <!-- Risk Managed Assets -->
+                <div class="asset-card crma-asset-card">
+                    <div class="asset-header">
+                        <div class="asset-type">IT Support Workstations</div>
+                        <span class="asset-badge crma-asset">CRMA-001-003</span>
+                    </div>
+                    <div class="asset-details">
+                        IT management laptops with read-only access to CUI systems under strict policy controls.
+                    </div>
+                </div>
+
+                <div class="asset-card crma-asset-card">
+                    <div class="asset-header">
+                        <div class="asset-type">Secure Printers</div>
+                        <span class="asset-badge crma-asset">CRMA-004</span>
+                    </div>
+                    <div class="asset-details">
+                        Network printers with secure print functionality and controlled access to CUI documents.
+                    </div>
+                </div>
+
+                <!-- Out of Scope Assets -->
+                <div class="asset-card oos-asset-card">
+                    <div class="asset-header">
+                        <div class="asset-type">Personal Laptops</div>
+                        <span class="asset-badge oos-asset">OOS-001</span>
+                    </div>
+                    <div class="asset-details">
+                        Employee personal devices with no access to CUI systems or corporate network.
+                    </div>
+                </div>
+
+                <div class="asset-card oos-asset-card">
+                    <div class="asset-header">
+                        <div class="asset-type">HR System</div>
+                        <span class="asset-badge oos-asset">OOS-002</span>
+                    </div>
+                    <div class="asset-details">
+                        Human resources management system isolated from CUI processing networks.
+                    </div>
+                </div>
+
+                <div class="asset-card oos-asset-card">
+                    <div class="asset-header">
+                        <div class="asset-type">Marketing Systems</div>
+                        <span class="asset-badge oos-asset">OOS-003</span>
+                    </div>
+                    <div class="asset-details">
+                        Marketing and communications systems with no CUI access requirements.
+                    </div>
+                </div>
+
+                <div class="asset-card oos-asset-card">
+                    <div class="asset-header">
+                        <div class="asset-type">Guest Wi-Fi</div>
+                        <span class="asset-badge oos-asset">OOS-004</span>
+                    </div>
+                    <div class="asset-details">
+                        Break room guest wireless network completely isolated from internal systems.
+                    </div>
+                </div>
+
+                <div class="asset-card oos-asset-card">
+                    <div class="asset-header">
+                        <div class="asset-type">Facility Management</div>
+                        <span class="asset-badge oos-asset">OOS-005</span>
+                    </div>
+                    <div class="asset-details">
+                        Building management laptops for non-CUI facility operations and maintenance.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="network" class="tab-content">
+            <h2>Network Architecture & Segmentation</h2>
+            
+            <div class="network-diagram">
+                <h3>Network Segmentation Overview</h3>
+                <p>ACME implements a segmented network architecture to isolate CUI processing from other business operations.</p>
+            </div>
+
+            <div class="network-zones">
+                <div class="zone-card cui-zone">
+                    <h4>CUI Zone</h4>
+                    <p>Secure access to servers, cloud backups, and contract management systems</p>
+                </div>
+                <div class="zone-card mgmt-zone">
+                    <h4>Management Zone</h4>
+                    <p>Administrative and IT operations with controlled access to CUI systems</p>
+                </div>
+                <div class="zone-card guest-zone">
+                    <h4>Guest Network</h4>
+                    <p>Completely isolated from internal systems for visitor access</p>
+                </div>
+                <div class="zone-card ot-zone">
+                    <h4>OT Network</h4>
+                    <p>Dedicated operational technology for building control systems</p>
+                </div>
+            </div>
+
+            <h3>Network Security Controls</h3>
+            <div class="asset-grid">
+                <div class="asset-card">
+                    <div class="asset-header">
+                        <div class="asset-type">VLAN Segmentation</div>
+                        <span class="asset-badge spa-asset">Protection</span>
+                    </div>
+                    <div class="asset-details">
+                        Virtual LANs separate CUI processing from general business operations and guest access.
+                    </div>
+                </div>
+                <div class="asset-card">
+                    <div class="asset-header">
+                        <div class="asset-type">Encrypted Communications</div>
+                        <span class="asset-badge cui-asset">FIPS 140-2</span>
+                    </div>
+                    <div class="asset-details">
+                        All CUI access uses FIPS 140-2 validated encryption for both local and remote connections.
+                    </div>
+                </div>
+                <div class="asset-card">
+                    <div class="asset-header">
+                        <div class="asset-type">Network Monitoring</div>
+                        <span class="asset-badge spa-asset">SIEM</span>
+                    </div>
+                    <div class="asset-details">
+                        Continuous monitoring of all network zones with centralized logging and alerting.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="employees" class="tab-content">
+            <h2>Employee Directory</h2>
+            <input type="text" class="search-box" placeholder="Search employees by name or title..." onkeyup="searchEmployees()">
+            
+            <div class="employee-grid" id="employeeGrid">
+                <!-- Employees will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <div id="compliance" class="tab-content">
+            <h2>CMMC 2.0 Level 2 Compliance Status</h2>
+            
+            <table class="compliance-table">
+                <thead>
+                    <tr>
+                        <th>Assessment Component</th>
+                        <th>Status</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Asset Inventory</td>
+                        <td><span class="status-complete">100% Complete</span></td>
+                        <td>All assets cataloged and classified according to CMMC requirements</td>
+                    </tr>
+                    <tr>
+                        <td>Network Diagrams</td>
+                        <td><span class="status-complete">Up-to-date</span></td>
+                        <td>Current network architecture documentation with security zones</td>
+                    </tr>
+                    <tr>
+                        <td>Documentation</td>
+                        <td><span class="status-complete">Verified</span></td>
+                        <td>All policies and procedures documented and archived</td>
+                    </tr>
+                    <tr>
+                        <td>Encryption Standard</td>
+                        <td><span class="status-compliant">FIPS 140-2</span></td>
+                        <td>All CUI processing uses validated encryption modules</td>
+                    </tr>
+                    <tr>
+                        <td>Access Control</td>
+                        <td><span class="status-complete">Implemented</span></td>
+                        <td>Role-based access controls through Active Directory</td>
+                    </tr>
+                    <tr>
+                        <td>Physical Security</td>
+                        <td><span class="status-complete">Badge Access</span></td>
+                        <td>Card-based access control for all controlled areas</td>
+                    </tr>
+                    <tr>
+                        <td>Logging & Monitoring</td>
+                        <td><span class="status-complete">Centralized</span></td>
+                        <td>SIEM system captures all security events and access logs</td>
+                    </tr>
+                    <tr>
+                        <td>Risk Mitigation</td>
+                        <td><span class="status-complete">Addressed</span></td>
+                        <td>All medium and high risks have implemented controls</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Recommendations for Continued Compliance</h3>
+            <div class="asset-grid">
+                <div class="asset-card">
+                    <div class="asset-header">
+                        <div class="asset-type">Warehouse Assessment</div>
+                        <span class="asset-badge crma-asset">Priority</span>
+                    </div>
+                    <div class="asset-details">
+                        Complete comprehensive security assessment of warehouse inventory control systems.
+                    </div>
+                </div>
+                <div class="asset-card">
+                    <div class="asset-header">
+                        <div class="asset-type">Documentation Update</div>
+                        <span class="asset-badge spa-asset">Maintenance</span>
+                    </div>
+                    <div class="asset-details">
+                        Update documentation for specialized assets and operational technology systems.
+                    </div>
+                </div>
+                <div class="asset-card">
+                    <div class="asset-header">
+                        <div class="asset-type">Quarterly Reviews</div>
+                        <span class="asset-badge cui-asset">Ongoing</span>
+                    </div>
+                    <div class="asset-details">
+                        Maintain regular quarterly reviews of asset inventory and security controls.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const employees = [
+            // Executive Leadership
+            { name: "Sarah Mitchell", title: "Chief Executive Officer" },
+            { name: "Raymond Lawrence", title: "Chief Information Security Officer" },
+            { name: "Michael Chen", title: "Chief Financial Officer" },
+            { name: "Lisa Rodriguez", title: "Chief Operations Officer" },
+            
+            // Senior Management
+            { name: "David Thompson", title: "Vice President of Contracts" },
+            { name: "Jennifer Walsh", title: "Vice President of Operations" },
+            { name: "Robert Kim", title: "IT Director" },
+            { name: "Maria Garcia", title: "HR Director" },
+            { name: "James Wilson", title: "Facilities Director" },
+            
+            // Contract Management
+            { name: "Amanda Foster", title: "Senior Contract Manager" },
+            { name: "Kevin Park", title: "Contract Coordinator" },
+            { name: "Nicole Brown", title: "Contract Coordinator" },
+            { name: "Daniel Martinez", title: "Contract Coordinator" },
+            { name: "Rachel Green", title: "Contract Analyst" },
+            { name: "Steven Clark", title: "Contract Analyst" },
+            { name: "Michelle Davis", title: "Contract Specialist" },
+            
+            // IT Department
+            { name: "Alex Johnson", title: "Senior Systems Administrator" },
+            { name: "Samantha Lee", title: "Network Administrator" },
+            { name: "Christopher Turner", title: "Security Analyst" },
+            { name: "Emma Thompson", title: "Security Analyst" },
+            { name: "Tyler Anderson", title: "IT Support Specialist" },
+            { name: "Jordan Miller", title: "IT Support Specialist" },
+            { name: "Ashley White", title: "Database Administrator" },
+            { name: "Brandon Lewis", title: "System Engineer" },
+            
+            // Logistics and Operations
+            { name: "Catherine Roberts", title: "Logistics Manager" },
+            { name: "Mark Edwards", title: "Warehouse Manager" },
+            { name: "Linda Harrison", title: "Inventory Control Specialist" },
+            { name: "Paul Carter", title: "Inventory Control Specialist" },
+            { name: "Sandra Phillips", title: "Shipping Coordinator" },
+            { name: "Thomas Young", title: "Shipping Coordinator" },
+            { name: "Melissa Walker", title: "Receiving Specialist" },
+            { name: "Jonathan Hall", title: "Receiving Specialist" },
+            { name: "Karen Allen", title: "Quality Control Inspector" },
+            { name: "Ryan Scott", title: "Quality Control Inspector" },
+            { name: "Laura King", title: "Procurement Specialist" },
+            { name: "Andrew Wright", title: "Supply Chain Analyst" },
+            
+            // Human Resources
+            { name: "Patricia Lopez", title: "HR Manager" },
+            { name: "Carlos Hernandez", title: "HR Specialist" },
+            { name: "Stephanie Moore", title: "Benefits Administrator" },
+            { name: "Gregory Taylor", title: "Training Coordinator" },
+            
+            // Finance and Accounting
+            { name: "Nancy Jackson", title: "Accounting Manager" },
+            { name: "William Adams", title: "Financial Analyst" },
+            { name: "Christina Baker", title: "Accounts Payable Specialist" },
+            { name: "Matthew Nelson", title: "Accounts Receivable Specialist" },
+            { name: "Deborah Campbell", title: "Payroll Administrator" },
+            
+            // Administrative Staff
+            { name: "Rebecca Parker", title: "Executive Assistant" },
+            { name: "Charles Evans", title: "Administrative Assistant" },
+            { name: "Donna Collins", title: "Administrative Assistant" },
+            { name: "Joshua Stewart", title: "Office Manager" },
+            { name: "Helen Morris", title: "Receptionist" },
+            
+            // Sales and Marketing
+            { name: "Frank Rogers", title: "Business Development Manager" },
+            { name: "Susan Reed", title: "Marketing Coordinator" },
+            { name: "Anthony Cook", title: "Sales Representative" },
+            { name: "Julie Morgan", title: "Customer Service Representative" },
+            
+            // Facilities and Maintenance
+            { name: "Richard Bell", title: "Facilities Manager" },
+            { name: "Kimberly Murphy", title: "Maintenance Technician" },
+            { name: "Eric Bailey", title: "Maintenance Technician" },
+            { name: "Tiffany Rivera", title: "Custodial Supervisor" },
+            { name: "Victor Cooper", title: "Security Guard" },
+            { name: "Brenda Richardson", title: "Security Guard" },
+            
+            // Warehouse Staff
+            { name: "Dennis Cox", title: "Warehouse Associate" },
+            { name: "Gloria Ward", title: "Warehouse Associate" },
+            { name: "Carl Torres", title: "Warehouse Associate" },
+            { name: "Frances Peterson", title: "Warehouse Associate" },
+            { name: "Albert Gray", title: "Forklift Operator" },
+            { name: "Teresa Ramirez", title: "Forklift Operator" },
+            { name: "Ralph James", title: "Loading Dock Supervisor" },
+            { name: "Carolyn Watson", title: "Packaging Specialist" }
+        ];
+
+        function showTab(tabName) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Hide all nav tabs
+            const navTabs = document.querySelectorAll('.nav-tab');
+            navTabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+            
+            // Load employees if employee tab is selected
+            if (tabName === 'employees') {
+                loadEmployees();
+            }
+        }
+
+        function loadEmployees() {
+            const employeeGrid = document.getElementById('employeeGrid');
+            employeeGrid.innerHTML = '';
+            
+            employees.forEach(employee => {
+                const employeeCard = document.createElement('div');
+                employeeCard.className = 'employee-card';
+                employeeCard.innerHTML = `
+                    <div class="employee-name">${employee.name}</div>
+                    <div class="employee-title">${employee.title}</div>
+                `;
+                employeeGrid.appendChild(employeeCard);
+            });
+        }
+
+        function searchEmployees() {
+            const searchTerm = event.target.value.toLowerCase();
+            const employeeCards = document.querySelectorAll('.employee-card');
+            
+            employeeCards.forEach(card => {
+                const name = card.querySelector('.employee-name').textContent.toLowerCase();
+                const title = card.querySelector('.employee-title').textContent.toLowerCase();
+                
+                if (name.includes(searchTerm) || title.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function filterAssets(category) {
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            filterBtns.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            const assetCards = document.querySelectorAll('.asset-card');
+            
+            assetCards.forEach(card => {
+                if (category === 'all') {
+                    card.style.display = 'block';
+                } else {
+                    const categoryClass = category + '-asset-card';
+                    if (card.classList.contains(categoryClass)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                }
+            });
+        }
+
+        // Interactive features for enhanced learning
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add click listeners to asset cards for detailed view
+            const assetCards = document.querySelectorAll('.asset-card');
+            assetCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const assetType = this.querySelector('.asset-type').textContent;
+                    const badge = this.querySelector('.asset-badge').textContent;
+                    const details = this.querySelector('.asset-details').textContent;
+                    
+                    alert(`Asset Details:\n\nName: ${assetType}\nID: ${badge}\nDescription: ${details}\n\nClick OK to continue exploring the CMMC case study.`);
+                });
+            });
+            
+            // Add hover effects for zone cards
+            const zoneCards = document.querySelectorAll('.zone-card');
+            zoneCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.05)';
+                    this.style.transition = 'transform 0.3s ease';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                });
+            });
+            
+            // Add interactive stats
+            const statCards = document.querySelectorAll('.stat-card');
+            statCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const number = this.querySelector('.stat-number').textContent;
+                    const label = this.querySelector('.stat-label').textContent;
+                    
+                    let message = '';
+                    switch(label) {
+                        case 'Total Employees':
+                            message = `ACME employs ${number} people across various departments including IT, contracts, logistics, and administrative functions.`;
+                            break;
+                        case 'Laptops':
+                            message = `The company maintains ${number} laptops for employee use, with varying levels of CUI access based on role requirements.`;
+                            break;
+                        case 'Physical Servers':
+                            message = `ACME operates ${number} physical servers that are critical to CUI processing and require Level 2 CMMC compliance.`;
+                            break;
+                        case 'Network Printers':
+                            message = `There are ${number} network-connected printers, some with secure print capabilities for CUI documents.`;
+                            break;
+                        case 'CMMC Target':
+                            message = `ACME is pursuing CMMC ${number} certification to continue supporting DoD contracts.`;
+                            break;
+                    }
+                    
+                    alert(message);
+                });
+            });
+        });
+
+        // Educational tooltips and guidance
+        function showComplianceGuidance() {
+            alert("CMMC 2.0 Level 2 Compliance:\n\n• Requires implementation of 110 security controls\n• Focuses on protecting CUI (Controlled Unclassified Information)\n• Must demonstrate security practices are institutionalized\n• Requires third-party assessment\n• Valid for 3 years\n\nThis case study demonstrates how ACME has structured their environment to meet these requirements.");
+        }
+
+        function showAssetClassificationGuidance() {
+            alert("Asset Classification in CMMC:\n\nCUI Assets: Systems that process, store, or transmit CUI\nSecurity Protection Assets: Systems that protect CUI assets\nContractor Risk Managed Assets: Limited CUI access under policy controls\nOut-of-Scope Assets: No CUI involvement, physically/logically separated\n\nProper classification is critical for determining security requirements and assessment scope.");
+        }
+
+        // Add guidance buttons to relevant sections
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add guidance button to compliance section
+            const complianceSection = document.getElementById('compliance');
+            const guidanceBtn = document.createElement('button');
+            guidanceBtn.textContent = 'CMMC Compliance Guidance';
+            guidanceBtn.style.cssText = 'background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; margin: 20px 0; cursor: pointer; font-size: 16px;';
+            guidanceBtn.onclick = showComplianceGuidance;
+            complianceSection.insertBefore(guidanceBtn, complianceSection.firstChild.nextSibling);
+            
+            // Add guidance button to assets section
+            const assetsSection = document.getElementById('assets');
+            const assetGuidanceBtn = document.createElement('button');
+            assetGuidanceBtn.textContent = 'Asset Classification Guidance';
+            assetGuidanceBtn.style.cssText = 'background: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 5px; margin: 20px 0; cursor: pointer; font-size: 16px;';
+            assetGuidanceBtn.onclick = showAssetClassificationGuidance;
+            assetsSection.insertBefore(assetGuidanceBtn, assetsSection.querySelector('.filter-buttons'));
+        });
