@@ -380,11 +380,11 @@
         </div>
 
         <div class="nav-tabs">
-            <button class="nav-tab active" onclick="showTab('overview')">Company Overview</button>
-            <button class="nav-tab" onclick="showTab('assets')">Asset Inventory</button>
-            <button class="nav-tab" onclick="showTab('network')">Network Architecture</button>
-            <button class="nav-tab" onclick="showTab('employees')">Employee Directory</button>
-            <button class="nav-tab" onclick="showTab('compliance')">Compliance Status</button>
+            <button class="nav-tab active" onclick="showTab('overview', this)">Company Overview</button>
+            <button class="nav-tab" onclick="showTab('assets', this)">Asset Inventory</button>
+            <button class="nav-tab" onclick="showTab('network', this)">Network Architecture</button>
+            <button class="nav-tab" onclick="showTab('employees', this)">Employee Directory</button>
+            <button class="nav-tab" onclick="showTab('compliance', this)">Compliance Status</button>
         </div>
 
         <div id="overview" class="tab-content active">
@@ -452,11 +452,11 @@
             <h2>Asset Inventory & Classification</h2>
             
             <div class="filter-buttons">
-                <button class="filter-btn active" onclick="filterAssets('all')">All Assets</button>
-                <button class="filter-btn" onclick="filterAssets('cui')">CUI Assets</button>
-                <button class="filter-btn" onclick="filterAssets('spa')">Security Assets</button>
-                <button class="filter-btn" onclick="filterAssets('crma')">Risk Managed</button>
-                <button class="filter-btn" onclick="filterAssets('oos')">Out of Scope</button>
+                <button class="filter-btn active" onclick="filterAssets('all', this)">All Assets</button>
+                <button class="filter-btn" onclick="filterAssets('cui', this)">CUI Assets</button>
+                <button class="filter-btn" onclick="filterAssets('spa', this)">Security Assets</button>
+                <button class="filter-btn" onclick="filterAssets('crma', this)">Risk Managed</button>
+                <button class="filter-btn" onclick="filterAssets('oos', this)">Out of Scope</button>
             </div>
 
             <div class="asset-grid" id="assetGrid">
@@ -697,7 +697,7 @@
 
         <div id="employees" class="tab-content">
             <h2>Employee Directory</h2>
-            <input type="text" class="search-box" placeholder="Search employees by name or title..." onkeyup="searchEmployees()">
+            <input type="text" class="search-box" placeholder="Search employees by name or title..." onkeyup="searchEmployees(this)">
             
             <div class="employee-grid" id="employeeGrid">
                 <!-- Employees will be populated by JavaScript -->
@@ -885,18 +885,22 @@
             { name: "Carolyn Watson", title: "Packaging Specialist" }
         ];
 
-        function showTab(tabName) {
+        function showTab(tabName, clickedButton) {
             // Hide all tabs
             const tabs = document.querySelectorAll('.tab-content');
             tabs.forEach(tab => tab.classList.remove('active'));
             
-            // Hide all nav tabs
+            // Remove active class from all nav tabs
             const navTabs = document.querySelectorAll('.nav-tab');
             navTabs.forEach(tab => tab.classList.remove('active'));
             
             // Show selected tab
             document.getElementById(tabName).classList.add('active');
-            event.target.classList.add('active');
+            
+            // Add active class to clicked button
+            if (clickedButton) {
+                clickedButton.classList.add('active');
+            }
             
             // Load employees if employee tab is selected
             if (tabName === 'employees') {
@@ -919,26 +923,13 @@
             });
         }
 
-        function searchEmployees() {
-            const searchTerm = event.target.value.toLowerCase();
-            const employeeCards = document.querySelectorAll('.employee-card');
-            
-            employeeCards.forEach(card => {
-                const name = card.querySelector('.employee-name').textContent.toLowerCase();
-                const title = card.querySelector('.employee-title').textContent.toLowerCase();
-                
-                if (name.includes(searchTerm) || title.includes(searchTerm)) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        }
-
-        function filterAssets(category) {
+        function filterAssets(category, clickedButton) {
             const filterBtns = document.querySelectorAll('.filter-btn');
             filterBtns.forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            
+            if (clickedButton) {
+                clickedButton.classList.add('active');
+            }
             
             const assetCards = document.querySelectorAll('.asset-card');
             
@@ -952,6 +943,22 @@
                     } else {
                         card.style.display = 'none';
                     }
+                }
+            });
+        }
+
+        function searchEmployees(inputElement) {
+            const searchTerm = inputElement.value.toLowerCase();
+            const employeeCards = document.querySelectorAll('.employee-card');
+            
+            employeeCards.forEach(card => {
+                const name = card.querySelector('.employee-name').textContent.toLowerCase();
+                const title = card.querySelector('.employee-title').textContent.toLowerCase();
+                
+                if (name.includes(searchTerm) || title.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
                 }
             });
         }
