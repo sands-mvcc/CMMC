@@ -108,7 +108,7 @@
         }
 
         .tab-content.active {
-            display: block;
+            display: block !important;
         }
 
         @keyframes fadeIn {
@@ -380,11 +380,11 @@
         </div>
 
         <div class="nav-tabs">
-            <button class="nav-tab active" onclick="showTab('overview', this)">Company Overview</button>
-            <button class="nav-tab" onclick="showTab('assets', this)">Asset Inventory</button>
-            <button class="nav-tab" onclick="showTab('network', this)">Network Architecture</button>
-            <button class="nav-tab" onclick="showTab('employees', this)">Employee Directory</button>
-            <button class="nav-tab" onclick="showTab('compliance', this)">Compliance Status</button>
+            <button class="nav-tab active" data-tab="overview">Company Overview</button>
+            <button class="nav-tab" data-tab="assets">Asset Inventory</button>
+            <button class="nav-tab" data-tab="network">Network Architecture</button>
+            <button class="nav-tab" data-tab="employees">Employee Directory</button>
+            <button class="nav-tab" data-tab="compliance">Compliance Status</button>
         </div>
 
         <div id="overview" class="tab-content active">
@@ -452,11 +452,11 @@
             <h2>Asset Inventory & Classification</h2>
             
             <div class="filter-buttons">
-                <button class="filter-btn active" onclick="filterAssets('all', this)">All Assets</button>
-                <button class="filter-btn" onclick="filterAssets('cui', this)">CUI Assets</button>
-                <button class="filter-btn" onclick="filterAssets('spa', this)">Security Assets</button>
-                <button class="filter-btn" onclick="filterAssets('crma', this)">Risk Managed</button>
-                <button class="filter-btn" onclick="filterAssets('oos', this)">Out of Scope</button>
+                <button class="filter-btn active" data-filter="all">All Assets</button>
+                <button class="filter-btn" data-filter="cui">CUI Assets</button>
+                <button class="filter-btn" data-filter="spa">Security Assets</button>
+                <button class="filter-btn" data-filter="crma">Risk Managed</button>
+                <button class="filter-btn" data-filter="oos">Out of Scope</button>
             </div>
 
             <div class="asset-grid" id="assetGrid">
@@ -697,7 +697,7 @@
 
         <div id="employees" class="tab-content">
             <h2>Employee Directory</h2>
-            <input type="text" class="search-box" placeholder="Search employees by name or title..." onkeyup="searchEmployees(this)">
+            <input type="text" class="search-box" placeholder="Search employees by name or title...">
             
             <div class="employee-grid" id="employeeGrid">
                 <!-- Employees will be populated by JavaScript -->
@@ -709,48 +709,6 @@
             
             <table class="compliance-table">
                 <thead>
-                    <tr>
-                        <th>Assessment Component</th>
-                        <th>Status</th>
-                        <th>Details</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Asset Inventory</td>
-                        <td><span class="status-complete">100% Complete</span></td>
-                        <td>All assets cataloged and classified according to CMMC requirements</td>
-                    </tr>
-                    <tr>
-                        <td>Network Diagrams</td>
-                        <td><span class="status-complete">Up-to-date</span></td>
-                        <td>Current network architecture documentation with security zones</td>
-                    </tr>
-                    <tr>
-                        <td>Documentation</td>
-                        <td><span class="status-complete">Verified</span></td>
-                        <td>All policies and procedures documented and archived</td>
-                    </tr>
-                    <tr>
-                        <td>Encryption Standard</td>
-                        <td><span class="status-compliant">FIPS 140-2</span></td>
-                        <td>All CUI processing uses validated encryption modules</td>
-                    </tr>
-                    <tr>
-                        <td>Access Control</td>
-                        <td><span class="status-complete">Implemented</span></td>
-                        <td>Role-based access controls through Active Directory</td>
-                    </tr>
-                    <tr>
-                        <td>Physical Security</td>
-                        <td><span class="status-complete">Badge Access</span></td>
-                        <td>Card-based access control for all controlled areas</td>
-                    </tr>
-                    <tr>
-                        <td>Logging & Monitoring</td>
-                        <td><span class="status-complete">Centralized</span></td>
-                        <td>SIEM system captures all security events and access logs</td>
-                    </tr>
                     <tr>
                         <td>Risk Mitigation</td>
                         <td><span class="status-complete">Addressed</span></td>
@@ -793,6 +751,7 @@
     </div>
 
     <script>
+        // Employee data
         const employees = [
             // Executive Leadership
             { name: "Sarah Mitchell", title: "Chief Executive Officer" },
@@ -885,21 +844,39 @@
             { name: "Carolyn Watson", title: "Packaging Specialist" }
         ];
 
-        function showTab(tabName, clickedButton) {
-            // Hide all tabs
-            const tabs = document.querySelectorAll('.tab-content');
-            tabs.forEach(tab => tab.classList.remove('active'));
+        // Global variables
+        let currentEmployees = [...employees];
+
+        // Main navigation function
+        function showTab(tabName) {
+            console.log('Switching to tab:', tabName);
             
-            // Remove active class from all nav tabs
-            const navTabs = document.querySelectorAll('.nav-tab');
-            navTabs.forEach(tab => tab.classList.remove('active'));
+            // Hide all tab contents
+            const allTabs = document.querySelectorAll('.tab-content');
+            allTabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
             
-            // Show selected tab
-            document.getElementById(tabName).classList.add('active');
+            // Remove active class from all nav buttons
+            const allNavTabs = document.querySelectorAll('.nav-tab');
+            allNavTabs.forEach(navTab => {
+                navTab.classList.remove('active');
+            });
             
-            // Add active class to clicked button
-            if (clickedButton) {
-                clickedButton.classList.add('active');
+            // Show the selected tab
+            const targetTab = document.getElementById(tabName);
+            if (targetTab) {
+                targetTab.classList.add('active');
+                console.log('Activated tab:', tabName);
+            } else {
+                console.error('Tab not found:', tabName);
+            }
+            
+            // Find and activate the corresponding nav button
+            const activeNavTab = document.querySelector(`[data-tab="${tabName}"]`);
+            if (activeNavTab) {
+                activeNavTab.classList.add('active');
+                console.log('Activated nav button for:', tabName);
             }
             
             // Load employees if employee tab is selected
@@ -908,11 +885,18 @@
             }
         }
 
+        // Load employees into the grid
         function loadEmployees() {
+            console.log('Loading employees...');
             const employeeGrid = document.getElementById('employeeGrid');
+            if (!employeeGrid) {
+                console.error('Employee grid not found');
+                return;
+            }
+            
             employeeGrid.innerHTML = '';
             
-            employees.forEach(employee => {
+            currentEmployees.forEach(employee => {
                 const employeeCard = document.createElement('div');
                 employeeCard.className = 'employee-card';
                 employeeCard.innerHTML = `
@@ -921,18 +905,39 @@
                 `;
                 employeeGrid.appendChild(employeeCard);
             });
+            
+            console.log('Loaded', currentEmployees.length, 'employees');
         }
 
-        function filterAssets(category, clickedButton) {
+        // Search employees function
+        function searchEmployees(searchTerm) {
+            if (!searchTerm) {
+                currentEmployees = [...employees];
+            } else {
+                const term = searchTerm.toLowerCase();
+                currentEmployees = employees.filter(employee => 
+                    employee.name.toLowerCase().includes(term) || 
+                    employee.title.toLowerCase().includes(term)
+                );
+            }
+            loadEmployees();
+        }
+
+        // Filter assets function
+        function filterAssets(category) {
+            console.log('Filtering assets by:', category);
+            
+            // Update filter button states
             const filterBtns = document.querySelectorAll('.filter-btn');
             filterBtns.forEach(btn => btn.classList.remove('active'));
             
-            if (clickedButton) {
-                clickedButton.classList.add('active');
+            const activeBtn = document.querySelector(`[data-filter="${category}"]`);
+            if (activeBtn) {
+                activeBtn.classList.add('active');
             }
             
+            // Show/hide asset cards
             const assetCards = document.querySelectorAll('.asset-card');
-            
             assetCards.forEach(card => {
                 if (category === 'all') {
                     card.style.display = 'block';
@@ -947,31 +952,58 @@
             });
         }
 
-        function searchEmployees(inputElement) {
-            const searchTerm = inputElement.value.toLowerCase();
-            const employeeCards = document.querySelectorAll('.employee-card');
-            
-            employeeCards.forEach(card => {
-                const name = card.querySelector('.employee-name').textContent.toLowerCase();
-                const title = card.querySelector('.employee-title').textContent.toLowerCase();
-                
-                if (name.includes(searchTerm) || title.includes(searchTerm)) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
+        // Educational guidance functions
+        function showComplianceGuidance() {
+            alert("CMMC 2.0 Level 2 Compliance:\n\n• Requires implementation of 110 security controls\n• Focuses on protecting CUI (Controlled Unclassified Information)\n• Must demonstrate security practices are institutionalized\n• Requires third-party assessment\n• Valid for 3 years\n\nThis case study demonstrates how ACME has structured their environment to meet these requirements.");
         }
 
-        // Interactive features for enhanced learning
+        function showAssetClassificationGuidance() {
+            alert("Asset Classification in CMMC:\n\nCUI Assets: Systems that process, store, or transmit CUI\nSecurity Protection Assets: Systems that protect CUI assets\nContractor Risk Managed Assets: Limited CUI access under policy controls\nOut-of-Scope Assets: No CUI involvement, physically/logically separated\n\nProper classification is critical for determining security requirements and assessment scope.");
+        }
+
+        // Initialize the application
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('Initializing CMMC Training Tool...');
+            
+            // Set up navigation event listeners
+            const navTabs = document.querySelectorAll('.nav-tab');
+            navTabs.forEach(tab => {
+                tab.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const tabName = this.getAttribute('data-tab');
+                    console.log('Nav tab clicked:', tabName);
+                    showTab(tabName);
+                });
+            });
+            
+            // Set up filter button event listeners
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const category = this.getAttribute('data-filter');
+                    console.log('Filter button clicked:', category);
+                    filterAssets(category);
+                });
+            });
+            
+            // Set up search functionality
+            const searchBox = document.querySelector('.search-box');
+            if (searchBox) {
+                searchBox.addEventListener('input', function(e) {
+                    const searchTerm = e.target.value;
+                    console.log('Search term:', searchTerm);
+                    searchEmployees(searchTerm);
+                });
+            }
+            
             // Add click listeners to asset cards for detailed view
             const assetCards = document.querySelectorAll('.asset-card');
             assetCards.forEach(card => {
                 card.addEventListener('click', function() {
-                    const assetType = this.querySelector('.asset-type').textContent;
-                    const badge = this.querySelector('.asset-badge').textContent;
-                    const details = this.querySelector('.asset-details').textContent;
+                    const assetType = this.querySelector('.asset-type')?.textContent || 'Unknown';
+                    const badge = this.querySelector('.asset-badge')?.textContent || 'No ID';
+                    const details = this.querySelector('.asset-details')?.textContent || 'No details';
                     
                     alert(`Asset Details:\n\nName: ${assetType}\nID: ${badge}\nDescription: ${details}\n\nClick OK to continue exploring the CMMC case study.`);
                 });
@@ -994,8 +1026,8 @@
             const statCards = document.querySelectorAll('.stat-card');
             statCards.forEach(card => {
                 card.addEventListener('click', function() {
-                    const number = this.querySelector('.stat-number').textContent;
-                    const label = this.querySelector('.stat-label').textContent;
+                    const number = this.querySelector('.stat-number')?.textContent || 'N/A';
+                    const label = this.querySelector('.stat-label')?.textContent || 'Unknown';
                     
                     let message = '';
                     switch(label) {
@@ -1014,37 +1046,91 @@
                         case 'CMMC Target':
                             message = `ACME is pursuing CMMC ${number} certification to continue supporting DoD contracts.`;
                             break;
+                        default:
+                            message = `${label}: ${number}`;
                     }
                     
                     alert(message);
                 });
             });
+            
+            // Add guidance buttons to relevant sections
+            addGuidanceButtons();
+            
+            // Load initial employee data
+            loadEmployees();
+            
+            console.log('CMMC Training Tool initialized successfully!');
         });
 
-        // Educational tooltips and guidance
-        function showComplianceGuidance() {
-            alert("CMMC 2.0 Level 2 Compliance:\n\n• Requires implementation of 110 security controls\n• Focuses on protecting CUI (Controlled Unclassified Information)\n• Must demonstrate security practices are institutionalized\n• Requires third-party assessment\n• Valid for 3 years\n\nThis case study demonstrates how ACME has structured their environment to meet these requirements.");
-        }
-
-        function showAssetClassificationGuidance() {
-            alert("Asset Classification in CMMC:\n\nCUI Assets: Systems that process, store, or transmit CUI\nSecurity Protection Assets: Systems that protect CUI assets\nContractor Risk Managed Assets: Limited CUI access under policy controls\nOut-of-Scope Assets: No CUI involvement, physically/logically separated\n\nProper classification is critical for determining security requirements and assessment scope.");
-        }
-
-        // Add guidance buttons to relevant sections
-        document.addEventListener('DOMContentLoaded', function() {
+        // Add guidance buttons function
+        function addGuidanceButtons() {
             // Add guidance button to compliance section
             const complianceSection = document.getElementById('compliance');
-            const guidanceBtn = document.createElement('button');
-            guidanceBtn.textContent = 'CMMC Compliance Guidance';
-            guidanceBtn.style.cssText = 'background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; margin: 20px 0; cursor: pointer; font-size: 16px;';
-            guidanceBtn.onclick = showComplianceGuidance;
-            complianceSection.insertBefore(guidanceBtn, complianceSection.firstChild.nextSibling);
+            if (complianceSection) {
+                const guidanceBtn = document.createElement('button');
+                guidanceBtn.textContent = 'CMMC Compliance Guidance';
+                guidanceBtn.style.cssText = 'background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; margin: 20px 0; cursor: pointer; font-size: 16px;';
+                guidanceBtn.onclick = showComplianceGuidance;
+                complianceSection.insertBefore(guidanceBtn, complianceSection.querySelector('table'));
+            }
             
             // Add guidance button to assets section
             const assetsSection = document.getElementById('assets');
-            const assetGuidanceBtn = document.createElement('button');
-            assetGuidanceBtn.textContent = 'Asset Classification Guidance';
-            assetGuidanceBtn.style.cssText = 'background: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 5px; margin: 20px 0; cursor: pointer; font-size: 16px;';
-            assetGuidanceBtn.onclick = showAssetClassificationGuidance;
-            assetsSection.insertBefore(assetGuidanceBtn, assetsSection.querySelector('.filter-buttons'));
-        });
+            if (assetsSection) {
+                const assetGuidanceBtn = document.createElement('button');
+                assetGuidanceBtn.textContent = 'Asset Classification Guidance';
+                assetGuidanceBtn.style.cssText = 'background: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 5px; margin: 20px 0; cursor: pointer; font-size: 16px;';
+                assetGuidanceBtn.onclick = showAssetClassificationGuidance;
+                const filterButtons = assetsSection.querySelector('.filter-buttons');
+                if (filterButtons) {
+                    assetsSection.insertBefore(assetGuidanceBtn, filterButtons);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
+                        <th>Assessment Component</th>
+                        <th>Status</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Asset Inventory</td>
+                        <td><span class="status-complete">100% Complete</span></td>
+                        <td>All assets cataloged and classified according to CMMC requirements</td>
+                    </tr>
+                    <tr>
+                        <td>Network Diagrams</td>
+                        <td><span class="status-complete">Up-to-date</span></td>
+                        <td>Current network architecture documentation with security zones</td>
+                    </tr>
+                    <tr>
+                        <td>Documentation</td>
+                        <td><span class="status-complete">Verified</span></td>
+                        <td>All policies and procedures documented and archived</td>
+                    </tr>
+                    <tr>
+                        <td>Encryption Standard</td>
+                        <td><span class="status-compliant">FIPS 140-2</span></td>
+                        <td>All CUI processing uses validated encryption modules</td>
+                    </tr>
+                    <tr>
+                        <td>Access Control</td>
+                        <td><span class="status-complete">Implemented</span></td>
+                        <td>Role-based access controls through Active Directory</td>
+                    </tr>
+                    <tr>
+                        <td>Physical Security</td>
+                        <td><span class="status-complete">Badge Access</span></td>
+                        <td>Card-based access control for all controlled areas</td>
+                    </tr>
+                    <tr>
+                        <td>Logging & Monitoring</td>
+                        <td><span class="status-complete">Centralized</span></td>
+                        <td>SIEM system captures all security events and access logs</td>
+                    </tr>
+                    <tr>
+                
