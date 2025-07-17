@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NCyTE CMMC v2 Workshop: AI-Powered Agenda</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: white;
+      color: black;
+    }
+    header {
+      background-color: #2d5a2d;
+      color: white;
+      padding: 20px;
+      text-align: left;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    nav {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+    }
+    select {
+      padding: 8px;
+      background-color: #2d5a2d;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+    section {
+      display: none;
+      margin-top: 40px;
+    }
+    section.active {
+      display: block;
+    }
+    h2 {
+      color: #2d5a2d;
+      border-bottom: 2px solid #2d5a2d;
+      padding-bottom: 5px;
+    }
+    ul {
+      list-style-type: disc;
+      padding-left: 20px;
+    }
+    .sub-section {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <select id="sectionMenu">
+        <option value="overview">Workshop Overview</option>
+        <option value="day1">Day One Agenda</option>
+        <option value="day2">Day Two Agenda</option>
+        <option value="outcomes">Key Workshop Outcomes</option>
+      </select>
+    </nav>
+    <h1>NCyTE CMMC v2 Workshop: AI-Powered</h1>
+  </header>
+  <div class="container">
+    <section id="overview" class="active">
+      <h2>Workshop Overview</h2>
+      <p>This intensive 2-day workshop provides participants with essential knowledge about CMMC requirements while demonstrating how artificial intelligence can revolutionize the documentation and compliance tracking process...</p>
+      <div class="sub-section">
+        <h3>Learning Objectives</h3>
+        <ul>
+          <li><strong>Strategic Understanding:</strong> Explain the three CMMC certification levels, phased implementation timeline, and financial/competitive impact.</li>
+          <li><strong>Technical Knowledge:</strong> Understand scoping elements, documentation components, and the role of C3PAOs.</li>
+          <li><strong>AI Implementation:</strong> Leverage AI for documentation, dashboards, and compliance maintenance.</li>
+          <li><strong>Practical Application:</strong> Develop CMMC roadmap, resource plans, and AI-enabled compliance strategies.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="day1">
+      <h2>Workshop Agenda — Day One</h2>
+      <div class="sub-section">
+        <h3>Part One: CMMC Program Fundamentals</h3>
+        <ul>
+          <li>Current State and Timeline</li>
+          <li>Three-Tier Framework Deep Dive: Levels 1, 2, 3</li>
+          <li>Financial Impact and Competitive Advantage</li>
+        </ul>
+      </div>
+      <div class="sub-section">
+        <h3>Part Two: Core Implementation Requirements</h3>
+        <ul>
+          <li>17 NIST SP 800-171 Rev. 3 Control Families</li>
+          <li>Key changes from Rev. 2 to Rev. 3</li>
+        </ul>
+      </div>
+      <div class="sub-section">
+        <h3>Part Three: Implementation Planning and Next Steps</h3>
+        <ul>
+          <li>Organizational Readiness Assessment</li>
+          <li>Resource Planning and Timeline Development</li>
+          <li>Action Plan Development</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="day2">
+      <h2>Workshop Agenda — Day Two</h2>
+      <div class="sub-section">
+        <h3>Part Four: Core Documentation Requirements</h3>
+        <ul>
+          <li>System Security Plan (SSP)</li>
+          <li>Plan of Action & Milestones (POA&M)</li>
+          <li>Applicability Checklist and Control Matrix</li>
+          <li>Asset Inventory & Categorization</li>
+          <li>Access Control Matrix</li>
+        </ul>
+      </div>
+      <div class="sub-section">
+        <h3>Part Five: AI-Powered Compliance Framework Development</h3>
+        <ul>
+          <li>Live Demonstration of AI-generated documentation</li>
+          <li>Dashboard Development Workshop</li>
+          <li>Automation Strategies</li>
+        </ul>
+      </div>
+      <div class="sub-section">
+        <h3>Part Six: Building a CMMC GPT</h3>
+        <ul>
+          <li>Planning, Data Preparation, Training, Configuration</li>
+          <li>Integration, Testing, Deployment, Maintenance</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="outcomes">
+      <h2>Key Workshop Outcomes</h2>
+      <div class="sub-section">
+        <h3>Immediate Deliverables</h3>
+        <ul>
+          <li>Customized compliance roadmap</li>
+          <li>AI-generated templates</li>
+          <li>Compliance dashboard prototype</li>
+          <li>Resource & budget framework</li>
+        </ul>
+        <h3>Strategic Benefits</h3>
+        <ul>
+          <li>Reduced documentation time</li>
+          <li>Improved accuracy and completeness</li>
+          <li>Enhanced monitoring and competitive advantage</li>
+        </ul>
+        <h3>Technical Capabilities</h3>
+        <ul>
+          <li>Understanding AI tools for compliance</li>
+          <li>Experience with automation</li>
+          <li>Dashboard creation skills</li>
+          <li>Integration strategies</li>
+        </ul>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const menu = document.getElementById('sectionMenu');
+    const sections = document.querySelectorAll('section');
+
+    menu.addEventListener('change', function () {
+      sections.forEach(sec => sec.classList.remove('active'));
+      const selected = document.getElementById(this.value);
+      if (selected) selected.classList.add('active');
+    });
+  </script>
+</body>
+</html>
