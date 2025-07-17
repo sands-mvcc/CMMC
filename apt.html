@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Persistent Threat (APT) Educational Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: white;
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #27ae60, #2c3e50);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .tab-button {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 1rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: #2c3e50;
+        }
+
+        .tab-button:hover {
+            background: #e8f5e8;
+        }
+
+        .tab-button.active {
+            background: #27ae60;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .definition-card {
+            background: #f8f9fa;
+            border-left: 5px solid #27ae60;
+            padding: 2rem;
+            margin: 2rem 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .definition-card h3 {
+            color: #27ae60;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .lifecycle-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .phase-card {
+            background: white;
+            border: 2px solid #27ae60;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .phase-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+            border-color: #2c3e50;
+        }
+
+        .phase-card.active {
+            background: #e8f5e8;
+            border-color: #2c3e50;
+        }
+
+        .phase-number {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: #27ae60;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .phase-title {
+            color: #2c3e50;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            padding-right: 30px;
+        }
+
+        .phase-description {
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            color: #555;
+        }
+
+        .techniques-list {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .techniques-list li {
+            background: #27ae60;
+            color: white;
+            padding: 0.5rem 1rem;
+            margin: 0.3rem 0;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin-right: 0.5rem;
+        }
+
+        .characteristics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .characteristic-card {
+            background: white;
+            border: 2px solid #2c3e50;
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .characteristic-icon {
+            font-size: 3rem;
+            color: #27ae60;
+            margin-bottom: 1rem;
+        }
+
+        .examples-container {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+        }
+
+        .example-card {
+            background: white;
+            border-left: 4px solid #e74c3c;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .quiz-container {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+        }
+
+        .question {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .answer-option {
+            background: #e8f5e8;
+            border: 2px solid #27ae60;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .answer-option:hover {
+            background: #27ae60;
+            color: white;
+        }
+
+        .answer-option.correct {
+            background: #27ae60;
+            color: white;
+        }
+
+        .answer-option.incorrect {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .defense-strategies {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .defense-card {
+            background: #e8f5e8;
+            border: 2px solid #27ae60;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s ease;
+            margin: 0.5rem;
+        }
+
+        .btn:hover {
+            background: #2c3e50;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #27ae60, #2c3e50);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .interactive-diagram {
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .timeline {
+            position: relative;
+            max-width: 1000px;
+            margin: 2rem auto;
+        }
+
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            background: #27ae60;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -3px;
+        }
+
+        .timeline-item {
+            padding: 10px 40px;
+            position: relative;
+            background: inherit;
+            width: 50%;
+        }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            right: -17px;
+            background: white;
+            border: 4px solid #27ae60;
+            top: 15px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        .timeline-item:nth-child(even) {
+            left: 50%;
+        }
+
+        .timeline-item:nth-child(even)::after {
+            left: -16px;
+        }
+
+        .timeline-content {
+            padding: 20px 30px;
+            background: white;
+            border: 2px solid #27ae60;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        @media screen and (max-width: 768px) {
+            .nav-tabs {
+                flex-direction: column;
+            }
+            
+            .lifecycle-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .timeline::after {
+                left: 31px;
+            }
+            
+            .timeline-item {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+            
+            .timeline-item::after {
+                left: 15px;
+            }
+            
+            .timeline-item:nth-child(even) {
+                left: 0%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🛡️ Advanced Persistent Threat (APT) Education Center</h1>
+        <p>Understanding sophisticated cyber threats and defense strategies</p>
+    </div>
+
+    <div class="container">
+        <div class="nav-tabs">
+            <button class="tab-button active" onclick="showTab('overview')">📋 Overview</button>
+            <button class="tab-button" onclick="showTab('lifecycle')">🔄 Lifecycle</button>
+            <button class="tab-button" onclick="showTab('characteristics')">🎯 Characteristics</button>
+            <button class="tab-button" onclick="showTab('examples')">💼 Examples</button>
+            <button class="tab-button" onclick="showTab('defenses')">🛡️ Defenses</button>
+            <button class="tab-button" onclick="showTab('quiz')">🧠 Knowledge Check</button>
+        </div>
+
+        <!-- Overview Tab -->
+        <div id="overview" class="tab-content active">
+            <div class="definition-card">
+                <h3>🎯 NIST SP 800-39 Official Definition</h3>
+                <p><strong>Advanced Persistent Threat (APT):</strong> An adversary that possesses sophisticated levels of expertise and significant resources which allow it to create opportunities to achieve its objectives by using multiple attack vectors (e.g., cyber, physical, and deception). These objectives typically include establishing and extending footholds within the information technology infrastructure of the targeted organizations for purposes of exfiltrating information, undermining or impeding critical aspects of a mission, program, or organization; or positioning itself to carry out these objectives in the future.</p>
+                
+                <p style="margin-top: 1rem;"><strong>Key Requirements:</strong></p>
+                <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+                    <li><strong>Pursues objectives repeatedly</strong> over an extended period of time</li>
+                    <li><strong>Adapts to defenders' efforts</strong> to resist it</li>
+                    <li><strong>Maintains determination</strong> to execute objectives</li>
+                </ul>
+            </div>
+
+            <h2 style="color: #27ae60; margin: 2rem 0 1rem 0;">🎭 What Makes APTs Different?</h2>
+            <div class="characteristics-grid">
+                <div class="characteristic-card">
+                    <div class="characteristic-icon">🎯</div>
+                    <h4>Highly Targeted</h4>
+                    <p>APTs focus on specific organizations, not random attacks. Targets are carefully selected based on strategic value.</p>
+                </div>
+                <div class="characteristic-card">
+                    <div class="characteristic-icon">⏰</div>
+                    <h4>Long-Term Presence</h4>
+                    <p>Unlike "hit and run" attacks, APTs maintain persistent access for months or even years.</p>
+                </div>
+                <div class="characteristic-card">
+                    <div class="characteristic-icon">🧠</div>
+                    <h4>Human-Operated</h4>
+                    <p>Coordinated by skilled human actors, not automated malware. Adaptable and intelligent.</p>
+                </div>
+                <div class="characteristic-card">
+                    <div class="characteristic-icon">🔧</div>
+                    <h4>Sophisticated Tools</h4>
+                    <p>Uses advanced techniques including zero-day exploits, custom malware, and social engineering.</p>
+                </div>
+            </div>
+
+            <div class="definition-card">
+                <h3>⚠️ Why APTs Matter</h3>
+                <p>APTs represent one of the most serious cybersecurity challenges organizations face today. According to FireEye research, the median "dwell time" (time an APT goes undetected) ranges from 71 days in the Americas to 204 days in the Asia-Pacific region. This extended presence allows attackers to:</p>
+                <ul style="margin-left: 2rem; margin-top: 1rem;">
+                    <li>Steal intellectual property and trade secrets</li>
+                    <li>Conduct long-term espionage</li>
+                    <li>Compromise critical infrastructure</li>
+                    <li>Position for future attacks</li>
+                    <li>Cause significant financial and reputational damage</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Lifecycle Tab -->
+        <div id="lifecycle" class="tab-content">
+            <h2 style="color: #27ae60; margin-bottom: 2rem;">🔄 APT Attack Lifecycle</h2>
+            
+            <div class="interactive-diagram">
+                <p style="margin-bottom: 2rem; font-size: 1.1rem;">Click on each phase to learn more about the APT attack progression:</p>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="lifecycleProgress"></div>
+                </div>
+            </div>
+
+            <div class="lifecycle-container">
+                <div class="phase-card" onclick="selectPhase(1, this)">
+                    <div class="phase-number">1</div>
+                    <div class="phase-title">🎯 Ingress Efforts</div>
+                    <div class="phase-description">Initial reconnaissance and entry attempts into the target environment.</div>
+                    <ul class="techniques-list">
+                        <li>Social Engineering</li>
+                        <li>Spear Phishing</li>
+                        <li>Zero-Day Malware</li>
+                        <li>Watering Hole Attacks</li>
+                    </ul>
+                </div>
+
+                <div class="phase-card" onclick="selectPhase(2, this)">
+                    <div class="phase-number">2</div>
+                    <div class="phase-title">🚪 Establish Access</div>
+                    <div class="phase-description">Gaining initial foothold and establishing presence within the target network.</div>
+                    <ul class="techniques-list">
+                        <li>Test and Detect</li>
+                        <li>Initial Intrusion</li>
+                        <li>Remote Access Tools</li>
+                        <li>Backdoor Installation</li>
+                    </ul>
+                </div>
+
+                <div class="phase-card" onclick="selectPhase(3, this)">
+                    <div class="phase-number">3</div>
+                    <div class="phase-title">📊 Harvesting Data</div>
+                    <div class="phase-description">Expanding access, collecting credentials, and gathering valuable information.</div>
+                    <ul class="techniques-list">
+                        <li>Privilege Escalation</li>
+                        <li>Lateral Movement</li>
+                        <li>Data Collection</li>
+                        <li>System Reconnaissance</li>
+                    </ul>
+                </div>
+
+                <div class="phase-card" onclick="selectPhase(4, this)">
+                    <div class="phase-number">4</div>
+                    <div class="phase-title">📤 Exfiltrating Data</div>
+                    <div class="phase-description">Extracting stolen data while covering tracks and maintaining stealth.</div>
+                    <ul class="techniques-list">
+                        <li>Data Encryption</li>
+                        <li>Covert Channels</li>
+                        <li>Log Manipulation</li>
+                        <li>Evidence Removal</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="phaseDetails" style="margin-top: 2rem;">
+                <div class="definition-card">
+                    <h3>💡 Click on any phase above to see detailed information</h3>
+                    <p>Each phase of the APT lifecycle represents a critical stage in the attack progression. Understanding these phases helps organizations develop appropriate detection and mitigation strategies.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Characteristics Tab -->
+        <div id="characteristics" class="tab-content">
+            <h2 style="color: #27ae60; margin-bottom: 2rem;">🎯 APT Characteristics Deep Dive</h2>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h3>🎯 Advanced</h3>
+                        <p><strong>Sophisticated Techniques:</strong> APT operators employ the full spectrum of intelligence-gathering techniques, including commercial and open-source tools, custom malware, zero-day exploits, and advanced social engineering.</p>
+                        <p><strong>State-Level Resources:</strong> Often backed by nation-states or well-funded organizations with significant technical and financial resources.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h3>⏰ Persistent</h3>
+                        <p><strong>Long-Term Objectives:</strong> Focus on specific goals rather than opportunistic attacks. Guided by external entities with strategic objectives.</p>
+                        <p><strong>Continuous Monitoring:</strong> "Low-and-slow" approach for better stealth. Will reattempt access if detected and removed.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h3>⚠️ Threat</h3>
+                        <p><strong>Capability + Intent:</strong> Combines both the technical capability and clear intent to cause harm or steal information.</p>
+                        <p><strong>Human Coordination:</strong> Executed by coordinated human actions rather than automated attacks.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h3>🎭 Stealth</h3>
+                        <p><strong>Evasion Techniques:</strong> Designed to bypass traditional security measures and remain undetected for extended periods.</p>
+                        <p><strong>Adaptive Behavior:</strong> Modifies tactics based on target defenses and security responses.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="definition-card">
+                <h3>📊 APT vs Traditional Attacks</h3>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
+                    <tr style="background: #27ae60; color: white;">
+                        <th style="padding: 1rem; border: 1px solid #ddd;">Aspect</th>
+                        <th style="padding: 1rem; border: 1px solid #ddd;">Traditional Attacks</th>
+                        <th style="padding: 1rem; border: 1px solid #ddd;">APT Attacks</th>
+                    </tr>
+                    <tr>
+                        <td style="padding: 1rem; border: 1px solid #ddd; font-weight: bold;">Duration</td>
+                        <td style="padding: 1rem; border: 1px solid #ddd;">Hours to days</td>
+                        <td style="padding: 1rem; border: 1px solid #ddd;">Months to years</td>
+                    </tr>
+                    <tr style="background: #f9f9f9;">
+                        <td style="padding: 1rem; border: 1px solid #ddd; font-weight: bold;">Targeting</td>
+                        <td style="padding: 1rem; border: 1px solid #ddd;">Broad, opportunistic</td>
+                        <td style="padding: 1rem; border: 1px solid #ddd;">Highly specific, strategic</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 1rem; border: 1px solid #ddd; font-weight: bold;">Methods</td>
+                        <td style="padding: 1rem; border: 1px solid #ddd;">Automated, known exploits</td>
+                        <td style="padding: 1rem; border: 1px solid #ddd;">Custom, zero-day, social engineering</td>
+                    </tr>
+                    <tr style="background: #f9f9f9;">
+                        <td style="padding: 1rem; border: 1px solid #ddd; font-weight: bold;">Detection</td>
+                        <td style="padding: 1rem; border: 1px solid #ddd;">Relatively easy</td>
+                        <td style="padding: 1rem; border: 1px solid #ddd;">Extremely difficult</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Examples Tab -->
+        <div id="examples" class="tab-content">
+            <h2 style="color: #27ae60; margin-bottom: 2rem;">💼 Real-World APT Examples</h2>
+
+            <div class="examples-container">
+                <div class="example-card">
+                    <h3 style="color: #e74c3c;">🎯 Stuxnet (2010)</h3>
+                    <p><strong>Target:</strong> Iranian nuclear facilities</p>
+                    <p><strong>Method:</strong> Sophisticated malware targeting specific industrial control systems</p>
+                    <p><strong>Impact:</strong> Physical damage to nuclear centrifuges, demonstrated cyber-physical attack capabilities</p>
+                    <p><strong>Attribution:</strong> Believed to be joint US-Israeli operation</p>
+                </div>
+
+                <div class="example-card">
+                    <h3 style="color: #e74c3c;">💻 SolarWinds (2020)</h3>
+                    <p><strong>Target:</strong> 18,000+ organizations including US government agencies</p>
+                    <p><strong>Method:</strong> Supply chain attack through compromised software updates</p>
+                    <p><strong>Impact:</strong> Massive data breach affecting multiple high-profile targets</p>
+                    <p><strong>Attribution:</strong> APT29 (Cozy Bear) - Russian state-sponsored group</p>
+                </div>
+
+                <div class="example-card">
+                    <h3 style="color: #e74c3c;">🏥 WannaCry (2017)</h3>
+                    <p><strong>Target:</strong> Global healthcare systems, particularly NHS in UK</p>
+                    <p><strong>Method:</strong> Ransomware exploiting Windows SMB vulnerability</p>
+                    <p><strong>Impact:</strong> 300,000+ computers affected, hospital operations disrupted</p>
+                    <p><strong>Attribution:</strong> Lazarus Group - North Korean state-sponsored APT</p>
+                </div>
+
+                <div class="example-card">
+                    <h3 style="color: #e74c3c;">🏦 Carbanak (2013-2015)</h3>
+                    <p><strong>Target:</strong> 100+ financial institutions globally</p>
+                    <p><strong>Method:</strong> Spear phishing, lateral movement, ATM manipulation</p>
+                    <p><strong>Impact:</strong> $1 billion stolen through fraudulent transactions</p>
+                    <p><strong>Attribution:</strong> Carbanak group - financially motivated cybercriminals</p>
+                </div>
+
+                <div class="example-card">
+                    <h3 style="color: #e74c3c;">🎮 Sony Pictures (2014)</h3>
+                    <p><strong>Target:</strong> Sony Pictures Entertainment</p>
+                    <p><strong>Method:</strong> Destructive malware, data theft, public data dump</p>
+                    <p><strong>Impact:</strong> Confidential emails leaked, business operations disrupted</p>
+                    <p><strong>Attribution:</strong> Lazarus Group in response to "The Interview" movie</p>
+                </div>
+            </div>
+
+            <div class="definition-card">
+                <h3>📈 APT Trends and Statistics</h3>
+                <ul style="margin-left: 2rem;">
+                    <li><strong>Dwell Time:</strong> Average 71-204 days before detection (varies by region)</li>
+                    <li><strong>Financial Impact:</strong> Average $891,000 loss per targeted attack</li>
+                    <li><strong>Growth Rate:</strong> 81% increase in advanced targeted attacks from 2010-2011</li>
+                    <li><strong>Success Rate:</strong> 95% of successful network intrusions began with spear phishing</li>
+                    <li><strong>Recovery Time:</strong> Organizations take an average of 1-4 weeks to recover</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Defenses Tab -->
+        <div id="defenses" class="tab-content">
+            <h2 style="color: #27ae60; margin-bottom: 2rem;">🛡️ APT Defense Strategies</h2>
+
+            <div class="defense-strategies">
+                <div class="defense-card">
+                    <h4>🔍 Continuous Monitoring</h4>
+                    <p>24/7 network monitoring, behavior analysis, and anomaly detection to identify suspicious activities.</p>
+                </div>
+
+                <div class="defense-card">
+                    <h4>🎯 Threat Intelligence</h4>
+                    <p>Real-time threat feeds, IOCs (Indicators of Compromise), and threat hunting capabilities.</p>
+                </div>
+
+                <div class="defense-card">
+                    <h4>🧠 User Education</h4>
+                    <p>Regular security awareness training focusing on social engineering and phishing recognition.</p>
+                </div>
+
+                <div class="defense-card">
+                    <h4>🔐 Zero Trust Architecture</h4>
+                    <p>Never trust, always verify. Continuous authentication and authorization for all network access.</p>
+                </div>
+
+                <div class="defense-card">
+                    <h4>📱 Endpoint Detection</h4>
+                    <p>Advanced endpoint protection with behavioral analysis and response capabilities.</p>
+                </div>
+
+                <div class="defense-card">
+                    <h4>🏗️ Network Segmentation</h4>
+                    <p>Limiting lateral movement through proper network isolation and micro-segmentation.</p>
+                </div>
+
+                <div class="defense-card">
+                    <h4>🔄 Incident Response</h4>
+                    <p>Prepared response plans, forensic capabilities, and rapid containment procedures.</p>
+                </div>
+
+                <div class="defense-card">
+                    <h4>🔒 Access Controls</h4>
+                    <p>Multi-factor authentication, privileged access management, and least privilege principles.</p>
+                </div>
+            </div>
+
+            <div class="definition-card">
+                <h3>🎯 Defense-in-Depth Strategy</h3>
+                <p>NIST recommends a layered security approach combining multiple defensive mechanisms:</p>
+                <ul style="margin-left: 2rem; margin-top: 1rem;">
+                    <li><strong>Preventive Controls:</strong> Firewalls, access controls, encryption</li>
+                    <li><strong>Detective Controls:</strong> SIEM, IDS/IPS, behavioral analytics</li>
+                    <li><strong>Responsive Controls:</strong> Incident response, forensics, recovery</li>
+                    <li><strong>Administrative Controls:</strong> Policies, training, governance</li>
+                </ul>
+            </div>
+
+            <div class="examples-container">
+                <h3 style="color: #27ae60; margin-bottom: 1rem;">🚨 Key Defense Principles</h3>
+                
+                <div class="example-card" style="border-left-color: #27ae60;">
+                    <h4>🔍 Assume Breach Mentality</h4>
+                    <p>Operate under the assumption that adversaries may already be in your network. Focus on detection, containment, and response rather than just prevention.</p>
+                </div>
+
+                <div class="example-card" style="border-left-color: #27ae60;">
+                    <h4>⚡ Rapid Detection and Response</h4>
+                    <p>The faster you detect and respond to threats, the less damage they can cause. Aim for detection within hours, not days or weeks.</p>
+                </div>
+
+                <div class="example-card" style="border-left-color: #27ae60;">
+                    <h4>🎯 Threat Hunting</h4>
+                    <p>Proactively search for indicators of compromise rather than waiting for alerts. Hunt for known APT tactics, techniques, and procedures.</p>
+                </div>
+
+                <div class="example-card" style="border-left-color: #27ae60;">
+                    <h4>📊 Continuous Improvement</h4>
+                    <p>Regularly update defenses based on new threat intelligence, lessons learned from incidents, and emerging attack techniques.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Tab -->
+        <div id="quiz" class="tab-content">
+            <h2 style="color: #27ae60; margin-bottom: 2rem;">🧠 APT Knowledge Assessment</h2>
+            
+            <div class="quiz-container">
+                <div class="question" id="question1">
+                    <h4>Question 1: According to NIST SP 800-39, which characteristic is NOT part of the APT definition?</h4>
+                    <div class="answer-option" onclick="checkAnswer(this, false)">A) Pursues objectives repeatedly over extended periods</div>
+                    <div class="answer-option" onclick="checkAnswer(this, false)">B) Adapts to defenders' efforts to resist it</div>
+                    <div class="answer-option" onclick="checkAnswer(this, true)">C) Always uses automated attack tools</div>
+                    <div class="answer-option" onclick="checkAnswer(this, false)">D) Maintains determination to execute objectives</div>
+                    <div class="answer-feedback" style="display: none; margin-top: 1rem; padding: 1rem; border-radius: 5px;"></div>
+                </div>
+
+                <div class="question" id="question2">
+                    <h4>Question 2: What is the typical "dwell time" for APT attacks?</h4>
+                    <div class="answer-option" onclick="checkAnswer(this, false)">A) Hours to days</div>
+                    <div class="answer-option" onclick="checkAnswer(this, true)">B) Weeks to months</div>
+                    <div class="answer-option" onclick="checkAnswer(this, false)">C) Minutes to hours</div>
+                    <div class="answer-option" onclick="checkAnswer(this, false)">D) Years to decades</div>
+                    <div class="answer-feedback" style="display: none; margin-top: 1rem; padding: 1rem; border-radius: 5px;"></div>
+                </div>
+
+                <div class="question" id="question3">
+                    <h4>Question 3: Which APT lifecycle phase involves expanding access and collecting credentials?</h4>
+                    <div class="answer-option" onclick="checkAnswer(this, false)">A) Ingress Efforts</div>
+                    <div class="answer-option" onclick="checkAnswer(this, false)">B) Establish Access</div>
+                    <div class="answer-option" onclick="checkAnswer(this, true)">C) Harvesting Data</div>
+                    <div class="answer-option" onclick="checkAnswer(this, false)">D) Exfiltrating Data</div>
+                    <div class="answer-feedback" style="display: none; margin-top: 1rem; padding: 1rem; border-radius: 5px;"></div>
+                </div>
+
+                <div class="question" id="question4">
+                    <h4>Question 4: What was unique about the Stuxnet APT attack?</h4>
+                    <div class="answer-option" onclick="checkAnswer(this, true)">A) It caused physical damage to industrial systems</div>
+                    <div class="answer-option" onclick="checkAnswer(this, false)">B) It only used social engineering techniques</div>
+                    <div class="answer-option" onclick="checkAnswer(this, false)">C) It targeted financial institutions</div>
+                    <div class="answer-option" onclick="checkAnswer(this, false)">D) It was the first known APT attack</div>
+                    <div class="answer-feedback" style="display: none; margin-top: 1rem; padding: 1rem; border-radius: 5px;"></div>
+                </div>
+
+                <div class="question" id="question5">
+                    <h4>Question 5: Which defense strategy is most effective against APTs?</h4>
+                    <div class="answer-option" onclick="checkAnswer(this, false)">A) Antivirus software only</div>
+                    <div class="answer-option" onclick="checkAnswer(this, false)">B) Firewall protection only</div>
+                    <div class="answer-option" onclick="checkAnswer(this, true)">C) Defense-in-depth with multiple layers</div>
+                    <div class="answer-option" onclick="checkAnswer(this, false)">D) User training only</div>
+                    <div class="answer-feedback" style="display: none; margin-top: 1rem; padding: 1rem; border-radius: 5px;"></div>
+                </div>
+
+                <button class="btn" onclick="resetQuiz()" style="margin-top: 2rem;">🔄 Reset Quiz</button>
+                <div id="quizScore" style="margin-top: 1rem; font-size: 1.2rem; font-weight: bold; text-align: center;"></div>
+            </div>
+
+            <div class="definition-card">
+                <h3>📚 Additional Learning Resources</h3>
+                <ul style="margin-left: 2rem;">
+                    <li><strong>NIST Cybersecurity Framework:</strong> Comprehensive guidance for cybersecurity risk management</li>
+                    <li><strong>MITRE ATT&CK Framework:</strong> Detailed tactics and techniques used by adversaries</li>
+                    <li><strong>SANS APT Detection:</strong> Practical approaches to identifying advanced threats</li>
+                    <li><strong>Threat Intelligence Platforms:</strong> Real-time APT indicators and analysis</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentPhase = 0;
+        let quizScore = 0;
+        let questionsAnswered = 0;
+
+        function showTab(tabName) {
+            // Hide all tab contents
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+            
+            // Remove active class from all buttons
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(button => button.classList.remove('active'));
+            
+            // Show selected tab and mark button as active
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function selectPhase(phaseNum, element) {
+            // Remove active class from all phase cards
+            const cards = document.querySelectorAll('.phase-card');
+            cards.forEach(card => card.classList.remove('active'));
+            
+            // Add active class to selected card
+            element.classList.add('active');
+            
+            // Update progress bar
+            const progress = (phaseNum / 4) * 100;
+            document.getElementById('lifecycleProgress').style.width = progress + '%';
+            
+            // Update phase details
+            const details = getPhaseDetails(phaseNum);
+            document.getElementById('phaseDetails').innerHTML = details;
+            
+            currentPhase = phaseNum;
+        }
+
+        function getPhaseDetails(phaseNum) {
+            const phases = {
+                1: {
+                    title: "🎯 Phase 1: Ingress Efforts",
+                    content: `
+                        <div class="definition-card">
+                            <h3>Initial Attack Vector</h3>
+                            <p>The first phase focuses on gaining initial access to the target environment. Attackers spend significant time researching the target organization, identifying key personnel, and developing custom attack methods.</p>
+                            
+                            <h4 style="color: #27ae60; margin-top: 1.5rem;">Common Techniques:</h4>
+                            <ul style="margin-left: 2rem;">
+                                <li><strong>Spear Phishing:</strong> Highly targeted emails designed to trick specific individuals</li>
+                                <li><strong>Social Engineering:</strong> Manipulating human psychology to gain access</li>
+                                <li><strong>Zero-Day Exploits:</strong> Using previously unknown vulnerabilities</li>
+                                <li><strong>Watering Hole Attacks:</strong> Compromising websites frequently visited by targets</li>
+                                <li><strong>Supply Chain Compromise:</strong> Attacking through trusted third-party vendors</li>
+                            </ul>
+                            
+                            <h4 style="color: #27ae60; margin-top: 1.5rem;">Defense Strategies:</h4>
+                            <ul style="margin-left: 2rem;">
+                                <li>Employee security awareness training</li>
+                                <li>Email filtering and sandboxing</li>
+                                <li>Regular vulnerability assessments</li>
+                                <li>Supply chain security monitoring</li>
+                            </ul>
+                        </div>
+                    `
+                },
+                2: {
+                    title: "🚪 Phase 2: Establish Access",
+                    content: `
+                        <div class="definition-card">
+                            <h3>Gaining Foothold</h3>
+                            <p>After initial compromise, attackers work to establish a persistent presence in the target environment. This involves installing backdoors, testing system defenses, and preparing for long-term access.</p>
+                            
+                            <h4 style="color: #27ae60; margin-top: 1.5rem;">Key Activities:</h4>
+                            <ul style="margin-left: 2rem;">
+                                <li><strong>Backdoor Installation:</strong> Creating multiple access points for future entry</li>
+                                <li><strong>Defense Evasion:</strong> Modifying malware to avoid detection</li>
+                                <li><strong>Communication Setup:</strong> Establishing command and control channels</li>
+                                <li><strong>Environment Mapping:</strong> Understanding network topology and security controls</li>
+                                <li><strong>Persistence Mechanisms:</strong> Ensuring access survives system reboots and updates</li>
+                            </ul>
+                            
+                            <h4 style="color: #27ae60; margin-top: 1.5rem;">Detection Indicators:</h4>
+                            <ul style="margin-left: 2rem;">
+                                <li>Unusual network connections to external IPs</li>
+                                <li>Unexpected system processes or services</li>
+                                <li>Modified system files or registry entries</li>
+                                <li>Anomalous user account activities</li>
+                            </ul>
+                        </div>
+                    `
+                },
+                3: {
+                    title: "📊 Phase 3: Harvesting Data",
+                    content: `
+                        <div class="definition-card">
+                            <h3>Expansion and Collection</h3>
+                            <p>With established access, attackers begin expanding their reach within the network. They collect credentials, map internal systems, and identify valuable data sources while maintaining stealth.</p>
+                            
+                            <h4 style="color: #27ae60; margin-top: 1.5rem;">Expansion Techniques:</h4>
+                            <ul style="margin-left: 2rem;">
+                                <li><strong>Lateral Movement:</strong> Moving between systems to find valuable targets</li>
+                                <li><strong>Privilege Escalation:</strong> Gaining higher-level access permissions</li>
+                                <li><strong>Credential Harvesting:</strong> Collecting usernames and passwords</li>
+                                <li><strong>Data Discovery:</strong> Locating sensitive information repositories</li>
+                                <li><strong>System Reconnaissance:</strong> Mapping network architecture and security controls</li>
+                            </ul>
+                            
+                            <h4 style="color: #27ae60; margin-top: 1.5rem;">What They're Looking For:</h4>
+                            <ul style="margin-left: 2rem;">
+                                <li>Intellectual property and trade secrets</li>
+                                <li>Financial information and customer data</li>
+                                <li>Strategic business plans and communications</li>
+                                <li>Government or military secrets</li>
+                                <li>Personal information for blackmail or fraud</li>
+                            </ul>
+                        </div>
+                    `
+                },
+                4: {
+                    title: "📤 Phase 4: Exfiltrating Data",
+                    content: `
+                        <div class="definition-card">
+                            <h3>Data Extraction and Cleanup</h3>
+                            <p>The final phase involves extracting stolen data while covering tracks to avoid detection. Attackers often maintain access for future operations or as insurance against discovery.</p>
+                            
+                            <h4 style="color: #27ae60; margin-top: 1.5rem;">Exfiltration Methods:</h4>
+                            <ul style="margin-left: 2rem;">
+                                <li><strong>Encrypted Channels:</strong> Using HTTPS or other encrypted protocols</li>
+                                <li><strong>Data Staging:</strong> Temporarily storing data in hidden locations</li>
+                                <li><strong>Covert Timing:</strong> Extracting data during off-hours or high-traffic periods</li>
+                                <li><strong>Legitimate Tools:</strong> Abusing cloud storage or file transfer services</li>
+                                <li><strong>Physical Methods:</strong> Using removable media or insider access</li>
+                            </ul>
+                            
+                            <h4 style="color: #27ae60; margin-top: 1.5rem;">Cleanup Activities:</h4>
+                            <ul style="margin-left: 2rem;">
+                                <li>Deleting log files and audit trails</li>
+                                <li>Removing malware and tools</li>
+                                <li>Modifying timestamps to hide activities</li>
+                                <li>Destroying evidence of compromise</li>
+                                <li>Maintaining dormant backdoors for future use</li>
+                            </ul>
+                        </div>
+                    `
+                }
+            };
+            
+            return phases[phaseNum].content;
+        }
+
+        function checkAnswer(element, isCorrect) {
+            const question = element.closest('.question');
+            const options = question.querySelectorAll('.answer-option');
+            const feedback = question.querySelector('.answer-feedback');
+            
+            // Disable all options in this question
+            options.forEach(option => {
+                option.style.pointerEvents = 'none';
+                if (option === element) {
+                    option.classList.add(isCorrect ? 'correct' : 'incorrect');
+                } else if (option.onclick.toString().includes('true')) {
+                    option.classList.add('correct');
+                }
+            });
+            
+            // Show feedback
+            feedback.style.display = 'block';
+            if (isCorrect) {
+                feedback.style.background = '#27ae60';
+                feedback.style.color = 'white';
+                feedback.textContent = '✅ Correct! Well done.';
+                quizScore++;
+            } else {
+                feedback.style.background = '#e74c3c';
+                feedback.style.color = 'white';
+                feedback.textContent = '❌ Incorrect. The correct answer is highlighted in green.';
+            }
+            
+            questionsAnswered++;
+            updateQuizScore();
+        }
+
+        function updateQuizScore() {
+            const scoreElement = document.getElementById('quizScore');
+            if (questionsAnswered === 5) {
+                const percentage = (quizScore / 5) * 100;
+                let message = '';
+                if (percentage >= 80) {
+                    message = `🎉 Excellent! You scored ${quizScore}/5 (${percentage}%). You have a strong understanding of APTs!`;
+                } else if (percentage >= 60) {
+                    message = `👍 Good job! You scored ${quizScore}/5 (${percentage}%). Review the material for better understanding.`;
+                } else {
+                    message = `📚 You scored ${quizScore}/5 (${percentage}%). Consider reviewing the content and retaking the quiz.`;
+                }
+                scoreElement.innerHTML = message;
+                scoreElement.style.color = percentage >= 80 ? '#27ae60' : percentage >= 60 ? '#f39c12' : '#e74c3c';
+            }
+        }
+
+        function resetQuiz() {
+            const questions = document.querySelectorAll('.question');
+            questions.forEach(question => {
+                const options = question.querySelectorAll('.answer-option');
+                const feedback = question.querySelector('.answer-feedback');
+                
+                options.forEach(option => {
+                    option.style.pointerEvents = 'auto';
+                    option.classList.remove('correct', 'incorrect');
+                });
+                
+                feedback.style.display = 'none';
+            });
+            
+            quizScore = 0;
+            questionsAnswered = 0;
+            document.getElementById('quizScore').innerHTML = '';
+        }
+
+        // Initialize the tool
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show the first tab by default
+            showTab('overview');
+        });
+    </script>
+</body>
+</html>
