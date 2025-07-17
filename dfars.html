@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DFARS Training Tool for CMMC Class</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #2c5530 0%, #1a3a1d 100%);
+            color: white;
+            padding: 30px 0;
+            text-align: center;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 25px rgba(44, 85, 48, 0.3);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .navigation {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border: 2px solid #2c5530;
+        }
+
+        .nav-label {
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: #2c5530;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            font-size: 1rem;
+            border: 2px solid #2c5530;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        select:hover, select:focus {
+            border-color: #1a3a1d;
+            box-shadow: 0 0 10px rgba(44, 85, 48, 0.2);
+            outline: none;
+        }
+
+        .content-area {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border: 2px solid #2c5530;
+            min-height: 500px;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            color: #2c5530;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #2c5530;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: #1a3a1d;
+            font-size: 1.4rem;
+            margin: 25px 0 15px 0;
+            background: linear-gradient(90deg, #f0f8f0, transparent);
+            padding: 10px 15px;
+            border-left: 4px solid #2c5530;
+            border-radius: 5px;
+        }
+
+        .key-points {
+            background: #f0f8f0;
+            border: 2px solid #2c5530;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .key-points h4 {
+            color: #1a3a1d;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        ul {
+            padding-left: 25px;
+            margin: 15px 0;
+        }
+
+        li {
+            margin: 8px 0;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #2c5530 0%, #1a3a1d 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(44, 85, 48, 0.3);
+        }
+
+        .quiz-container {
+            background: #f8f9fa;
+            border: 2px solid #2c5530;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .question {
+            font-weight: bold;
+            color: #1a3a1d;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .quiz-option {
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-option:hover {
+            background: #f0f8f0;
+            border-color: #2c5530;
+        }
+
+        .quiz-option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .quiz-option.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .compliance-matrix {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+        }
+
+        .compliance-matrix th,
+        .compliance-matrix td {
+            border: 2px solid #2c5530;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .compliance-matrix th {
+            background: #2c5530;
+            color: white;
+            font-weight: bold;
+        }
+
+        .compliance-matrix tr:nth-child(even) {
+            background: #f0f8f0;
+        }
+
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 40px;
+            margin: 20px 0;
+            border-left: 3px solid #2c5530;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 0;
+            width: 12px;
+            height: 12px;
+            background: #2c5530;
+            border-radius: 50%;
+        }
+
+        .timeline-date {
+            font-weight: bold;
+            color: #1a3a1d;
+            font-size: 1.1rem;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .resource-card {
+            background: white;
+            border: 2px solid #2c5530;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .resource-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(44, 85, 48, 0.2);
+        }
+
+        .assessment-tool {
+            background: #f8f9fa;
+            border: 2px solid #2c5530;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .progress-bar {
+            width: 100%;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .progress-fill {
+            height: 20px;
+            background: linear-gradient(90deg, #2c5530, #1a3a1d);
+            transition: width 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            .container { padding: 10px; }
+            .content-area { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🛡️ DFARS Training Tool</h1>
+            <p class="subtitle">Understanding DFARS for CUI Protection & CMMC Certification</p>
+        </header>
+
+        <div class="navigation">
+            <label for="sectionSelect" class="nav-label">📚 Navigate Training Sections:</label>
+            <select id="sectionSelect" onchange="showSection(this.value)">
+                <option value="overview">DFARS Overview & Importance</option>
+                <option value="cui-protection">CUI Protection Requirements</option>
+                <option value="cmmc-relationship">DFARS & CMMC Relationship</option>
+                <option value="implementation">Implementation Requirements</option>
+                <option value="compliance-matrix">Compliance Matrix</option>
+                <option value="assessment">Self-Assessment Tool</option>
+                <option value="timeline">Key Dates & Timeline</option>
+                <option value="resources">Resources & Next Steps</option>
+            </select>
+        </div>
+
+        <div class="content-area">
+            <!-- Overview Section -->
+            <div id="overview" class="section active">
+                <h2>🔍 DFARS Overview & Importance</h2>
+                
+                <h3>What is DFARS?</h3>
+                <p>The Defense Federal Acquisition Regulation Supplement (DFARS) is a set of rules that supplements the Federal Acquisition Regulation (FAR). <strong>DFARS 252.204-7012</strong> specifically addresses "Safeguarding Covered Defense Information and Cyber Incident Reporting."</p>
+
+                <div class="key-points">
+                    <h4>🎯 Key Objectives of DFARS</h4>
+                    <ul>
+                        <li><strong>Protect National Security:</strong> Ensure defense contractors safeguard sensitive government data</li>
+                        <li><strong>Standardize Cybersecurity:</strong> Create uniform compliance expectations across all DoD contractors</li>
+                        <li><strong>Secure Supply Chain:</strong> Protect the entire defense industrial base from cyber threats</li>
+                        <li><strong>Prevent Data Breaches:</strong> Implement robust security controls to prevent unauthorized access</li>
+                    </ul>
+                </div>
+
+                <h3>Why is DFARS Critical for DoD Contractors?</h3>
+                <div class="highlight">
+                    <strong>🚨 Non-Negotiable Requirement:</strong> DFARS compliance is mandatory for all DoD contractors handling Controlled Unclassified Information (CUI). Failure to comply can result in contract loss, legal repercussions, and exclusion from future DoD contracts.
+                </div>
+
+                <h3>Who Must Comply?</h3>
+                <ul>
+                    <li>Prime contractors working with the Department of Defense</li>
+                    <li>Subcontractors at all tiers handling CUI</li>
+                    <li>Organizations processing, storing, or transmitting covered defense information</li>
+                    <li>Cloud service providers supporting DoD contractors</li>
+                </ul>
+
+                <div class="quiz-container">
+                    <div class="question">📝 Quick Check: Which DFARS clause specifically addresses cybersecurity requirements?</div>
+                    <div class="quiz-option" onclick="selectAnswer(this, false)">A) DFARS 252.204-7011</div>
+                    <div class="quiz-option" onclick="selectAnswer(this, true)">B) DFARS 252.204-7012</div>
+                    <div class="quiz-option" onclick="selectAnswer(this, false)">C) DFARS 252.204-7013</div>
+                    <div class="quiz-option" onclick="selectAnswer(this, false)">D) DFARS 252.204-7010</div>
+                </div>
+            </div>
+
+            <!-- CUI Protection Section -->
+            <div id="cui-protection" class="section">
+                <h2>🔐 CUI Protection Requirements</h2>
+
+                <h3>Understanding Controlled Unclassified Information (CUI)</h3>
+                <p>CUI is information that requires safeguarding or dissemination controls but is not classified. It includes technical data, proprietary information, and sensitive business information that could harm national security if compromised.</p>
+
+                <div class="key-points">
+                    <h4>📋 Examples of CUI in Defense Contracts</h4>
+                    <ul>
+                        <li>Engineering drawings and technical specifications</li>
+                        <li>Research and development data</li>
+                        <li>Source code and software documentation</li>
+                        <li>Manufacturing processes and procedures</li>
+                        <li>Performance specifications and test data</li>
+                        <li>Personnel information and security clearance data</li>
+                    </ul>
+                </div>
+
+                <h3>NIST SP 800-171 Requirements</h3>
+                <p>DFARS 252.204-7012 mandates implementation of <strong>all 110 security controls</strong> from NIST SP 800-171. These controls are organized into 14 families:</p>
+
+                <table class="compliance-matrix">
+                    <thead>
+                        <tr>
+                            <th>Control Family</th>
+                            <th>Number of Controls</th>
+                            <th>Key Focus Area</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Access Control</td><td>22</td><td>User access management</td></tr>
+                        <tr><td>Awareness and Training</td><td>3</td><td>Security education</td></tr>
+                        <tr><td>Audit and Accountability</td><td>9</td><td>Logging and monitoring</td></tr>
+                        <tr><td>Configuration Management</td><td>9</td><td>System configuration</td></tr>
+                        <tr><td>Identification and Authentication</td><td>11</td><td>User identification</td></tr>
+                        <tr><td>Incident Response</td><td>3</td><td>Cyber incident handling</td></tr>
+                        <tr><td>Maintenance</td><td>2</td><td>System maintenance</td></tr>
+                        <tr><td>Media Protection</td><td>9</td><td>Data storage security</td></tr>
+                        <tr><td>Personnel Security</td><td>2</td><td>Employee screening</td></tr>
+                        <tr><td>Physical Protection</td><td>6</td><td>Physical security</td></tr>
+                        <tr><td>Risk Assessment</td><td>3</td><td>Risk evaluation</td></tr>
+                        <tr><td>Security Assessment</td><td>2</td><td>Security testing</td></tr>
+                        <tr><td>System and Communications Protection</td><td>23</td><td>Network security</td></tr>
+                        <tr><td>System and Information Integrity</td><td>6</td><td>Data integrity</td></tr>
+                    </tbody>
+                </table>
+
+                <div class="highlight">
+                    <strong>⚠️ Critical Requirement:</strong> Unlike NIST 800-171 standalone compliance where POA&Ms (Plan of Action and Milestones) are acceptable, CMMC requires full implementation of ALL controls with no exceptions.
+                </div>
+            </div>
+
+            <!-- CMMC Relationship Section -->
+            <div id="cmmc-relationship" class="section">
+                <h2>🔗 DFARS & CMMC Relationship</h2>
+
+                <h3>How DFARS and CMMC Work Together</h3>
+                <p>CMMC (Cybersecurity Maturity Model Certification) was created to validate and verify that contractors are actually implementing the cybersecurity requirements mandated by DFARS.</p>
+
+                <div class="key-points">
+                    <h4>🔄 The Evolution from Self-Attestation to Third-Party Verification</h4>
+                    <ul>
+                        <li><strong>DFARS 252.204-7012:</strong> Originally allowed self-attestation of compliance</li>
+                        <li><strong>Problem Identified:</strong> Many contractors claimed compliance without proper implementation</li>
+                        <li><strong>CMMC Solution:</strong> Requires third-party assessment and certification</li>
+                        <li><strong>Result:</strong> "No CMMC certification = No DoD contract"</li>
+                    </ul>
+                </div>
+
+                <h3>CMMC 2.0 Level Requirements</h3>
+                <div class="resource-card">
+                    <h4>📊 CMMC Level 1 (Foundational)</h4>
+                    <ul>
+                        <li><strong>Scope:</strong> Federal Contract Information (FCI)</li>
+                        <li><strong>Controls:</strong> 17 basic safeguarding practices</li>
+                        <li><strong>Assessment:</strong> Annual self-assessment</li>
+                        <li><strong>Based on:</strong> FAR 52.204-21</li>
+                    </ul>
+                </div>
+
+                <div class="resource-card">
+                    <h4>🔒 CMMC Level 2 (Advanced)</h4>
+                    <ul>
+                        <li><strong>Scope:</strong> Controlled Unclassified Information (CUI)</li>
+                        <li><strong>Controls:</strong> All 110 NIST SP 800-171 controls</li>
+                        <li><strong>Assessment:</strong> Third-party assessment every 3 years</li>
+                        <li><strong>Based on:</strong> DFARS 252.204-7012 + NIST SP 800-171</li>
+                    </ul>
+                </div>
+
+                <div class="resource-card">
+                    <h4>🚀 CMMC Level 3 (Expert)</h4>
+                    <ul>
+                        <li><strong>Scope:</strong> CUI for highest priority DoD programs</li>
+                        <li><strong>Controls:</strong> NIST SP 800-171 + additional NIST SP 800-172 controls</li>
+                        <li><strong>Assessment:</strong> Government assessment</li>
+                        <li><strong>Status:</strong> Under development</li>
+                    </ul>
+                </div>
+
+                <h3>Key DFARS Clauses Supporting CMMC</h3>
+                <ul>
+                    <li><strong>DFARS 252.204-7019:</strong> Notice of NIST SP 800-171 DoD Assessment Requirements</li>
+                    <li><strong>DFARS 252.204-7020:</strong> NIST SP 800-171 DoD Assessment Requirements</li>
+                    <li><strong>DFARS 252.204-7021:</strong> Cybersecurity Maturity Model Certification Requirements</li>
+                </ul>
+            </div>
+
+            <!-- Implementation Section -->
+            <div id="implementation" class="section">
+                <h2>⚙️ Implementation Requirements</h2>
+
+                <h3>Phase 1: Understanding Your Obligations</h3>
+                <div class="assessment-tool">
+                    <h4>🎯 Determine Your Requirements</h4>
+                    <p><strong>Step 1:</strong> Review your contracts for DFARS clauses</p>
+                    <p><strong>Step 2:</strong> Identify the types of information you handle (FCI vs. CUI)</p>
+                    <p><strong>Step 3:</strong> Determine your required CMMC level</p>
+                    
+                    <div class="quiz-container">
+                        <div class="question">If your contract contains DFARS 252.204-7012, what CMMC level do you likely need?</div>
+                        <div class="quiz-option" onclick="selectAnswer(this, false)">Level 1</div>
+                        <div class="quiz-option" onclick="selectAnswer(this, true)">Level 2</div>
+                        <div class="quiz-option" onclick="selectAnswer(this, false)">Level 3</div>
+                    </div>
+                </div>
+
+                <h3>Phase 2: Gap Assessment</h3>
+                <p>Conduct a comprehensive gap analysis against NIST SP 800-171 requirements:</p>
+                <ul>
+                    <li>Evaluate current security controls implementation</li>
+                    <li>Identify systems that process, store, or transmit CUI</li>
+                    <li>Document existing policies and procedures</li>
+                    <li>Assess technical controls and configurations</li>
+                    <li>Review personnel security measures</li>
+                </ul>
+
+                <h3>Phase 3: System Security Plan (SSP) Development</h3>
+                <div class="key-points">
+                    <h4>📑 Required SSP Components</h4>
+                    <ul>
+                        <li><strong>System Description:</strong> Detailed network architecture and data flows</li>
+                        <li><strong>Security Controls:</strong> Implementation details for all 110 NIST controls</li>
+                        <li><strong>Policies and Procedures:</strong> Documented security policies</li>
+                        <li><strong>Risk Assessment:</strong> Comprehensive risk analysis</li>
+                        <li><strong>Incident Response Plan:</strong> Detailed incident handling procedures</li>
+                        <li><strong>Configuration Management:</strong> Baseline configurations and change control</li>
+                    </ul>
+                </div>
+
+                <h3>Phase 4: Technical Implementation</h3>
+                <p>Implement the necessary technical and administrative controls:</p>
+                <ul>
+                    <li>Deploy endpoint detection and response (EDR) solutions</li>
+                    <li>Implement multi-factor authentication (MFA)</li>
+                    <li>Configure network segmentation and monitoring</li>
+                    <li>Establish backup and recovery procedures</li>
+                    <li>Deploy encryption for data at rest and in transit</li>
+                    <li>Implement vulnerability management processes</li>
+                </ul>
+
+                <div class="highlight">
+                    <strong>💡 Pro Tip:</strong> Consider implementing a CUI enclave - a dedicated, secure environment for handling CUI that can accelerate your path to compliance while allowing time to secure your entire enterprise environment.
+                </div>
+            </div>
+
+            <!-- Compliance Matrix Section -->
+            <div id="compliance-matrix" class="section">
+                <h2>📊 Compliance Matrix</h2>
+
+                <h3>DFARS vs. CMMC Requirement Mapping</h3>
+                <table class="compliance-matrix">
+                    <thead>
+                        <tr>
+                            <th>Requirement Area</th>
+                            <th>DFARS 252.204-7012</th>
+                            <th>CMMC Level 2</th>
+                            <th>Key Difference</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Security Controls</td>
+                            <td>110 NIST SP 800-171 controls</td>
+                            <td>110 NIST SP 800-171 controls</td>
+                            <td>Same requirements</td>
+                        </tr>
+                        <tr>
+                            <td>Assessment Method</td>
+                            <td>Self-attestation allowed</td>
+                            <td>Third-party assessment required</td>
+                            <td>Verification method</td>
+                        </tr>
+                        <tr>
+                            <td>Documentation</td>
+                            <td>System Security Plan required</td>
+                            <td>SSP + evidence portfolio required</td>
+                            <td>Evidence requirements</td>
+                        </tr>
+                        <tr>
+                            <td>POA&M Acceptance</td>
+                            <td>Plans of Action allowed</td>
+                            <td>No POA&Ms for CMMC</td>
+                            <td>Implementation requirement</td>
+                        </tr>
+                        <tr>
+                            <td>Incident Reporting</td>
+                            <td>72-hour reporting required</td>
+                            <td>Same requirement</td>
+                            <td>No difference</td>
+                        </tr>
+                        <tr>
+                            <td>Subcontractor Flow-down</td>
+                            <td>Required for CUI handling</td>
+                            <td>Required for CUI handling</td>
+                            <td>Same requirement</td>
+                        </tr>
+                        <tr>
+                            <td>Cloud Requirements</td>
+                            <td>FedRAMP Moderate equivalent</td>
+                            <td>FedRAMP Moderate equivalent</td>
+                            <td>Same requirement</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Implementation Status Tracking</h3>
+                <div class="assessment-tool">
+                    <h4>📈 Track Your Progress</h4>
+                    <p>Use this matrix to track your implementation progress:</p>
+                    
+                    <div style="margin: 15px 0;">
+                        <strong>Access Control (AC) - 22 Controls</strong>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 65%"></div>
+                        </div>
+                        <small>65% Complete</small>
+                    </div>
+                    
+                    <div style="margin: 15px 0;">
+                        <strong>Identification and Authentication (IA) - 11 Controls</strong>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 80%"></div>
+                        </div>
+                        <small>80% Complete</small>
+                    </div>
+                    
+                    <div style="margin: 15px 0;">
+                        <strong>System and Communications Protection (SC) - 23 Controls</strong>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 45%"></div>
+                        </div>
+                        <small>45% Complete</small>
+                    </div>
+                    
+                    <p><em>Note: This is a sample progress tracker. Actual implementation progress will vary by organization.</em></p>
+                </div>
+            </div>
+
+            <!-- Assessment Section -->
+            <div id="assessment" class="section">
+                <h2>✅ Self-Assessment Tool</h2>
+
+                <h3>DFARS Readiness Assessment</h3>
+                <p>Use this tool to evaluate your organization's current readiness for DFARS compliance and CMMC certification.</p>
+
+                <div class="assessment-tool">
+                    <h4>📝 Basic Readiness Questions</h4>
+                    
+                    <div class="quiz-container" style="margin: 20px 0;">
+                        <div class="question">1. Does your organization have a current System Security Plan (SSP)?</div>
+                        <div class="quiz-option" onclick="assessmentAnswer(this, 'no')">❌ Not encrypted or inadequate encryption</div>
+                    </div>
+
+                    <div class="quiz-container" style="margin: 20px 0;">
+                        <div class="question">5. Do you have a documented incident response plan with 72-hour DoD reporting procedures?</div>
+                        <div class="quiz-option" onclick="assessmentAnswer(this, 'yes')">✅ Yes, tested and current</div>
+                        <div class="quiz-option" onclick="assessmentAnswer(this, 'partial')">⚠️ Plan exists but needs testing</div>
+                        <div class="quiz-option" onclick="assessmentAnswer(this, 'no')">❌ No formal plan</div>
+                    </div>
+
+                    <button class="btn-secondary" onclick="calculateAssessment()">📊 Calculate Readiness Score</button>
+                    
+                    <div id="assessmentResult" style="margin-top: 20px; display: none;">
+                        <div class="highlight">
+                            <h4>🎯 Your DFARS Readiness Score</h4>
+                            <div id="scoreDisplay"></div>
+                            <div id="recommendations"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Critical Success Factors</h3>
+                <div class="key-points">
+                    <h4>🔑 Keys to Successful DFARS/CMMC Implementation</h4>
+                    <ul>
+                        <li><strong>Leadership Commitment:</strong> Executive sponsorship and adequate resource allocation</li>
+                        <li><strong>Cross-Functional Team:</strong> Include IT, Security, Legal, and Business stakeholders</li>
+                        <li><strong>Phased Approach:</strong> Implement controls systematically, prioritizing high-risk areas</li>
+                        <li><strong>Documentation:</strong> Maintain comprehensive, current documentation</li>
+                        <li><strong>Training:</strong> Ensure all personnel understand their security responsibilities</li>
+                        <li><strong>Continuous Monitoring:</strong> Implement ongoing security monitoring and assessment</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Timeline Section -->
+            <div id="timeline" class="section">
+                <h2>📅 Key Dates & Timeline</h2>
+
+                <h3>DFARS and CMMC Implementation Timeline</h3>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-date">December 31, 2017</div>
+                        <p><strong>DFARS 252.204-7012 Compliance Deadline</strong><br>
+                        Original deadline for implementing NIST SP 800-171 controls (now past due)</p>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-date">September 2020</div>
+                        <p><strong>DFARS Interim Rules Published</strong><br>
+                        Introduction of DFARS clauses 7019, 7020, and 7021 supporting CMMC</p>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-date">October 15, 2024</div>
+                        <p><strong>CMMC 2.0 Final Rule Published</strong><br>
+                        Official publication of the final CMMC program rule</p>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-date">December 16, 2024</div>
+                        <p><strong>CMMC Program Implementation Begins</strong><br>
+                        Start of phased CMMC implementation with self-assessments</p>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-date">Q1 2025</div>
+                        <p><strong>CMMC Assessments Begin</strong><br>
+                        C3PAO assessments start for Level 2 and Level 3 certifications</p>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-date">October 1, 2025</div>
+                        <p><strong>CMMC Required in All New DoD Contracts</strong><br>
+                        All DoD solicitations and contracts (except COTS) will require CMMC certification</p>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-date">2026-2027</div>
+                        <p><strong>Full CMMC Implementation</strong><br>
+                        All existing DoD contracts expected to include CMMC requirements</p>
+                    </div>
+                </div>
+
+                <div class="highlight">
+                    <strong>⏰ Action Required NOW:</strong> Even if your contracts don't yet require CMMC, prime contractors are already expecting subcontractors to achieve CMMC certification. Starting your compliance journey now is critical to maintaining your position in the defense supply chain.
+                </div>
+
+                <h3>Preparation Timeline Recommendations</h3>
+                <div class="resource-card">
+                    <h4>🚀 6-18 Month Implementation Plan</h4>
+                    <ul>
+                        <li><strong>Months 1-2:</strong> Gap assessment and planning</li>
+                        <li><strong>Months 3-6:</strong> Policy development and initial technical implementations</li>
+                        <li><strong>Months 7-12:</strong> Full technical implementation and testing</li>
+                        <li><strong>Months 13-15:</strong> Documentation finalization and internal assessments</li>
+                        <li><strong>Months 16-18:</strong> C3PAO assessment preparation and execution</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Resources Section -->
+            <div id="resources" class="section">
+                <h2>📚 Resources & Next Steps</h2>
+
+                <h3>Official Government Resources</h3>
+                <div class="resource-card">
+                    <h4>🏛️ Primary Sources</h4>
+                    <ul>
+                        <li><strong>DoD CMMC Website:</strong> dodcio.defense.gov/CMMC/</li>
+                        <li><strong>DFARS Clauses:</strong> acquisition.gov/dfars</li>
+                        <li><strong>NIST SP 800-171:</strong> csrc.nist.gov/publications/detail/sp/800-171/rev-2/final</li>
+                        <li><strong>CUI Registry:</strong> cui.archives.gov</li>
+                        <li><strong>Cyber AB:</strong> cyberab.org (CMMC certification body)</li>
+                    </ul>
+                </div>
+
+                <h3>Implementation Tools and Templates</h3>
+                <div class="resource-card">
+                    <h4>🛠️ Practical Tools</h4>
+                    <ul>
+                        <li><strong>NIST SP 800-171A:</strong> Assessment procedures for security requirements</li>
+                        <li><strong>DoD Assessment Methodology:</strong> Official DoD assessment guidance</li>
+                        <li><strong>SSP Templates:</strong> System Security Plan templates and examples</li>
+                        <li><strong>CMMC Model:</strong> Detailed practice and maturity requirements</li>
+                        <li><strong>SPRS:</strong> Supplier Performance Risk System for score reporting</li>
+                    </ul>
+                </div>
+
+                <h3>Professional Services and Training</h3>
+                <div class="resource-card">
+                    <h4>🎓 Expert Assistance</h4>
+                    <ul>
+                        <li><strong>C3PAOs:</strong> Certified Third-Party Assessment Organizations</li>
+                        <li><strong>CMMC Training Providers:</strong> Authorized training organizations</li>
+                        <li><strong>Cybersecurity Consultants:</strong> DFARS/CMMC implementation specialists</li>
+                        <li><strong>Technology Vendors:</strong> CMMC-compliant solutions and services</li>
+                        <li><strong>Legal Counsel:</strong> Contract and compliance legal support</li>
+                    </ul>
+                </div>
+
+                <h3>Immediate Action Items</h3>
+                <div class="assessment-tool">
+                    <h4>✅ Your Next Steps Checklist</h4>
+                    <ul style="list-style: none; padding-left: 0;">
+                        <li>☐ <strong>Review Current Contracts:</strong> Identify DFARS clauses in existing contracts</li>
+                        <li>☐ <strong>Inventory CUI:</strong> Identify where CUI is processed, stored, or transmitted</li>
+                        <li>☐ <strong>Conduct Gap Assessment:</strong> Evaluate current security posture against NIST 800-171</li>
+                        <li>☐ <strong>Develop Project Plan:</strong> Create timeline and resource allocation for compliance</li>
+                        <li>☐ <strong>Engage Stakeholders:</strong> Build cross-functional compliance team</li>
+                        <li>☐ <strong>Begin Documentation:</strong> Start developing System Security Plan</li>
+                        <li>☐ <strong>Identify C3PAO:</strong> Research and engage with assessment organizations</li>
+                        <li>☐ <strong>Budget Planning:</strong> Allocate resources for implementation and assessment</li>
+                        <li>☐ <strong>Training Plan:</strong> Develop security awareness training program</li>
+                        <li>☐ <strong>Vendor Assessment:</strong> Ensure subcontractors and vendors are CMMC-ready</li>
+                    </ul>
+                </div>
+
+                <div class="highlight">
+                    <h4>🎯 Key Takeaways</h4>
+                    <ul>
+                        <li><strong>DFARS 252.204-7012</strong> is the foundation requiring NIST SP 800-171 implementation</li>
+                        <li><strong>CMMC</strong> validates and verifies DFARS compliance through third-party assessment</li>
+                        <li><strong>Level 2 CMMC</strong> requires all 110 NIST controls with no POA&Ms allowed</li>
+                        <li><strong>Implementation timeline</strong> typically requires 6-18 months of dedicated effort</li>
+                        <li><strong>Early action</strong> is critical - don't wait for contract requirements to change</li>
+                    </ul>
+                </div>
+
+                <h3>Contact and Support</h3>
+                <p>For additional support with your DFARS compliance and CMMC certification journey, consider reaching out to qualified cybersecurity professionals, C3PAOs, and DoD Small Business Programs for guidance specific to your organization's needs.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let assessmentAnswers = [];
+
+        function showSection(sectionId) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Show selected section
+            const selectedSection = document.getElementById(sectionId);
+            if (selectedSection) {
+                selectedSection.classList.add('active');
+            }
+        }
+
+        function selectAnswer(element, isCorrect) {
+            // Remove previous selections in this quiz
+            const siblings = element.parentNode.querySelectorAll('.quiz-option');
+            siblings.forEach(sibling => {
+                sibling.classList.remove('correct', 'incorrect');
+            });
+
+            // Mark the selected answer
+            if (isCorrect) {
+                element.classList.add('correct');
+                element.innerHTML += ' ✅ Correct!';
+            } else {
+                element.classList.add('incorrect');
+                element.innerHTML += ' ❌ Incorrect';
+                
+                // Show correct answer
+                siblings.forEach(sibling => {
+                    if (sibling.innerHTML.includes('252.204-7012')) {
+                        sibling.classList.add('correct');
+                        sibling.innerHTML += ' ✅ This is correct!';
+                    }
+                });
+            }
+        }
+
+        function assessmentAnswer(element, value) {
+            // Remove previous selections in this quiz container
+            const container = element.closest('.quiz-container');
+            const siblings = container.querySelectorAll('.quiz-option');
+            siblings.forEach(sibling => {
+                sibling.style.background = 'white';
+                sibling.style.fontWeight = 'normal';
+            });
+
+            // Highlight selected answer
+            element.style.background = '#f0f8f0';
+            element.style.fontWeight = 'bold';
+
+            // Store the answer
+            const questionIndex = Array.from(document.querySelectorAll('.quiz-container')).indexOf(container);
+            assessmentAnswers[questionIndex] = value;
+        }
+
+        function calculateAssessment() {
+            let score = 0;
+            let totalQuestions = 5;
+
+            // Calculate score based on answers
+            assessmentAnswers.forEach(answer => {
+                if (answer === 'yes') score += 2;
+                else if (answer === 'partial') score += 1;
+                // 'no' answers add 0 points
+            });
+
+            const percentage = (score / (totalQuestions * 2)) * 100;
+            
+            // Display results
+            const resultDiv = document.getElementById('assessmentResult');
+            const scoreDiv = document.getElementById('scoreDisplay');
+            const recommendationsDiv = document.getElementById('recommendations');
+
+            let interpretation = '';
+            let recommendations = '';
+
+            if (percentage >= 80) {
+                interpretation = `<strong>Excellent (${percentage.toFixed(0)}%)</strong> - You're well on your way to DFARS compliance!`;
+                recommendations = `<p><strong>Recommendations:</strong></p>
+                <ul>
+                    <li>Conduct formal gap assessment to identify remaining items</li>
+                    <li>Begin C3PAO selection process</li>
+                    <li>Finalize documentation and evidence collection</li>
+                </ul>`;
+            } else if (percentage >= 60) {
+                interpretation = `<strong>Good Progress (${percentage.toFixed(0)}%)</strong> - You're making solid progress but need additional work.`;
+                recommendations = `<p><strong>Recommendations:</strong></p>
+                <ul>
+                    <li>Prioritize implementation of missing controls</li>
+                    <li>Develop comprehensive project plan</li>
+                    <li>Consider engaging cybersecurity consultant</li>
+                    <li>Allocate additional resources for compliance effort</li>
+                </ul>`;
+            } else if (percentage >= 40) {
+                interpretation = `<strong>Moderate Readiness (${percentage.toFixed(0)}%)</strong> - Significant work needed for compliance.`;
+                recommendations = `<p><strong>Recommendations:</strong></p>
+                <ul>
+                    <li>Conduct comprehensive gap assessment immediately</li>
+                    <li>Develop 12-18 month implementation roadmap</li>
+                    <li>Engage qualified cybersecurity professionals</li>
+                    <li>Consider CUI enclave approach for faster compliance</li>
+                </ul>`;
+            } else {
+                interpretation = `<strong>Needs Attention (${percentage.toFixed(0)}%)</strong> - Immediate action required for DFARS compliance.`;
+                recommendations = `<p><strong>Urgent Recommendations:</strong></p>
+                <ul>
+                    <li>Begin DFARS compliance project immediately</li>
+                    <li>Engage cybersecurity consultant for guidance</li>
+                    <li>Assess risk to current and future DoD contracts</li>
+                    <li>Allocate significant resources for compliance effort</li>
+                    <li>Consider CUI enclave as interim solution</li>
+                </ul>`;
+            }
+
+            scoreDiv.innerHTML = interpretation;
+            recommendationsDiv.innerHTML = recommendations;
+            resultDiv.style.display = 'block';
+
+            // Scroll to results
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Initialize with overview section
+        document.addEventListener('DOMContentLoaded', function() {
+            showSection('overview');
+        });
+    </script>
+</body>
+</html>mentAnswer(this, 'yes')">✅ Yes, current and comprehensive</div>
+                        <div class="quiz-option" onclick="assessmentAnswer(this, 'partial')">⚠️ Yes, but needs updates</div>
+                        <div class="quiz-option" onclick="assessmentAnswer(this, 'no')">❌ No or significantly outdated</div>
+                    </div>
+
+                    <div class="quiz-container" style="margin: 20px 0;">
+                        <div class="question">2. Have you implemented multi-factor authentication (MFA) for all users accessing CUI?</div>
+                        <div class="quiz-option" onclick="assessmentAnswer(this, 'yes')">✅ Yes, for all users and systems</div>
+                        <div class="quiz-option" onclick="assessmentAnswer(this, 'partial')">⚠️ Partially implemented</div>
+                        <div class="quiz-option" onclick="assessmentAnswer(this, 'no')">❌ Not implemented</div>
+                    </div>
+
+                    <div class="quiz-container" style="margin: 20px 0;">
+                        <div class="question">3. Do you have comprehensive logging and monitoring in place?</div>
+                        <div class="quiz-option" onclick="assessmentAnswer(this, 'yes')">✅ Yes, comprehensive SIEM solution</div>
+                        <div class="quiz-option" onclick="assessmentAnswer(this, 'partial')">⚠️ Basic logging in place</div>
+                        <div class="quiz-option" onclick="assessmentAnswer(this, 'no')">❌ Limited or no logging</div>
+                    </div>
+
+                    <div class="quiz-container" style="margin: 20px 0;">
+                        <div class="question">4. Is all CUI encrypted at rest and in transit?</div>
+                        <div class="quiz-option" onclick="assessmentAnswer(this, 'yes')">✅ Yes, FIPS 140-2 validated encryption</div>
+                        <div class="quiz-option" onclick="assessmentAnswer(this, 'partial')">⚠️ Partially encrypted</div>
+                        <div class="quiz-option" onclick="assess
