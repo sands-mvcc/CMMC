@@ -15,7 +15,8 @@
       background-color: #2d5a2d;
       color: white;
       padding: 20px;
-      text-align: left;
+      text-align: center;
+      position: relative;
     }
     .container {
       max-width: 1200px;
@@ -24,7 +25,7 @@
     }
     nav {
       position: absolute;
-      top: 20px;
+      bottom: 10px;
       left: 20px;
     }
     select {
@@ -47,16 +48,46 @@
       padding-bottom: 5px;
     }
     ul {
-      list-style-type: disc;
-      padding-left: 20px;
+      list-style-type: none;
+      padding-left: 0;
     }
-    .sub-section {
-      margin-top: 20px;
+    .collapsible {
+      background-color: #f1f1f1;
+      color: #2d5a2d;
+      cursor: pointer;
+      padding: 10px;
+      width: 100%;
+      text-align: left;
+      border: none;
+      outline: none;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+    .active-collapsible, .collapsible:hover {
+      background-color: #ddd;
+    }
+    .content {
+      padding: 0 18px;
+      display: none;
+      overflow: hidden;
+      background-color: #f9f9f9;
+      margin-bottom: 10px;
+    }
+    .search-container {
+      margin-bottom: 20px;
+    }
+    input[type="text"] {
+      padding: 8px;
+      width: 100%;
+      max-width: 400px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
     }
   </style>
 </head>
 <body>
   <header>
+    <h1>NCyTE CMMC v2 Workshop: AI-Powered</h1>
     <nav>
       <select id="sectionMenu">
         <option value="overview">Workshop Overview</option>
@@ -65,14 +96,16 @@
         <option value="outcomes">Key Workshop Outcomes</option>
       </select>
     </nav>
-    <h1>NCyTE CMMC v2 Workshop: AI-Powered</h1>
   </header>
   <div class="container">
+    <div class="search-container">
+      <input type="text" id="searchInput" placeholder="Search agenda...">
+    </div>
+
     <section id="overview" class="active">
       <h2>Workshop Overview</h2>
-      <p>This intensive 2-day workshop provides participants with essential knowledge about CMMC requirements while demonstrating how artificial intelligence can revolutionize the documentation and compliance tracking process...</p>
-      <div class="sub-section">
-        <h3>Learning Objectives</h3>
+      <button class="collapsible">Learning Objectives</button>
+      <div class="content">
         <ul>
           <li><strong>Strategic Understanding:</strong> Explain the three CMMC certification levels, phased implementation timeline, and financial/competitive impact.</li>
           <li><strong>Technical Knowledge:</strong> Understand scoping elements, documentation components, and the role of C3PAOs.</li>
@@ -84,23 +117,23 @@
 
     <section id="day1">
       <h2>Workshop Agenda — Day One</h2>
-      <div class="sub-section">
-        <h3>Part One: CMMC Program Fundamentals</h3>
+      <button class="collapsible">Part One: CMMC Program Fundamentals</button>
+      <div class="content">
         <ul>
           <li>Current State and Timeline</li>
           <li>Three-Tier Framework Deep Dive: Levels 1, 2, 3</li>
           <li>Financial Impact and Competitive Advantage</li>
         </ul>
       </div>
-      <div class="sub-section">
-        <h3>Part Two: Core Implementation Requirements</h3>
+      <button class="collapsible">Part Two: Core Implementation Requirements</button>
+      <div class="content">
         <ul>
           <li>17 NIST SP 800-171 Rev. 3 Control Families</li>
           <li>Key changes from Rev. 2 to Rev. 3</li>
         </ul>
       </div>
-      <div class="sub-section">
-        <h3>Part Three: Implementation Planning and Next Steps</h3>
+      <button class="collapsible">Part Three: Implementation Planning and Next Steps</button>
+      <div class="content">
         <ul>
           <li>Organizational Readiness Assessment</li>
           <li>Resource Planning and Timeline Development</li>
@@ -111,8 +144,8 @@
 
     <section id="day2">
       <h2>Workshop Agenda — Day Two</h2>
-      <div class="sub-section">
-        <h3>Part Four: Core Documentation Requirements</h3>
+      <button class="collapsible">Part Four: Core Documentation Requirements</button>
+      <div class="content">
         <ul>
           <li>System Security Plan (SSP)</li>
           <li>Plan of Action & Milestones (POA&M)</li>
@@ -121,16 +154,16 @@
           <li>Access Control Matrix</li>
         </ul>
       </div>
-      <div class="sub-section">
-        <h3>Part Five: AI-Powered Compliance Framework Development</h3>
+      <button class="collapsible">Part Five: AI-Powered Compliance Framework Development</button>
+      <div class="content">
         <ul>
           <li>Live Demonstration of AI-generated documentation</li>
           <li>Dashboard Development Workshop</li>
           <li>Automation Strategies</li>
         </ul>
       </div>
-      <div class="sub-section">
-        <h3>Part Six: Building a CMMC GPT</h3>
+      <button class="collapsible">Part Six: Building a CMMC GPT</button>
+      <div class="content">
         <ul>
           <li>Planning, Data Preparation, Training, Configuration</li>
           <li>Integration, Testing, Deployment, Maintenance</li>
@@ -140,21 +173,25 @@
 
     <section id="outcomes">
       <h2>Key Workshop Outcomes</h2>
-      <div class="sub-section">
-        <h3>Immediate Deliverables</h3>
+      <button class="collapsible">Immediate Deliverables</button>
+      <div class="content">
         <ul>
           <li>Customized compliance roadmap</li>
           <li>AI-generated templates</li>
           <li>Compliance dashboard prototype</li>
           <li>Resource & budget framework</li>
         </ul>
-        <h3>Strategic Benefits</h3>
+      </div>
+      <button class="collapsible">Strategic Benefits</button>
+      <div class="content">
         <ul>
           <li>Reduced documentation time</li>
           <li>Improved accuracy and completeness</li>
           <li>Enhanced monitoring and competitive advantage</li>
         </ul>
-        <h3>Technical Capabilities</h3>
+      </div>
+      <button class="collapsible">Technical Capabilities</button>
+      <div class="content">
         <ul>
           <li>Understanding AI tools for compliance</li>
           <li>Experience with automation</li>
@@ -168,11 +205,33 @@
   <script>
     const menu = document.getElementById('sectionMenu');
     const sections = document.querySelectorAll('section');
+    const searchInput = document.getElementById('searchInput');
+    const collapsibles = document.getElementsByClassName("collapsible");
 
+    // Section toggle
     menu.addEventListener('change', function () {
       sections.forEach(sec => sec.classList.remove('active'));
       const selected = document.getElementById(this.value);
       if (selected) selected.classList.add('active');
+    });
+
+    // Expandable collapsibles
+    for (let i = 0; i < collapsibles.length; i++) {
+      collapsibles[i].addEventListener("click", function () {
+        this.classList.toggle("active-collapsible");
+        const content = this.nextElementSibling;
+        content.style.display = content.style.display === "block" ? "none" : "block";
+      });
+    }
+
+    // Search filtering
+    searchInput.addEventListener("input", function () {
+      const query = this.value.toLowerCase();
+      document.querySelectorAll('section').forEach(section => {
+        section.querySelectorAll('li').forEach(item => {
+          item.style.display = item.textContent.toLowerCase().includes(query) ? '' : 'none';
+        });
+      });
     });
   </script>
 </body>
