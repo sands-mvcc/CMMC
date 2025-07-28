@@ -167,6 +167,9 @@
             position: sticky;
             left: 0;
             z-index: 5;
+            width: 200px;
+            min-width: 200px;
+            max-width: 200px;
         }
 
         .matrix-table tr:nth-child(even) td:not(:first-child) {
@@ -366,7 +369,9 @@
                     <option value="engineering">Engineering</option>
                     <option value="it">IT/Security</option>
                     <option value="field">Field Personnel</option>
+                    <option value="corporate">Corporate</option>
                     <option value="contractor">Contractors</option>
+                    <option value="intern">Interns</option>
                 </select>
 
                 <label for="systemFilter">Filter by System:</label>
@@ -457,37 +462,62 @@
                 <div class="summary-card">
                     <h4>High-Risk Assets (NERC CIP High Impact)</h4>
                     <ul>
-                        <li>SCADA HMI Systems - Restricted to certified operators</li>
-                        <li>Generation Control - Control room personnel only</li>
-                        <li>Protection Systems - Engineering staff with special authorization</li>
-                        <li>Transmission SCADA - Licensed system operators</li>
+                        <li>SCADA HMI Systems - Restricted to certified operators (6 personnel)</li>
+                        <li>Generation Control - Control room personnel only (7 personnel)</li>
+                        <li>Protection Systems - Engineering staff with special authorization (4 personnel)</li>
+                        <li>Transmission SCADA - Licensed system operators (6 personnel)</li>
+                    </ul>
+                </div>
+                <div class="summary-card">
+                    <h4>Personnel Distribution</h4>
+                    <ul>
+                        <li>Executive Level: 4 personnel with oversight access</li>
+                        <li>Operations Staff: 7 personnel with operational control</li>
+                        <li>Engineering Team: 8 personnel with technical access</li>
+                        <li>IT/Security: 7 personnel with administrative privileges</li>
+                        <li>Field Operations: 6 personnel with limited access</li>
+                        <li>Corporate Staff: 15 personnel with business system access</li>
+                        <li>External/Temporary: 3 personnel with restricted access</li>
                     </ul>
                 </div>
                 <div class="summary-card">
                     <h4>Security Perimeter Controls</h4>
                     <ul>
-                        <li>Electronic Security Perimeter (ESP) enforced</li>
-                        <li>Two-factor authentication for critical systems</li>
-                        <li>Role-based access control (RBAC) implementation</li>
+                        <li>Electronic Security Perimeter (ESP) enforced across all critical systems</li>
+                        <li>Two-factor authentication for high-clearance personnel</li>
+                        <li>Role-based access control (RBAC) with clearance levels</li>
                         <li>Regular access reviews per CIP-004 requirements</li>
+                        <li>Segregation of duties implemented for critical operations</li>
                     </ul>
                 </div>
                 <div class="summary-card">
                     <h4>Compliance Monitoring</h4>
                     <ul>
-                        <li>Automated access logging per CIP-005</li>
+                        <li>Automated access logging per CIP-005 for all 50 users</li>
                         <li>Quarterly access certification reviews</li>
-                        <li>Annual security training requirements</li>
-                        <li>Incident response procedures documented</li>
+                        <li>Annual security training requirements for all personnel</li>
+                        <li>Incident response procedures documented and tested</li>
+                        <li>Real-time compliance monitoring with violation alerts</li>
                     </ul>
                 </div>
                 <div class="summary-card">
                     <h4>Physical Security Integration</h4>
                     <ul>
-                        <li>Biometric access for control rooms</li>
-                        <li>Escort requirements for contractors</li>
-                        <li>Visitor management system</li>
-                        <li>Video surveillance monitoring</li>
+                        <li>Biometric access for control rooms and critical areas</li>
+                        <li>Escort requirements for contractors and visitors</li>
+                        <li>Multi-zone visitor management system</li>
+                        <li>24/7 video surveillance monitoring</li>
+                        <li>Emergency lockdown procedures for all facilities</li>
+                    </ul>
+                </div>
+                <div class="summary-card">
+                    <h4>Risk Management</h4>
+                    <ul>
+                        <li>Least privilege principle enforced across all systems</li>
+                        <li>High-clearance personnel limited to 15 individuals</li>
+                        <li>Critical system access restricted to 8 key personnel</li>
+                        <li>Regular risk assessments and access reviews</li>
+                        <li>Continuous security awareness training program</li>
                     </ul>
                 </div>
             </div>
@@ -513,7 +543,52 @@
                 {name: "Customer Service Rep - Maria Lopez", role: "corporate", dept: "Customer Svc", clearance: "low"},
                 {name: "External Contractor - ABC Engineering", role: "contractor", dept: "External", clearance: "restricted"},
                 {name: "Vendor Support - XYZ Systems", role: "contractor", dept: "External", clearance: "restricted"},
-                {name: "Intern - Alex Thompson", role: "intern", dept: "Various", clearance: "restricted"}
+                {name: "Intern - Alex Thompson", role: "intern", dept: "Various", clearance: "restricted"},
+                
+                // 25 New Employees
+                {name: "Operations Manager - Patricia Davis", role: "operations", dept: "Operations", clearance: "high"},
+                {name: "Senior System Operator - Michael Chang", role: "operations", dept: "Operations", clearance: "high"},
+                {name: "Load Dispatcher - Amanda Foster", role: "operations", dept: "Operations", clearance: "high"},
+                {name: "Control Room Operator - James Wright", role: "operations", dept: "Operations", clearance: "medium"},
+                {name: "Shift Supervisor - Karen Miller", role: "operations", dept: "Operations", clearance: "high"},
+                
+                {name: "Chief Engineer - Dr. Richard Stone", role: "engineering", dept: "Engineering", clearance: "high"},
+                {name: "Electrical Engineer - Nina Patel", role: "engineering", dept: "Engineering", clearance: "medium"},
+                {name: "Power Systems Engineer - Derek Johnson", role: "engineering", dept: "Engineering", clearance: "high"},
+                {name: "Substation Engineer - Laura Thompson", role: "engineering", dept: "Engineering", clearance: "medium"},
+                {name: "Relay Technician - Mark Stevens", role: "engineering", dept: "Engineering", clearance: "medium"},
+                {name: "Design Engineer - Sofia Rodriguez", role: "engineering", dept: "Engineering", clearance: "medium"},
+                
+                {name: "IT Director - Brian O'Connor", role: "it", dept: "IT", clearance: "high"},
+                {name: "Cybersecurity Analyst - Emma Watson", role: "it", dept: "IT", clearance: "high"},
+                {name: "Database Administrator - Kevin Lee", role: "it", dept: "IT", clearance: "medium"},
+                {name: "Systems Administrator - Jessica Brown", role: "it", dept: "IT", clearance: "medium"},
+                {name: "Help Desk Manager - Ryan Garcia", role: "it", dept: "IT", clearance: "low"},
+                {name: "Network Technician - Ashley Kim", role: "it", dept: "IT", clearance: "medium"},
+                
+                {name: "Field Operations Manager - Christopher Hall", role: "field", dept: "Field Ops", clearance: "medium"},
+                {name: "Senior Lineman - Daniel White", role: "field", dept: "Field Ops", clearance: "low"},
+                {name: "Meter Technician - Sandra Martinez", role: "field", dept: "Field Ops", clearance: "low"},
+                {name: "Maintenance Supervisor - Robert Taylor", role: "field", dept: "Maintenance", clearance: "medium"},
+                {name: "Equipment Specialist - Lisa Chen", role: "field", dept: "Maintenance", clearance: "low"},
+                {name: "Vehicle Fleet Manager - John Adams", role: "field", dept: "Fleet", clearance: "low"},
+                
+                {name: "Chief Financial Officer - Margaret Wilson", role: "executive", dept: "Finance", clearance: "high"},
+                {name: "Accounting Manager - Thomas Anderson", role: "corporate", dept: "Finance", clearance: "medium"},
+                {name: "Budget Analyst - Helen Cooper", role: "corporate", dept: "Finance", clearance: "low"},
+                {name: "Procurement Specialist - George Turner", role: "corporate", dept: "Procurement", clearance: "medium"},
+                {name: "HR Director - Victoria Nelson", role: "corporate", dept: "Human Resources", clearance: "medium"},
+                {name: "Safety Manager - Charles Baker", role: "corporate", dept: "Safety", clearance: "medium"},
+                {name: "Customer Service Manager - Diana Phillips", role: "corporate", dept: "Customer Svc", clearance: "medium"},
+                {name: "Billing Coordinator - Michelle Evans", role: "corporate", dept: "Customer Svc", clearance: "low"},
+                {name: "Communications Specialist - Andrew Clark", role: "corporate", dept: "Communications", clearance: "low"},
+                {name: "Training Coordinator - Jennifer Moore", role: "corporate", dept: "Training", clearance: "low"},
+                {name: "Quality Assurance Manager - Paul Jackson", role: "corporate", dept: "Quality", clearance: "medium"},
+                {name: "Environmental Compliance Officer - Sarah Williams", role: "corporate", dept: "Environmental", clearance: "medium"},
+                {name: "Legal Counsel - David Robinson", role: "executive", dept: "Legal", clearance: "high"},
+                {name: "Project Manager - Kelly Martinez", role: "engineering", dept: "Projects", clearance: "medium"},
+                {name: "Contract Administrator - Nancy Lewis", role: "corporate", dept: "Contracts", clearance: "medium"},
+                {name: "Emergency Response Coordinator - Frank Harris", role: "operations", dept: "Emergency", clearance: "high"}
             ],
             systems: [
                 {name: "SCADA HMI", type: "scada", criticality: "high", category: "BES Cyber Asset"},
@@ -549,22 +624,31 @@
             // Executive level access
             if (userRole === 'executive') {
                 if (systemType === 'scada' || systemCriticality === 'critical') return 'read';
+                if (systemType === 'corporate') return 'admin';
                 return 'write';
             }
             
             // Operations personnel
             if (userRole === 'operations') {
-                if (systemType === 'scada') return 'execute';
+                if (systemType === 'scada') {
+                    // High clearance operations get execute, medium get write
+                    return userClearance === 'high' ? 'execute' : 'write';
+                }
                 if (systemType === 'corporate') return 'read';
                 if (systemType === 'physical') return 'write';
+                if (systemType === 'safety' && userClearance === 'high') return 'execute';
                 return 'read';
             }
             
             // Engineering personnel
             if (userRole === 'engineering') {
-                if (systemType === 'scada') return 'write';
+                if (systemType === 'scada') {
+                    return userClearance === 'high' ? 'execute' : 'write';
+                }
                 if (systemType === 'engineering') return 'execute';
-                if (systemCriticality === 'critical') return 'execute';
+                if (systemCriticality === 'critical' && userClearance === 'high') return 'execute';
+                if (systemCriticality === 'critical' && userClearance === 'medium') return 'write';
+                if (systemType === 'corporate') return 'read';
                 return 'read';
             }
             
@@ -572,24 +656,33 @@
             if (userRole === 'it') {
                 if (systemType === 'corporate') return 'admin';
                 if (systemType === 'physical') return 'admin';
-                if (systemType === 'scada') return 'write';
-                return 'execute';
+                if (systemType === 'scada') {
+                    return userClearance === 'high' ? 'write' : 'read';
+                }
+                if (userClearance === 'high') return 'execute';
+                return 'write';
             }
             
             // Field personnel
             if (userRole === 'field') {
+                if (systemType === 'physical' && userClearance === 'medium') return 'write';
                 if (systemType === 'physical') return 'read';
                 if (systemType === 'corporate') return 'none';
                 if (systemCriticality === 'critical') return 'none';
-                return 'read';
+                if (systemType === 'scada' && userClearance === 'medium') return 'read';
+                if (userClearance === 'medium') return 'read';
+                return userClearance === 'low' ? 'read' : 'none';
             }
             
             // Corporate personnel
             if (userRole === 'corporate') {
-                if (systemType === 'corporate') return 'write';
+                if (systemType === 'corporate') {
+                    return userClearance === 'medium' ? 'write' : 'read';
+                }
                 if (systemType === 'scada') return 'none';
                 if (systemCriticality === 'critical') return 'none';
-                return 'read';
+                if (systemType === 'physical' && userClearance === 'medium') return 'read';
+                return userClearance === 'medium' ? 'read' : 'none';
             }
             
             // Contractors
@@ -600,6 +693,11 @@
             }
             
             // Interns and others
+            if (userRole === 'intern') {
+                if (systemType === 'corporate') return 'read';
+                return 'none';
+            }
+            
             return 'none';
         }
 
