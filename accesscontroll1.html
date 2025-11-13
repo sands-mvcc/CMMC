@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIST 800-171 & CMMC Access Control Training</title>
+    <style>
+        :root {
+            --primary-color: #004080; /* Dark Blue */
+            --secondary-color: #f0f0f5; /* Light Gray Background */
+            --accent-color: #ff9900; /* Orange/Gold Accent */
+            --text-color: #333;
+            --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            font-family: var(--font-family);
+            margin: 0;
+            padding: 0;
+            background-color: var(--secondary-color);
+            display: flex;
+            min-height: 100vh;
+            color: var(--text-color);
+        }
+
+        #sidebar {
+            width: 250px;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        #sidebar h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.2em;
+            padding: 0 15px;
+        }
+
+        #sidebar nav a {
+            display: block;
+            padding: 12px 20px;
+            text-decoration: none;
+            color: white;
+            transition: background-color 0.2s, padding-left 0.2s;
+            border-left: 5px solid transparent;
+        }
+
+        #sidebar nav a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-left: 5px solid var(--accent-color);
+            padding-left: 25px;
+        }
+
+        #sidebar nav a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-left: 5px solid var(--accent-color);
+            font-weight: bold;
+        }
+
+        #main-content {
+            flex-grow: 1;
+            padding: 40px;
+            max-width: 1000px;
+        }
+
+       .section {
+            background-color: white;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+       .section h3 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 1.6em;
+        }
+
+       .example-box,.analogy-box {
+            border-left: 4px solid var(--accent-color);
+            background-color: #fff8f0;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+       .analogy-box strong {
+            color: var(--primary-color);
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        /* Quiz Styling */
+       .question {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+
+       .question label {
+            display: block;
+            margin-top: 8px;
+            cursor: pointer;
+            transition: background-color 0.1s;
+        }
+
+       .question label:hover {
+            background-color: #f7f7f7;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: var(--accent-color);
+        }
+
+        #quiz-results {
+            margin-top: 20px;
+            padding: 15px;
+            border: 2px dashed var(--primary-color);
+            border-radius: 5px;
+            display: none;
+            background-color: #e6f7ff;
+        }
+
+       .citation {
+            font-size: 0.8em;
+            color: #777;
+            margin-left: 5px;
+        }
+
+        /* Interactive Elements */
+       .interactive-toggle {
+            cursor: pointer;
+            color: var(--primary-color);
+            font-weight: bold;
+            text-decoration: underline;
+            margin-top: 10px;
+            display: inline-block;
+        }
+       .interactive-content {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #e8e8e8;
+            border-radius: 4px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="sidebar">
+        <h2>NIST & CMMC Framework</h2>
+        <nav>
+            <a href="#" data-section="intro" class="active">1. Introduction: FCI vs CUI</a>
+            <a href="#" data-section="nist-ac">2. NIST SP 800-171 Access Control</a>
+            <a href="#" data-section="cmmc-l1">3. CMMC Level 1 AC Practices</a>
+            <a href="#" data-section="analogies">4. Key Teaching Analogies</a>
+            <a href="#" data-section="assessment">5. Knowledge Assessment</a>
+        </nav>
+    </div>
+
+    <div id="main-content">
+
+        <div id="intro" class="section">
+            <h3>1. Introduction: The Foundation of Defense Cybersecurity</h3>
+            <p>The NIST and CMMC frameworks govern how unclassified defense information must be protected. The level of required protection depends entirely on the type of data handled.</p>
+
+            <h4>Federal Contract Information (FCI) vs. Controlled Unclassified Information (CUI)</h4>
+            <div class="example-box">
+                <p><strong>FCI (Federal Contract Information)</strong> is information, not intended for public release, that is provided by or generated for the Government under a contract. It requires <strong>basic safeguarding</strong>.[1]</p>
+                <p><strong>CUI (Controlled Unclassified Information)</strong> is more sensitive information that requires specific <strong>safeguarding or dissemination controls</strong> by law or policy. Its loss poses a higher risk.[1]</p>
+                <p><strong>Key Principle:</strong> All CUI in a contractor's possession is considered FCI, but not all FCI is CUI.[1]</p>
+            </div>
+
+            <h4>CMMC Level Alignment</h4>
+            <ul>
+                <li><strong>CMMC Level 1 (Foundational):</strong> Protects <strong>FCI</strong> only. Requires 15 basic safeguards (derived from FAR 52.204-21).[2, 3]</li>
+                <li><strong>CMMC Level 2 (Advanced):</strong> Protects <strong>CUI</strong>. Requires all 110 security requirements found in NIST SP 800-171 Revision 2.[2]</li>
+            </ul>
+        </div>
+
+        <div id="nist-ac" class="section" style="display:none;">
+            <h3>2. NIST SP 800-171 Access Control (AC) Domain (3.1.x)</h3>
+            <p>The Access Control domain is the "frontline defense".[4] It defines rules for managing permissions, limiting entry points, and controlling how users and processes interact with systems handling CUI.[5]</p>
+            
+            <h4>The Two Foundational Requirements (Basic Controls)</h4>
+            <p>These two practices are considered basic because their failure would render all other AC security ineffective.[6]</p>
+            <ul>
+                <li><strong>3.1.1 Limit system access to authorized users, processes, or devices.</strong> This is about identifying *who* (or *what*) is allowed to get into the system.[7]</li>
+                <li><strong>3.1.2 Limit system access to the types of transactions and functions that authorized users are permitted to execute.</strong> This is about defining *what* the authorized user can actually *do* once they are inside the system.[7]</li>
+            </ul>
+
+            <h4>Interactive Example: Basic vs. Derived Controls</h4>
+            <p>The AC family contains 2 Basic Requirements and 20 Derived Requirements.[7]</p>
+            <div class="interactive-toggle" onclick="toggleContent('derived-explanation')">Click to see an example of a Derived Control (NIST 3.1.12)</div>
+            <div id="derived-explanation" class="interactive-content">
+                <p><strong>Derived Requirement 3.1.12: Closely monitor and tightly control all access sessions conducted remotely.</strong> [7]</p>
+                <p>This is "derived" because it builds upon the basic control (3.1.1). Once you decide a user is authorized, this requirement mandates *how* you secure their remote session (e.g., monitoring, strict management) due to the higher risk of connecting from outside the perimeter.[7]</p>
+            </div>
+
+            <h4>Core Themes in AC Controls</h4>
+            <p>The 22 controls in Access Control focus on four key areas [4, 8]:</p>
+            <ol>
+                <li><strong>Authorization:</strong> Defining who is allowed access (3.1.1).</li>
+                <li><strong>Least Privilege:</strong> Giving users only the minimum permissions they need (3.1.5).[7]</li>
+                <li><strong>Session Management:</strong> Locking unattended terminals and terminating idle sessions (3.1.10).[7]</li>
+                <li><strong>Remote & Wireless Access:</strong> Using encryption and strict controls for external connections (3.1.13).[7]</li>
+            </ol>
+        </div>
+
+        <div id="cmmc-l1" class="section" style="display:none;">
+            <h3>3. CMMC Level 1 Access Control Practices (FCI Scope)</h3>
+            <p>CMMC Level 1 is mandatory for organizations handling FCI. It consists of 15 practices across six domains. The Access Control (AC) domain contributes four required practices.[9, 3]</p>
+
+            <table style="width:100%; border-collapse: collapse;">
+                <tr>
+                    <th style="background-color: var(--primary-color); color: white; padding: 8px;">ID</th>
+                    <th style="background-color: var(--primary-color); color: white; padding: 8px;">Practice</th>
+                    <th style="background-color: var(--primary-color); color: white; padding: 8px;">L1 Objective</th>
+                </tr>
+                <tr>
+                    <td><strong>AC.L1-3.1.1</strong></td>
+                    <td>Limit information system access to authorized users, processes, or devices.[9]</td>
+                    <td>Ensure access is explicitly limited to defined, approved users and devices.[9]</td>
+                </tr>
+                <tr>
+                    <td><strong>AC.L1-3.1.2</strong></td>
+                    <td>Limit information system access to the types of transactions and functions that authorized users are permitted to execute.[9]</td>
+                    <td>Ensure authorized users can only perform job-required functions (e.g., view a document, but not delete a system file).[9]</td>
+                </tr>
+                <tr>
+                    <td><strong>AC.L1-3.1.20</strong></td>
+                    <td>Control the use of external information systems in accordance with an organizational policy or procedure.[9]</td>
+                    <td>Manage and verify connections to third-party services (e.g., cloud platforms, vendor networks) via a documented policy.[9, 10]</td>
+                </tr>
+                <tr>
+                    <td><strong>AC.L1-3.1.22</strong></td>
+                    <td>Control the flow of Federal Contract Information (FCI) to and from information systems and networks.[9]</td>
+                    <td>Prevent FCI from being posted or processed on publicly accessible systems (e.g., public website, uncontrolled social media).[9]</td>
+                </tr>
+            </table>
+
+            <h4>Policy Implementation Example (AC.L1-3.1.20)</h4>
+            <div class="example-box">
+                <p><strong>Requirement:</strong> Verify and control connections to external information systems.[9]</p>
+                <p><strong>Technical Example:</strong> Connections to external systems are controlled through a firewall and Access Control Lists (ACLs). Access is only granted to pre-authorized external systems, and regular reviews of these external connections are performed.[10]</p>
+                <p><strong>Documentation Note:</strong> L1 compliance requires proving that these controls are managed "in accordance with an organizational policy or procedure".[9]</p>
+            </div>
+        </div>
+
+        <div id="analogies" class="section" style="display:none;">
+            <h3>4. Key Teaching Analogies for Security Concepts</h3>
+            <p>To effectively teach the NIST framework, concepts must be translated into relatable, real-world examples that emphasize policy and process.</p>
+
+            <h4>Least Privilege Principle (NIST 3.1.5/3.1.6)</h4>
+            <div class="analogy-box">
+                <strong>Analogy: The Valet Key Concept</strong>
+                <p>When you give a valet your car, they get a "valet key." This key lets them drive and park (their job function), but it won't open the trunk or the glove compartment (restricted functions). For everyday computing, employees must use a standard, <strong>non-privileged account</strong> (the Valet Key) for routine work. The elevated <strong>administrative account</strong> (the Master Key) is only reserved for critical, necessary system maintenance, limiting damage if the daily account is compromised.[7]</p>
+            </div>
+
+            <h4>Remote Access Control (NIST 3.1.12/3.1.13)</h4>
+            <div class="analogy-box">
+                <strong>Analogy: The Secure Delivery Tunnel</strong>
+                <p>When connecting from home or while traveling, all system access must use an encrypted Virtual Private Network (VPN)—this is the <strong>secure tunnel</strong>. This tunnel ensures that data transmission is protected by <strong>cryptographic keys</strong> and routes traffic through the organization's official, secure access control point (like a security checkpoint firewall), preventing direct, risky exposure over the public internet lines.[7]</p>
+            </div>
+
+            <h4>Separation of Duties (NIST 3.1.4)</h4>
+            <div class="analogy-box">
+                <strong>Analogy: The Two-Signature Check</strong>
+                <p>This administrative control prevents any single person from performing a high-risk task alone. Just as a sensitive check requires two signatures, critical actions—like modifying system configurations or mass transferring sensitive data—must require approval from two different designated roles. This dramatically reduces the risk of fraud, theft, or catastrophic error without collusion among multiple individuals.[11]</p>
+            </div>
+        </div>
+
+        <div id="assessment" class="section" style="display:none;">
+            <h3>5. Knowledge Assessment: Check Your Understanding</h3>
+            <p>Test your knowledge with these five questions based on the NIST Access Control domain and CMMC Level 1.</p>
+            
+            <form id="quiz-form">
+                <div class="question">
+                    <p><strong>1. CMMC Level 1 is primarily designed to protect which category of information?</strong></p>
+                    <label><input type="radio" name="q1" value="a"> Controlled Unclassified Information (CUI)</label>
+                    <label><input type="radio" name="q1" value="b"> Federal Contract Information (FCI) [1]</label>
+                    <label><input type="radio" name="q1" value="c"> Classified Information</label>
+                </div>
+
+                <div class="question">
+                    <p><strong>2. Which NIST SP 800-171 requirement is considered a fundamental "Basic Requirement"?</strong></p>
+                    <label><input type="radio" name="q2" value="a"> Employ the principle of least privilege (3.1.5)</label>
+                    <label><input type="radio" name="q2" value="b"> Limit the number of unsuccessful logon attempts (3.1.8)</label>
+                    <label><input type="radio" name="q2" value="c"> Limit system access to authorized users, processes, or devices (3.1.1) [7, 6]</label>
+                </div>
+
+                <div class="question">
+                    <p><strong>3. How many total security safeguards are required for CMMC Level 1 compliance?</strong></p>
+                    <label><input type="radio" name="q3" value="a"> 4 Access Control practices</label>
+                    <label><input type="radio" name="q3" value="b"> 15 basic safeguards (across all domains) [2]</label>
+                    <label><input type="radio" name="q3" value="c"> 110 requirements (NIST SP 800-171)</label>
+                </div>
+
+                <div class="question">
+                    <p><strong>4. Which CMMC Level 1 practice requires an organization to have a documented policy to manage vendor platforms?</strong></p>
+                    <label><input type="radio" name="q4" value="a"> AC.L1-3.1.1 (Authorized Access Control)</label>
+                    <label><input type="radio" name="q4" value="b"> AC.L1-3.1.20 (External Connections) [9]</label>
+                    <label><input type="radio" name="q4" value="c"> AC.L1-3.1.22 (Control Public Information)</label>
+                </div>
+
+                <div class="question">
+                    <p><strong>5. The primary goal of the "Least Privilege" principle (NIST 3.1.5) is to:</strong></p>
+                    <label><input type="radio" name="q5" value="a"> Automatically terminate all inactive sessions.</label>
+                    <label><input type="radio" name="q5" value="b"> Grant users only the minimum access/permissions needed for their job [7]</label>
+                    <label><input type="radio" name="q5" value="c"> Require users to use Multi-Factor Authentication (MFA).</label>
+                </div>
+                
+                <button type="button" onclick="submitQuiz()">Submit Assessment</button>
+            </form>
+
+            <div id="quiz-results">
+                <h4>Your Results: <span id="score-display"></span></h4>
+                <div id="feedback"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const sections = document.querySelectorAll('.section');
+        const navLinks = document.querySelectorAll('#sidebar nav a');
+        const correctAnswers = {
+            q1: 'b',
+            q2: 'c',
+            q3: 'b',
+            q4: 'b',
+            q5: 'b'
+        };
+
+        // Navigation Functionality
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('data-section');
+
+                // Hide all sections
+                sections.forEach(section => {
+                    section.style.display = 'none';
+                });
+
+                // Show the target section
+                document.getElementById(targetId).style.display = 'block';
+
+                // Update active class in sidebar
+                navLinks.forEach(nav => nav.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Interactive Toggle Functionality
+        function toggleContent(id) {
+            const content = document.getElementById(id);
+            if (content.style.display === 'block') {
+                content.style.display = 'none';
+            } else {
+                content.style.display = 'block';
+            }
+        }
+
+        // Quiz Submission Functionality
+        function submitQuiz() {
+            let score = 0;
+            const form = document.getElementById('quiz-form');
+            const resultsDiv = document.getElementById('quiz-results');
+            const feedbackDiv = document.getElementById('feedback');
+            
+            feedbackDiv.innerHTML = '';
+
+            for (const [qId, correctAnswer] of Object.entries(correctAnswers)) {
+                const selectedAnswer = form.elements[qId].value;
+                const questionDiv = form.querySelector(`.question:has(input[name="${qId}"])`);
+
+                if (selectedAnswer) {
+                    const isCorrect = selectedAnswer === correctAnswer;
+                    const resultText = isCorrect? 'Correct!' : `Incorrect. The correct answer was ${correctAnswer.toUpperCase()}.`;
+                    
+                    if (isCorrect) {
+                        score++;
+                        questionDiv.style.backgroundColor = '#d4edda'; // Green for correct
+                    } else {
+                        questionDiv.style.backgroundColor = '#f8d7da'; // Red for incorrect
+                    }
+
+                    feedbackDiv.innerHTML += `<p><strong>Question ${qId.substring(1)}:</strong> ${resultText}</p>`;
+                } else {
+                    questionDiv.style.backgroundColor = '#fff3cd'; // Yellow for unanswered
+                    feedbackDiv.innerHTML += `<p><strong>Question ${qId.substring(1)}:</strong> Unanswered. Please try again.</p>`;
+                }
+            }
+
+            const totalQuestions = Object.keys(correctAnswers).length;
+            document.getElementById('score-display').textContent = `${score}/${totalQuestions}`;
+            resultsDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
