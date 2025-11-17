@@ -1,190 +1,521 @@
 <!DOCTYPE html>
-
-<html class="light" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>CMMC Asset Inventory Builder</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
-<script>
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              "primary": "#137fec",
-              "background-light": "#f6f7f8",
-              "background-dark": "#101922",
-            },
-            fontFamily: {
-              "display": ["Lexend"]
-            },
-            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
-          },
-        },
-      }
-    </script>
-<style>
-        .material-icons-outlined {
-            font-size: 20px;
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asset Inventory & Categorization Report</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for the app and print view */
+        :root {
+            --primary-green: #047857; /* Darker emerald green for branding */
+            --light-green: #34d399;   /* Light green for accents */
+            --text-color: #1f2937;    /* Dark gray for readability */
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f7f7;
+            color: var(--text-color);
+        }
+        .btn-primary {
+            background-color: var(--primary-green);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+        .btn-primary:hover {
+            background-color: #065f46; /* Slightly darker green on hover */
+        }
+        .tab-active {
+            border-bottom: 4px solid var(--primary-green);
+            color: var(--primary-green);
+            font-weight: 700;
+        }
+        
+        /* Print Styles - Ensure only the report content is printed cleanly */
+        @media print {
+            body > *:not(.print-container) {
+                display: none;
+            }
+            .print-container {
+                display: block !important;
+                width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            .print-container h1 {
+                text-align: center;
+                color: #000;
+                font-size: 24pt;
+                margin-bottom: 20pt;
+            }
+            .print-section {
+                margin-bottom: 30pt;
+                page-break-inside: avoid;
+            }
+            .print-section h2 {
+                color: var(--primary-green);
+                font-size: 16pt;
+                border-bottom: 2px solid var(--primary-green);
+                padding-bottom: 5pt;
+                margin-bottom: 10pt;
+            }
+            .print-section table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            .print-section th, .print-section td {
+                border: 1px solid #ccc;
+                padding: 8pt;
+                text-align: left;
+                font-size: 10pt;
+            }
+            .print-section th {
+                background-color: #eee;
+                font-weight: bold;
+            }
         }
     </style>
 </head>
-<body class="font-display bg-background-light dark:bg-background-dark text-slate-800 dark:text-slate-200">
-<div class="min-h-screen p-4 sm:p-6 lg:p-8">
-<div class="max-w-7xl mx-auto">
-<!-- Header -->
-<header class="mb-8">
-<div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-<div>
-<h1 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">CMMC Asset Inventory Builder</h1>
-<p class="text-slate-500 dark:text-slate-400 mt-1">An educational tool for categorizing cybersecurity assets.</p>
-</div>
-<div class="flex items-center gap-2">
-<button class="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-<span class="material-icons-outlined">download</span>
-                            Download Data
+<body class="min-h-screen p-4 sm:p-8">
+    <div id="app-container" class="max-w-7xl mx-auto bg-white shadow-2xl rounded-lg p-4 sm:p-8">
+
+        <!-- Header -->
+        <header class="pb-6 border-b-2 border-gray-100 mb-6">
+            <h1 class="text-3xl font-extrabold text-gray-900">Asset Inventory & Categorization Report</h1>
+            <p class="mt-2 text-lg text-gray-700">
+                <span class="font-semibold text-primary-green">Cybersecurity Course Module:</span> Building the Foundation for CMMC Scoping.
+            </p>
+            <p class="mt-1 text-sm text-gray-500">
+                Use the organizational case study provided in class to populate these CMMC asset categories. This inventory defines your system boundary.
+            </p>
+        </header>
+
+        <!-- Navigation/Tabs -->
+        <nav class="flex flex-wrap border-b border-gray-200 mb-6" id="nav-tabs">
+            <!-- Tabs will be generated here -->
+        </nav>
+
+        <!-- Main Content Area -->
+        <div id="content-area">
+            
+            <!-- Category Title and Actions -->
+            <div class="flex flex-col sm:flex-row justify-between items-center mb-6">
+                <h2 id="current-category-title" class="text-2xl font-bold text-gray-800 mb-4 sm:mb-0"></h2>
+                <div class="space-y-2 sm:space-y-0 sm:space-x-4 flex flex-col sm:flex-row w-full sm:w-auto">
+                    <button onclick="showForm()" class="btn-primary flex items-center justify-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                        Add New Asset
+                    </button>
+                    <button onclick="downloadData()" class="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        Download Data
+                    </button>
+                    <button onclick="printReport()" class="bg-black hover:bg-gray-800 text-white font-semibold py-2 px-4 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2-5a2 2 0 100-4 2 2 0 000 4zm2-5V9"></path></svg>
+                        Print Report
+                    </button>
+                </div>
+            </div>
+
+            <!-- Inventory Table -->
+            <div id="inventory-table-container" class="overflow-x-auto shadow-md rounded-lg">
+                <!-- Table will be rendered here -->
+            </div>
+        </div>
+
+        <!-- Add/Edit Asset Form Modal -->
+        <div id="asset-form-modal" class="fixed inset-0 bg-gray-900 bg-opacity-75 hidden items-center justify-center p-4 z-50">
+            <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg p-6">
+                <h3 id="form-title" class="text-xl font-bold mb-4 border-b pb-2">Add New Asset</h3>
+                <form id="asset-form" onsubmit="saveAsset(event)">
+                    <!-- Hidden fields for tracking context -->
+                    <input type="hidden" id="asset-category-input">
+                    <input type="hidden" id="asset-id-input">
+
+                    <div id="form-fields" class="space-y-4">
+                        <!-- Dynamic form fields will be injected here -->
+                    </div>
+
+                    <div class="mt-6 flex justify-end space-x-3">
+                        <button type="button" onclick="hideForm()" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300">
+                            Cancel
                         </button>
-<button class="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-white bg-primary hover:bg-primary/90 rounded-lg transition-colors">
-<span class="material-icons-outlined">print</span>
-                            Print Report
+                        <button type="submit" class="btn-primary px-4 py-2">
+                            Save Asset
                         </button>
-</div>
-</div>
-</header>
-<!-- Main Content Area -->
-<main>
-<!-- Tab Navigation -->
-<div class="border-b border-slate-200 dark:border-slate-700 mb-6">
-<nav aria-label="Tabs" class="-mb-px flex flex-wrap gap-x-6">
-<a aria-current="page" class="group inline-flex shrink-0 items-center gap-2 rounded-t-lg border-b-2 border-primary px-1 py-3 text-sm font-semibold text-primary" href="#">
-                            CUI Assets
-                        </a>
-<a class="group inline-flex shrink-0 items-center gap-2 rounded-t-lg border-b-2 border-transparent px-1 py-3 text-sm font-medium text-slate-500 hover:border-slate-300 hover:text-slate-700 dark:text-slate-400 dark:hover:border-slate-600 dark:hover:text-slate-300" href="#">
-                            Security Protection Assets
-                        </a>
-<a class="group inline-flex shrink-0 items-center gap-2 rounded-t-lg border-b-2 border-transparent px-1 py-3 text-sm font-medium text-slate-500 hover:border-slate-300 hover:text-slate-700 dark:text-slate-400 dark:hover:border-slate-600 dark:hover:text-slate-300" href="#">
-                            Contractor Risk Managed
-                        </a>
-<a class="group inline-flex shrink-0 items-center gap-2 rounded-t-lg border-b-2 border-transparent px-1 py-3 text-sm font-medium text-slate-500 hover:border-slate-300 hover:text-slate-700 dark:text-slate-400 dark:hover:border-slate-600 dark:hover:text-slate-300" href="#">
-                            Specialized Assets
-                        </a>
-<a class="group inline-flex shrink-0 items-center gap-2 rounded-t-lg border-b-2 border-transparent px-1 py-3 text-sm font-medium text-slate-500 hover:border-slate-300 hover:text-slate-700 dark:text-slate-400 dark:hover:border-slate-600 dark:hover:text-slate-300" href="#">
-                            Out-of-Scope Assets
-                        </a>
-</nav>
-</div>
-<!-- Tab Content: CUI Assets -->
-<div id="cui-assets">
-<div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-3">
-<div class="flex items-center gap-2">
-<h2 class="text-xl font-semibold text-slate-900 dark:text-white">CUI Assets</h2>
-<div class="relative group">
-<span class="material-icons-outlined text-slate-400 dark:text-slate-500 cursor-pointer text-base">info</span>
-<div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-slate-800 dark:bg-slate-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                                    Assets that process, store, or transmit Controlled Unclassified Information (CUI). These are critical for CMMC compliance.
-                                    <svg class="absolute text-slate-800 dark:text-slate-900 h-2 w-full left-0 top-full" viewbox="0 0 255 255" x="0px" xml:space="preserve" y="0px"><polygon class="fill-current" points="0,0 127.5,127.5 255,0"></polygon></svg>
-</div>
-</div>
-</div>
-<button class="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-white bg-primary hover:bg-primary/90 rounded-lg transition-colors">
-<span class="material-icons-outlined">add</span>
-                            Add New Asset
-                        </button>
-</div>
-<!-- CUI Assets Table -->
-<div class="bg-white dark:bg-slate-900/50 rounded-xl shadow-sm overflow-hidden border border-slate-200 dark:border-slate-800">
-<div class="overflow-x-auto">
-<table class="w-full text-sm text-left text-slate-500 dark:text-slate-400">
-<thead class="text-xs text-slate-700 dark:text-slate-300 uppercase bg-slate-50 dark:bg-slate-800">
-<tr>
-<th class="px-6 py-3" scope="col">Asset ID</th>
-<th class="px-6 py-3" scope="col">Asset Name</th>
-<th class="px-6 py-3" scope="col">Asset Type</th>
-<th class="px-6 py-3" scope="col">Network Address</th>
-<th class="px-6 py-3" scope="col">Owner</th>
-<th class="px-6 py-3" scope="col">Location</th>
-<th class="px-6 py-3" scope="col"><span class="sr-only">Actions</span></th>
-</tr>
-</thead>
-<tbody>
-<tr class="bg-white dark:bg-slate-900/50 border-b dark:border-slate-800 hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
-<td class="px-6 py-4 font-mono text-xs">CUI-001</td>
-<td class="px-6 py-4 font-medium text-slate-900 dark:text-white">File Server Alpha</td>
-<td class="px-6 py-4">Server</td>
-<td class="px-6 py-4 font-mono">192.168.1.10</td>
-<td class="px-6 py-4">IT Department</td>
-<td class="px-6 py-4">Data Center</td>
-<td class="px-6 py-4 text-right">
-<div class="flex items-center justify-end gap-2">
-<button class="p-1.5 text-slate-500 hover:text-primary dark:hover:text-primary rounded-md hover:bg-primary/10 transition-colors">
-<span class="material-icons-outlined">edit</span>
-</button>
-<button class="p-1.5 text-slate-500 hover:text-red-500 dark:hover:text-red-500 rounded-md hover:bg-red-500/10 transition-colors">
-<span class="material-icons-outlined">delete</span>
-</button>
-</div>
-</td>
-</tr>
-<tr class="bg-white dark:bg-slate-900/50 border-b dark:border-slate-800 hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
-<td class="px-6 py-4 font-mono text-xs">CUI-002</td>
-<td class="px-6 py-4 font-medium text-slate-900 dark:text-white">Engineer Workstation</td>
-<td class="px-6 py-4">Laptop</td>
-<td class="px-6 py-4 font-mono">10.0.5.23</td>
-<td class="px-6 py-4">Jane Doe</td>
-<td class="px-6 py-4">Office 204</td>
-<td class="px-6 py-4 text-right">
-<div class="flex items-center justify-end gap-2">
-<button class="p-1.5 text-slate-500 hover:text-primary dark:hover:text-primary rounded-md hover:bg-primary/10 transition-colors">
-<span class="material-icons-outlined">edit</span>
-</button>
-<button class="p-1.5 text-slate-500 hover:text-red-500 dark:hover:text-red-500 rounded-md hover:bg-red-500/10 transition-colors">
-<span class="material-icons-outlined">delete</span>
-</button>
-</div>
-</td>
-</tr>
-<tr class="bg-white dark:bg-slate-900/50 hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
-<td class="px-6 py-4 font-mono text-xs">CUI-003</td>
-<td class="px-6 py-4 font-medium text-slate-900 dark:text-white">Project Sharepoint Site</td>
-<td class="px-6 py-4">Cloud Service</td>
-<td class="px-6 py-4 font-mono">acme.sharepoint.com</td>
-<td class="px-6 py-4">Project Team</td>
-<td class="px-6 py-4">Cloud (US)</td>
-<td class="px-6 py-4 text-right">
-<div class="flex items-center justify-end gap-2">
-<button class="p-1.5 text-slate-500 hover:text-primary dark:hover:text-primary rounded-md hover:bg-primary/10 transition-colors">
-<span class="material-icons-outlined">edit</span>
-</button>
-<button class="p-1.5 text-slate-500 hover:text-red-500 dark:hover:text-red-500 rounded-md hover:bg-red-500/10 transition-colors">
-<span class="material-icons-outlined">delete</span>
-</button>
-</div>
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<!-- Empty State Example (can be used for other tabs) -->
-<div class="hidden" id="empty-state">
-<div class="text-center py-16 px-6 bg-white dark:bg-slate-900/50 rounded-xl border-2 border-dashed border-slate-200 dark:border-slate-800">
-<span class="material-icons-outlined text-5xl text-slate-400 dark:text-slate-600">inventory_2</span>
-<h3 class="mt-4 text-lg font-medium text-slate-900 dark:text-white">No Assets in this Category</h3>
-<p class="mt-1 text-sm text-slate-500 dark:text-slate-400">No assets have been added to this category yet.</p>
-<div class="mt-6">
-<button class="flex items-center justify-center gap-2 px-4 py-2 mx-auto text-sm font-medium text-white bg-primary hover:bg-primary/90 rounded-lg transition-colors">
-<span class="material-icons-outlined">add</span>
-                                Add New Asset to Begin
-                            </button>
-</div>
-</div>
-</div>
-</main>
-</div>
-</div>
-</body></html>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Message Box -->
+        <div id="message-box" class="fixed top-4 right-4 p-4 rounded-lg shadow-xl bg-green-500 text-white font-semibold hidden transition-opacity duration-300"></div>
+
+    </div>
+
+    <!-- Print Report Container (Hidden in normal view) -->
+    <div id="print-report-container" class="print-container hidden">
+        <!-- Content for printing will be dynamically injected here -->
+    </div>
+
+
+    <script>
+        // Data structure to hold the entire asset inventory
+        let inventoryData = {
+            cui: [],
+            security: [],
+            crm: [],
+            specialized: [],
+            outOfScope: []
+        };
+
+        let currentCategory = 'cui';
+
+        // Configuration mapping CMMC categories to their fields
+        const assetConfig = {
+            cui: {
+                displayName: 'CUI Assets',
+                description: 'Assets that process, store, or transmit Controlled Unclassified Information (CUI).',
+                fields: [
+                    { key: 'id', label: 'Asset ID', type: 'text', readOnly: true },
+                    { key: 'name', label: 'Asset Name', type: 'text' },
+                    { key: 'owner', label: 'Asset Owner', type: 'text' },
+                    { key: 'desc', label: 'Asset Description', type: 'textarea' },
+                    { key: 'type', label: 'Type', type: 'text' },
+                    { key: 'location', label: 'Location', type: 'text' },
+                    { key: 'dataType', label: 'CUI Data Type', type: 'text' },
+                    { key: 'users', label: 'Primary Users', type: 'text' }
+                ]
+            },
+            security: {
+                displayName: 'Security Protection Assets',
+                description: 'Assets that provide security functions (e.g., access control, logging) for CUI assets.',
+                fields: [
+                    { key: 'id', label: 'Asset ID', type: 'text', readOnly: true },
+                    { key: 'name', label: 'Asset Name', type: 'text' },
+                    { key: 'owner', label: 'Asset Owner', type: 'text' },
+                    { key: 'desc', label: 'Asset Description', type: 'textarea' },
+                    { key: 'type', label: 'Type', type: 'text' },
+                    { key: 'location', label: 'Location', type: 'text' },
+                    { key: 'function', label: 'Security Function', type: 'text' }
+                ]
+            },
+            crm: {
+                displayName: 'Contractor Risk Managed Assets',
+                description: 'Assets that can but are not intended to handle CUI and have been deemed acceptable risks by the organization.',
+                fields: [
+                    { key: 'id', label: 'Asset ID', type: 'text', readOnly: true },
+                    { key: 'name', label: 'Asset Name', type: 'text' },
+                    { key: 'owner', label: 'Asset Owner', type: 'text' },
+                    { key: 'desc', label: 'Asset Description', type: 'textarea' },
+                    { key: 'type', label: 'Type', type: 'text' },
+                    { key: 'location', label: 'Location', type: 'text' },
+                    { key: 'measures', label: 'Risk Mgmt Measures', type: 'text' },
+                    { key: 'policy', label: 'Policy/SLA/Contract', type: 'text' }
+                ]
+            },
+            specialized: {
+                displayName: 'Specialized Assets',
+                description: 'Assets that have unique security requirements or operational limitations (e.g., IoT, SCADA, Test Equipment).',
+                fields: [
+                    { key: 'id', label: 'Asset ID', type: 'text', readOnly: true },
+                    { key: 'name', label: 'Asset Name', type: 'text' },
+                    { key: 'owner', label: 'Asset Owner', type: 'text' },
+                    { key: 'desc', label: 'Asset Description', type: 'textarea' },
+                    { key: 'type', label: 'Type', type: 'text' },
+                    { key: 'location', label: 'Location', type: 'text' },
+                    { key: 'reason', label: 'Reason for Specialization', type: 'text' }
+                ]
+            },
+            outOfScope: {
+                displayName: 'Out-of-Scope Assets',
+                description: 'Assets that cannot process, store, or transmit CUI and are physically or logically separated from the CUI environment.',
+                fields: [
+                    { key: 'id', label: 'Asset ID', type: 'text', readOnly: true },
+                    { key: 'name', label: 'Asset Name', type: 'text' },
+                    { key: 'owner', label: 'Asset Owner', type: 'text' },
+                    { key: 'desc', label: 'Asset Description', type: 'textarea' },
+                    { key: 'type', 'label': 'Type', type: 'text' },
+                    { key: 'location', label: 'Location', type: 'text' },
+                    { key: 'usage', label: 'Usage', type: 'text' },
+                    { key: 'separation', label: 'CUI Separation Methods', type: 'text' }
+                ]
+            }
+        };
+
+        // --- Utility Functions ---
+
+        // Simple Message Box Implementation
+        function showMessage(message, type = 'success') {
+            const msgBox = document.getElementById('message-box');
+            msgBox.textContent = message;
+            msgBox.classList.remove('bg-green-500', 'bg-red-500', 'hidden');
+            msgBox.classList.add(type === 'success' ? 'bg-green-500' : 'bg-red-500', 'opacity-100');
+            
+            setTimeout(() => {
+                msgBox.classList.add('hidden');
+                msgBox.classList.remove('opacity-100');
+            }, 3000);
+        }
+
+        // --- Core Rendering Functions ---
+
+        function switchCategory(newCategory) {
+            currentCategory = newCategory;
+            renderNavTabs();
+            renderTable(newCategory);
+        }
+
+        function renderNavTabs() {
+            const nav = document.getElementById('nav-tabs');
+            nav.innerHTML = '';
+
+            Object.keys(assetConfig).forEach(key => {
+                const config = assetConfig[key];
+                const button = document.createElement('button');
+                button.textContent = config.displayName;
+                button.onclick = () => switchCategory(key);
+                button.className = `px-4 py-3 text-sm font-medium transition-colors duration-150 focus:outline-none ${
+                    key === currentCategory ? 'tab-active' : 'text-gray-500 hover:text-gray-700'
+                }`;
+                nav.appendChild(button);
+            });
+        }
+
+        function renderTable(categoryKey) {
+            const container = document.getElementById('inventory-table-container');
+            const categoryData = inventoryData[categoryKey];
+            const config = assetConfig[categoryKey];
+
+            document.getElementById('current-category-title').textContent = config.displayName;
+            
+            if (categoryData.length === 0) {
+                container.innerHTML = `<p class="p-4 text-gray-500">No assets recorded in the <strong>${config.displayName}</strong> category yet. Click "Add New Asset" to begin.</p>`;
+                return;
+            }
+
+            const headerRow = config.fields
+                .filter(f => f.key !== 'id') // Hide ID from main view
+                .map(f => `<th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">${f.label}</th>`)
+                .join('');
+            
+            const tableHTML = `
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            ${headerRow}
+                            <th class="px-6 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        ${categoryData.map(asset => `
+                            <tr class="hover:bg-green-50 transition-colors">
+                                ${config.fields.filter(f => f.key !== 'id').map(field => `
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${asset[field.key] || 'N/A'}</td>
+                                `).join('')}
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2 text-center">
+                                    <button onclick="showForm('${categoryKey}', '${asset.id}')" class="text-primary-green hover:text-green-700">Edit</button>
+                                    <button onclick="deleteAsset('${categoryKey}', '${asset.id}')" class="text-red-600 hover:text-red-900 ml-2">Delete</button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+
+            container.innerHTML = tableHTML;
+        }
+
+        // --- Form Handling ---
+
+        function generateFormFields(categoryKey, asset) {
+            const config = assetConfig[categoryKey];
+            const fieldsContainer = document.getElementById('form-fields');
+            fieldsContainer.innerHTML = '';
+
+            config.fields.forEach(field => {
+                // Skip the ID field for form generation unless it's explicitly needed (readOnly)
+                if (field.key === 'id' && !field.readOnly) return; 
+
+                const currentValue = asset ? asset[field.key] || '' : '';
+                const required = field.key !== 'id'; // IDs are generated, others are required
+
+                let inputField;
+                if (field.type === 'textarea') {
+                    inputField = `<textarea 
+                                    id="${field.key}" 
+                                    name="${field.key}" 
+                                    rows="3"
+                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-primary-green focus:border-primary-green"
+                                    ${required ? 'required' : ''}>${currentValue}</textarea>`;
+                } else {
+                    inputField = `<input 
+                                    type="${field.type}" 
+                                    id="${field.key}" 
+                                    name="${field.key}" 
+                                    value="${currentValue}"
+                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-primary-green focus:border-primary-green"
+                                    ${required ? 'required' : ''}
+                                    ${field.readOnly ? 'readonly disabled' : ''}>`;
+                }
+
+                const fieldDiv = document.createElement('div');
+                fieldDiv.className = 'flex flex-col';
+                fieldDiv.innerHTML = `
+                    <label for="${field.key}" class="text-sm font-medium text-gray-700">
+                        ${field.label} ${required ? '<span class="text-red-500">*</span>' : ''}
+                    </label>
+                    ${inputField}
+                `;
+                fieldsContainer.appendChild(fieldDiv);
+            });
+        }
+
+        function showForm(category = currentCategory, assetId = null) {
+            const config = assetConfig[category];
+            let asset = null;
+            
+            if (assetId) {
+                asset = inventoryData[category].find(a => a.id === assetId);
+                document.getElementById('form-title').textContent = `Edit Asset (${config.displayName})`;
+                document.getElementById('asset-id-input').value = assetId;
+            } else {
+                document.getElementById('form-title').textContent = `Add New Asset (${config.displayName})`;
+                document.getElementById('asset-id-input').value = ''; // Clear for new entry
+            }
+
+            document.getElementById('asset-category-input').value = category;
+            generateFormFields(category, asset);
+            document.getElementById('asset-form-modal').classList.remove('hidden');
+            document.getElementById('asset-form-modal').classList.add('flex');
+        }
+
+        function hideForm() {
+            document.getElementById('asset-form-modal').classList.add('hidden');
+            document.getElementById('asset-form-modal').classList.remove('flex');
+            document.getElementById('asset-form').reset();
+        }
+
+        function saveAsset(event) {
+            event.preventDefault();
+            
+            const category = document.getElementById('asset-category-input').value;
+            const assetId = document.getElementById('asset-id-input').value;
+            const config = assetConfig[category];
+            const newAsset = {};
+
+            // Collect data from dynamically created fields
+            config.fields.forEach(field => {
+                const element = document.getElementById(field.key);
+                if (element) {
+                    newAsset[field.key] = element.value.trim();
+                }
+            });
+
+            if (assetId) {
+                // Edit existing asset
+                const index = inventoryData[category].findIndex(a => a.id === assetId);
+                if (index !== -1) {
+                    inventoryData[category][index] = { ...inventoryData[category][index], ...newAsset };
+                    showMessage(`Asset ${assetId} updated successfully.`);
+                }
+            } else {
+                // Add new asset
+                newAsset.id = 'AST-' + Math.random().toString(36).substring(2, 9).toUpperCase(); // Simple unique ID
+                inventoryData[category].push(newAsset);
+                showMessage(`New asset ${newAsset.id} added successfully to ${config.displayName}.`);
+            }
+            
+            renderTable(category);
+            hideForm();
+        }
+
+        function deleteAsset(category, assetId) {
+            if (confirm(`Are you sure you want to delete asset ${assetId} from ${assetConfig[category].displayName}?`)) {
+                inventoryData[category] = inventoryData[category].filter(a => a.id !== assetId);
+                renderTable(category);
+                showMessage(`Asset ${assetId} deleted.`, 'success');
+            }
+        }
+
+        // --- Reporting & Export ---
+
+        function downloadData() {
+            const dataStr = JSON.stringify(inventoryData, null, 2);
+            const blob = new Blob([dataStr], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'CMMC_Asset_Inventory_' + new Date().toISOString().slice(0, 10) + '.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showMessage('Inventory data downloaded as JSON.', 'success');
+        }
+
+        function printReport() {
+            const reportContainer = document.getElementById('print-report-container');
+            let reportHTML = `<h1>Asset Inventory & Categorization Report</h1>`;
+            
+            Object.keys(assetConfig).forEach(categoryKey => {
+                const config = assetConfig[categoryKey];
+                const data = inventoryData[categoryKey];
+
+                reportHTML += `
+                    <div class="print-section">
+                        <h2>${config.displayName}</h2>
+                        <p class="text-sm">${config.description}</p>
+                `;
+
+                if (data.length === 0) {
+                    reportHTML += `<p>No assets recorded.</p></div>`;
+                    return;
+                }
+
+                // Create Table Headers
+                const headers = config.fields
+                    .map(f => `<th>${f.label}</th>`)
+                    .join('');
+
+                // Create Table Body
+                const rows = data.map(asset => {
+                    const cells = config.fields
+                        .map(field => `<td>${asset[field.key] || 'N/A'}</td>`)
+                        .join('');
+                    return `<tr>${cells}</tr>`;
+                }).join('');
+
+                reportHTML += `
+                    <table>
+                        <thead><tr>${headers}</tr></thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                    </div>
+                `;
+            });
+
+            reportContainer.innerHTML = reportHTML;
+            window.print();
+        }
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Optional: Load dummy data for demonstration
+            inventoryData.cui.push({ id: 'AST-001', name: 'File Server 1', owner: 'IT Dept', desc: 'Stores project files with CUI.', type: 'Server', location: 'DC-East', dataType: 'Export Control, Financial', users: 'Engineering, Finance' });
+            inventoryData.security.push({ id: 'AST-101', name: 'Firewall-Main', owner: 'Network Team', desc: 'Perimeter defense for internal networks.', type: 'Appliance', location: 'Network Rack 1', function: 'Network Segmentation, Access Control' });
+            inventoryData.outOfScope.push({ id: 'AST-501', name: 'Guest Wi-Fi', owner: 'Facilities', desc: 'Separate network for visitor access.', type: 'WLAN', location: 'Offices', usage: 'Internet access for guests', separation: 'Separate VLAN and physical firewall' });
+
+
+            renderNavTabs();
+            // Start on the CUI Assets tab
+            switchCategory('cui');
+        });
+    </script>
+</body>
+</html>
