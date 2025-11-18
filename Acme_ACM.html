@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Control Matrix Generator</title>
+    <style>
+        /* General Styles */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background-color: #f4f4f9; color: #333; }
+        h1, h2 { color: #004085; border-bottom: 2px solid #004085; padding-bottom: 5px; margin-top: 25px; }
+       .container { max-width: 1200px; margin: 0 auto; background-color: #ffffff; padding: 20px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
+       .section { margin-bottom: 30px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; background-color: #fafafa; }
+        
+        /* Form & Input Styles */
+        label { display: block; margin-top: 10px; font-weight: bold; }
+        input[type="text"], input[type="date"], textarea, select { width: 98%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        textarea { resize: vertical; }
+        
+        /* Table Styles */
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; background-color: #fff; }
+        th, td { padding: 12px; border: 1px solid #dee2e6; text-align: left; }
+        th { background-color: #0056b3; color: white; font-weight: 600; }
+        tr:nth-child(even) { background-color: #f8f9fa; }
+        
+        /* Button Styles */
+        button { background-color: #28a745; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; margin-right: 10px; transition: background-color 0.3s; }
+        button:hover { background-color: #218838; }
+       .delete-btn { background-color: #dc3545; }
+       .delete-btn:hover { background-color: #c82333; }
+       .edit-btn { background-color: #ffc107; color: #333; }
+       .edit-btn:hover { background-color: #e0a800; }
+       .action-buttons { margin-top: 20px; text-align: center; }
+
+        /* Print Styles */
+        @media print {
+           .section,.action-buttons,.controls { break-inside: avoid; }
+           .no-print { display: none; }
+            body { background-color: white; padding: 0; }
+           .container { box-shadow: none; padding: 0; }
+            h1, h2 { border-color: #000; color: #000; }
+            table, th, td { border-color: #000!important; }
+            th { background-color: #ccc!important; color: #000!important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header class="no-print">
+        <h1>Access Control Matrix for CMMC Level 2 Audit Readiness</h1>
+        <p><strong>Professor's Note:</strong> This application helps you document the access control mechanisms critical for CMMC Level 2 compliance. Remember, the goal is tangible evidence that enforces the **Principle of Least Privilege** (AC.L2-3.1.5) and controls the flow of CUI.</p>
+    </header>
+
+    <div id="intro-section" class="section">
+        <h2>Report Metadata</h2>
+        <form id="intro-form">
+            <label for="orgName">Name of Organization:</label><input type="text" id="orgName" value="Acme Corporation (CMMC Case Study)">
+            <label for="personCompleted">Person That Completed the Matrix:</label><input type="text" id="personCompleted" value="Student Name/Role">
+            <label for="facilities">List of Physical Facilities (CUI Processing Locations):</label><textarea id="facilities" rows="3">Headquarters: 100 Main St (CUI Processing)
+Remote Office: 456 Tech Ave (No CUI)</textarea>
+            <label for="dateCompleted">Date Completed:</label><input type="date" id="dateCompleted" value="2025-11-17">
+            <label for="nextReviewDate">Date for Next Review:</label><input type="date" id="nextReviewDate" value="2026-11-17">
+        </form>
+    </div>
+
+    <div class="section">
+        <h2>1. Technical Access Control Matrix (ACM)</h2>
+        <p><em>Purpose: Basic visualization of system-level permissions (Subjects vs. Resources/Objects) to ensure controlled access.</em></p>
+        <div id="acm-controls" class="controls no-print">
+            <label for="acm-subject">Subjects:</label><input type="text" id="acm-subject" placeholder="e.g., IT Admins Group">
+            <label for="acm-object">Objects/Resources:</label><input type="text" id="acm-object" placeholder="e.g., Domain Controller GPO Interface">
+            <label for="acm-permission">Permissions:</label><select id="acm-permission">
+                <option value="Read">Read</option>
+                <option value="Write">Write</option>
+                <option value="Execute">Execute</option>
+                <option value="Configure">Configure</option>
+                <option value="Full Control">Full Control</option>
+                <option value="Deny">Deny</option>
+            </select>
+            <button onclick="addEntry('acm')">Add Entry</button>
+        </div>
+        <table id="acm-table">
+            <thead>
+                <tr>
+                    <th>Subjects</th>
+                    <th>Objects/Resources</th>
+                    <th>Permissions</th>
+                    <th class="no-print">Actions</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>2. Shared/Customer Responsibility Matrix (SRM/CRM)</h2>
+        <p><em>Purpose: Defines control ownership, especially for systems using external partners (e.g., Cloud Service Providers) handling CUI.</em></p>
+        <div id="srm-controls" class="controls no-print">
+            <label for="srm-subject">Subjects:</label><input type="text" id="srm-subject" placeholder="e.g., Security Officer Role">
+            <label for="srm-object">Objects/Resources:</label><input type="text" id="srm-object" placeholder="e.g., Azure Government IaaS">
+            <label for="srm-permission">Responsibility (Permission):</label><select id="srm-permission">
+                <option value="Customer-Owned">Customer-Owned (OSC)</option>
+                <option value="Shared">Shared</option>
+                <option value="CSP-Owned">CSP-Owned (Partner)</option>
+            </select>
+            <label for="srm-partner">Share Partner:</label><input type="text" id="srm-partner" placeholder="e.g., Microsoft Azure (GCC High)">
+            <button onclick="addEntry('srm')">Add Entry</button>
+        </div>
+        <table id="srm-table">
+            <thead>
+                <tr>
+                    <th>Subjects</th>
+                    <th>Objects/Resources</th>
+                    <th>Responsibility (Permission)</th>
+                    <th>Share Partner</th>
+                    <th class="no-print">Actions</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>3. CMMC Audit-Ready Access Control Matrix (Verification Model)</h2>
+        <p><em>Purpose: Provides C3PAO-ready evidence for **Least Privilege** (AC.L2-3.1.5) by linking access to justification and proof. This is the core documentation needed for a successful audit.</em></p>
+        <div id="cmmc-controls" class="controls no-print">
+            <label for="cmmc-subject">Subject Identifier:</label><input type="text" id="cmmc-subject" placeholder="e.g., CUI Data Owner (User Group)">
+            <label for="cmmc-resource">Object/Resource:</label><input type="text" id="cmmc-resource" placeholder="e.g., Network Segment containing CUI">
+            <label for="cmmc-perm">Permission Level:</label><select id="cmmc-perm">
+                <option value="Read-Only">Read-Only</option>
+                <option value="Write/Modify">Write/Modify</option>
+                <option value="Full Admin">Full Admin</option>
+                <option value="Deny All">Deny All</option>
+            </select>
+            <label for="cmmc-justification">Justification/Business Need:</label><input type="text" id="cmmc-justification" placeholder="e.g., Required for daily data integrity checks">
+            <label for="cmmc-evidence">Supporting Evidence Link (Artifact):</label><input type="text" id="cmmc-evidence" placeholder="e.g., Policy-AC-01, Firewall Rule ID: FWR-105">
+            <button onclick="addEntry('cmmc')">Add Entry</button>
+        </div>
+        <table id="cmmc-table">
+            <thead>
+                <tr>
+                    <th>Subject Identifier</th>
+                    <th>Object/Resource</th>
+                    <th>Permission Level</th>
+                    <th>Justification/Business Need</th>
+                    <th>Supporting Evidence Link (Artifact)</th>
+                    <th class="no-print">Actions</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <div class="action-buttons no-print">
+        <button onclick="downloadData()">Download Data (JSON)</button>
+        <button onclick="window.print()">Print Report</button>
+    </div>
+</div>
+
+<script>
+    // --- Data Storage and Initialization ---
+    // Note: Since no "Acme data" was provided, these initial entries simulate a real-world CMMC L2 scenario 
+    // to demonstrate Least Privilege, Separation of Duties, and Shared Responsibility.
+    let data = {
+        intro: {
+            orgName: 'Acme Corporation (CMMC Case Study)',
+            personCompleted: 'Student Name/Role',
+            facilities: 'Headquarters: 100 Main St (CUI Processing)\nRemote Office: 456 Tech Ave (No CUI)',
+            dateCompleted: new Date().toISOString().slice(0, 10),
+            nextReviewDate: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().slice(0, 10)
+        },
+        // 1. Technical Access Control Matrix (ACM) Entries
+        acm: [
+            // Entry 1: Standard access for CUI handling, showing Read/Write is permitted.
+            { id: 1637000001, subject: 'CUI Handlers Group', object: 'CUI File Share Volume A', permission: 'Read/Write' },
+            // Entry 2: Demonstrating configuration access aligned with Separation of Duties.
+            { id: 1637000002, subject: 'Server Administrators', object: 'Domain Controller GPO Interface', permission: 'Configure' }
+        ],
+        // 2. Shared/Customer Responsibility Matrix (SRM/CRM) Entries
+        srm: [
+            // Entry 1: SaaS example where responsibility is shared for control implementation.
+            { id: 1637000003, subject: 'All Users', object: 'Microsoft 365 Exchange Online (Email)', permission: 'Shared', partner: 'Microsoft (GCC)' },
+            // Entry 2: IaaS example where the customer retains responsibility for the OS and application layer.
+            { id: 1637000004, subject: 'IT Administrators', object: 'Virtual Machine OS (IaaS)', permission: 'Customer-Owned', partner: 'AWS GovCloud' }
+        ],
+        // 3. CMMC Audit-Ready Access Control Matrix (Verification Model) Entries
+        cmmc: [
+            // Entry 1: Proving Least Privilege - access is limited to Read-Only for monitoring staff.
+            { id: 1637000005, subject_id: 'Network Operations Team (Monitoring Role)', resource: 'Firewall Policy Interface', perm_level: 'Read-Only', justification: 'Required only for monitoring network traffic and logs; prevents unauthorized policy modification (AC.L2-3.1.5)', evidence_link: 'Policy-AC-02-Monitoring, Screenshot of Read-Only Role Assignment' },
+            // Entry 2: Proving necessary Full Control access, tied directly to a specific role.
+            { id: 1637000006, subject_id: 'CUI Data Owner Role', resource: 'CUI Database Server (Admin Access)', perm_level: 'Full Control', justification: 'Requires full administrative rights to manage schemas, execute backups, and manage user access lists as per organizational policy (AC.L2-3.1.4)', evidence_link: 'SOP-CUI-DB-01, Organizational Chart/Job Description' }
+        ]
+    };
+
+    // --- Utility Functions ---
+
+    // Load initial data into the form and tables
+    document.addEventListener('DOMContentLoaded', () => {
+        loadIntroData();
+        renderTable('acm');
+        renderTable('srm');
+        renderTable('cmmc');
+    });
+
+    // Load introductory data into the form
+    function loadIntroData() {
+        document.getElementById('orgName').value = data.intro.orgName;
+        document.getElementById('personCompleted').value = data.intro.personCompleted;
+        document.getElementById('facilities').value = data.intro.facilities;
+        document.getElementById('dateCompleted').value = data.intro.dateCompleted;
+        document.getElementById('nextReviewDate').value = data.intro.nextReviewDate;
+        
+        // Update data object on input change
+        document.getElementById('intro-form').querySelectorAll('input, textarea').forEach(input => {
+            input.addEventListener('change', (e) => {
+                data.intro[e.target.id] = e.target.value;
+            });
+        });
+    }
+
+    // Render Table Content
+    function renderTable(type) {
+        const tableBody = document.querySelector(`#${type}-table tbody`);
+        tableBody.innerHTML = ''; 
+        
+        data[type].forEach(entry => {
+            const row = tableBody.insertRow();
+            
+            // Define the fields to display for each matrix type
+            let fields;
+            if (type === 'acm') {
+                fields = ['subject', 'object', 'permission'];
+            } else if (type === 'srm') {
+                fields = ['subject', 'object', 'permission', 'partner'];
+            } else if (type === 'cmmc') {
+                fields = ['subject_id', 'resource', 'perm_level', 'justification', 'evidence_link'];
+            }
+
+            fields.forEach(field => {
+                const cell = row.insertCell();
+                cell.textContent = entry[field];
+            });
+
+            // Action buttons (Edit and Delete)
+            const actionsCell = row.insertCell();
+            actionsCell.classList.add('no-print');
+            actionsCell.innerHTML = `
+                <button class="edit-btn" onclick="editEntry(${entry.id}, '${type}')">Edit</button>
+                <button class="delete-btn" onclick="deleteEntry(${entry.id}, '${type}')">Delete</button>
+            `;
+        });
+    }
+
+    // Add New Entry
+    function addEntry(type) {
+        let newEntry = { id: Date.now() }; 
+        let fields = [];
+
+        if (type === 'acm') {
+            fields = ['subject', 'object', 'permission'];
+        } else if (type === 'srm') {
+            fields = ['subject', 'object', 'permission', 'partner'];
+        } else if (type === 'cmmc') {
+            fields = ['subject_id', 'resource', 'perm_level', 'justification', 'evidence_link'];
+        }
+
+        let isComplete = true;
+        fields.forEach(field => {
+            // Determine input ID based on matrix type
+            let inputId;
+            if (type === 'acm' || type === 'srm') {
+                inputId = `${type}-${field}`;
+            } else if (type === 'cmmc') {
+                // Mapping the data key to the HTML input ID for cmmc
+                if (field === 'subject_id') inputId = 'cmmc-subject';
+                else if (field === 'resource') inputId = 'cmmc-resource';
+                else if (field === 'perm_level') inputId = 'cmmc-perm';
+                else if (field === 'justification') inputId = 'cmmc-justification';
+                else if (field === 'evidence_link') inputId = 'cmmc-evidence';
+            }
+            
+            const inputElement = document.getElementById(inputId);
+            let value = inputElement.value.trim();
+
+            if (value === "") {
+                isComplete = false;
+            }
+
+            // Assign value using the data field name
+            newEntry[field] = value;
+        });
+
+        if (!isComplete) {
+            alert('Please fill out all fields before adding a new entry.');
+            return;
+        }
+
+        data[type].push(newEntry);
+        renderTable(type);
+
+        // Clear inputs after successful addition
+        document.getElementById(`${type}-controls`).querySelectorAll('input, select').forEach(input => {
+            if (input.type === 'text') input.value = '';
+            // Note: Selects are not cleared, keeping the last selection is usually fine.
+        });
+    }
+
+    // Delete Entry
+    function deleteEntry(id, type) {
+        data[type] = data[type].filter(entry => entry.id !== id);
+        renderTable(type);
+    }
+
+    // Edit Entry (Simplified via Prompt)
+    function editEntry(id, type) {
+        const entry = data[type].find(e => e.id === id);
+        
+        // Construct a prompt message based on the entry's fields
+        let fields;
+        // Define fields mapping the data key to a user-friendly display name
+        if (type === 'acm') {
+            fields = {subject: 'Subject', object: 'Object', permission: 'Permission'};
+        } else if (type === 'srm') {
+            fields = {subject: 'Subject', object: 'Object', permission: 'Responsibility', partner: 'Partner'};
+        } else if (type === 'cmmc') {
+            fields = {subject_id: 'Subject ID', resource: 'Resource', perm_level: 'Permission Level', justification: 'Justification', evidence_link: 'Evidence Link'};
+        }
+
+        let currentValues = Object.keys(fields).map(key => `${fields[key]}: ${entry[key]}`).join('\n');
+        
+        let newValue = prompt(`Editing Entry ID: ${id}\n\nCurrent Values:\n${currentValues}\n\nEnter the field you want to edit (e.g., 'Permission') and the new value, separated by a colon (e.g., Permission: Full Control):`);
+
+        if (newValue) {
+            const parts = newValue.split(':');
+            if (parts.length >= 2) {
+                // Normalize key for lookup: trim, lowercase, replace space with underscore
+                let inputKey = parts[0].trim().toLowerCase().replace(/\s/g, '_'); 
+                const value = parts.slice(1).join(':').trim(); // Handle case where value itself contains a colon
+                
+                // Map user-friendly keys back to data keys
+                let dataKey = Object.keys(fields).find(key => 
+                    fields[key].toLowerCase().replace(/\s/g, '_') === inputKey || 
+                    key.toLowerCase().replace(/\s/g, '_') === inputKey
+                );
+
+                if (dataKey && entry.hasOwnProperty(dataKey)) {
+                    entry[dataKey] = value;
+                    renderTable(type);
+                    alert('Entry updated successfully.');
+                } else {
+                    alert(`Invalid field name entered. Valid fields for ${type.toUpperCase()} are: ${Object.values(fields).join(', ')}`);
+                }
+            } else {
+                alert('Invalid format. Please use "Field Name: New Value".');
+            }
+        }
+    }
+
+
+    // Download Data
+    function downloadData() {
+        // Collect latest intro data
+        data.intro.orgName = document.getElementById('orgName').value;
+        data.intro.personCompleted = document.getElementById('personCompleted').value;
+        data.intro.facilities = document.getElementById('facilities').value;
+        data.intro.dateCompleted = document.getElementById('dateCompleted').value;
+        data.intro.nextReviewDate = document.getElementById('nextReviewDate').value;
+
+        const dataStr = JSON.stringify(data, null, 2);
+        const blob = new Blob([dataStr], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'CMMC_Access_Control_Matrix_Data.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+</script>
+
+</body>
+</html>
