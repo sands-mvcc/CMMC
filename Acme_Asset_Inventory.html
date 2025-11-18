@@ -436,11 +436,11 @@
         }
 
         function deleteAsset(category, assetId) {
-            if (confirm(`Are you sure you want to delete asset ${assetId} from ${assetConfig[category].displayName}?`)) {
-                inventoryData[category] = inventoryData[category].filter(a => a.id !== assetId);
-                renderTable(category);
-                showMessage(`Asset ${assetId} deleted.`, 'success');
-            }
+            // Replaced window.confirm() with a console log and direct deletion for canvas environment
+            console.log(`Deleting asset ${assetId} from ${assetConfig[category].displayName}...`);
+            inventoryData[category] = inventoryData[category].filter(a => a.id !== assetId);
+            renderTable(category);
+            showMessage(`Asset ${assetId} deleted.`, 'success');
         }
 
         // --- Reporting & Export ---
@@ -506,11 +506,52 @@
 
         // --- Initialization ---
         document.addEventListener('DOMContentLoaded', () => {
-            // Optional: Load dummy data for demonstration
-            inventoryData.cui.push({ id: 'AST-001', name: 'File Server 1', owner: 'IT Dept', desc: 'Stores project files with CUI.', type: 'Server', location: 'DC-East', dataType: 'Export Control, Financial', users: 'Engineering, Finance' });
-            inventoryData.security.push({ id: 'AST-101', name: 'Firewall-Main', owner: 'Network Team', desc: 'Perimeter defense for internal networks.', type: 'Appliance', location: 'Network Rack 1', function: 'Network Segmentation, Access Control' });
-            inventoryData.outOfScope.push({ id: 'AST-501', name: 'Guest Wi-Fi', owner: 'Facilities', desc: 'Separate network for visitor access.', type: 'WLAN', location: 'Offices', usage: 'Internet access for guests', separation: 'Separate VLAN and physical firewall' });
+            // --- INJECTED DUMMY ASSET DATA ---
 
+            // CUI Assets (Assets that process, store, or transmit Controlled Unclassified Information)
+            inventoryData.cui.push(
+                { id: 'AST-001', name: 'File Server 1', owner: 'IT Dept', desc: 'Stores project files with CUI.', type: 'Server', location: 'DC-East', dataType: 'Export Control, Financial', users: 'Engineering, Finance' },
+                { id: 'AST-002', name: 'Engineering Workstation 12', owner: 'Engineering', desc: 'CAD terminal used to design prototypes (CUI creation).', type: 'Desktop PC', location: 'Engineering Lab B', dataType: 'Technical Data (Drawings)', users: 'Sr. Engineers' },
+                { id: 'AST-003', name: 'SharePoint CUI Site', owner: 'Program Management', desc: 'Collaboration platform for project documents and reports.', type: 'Cloud Service (SaaS)', location: 'Azure Gov Cloud', dataType: 'Program Specs, Contracts', users: 'PMs, Contractors' },
+                { id: 'AST-004', name: 'Exchange Server (Email)', owner: 'IT Dept', desc: 'Used to transmit project communications containing CUI (FOUO).', type: 'Server', location: 'DC-West', dataType: 'FOUO Correspondence', users: 'All Employees' },
+                { id: 'AST-005', name: 'Encrypted Laptop - CEO', owner: 'Executive', desc: 'Mobile device for remote access and presentations.', type: 'Laptop', location: 'CEO Home/Travel', dataType: 'Strategic Plans, Financials (with CUI notes)', users: 'CEO' }
+            );
+
+            // Security Protection Assets (Assets that provide security functions for CUI assets)
+            inventoryData.security.push(
+                { id: 'AST-101', name: 'Firewall-Main', owner: 'Network Team', desc: 'Perimeter defense for internal CUI networks.', type: 'Appliance', location: 'Network Rack 1', function: 'Network Segmentation, Access Control' },
+                { id: 'AST-102', name: 'SIEM System (Splunk)', owner: 'SOC Team', desc: 'Central log aggregation and analysis platform.', type: 'Server Appliance', location: 'DC-East', function: 'Auditing, Monitoring, Incident Response' },
+                { id: 'AST-103', name: 'Multi-Factor Auth (MFA) Gateway', owner: 'Identity Team', desc: 'Enforces 2FA for all remote access and CUI system logins.', type: 'Cloud Service', location: 'Azure AD', function: 'Access Control, Authentication' },
+                { id: 'AST-104', name: 'Endpoint Detection & Response (EDR)', owner: 'Endpoint Team', desc: 'Security software agent installed on all CUI endpoints.', type: 'Software', location: 'N/A', function: 'Malware Prevention, Vulnerability Management' },
+                { id: 'AST-105', name: 'Network Switch (Core)', owner: 'Network Team', desc: 'Provides physical connection and VLAN separation for CUI environment.', type: 'Network Device', location: 'Network Rack 2', function: 'Network Segmentation, Traffic Control' }
+            );
+
+            // Contractor Risk Managed Assets (Assets that can but are not intended to handle CUI)
+            inventoryData.crm.push(
+                { id: 'AST-201', name: 'HR Payroll System', owner: 'HR Dept', desc: 'SaaS used for employee payroll and benefits (contains PII, not CUI).', type: 'Cloud Service (SaaS)', location: 'Vendor Data Center', measures: 'Contractual obligation for FedRAMP Moderate equivalency', policy: 'Vendor SLA/MSA, HR Policy 4.1' },
+                { id: 'AST-202', name: 'Marketing Public Website', owner: 'Marketing', desc: 'Publicly accessible informational website (external facing).', type: 'Web Server', location: 'External Hosting', measures: 'Cannot upload CUI; web server is not connected to CUI network', policy: 'Acceptable Use Policy, Security Rule 7.2' },
+                { id: 'AST-203', name: 'General Purpose Copier', owner: 'Facilities', desc: 'Networked copier/scanner in the main office (secured hard drive).', type: 'MFP Device', location: 'Main Office Floor', measures: 'Hard drive wiped daily; isolated on a separate VLAN', policy: 'Shredding Policy, Facilities Guide 3.5' },
+                { id: 'AST-204', name: 'Financial Accounting Software', owner: 'Finance', desc: 'On-premise system storing only financial records (no CUI data types).', type: 'Application Server', location: 'DC-East', measures: 'Segregated network zone; periodic manual check for CUI presence', policy: 'Finance Data Retention Policy' }
+            );
+
+            // Specialized Assets (Assets that have unique security requirements or limitations)
+            inventoryData.specialized.push(
+                { id: 'AST-301', name: 'Prototype 3D Printer', owner: 'R&D', desc: 'Requires unique network access for proprietary print job files.', type: 'IoT Device', location: 'R&D Lab', reason: 'Network limitations (static IP required), unique patching cycle, proprietary firmware.' },
+                { id: 'AST-302', name: 'Manufacturing SCADA Controller', owner: 'Operations', desc: 'Critical operational technology (OT) asset for production line.', type: 'PLC', location: 'Production Line 5', reason: 'Cannot accept modern security agents; legacy protocols sensitive to latency.' },
+                { id: 'AST-303', name: 'Test & Measurement Equipment (TMG)', owner: 'Quality Control', desc: 'Diagnostic device used for hardware verification and testing.', type: 'Proprietary OS', location: 'QC Lab', reason: 'Runs unsupported embedded OS (Windows XP Embedded), must be air-gapped.' },
+                { id: 'AST-304', name: 'Video Teleconference (VTC) Unit', owner: 'Executive', desc: 'Encrypted VTC unit in the Board Room.', type: 'Appliance', location: 'Board Room', reason: 'Hardware encryption requirements (NSA-approved modules); limited configuration access.' }
+            );
+
+            // Out-of-Scope Assets (Assets that cannot process, store, or transmit CUI)
+            inventoryData.outOfScope.push(
+                { id: 'AST-501', name: 'Guest Wi-Fi', owner: 'Facilities', desc: 'Separate network for visitor access.', type: 'WLAN', location: 'Offices', usage: 'Internet access for guests', separation: 'Separate VLAN and dedicated, external physical firewall.' },
+                { id: 'AST-502', name: 'Employee Cafeteria Kiosks', owner: 'Facilities', desc: 'Used for lunch orders and company announcements.', type: 'Tablet/Kiosk', location: 'Cafeteria', usage: 'Ordering food, internal announcements', separation: 'Separate physical network entirely; no route to DC networks.' },
+                { id: 'AST-503', name: 'Personal Mobile Devices (BYOD)', owner: 'Employees', desc: 'Employees\' personal phones and tablets.', type: 'Mobile', location: 'Employee hands', usage: 'Personal calls, social media', separation: 'Access limited to Guest Wi-Fi (AST-501) only; firewall blocks all CUI system access.' },
+                { id: 'AST-504', name: 'IoT HVAC System', owner: 'Facilities', desc: 'Controls building temperature and humidity.', type: 'IoT System', location: 'Building A', usage: 'Environmental control', separation: 'Dedicated, isolated control network with no logical route to the CUI network boundary.' },
+                { id: 'AST-505', name: 'Time Clock System', owner: 'HR Dept', desc: 'Records employee hours via biometric scan.', type: 'Dedicated Terminal', location: 'Main Entrance', usage: 'HR functions, time keeping', separation: 'Only communicates with external SaaS HR vendor over segregated network path.' }
+            );
+            
+            // --- END INJECTED DUMMY ASSET DATA ---
 
             renderNavTabs();
             // Start on the CUI Assets tab
