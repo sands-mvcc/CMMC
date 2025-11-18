@@ -18,22 +18,39 @@
             background-color: #f7f7f7;
             color: var(--text-color);
         }
-        .btn-primary {
-            background-color: var(--primary-green);
-            color: white;
+        /* Base button style */
+        .btn-base {
             padding: 10px 20px;
             border-radius: 8px;
             font-weight: 600;
-            transition: background-color 0.2s;
+            transition: background-color 0.2s, transform 0.1s;
             cursor: pointer;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+        }
+        /* Primary button for actions (Add) */
+        .btn-primary {
+            background-color: var(--primary-green);
+            color: white;
         }
         .btn-primary:hover {
             background-color: #065f46; /* Slightly darker green on hover */
+            transform: translateY(-1px);
+        }
+        /* Secondary buttons (Download, Print) */
+        .btn-secondary {
+            background-color: #374151; /* Dark gray/black theme */
+            color: white;
+        }
+        .btn-secondary:hover {
+            background-color: #1f2937;
+            transform: translateY(-1px);
         }
         .tab-active {
             border-bottom: 4px solid var(--primary-green);
             color: var(--primary-green);
             font-weight: 700;
+            /* Added margin adjustment to keep text aligned when border is active */
+            padding-bottom: 9px; 
         }
         
         /* Print Styles - Ensure only the report content is printed cleanly */
@@ -82,10 +99,9 @@
     </style>
 </head>
 <body class="min-h-screen p-4 sm:p-8">
-    <div id="app-container" class="max-w-7xl mx-auto bg-white shadow-2xl rounded-lg p-4 sm:p-8">
-
+    <div id="app-container" class="max-w-7xl mx-auto bg-white shadow-2xl rounded-lg p-4 sm:p-10">
         <!-- Header -->
-        <header class="pb-6 border-b-2 border-gray-100 mb-6">
+        <header class="pb-6 border-b-2 border-gray-100 mb-8">
             <h1 class="text-3xl font-extrabold text-gray-900">Asset Inventory & Categorization Report</h1>
             <p class="mt-2 text-lg text-gray-700">
                 <span class="font-semibold text-primary-green">Cybersecurity Course Module:</span> Building the Foundation for CMMC Scoping.
@@ -106,16 +122,18 @@
             <!-- Category Title and Actions -->
             <div class="flex flex-col sm:flex-row justify-between items-center mb-6">
                 <h2 id="current-category-title" class="text-2xl font-bold text-gray-800 mb-4 sm:mb-0"></h2>
-                <div class="space-y-2 sm:space-y-0 sm:space-x-4 flex flex-col sm:flex-row w-full sm:w-auto">
-                    <button onclick="showForm()" class="btn-primary flex items-center justify-center">
+                
+                <!-- Responsive Button Group -->
+                <div class="space-y-3 sm:space-y-0 sm:space-x-4 flex flex-col sm:flex-row w-full sm:w-auto">
+                    <button onclick="showForm()" class="btn-primary btn-base flex items-center justify-center w-full sm:w-auto">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
                         Add New Asset
                     </button>
-                    <button onclick="downloadData()" class="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg flex items-center justify-center">
+                    <button onclick="downloadData()" class="btn-secondary btn-base flex items-center justify-center w-full sm:w-auto">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                         Download Data
                     </button>
-                    <button onclick="printReport()" class="bg-black hover:bg-gray-800 text-white font-semibold py-2 px-4 rounded-lg flex items-center justify-center">
+                    <button onclick="printReport()" class="btn-secondary btn-base flex items-center justify-center w-full sm:w-auto">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2-5a2 2 0 100-4 2 2 0 000 4zm2-5V9"></path></svg>
                         Print Report
                     </button>
@@ -123,15 +141,15 @@
             </div>
 
             <!-- Inventory Table -->
-            <div id="inventory-table-container" class="overflow-x-auto shadow-md rounded-lg">
+            <div id="inventory-table-container" class="overflow-x-auto shadow-lg rounded-lg border border-gray-200">
                 <!-- Table will be rendered here -->
             </div>
         </div>
 
         <!-- Add/Edit Asset Form Modal -->
         <div id="asset-form-modal" class="fixed inset-0 bg-gray-900 bg-opacity-75 hidden items-center justify-center p-4 z-50">
-            <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg p-6">
-                <h3 id="form-title" class="text-xl font-bold mb-4 border-b pb-2">Add New Asset</h3>
+            <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto">
+                <h3 id="form-title" class="text-2xl font-bold mb-4 border-b pb-2 text-gray-800">Add New Asset</h3>
                 <form id="asset-form" onsubmit="saveAsset(event)">
                     <!-- Hidden fields for tracking context -->
                     <input type="hidden" id="asset-category-input">
@@ -142,10 +160,10 @@
                     </div>
 
                     <div class="mt-6 flex justify-end space-x-3">
-                        <button type="button" onclick="hideForm()" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300">
+                        <button type="button" onclick="hideForm()" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors">
                             Cancel
                         </button>
-                        <button type="submit" class="btn-primary px-4 py-2">
+                        <button type="submit" class="btn-primary px-4 py-2 rounded-lg">
                             Save Asset
                         </button>
                     </div>
@@ -154,7 +172,7 @@
         </div>
 
         <!-- Message Box -->
-        <div id="message-box" class="fixed top-4 right-4 p-4 rounded-lg shadow-xl bg-green-500 text-white font-semibold hidden transition-opacity duration-300"></div>
+        <div id="message-box" class="fixed top-4 right-4 p-4 rounded-lg shadow-xl bg-green-500 text-white font-semibold hidden transition-opacity duration-300 z-50"></div>
 
     </div>
 
@@ -254,13 +272,17 @@
         function showMessage(message, type = 'success') {
             const msgBox = document.getElementById('message-box');
             msgBox.textContent = message;
-            msgBox.classList.remove('bg-green-500', 'bg-red-500', 'hidden');
-            msgBox.classList.add(type === 'success' ? 'bg-green-500' : 'bg-red-500', 'opacity-100');
+            // Removed existing classes for clean application
+            msgBox.className = 'fixed top-4 right-4 p-4 rounded-lg shadow-xl font-semibold transition-opacity duration-300 z-50';
+            
+            msgBox.classList.add(type === 'success' ? 'bg-green-500' : 'bg-red-500', 'text-white', 'opacity-100');
             
             setTimeout(() => {
-                msgBox.classList.add('hidden');
                 msgBox.classList.remove('opacity-100');
+                // Use a short delay before hiding completely
+                setTimeout(() => msgBox.classList.add('hidden'), 300);
             }, 3000);
+            msgBox.classList.remove('hidden');
         }
 
         // --- Core Rendering Functions ---
@@ -281,7 +303,7 @@
                 button.textContent = config.displayName;
                 button.onclick = () => switchCategory(key);
                 button.className = `px-4 py-3 text-sm font-medium transition-colors duration-150 focus:outline-none ${
-                    key === currentCategory ? 'tab-active' : 'text-gray-500 hover:text-gray-700'
+                    key === currentCategory ? 'tab-active' : 'text-gray-500 hover:text-gray-700 hover:border-b-2 hover:border-gray-200'
                 }`;
                 nav.appendChild(button);
             });
@@ -295,21 +317,21 @@
             document.getElementById('current-category-title').textContent = config.displayName;
             
             if (categoryData.length === 0) {
-                container.innerHTML = `<p class="p-4 text-gray-500">No assets recorded in the <strong>${config.displayName}</strong> category yet. Click "Add New Asset" to begin.</p>`;
+                container.innerHTML = `<p class="p-6 text-gray-500 bg-white">No assets recorded in the <strong>${config.displayName}</strong> category yet. Click "Add New Asset" to begin.</p>`;
                 return;
             }
 
             const headerRow = config.fields
                 .filter(f => f.key !== 'id') // Hide ID from main view
-                .map(f => `<th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">${f.label}</th>`)
+                .map(f => `<th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-600">${f.label}</th>`)
                 .join('');
             
             const tableHTML = `
                 <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
+                    <thead class="bg-gray-100">
                         <tr>
                             ${headerRow}
-                            <th class="px-6 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">Actions</th>
+                            <th class="px-6 py-3 text-center text-xs font-bold uppercase tracking-wider text-gray-600">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
@@ -319,8 +341,8 @@
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${asset[field.key] || 'N/A'}</td>
                                 `).join('')}
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2 text-center">
-                                    <button onclick="showForm('${categoryKey}', '${asset.id}')" class="text-primary-green hover:text-green-700">Edit</button>
-                                    <button onclick="deleteAsset('${categoryKey}', '${asset.id}')" class="text-red-600 hover:text-red-900 ml-2">Delete</button>
+                                    <button onclick="showForm('${categoryKey}', '${asset.id}')" class="text-primary-green hover:text-green-700 transition-colors font-medium">Edit</button>
+                                    <button onclick="deleteAsset('${categoryKey}', '${asset.id}')" class="text-red-600 hover:text-red-800 ml-2 transition-colors font-medium">Delete</button>
                                 </td>
                             </tr>
                         `).join('')}
@@ -346,12 +368,14 @@
                 const required = field.key !== 'id'; // IDs are generated, others are required
 
                 let inputField;
+                const inputClasses = "mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:ring-2 focus:ring-primary-green focus:border-primary-green outline-none transition-all duration-150";
+
                 if (field.type === 'textarea') {
                     inputField = `<textarea 
                                     id="${field.key}" 
                                     name="${field.key}" 
                                     rows="3"
-                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-primary-green focus:border-primary-green"
+                                    class="${inputClasses}"
                                     ${required ? 'required' : ''}>${currentValue}</textarea>`;
                 } else {
                     inputField = `<input 
@@ -359,9 +383,9 @@
                                     id="${field.key}" 
                                     name="${field.key}" 
                                     value="${currentValue}"
-                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-primary-green focus:border-primary-green"
+                                    class="${inputClasses}"
                                     ${required ? 'required' : ''}
-                                    ${field.readOnly ? 'readonly disabled' : ''}>`;
+                                    ${field.readOnly ? 'readonly disabled bg-gray-50 cursor-not-allowed' : ''}>`;
                 }
 
                 const fieldDiv = document.createElement('div');
