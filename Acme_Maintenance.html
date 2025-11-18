@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maintenance Report</title>
+    <!-- Load Tailwind CSS for modern, responsive styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles and color palette */
+        :root {
+            --primary-green: #047857; /* Darker emerald green for branding */
+            --light-green: #34d399;   /* Light green for accents */
+            --text-color: #1f2937;    /* Dark gray for readability */
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f7f7;
+            color: var(--text-color);
+        }
+        /* Base button style */
+        .btn-base {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.2s, transform 0.1s;
+            cursor: pointer;
+            box-shadow: 0 0 0 1px rgba(0,0,0,0.05);
+        }
+        /* Primary button for actions (Add) */
+        .btn-primary {
+            background-color: var(--primary-green);
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #065f46;
+            transform: translateY(-1px);
+        }
+        /* Secondary buttons (Download, Print) */
+        .btn-secondary {
+            background-color: #374151; /* Dark gray/black theme */
+            color: white;
+        }
+        .btn-secondary:hover {
+            background-color: #1f2937;
+            transform: translateY(-1px);
+        }
+        .tab-active {
+            border-bottom: 4px solid var(--primary-green);
+            color: var(--primary-green);
+            font-weight: 700;
+            padding-bottom: 9px; 
+        }
+        
+        /* Input focus style override */
+        input:focus, textarea:focus, select:focus {
+            --tw-ring-color: var(--primary-green) !important;
+            border-color: var(--primary-green) !important;
+        }
+
+        /* Responsive Table cells - allow text to wrap */
+        .report-table td {
+            white-space: normal; /* Override the default Tailwind whitespace-nowrap for table cells */
+        }
+
+        /* Print Styles - Crucial for a clean, professional report */
+        @media print {
+            body > *:not(.print-container) {
+                display: none;
+            }
+            .print-container {
+                display: block !important;
+                width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            .print-container h1 {
+                text-align: center;
+                color: #000;
+                font-size: 24pt;
+                margin-bottom: 20pt;
+                border-bottom: 3px solid #000;
+                padding-bottom: 10pt;
+            }
+            .print-section {
+                margin-bottom: 30pt;
+                page-break-inside: avoid;
+            }
+            .print-section h2 {
+                color: #1f2937; /* Black/Dark Gray for printing */
+                font-size: 16pt;
+                border-bottom: 2px solid var(--primary-green);
+                padding-bottom: 5pt;
+                margin-bottom: 10pt;
+            }
+            .print-section table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            .print-section th, .print-section td {
+                border: 1px solid #ccc;
+                padding: 8pt;
+                text-align: left;
+                font-size: 10pt;
+                vertical-align: top;
+            }
+            .print-section th {
+                background-color: #eee;
+                font-weight: bold;
+                width: 25%; /* Fixed width for labels in admin tables */
+            }
+            .print-narrative p {
+                white-space: pre-wrap; /* Preserve formatting for narrative text areas */
+            }
+            /* Ensure the KPIs list prints correctly */
+            .print-kpis li {
+                list-style-type: disc;
+                margin-left: 20pt;
+                margin-bottom: 5pt;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 sm:p-8">
+    <div id="app-container" class="max-w-7xl mx-auto bg-white shadow-2xl rounded-lg p-4 sm:p-10">
+
+        <!-- Header -->
+        <header class="pb-6 border-b-2 border-gray-100 mb-8">
+            <h1 class="text-3xl font-extrabold text-gray-900">Maintenance Report: System Maintenance and Lifecycle Management</h1>
+            <p class="mt-2 text-lg text-gray-700">
+                <span class="font-semibold text-primary-green">CMMC Level 2 Documentation:</span> Meeting the MA (Maintenance) Practice Requirements.
+            </p>
+            <p class="mt-1 text-sm text-gray-500">
+                This document provides a documented process for system maintenance, sanitization, and lifecycle management for CUI systems.
+            </p>
+        </header>
+
+        <!-- Navigation/Tabs -->
+        <nav class="flex flex-wrap border-b border-gray-200 mb-6" id="nav-tabs">
+            <!-- Tabs will be generated here -->
+        </nav>
+
+        <!-- Main Content Area -->
+        <div id="content-area">
+            
+            <!-- Actions -->
+            <div class="flex flex-col sm:flex-row justify-end items-center mb-6 space-y-3 sm:space-y-0 sm:space-x-4">
+                <!-- Add New Asset button (only visible if the current tab has a dynamically editable table) -->
+                <button id="add-asset-btn" onclick="showForm()" class="btn-primary btn-base flex items-center justify-center w-full sm:w-auto hidden">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                    Add New Entry
+                </button>
+                <button onclick="downloadData()" class="btn-secondary btn-base flex items-center justify-center w-full sm:w-auto">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                    Download Data (JSON)
+                </button>
+                <button onclick="printReport()" class="btn-secondary btn-base flex items-center justify-center w-full sm:w-auto">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2-5a2 2 0 100-4 2 2 0 000 4zm2-5V9"></path></svg>
+                    Print Report
+                </button>
+            </div>
+
+            <!-- Content Container (Dynamic forms/tables injected here) -->
+            <div id="dynamic-content-container">
+                <!-- Content will be rendered based on the selected tab -->
+            </div>
+        </div>
+
+        <!-- Add/Edit Entry Form Modal (Used for all dynamic tables) -->
+        <div id="entry-form-modal" class="fixed inset-0 bg-gray-900 bg-opacity-75 hidden items-center justify-center p-4 z-50">
+            <div class="bg-white rounded-xl shadow-2xl w-full max-w-xl p-6 max-h-[90vh] overflow-y-auto">
+                <h3 id="form-title" class="text-2xl font-bold mb-4 border-b pb-2 text-gray-800">Add New Entry</h3>
+                <form id="entry-form" onsubmit="saveEntry(event)">
+                    <!-- Hidden fields for tracking context -->
+                    <input type="hidden" id="entry-type-input">
+                    <input type="hidden" id="entry-id-input">
+
+                    <div id="form-fields" class="space-y-4">
+                        <!-- Dynamic form fields will be injected here -->
+                    </div>
+
+                    <div class="mt-6 flex justify-end space-x-3">
+                        <button type="button" onclick="hideForm()" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors">
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn-primary px-4 py-2 rounded-lg">
+                            Save Entry
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Message Box -->
+        <div id="message-box" class="fixed top-4 right-4 p-4 rounded-lg shadow-xl bg-green-500 text-white font-semibold hidden transition-opacity duration-300 z-50"></div>
+
+    </div>
+
+    <!-- Print Report Container (Hidden in normal view) -->
+    <div id="print-report-container" class="print-container hidden">
+        <!-- Content for printing will be dynamically injected here -->
+    </div>
+
+
+    <script>
+        // --- DATA MODEL ---
+        let reportData = {
+            // Report General Information (Static Inputs)
+            general: {
+                preparedBy: "[Student Name]",
+                organization: "ACME Defense Systems",
+                contact: "security@acme.com",
+                classification: "CUI",
+                reportingPeriod: "2024-Q3 (Jul 1 - Sep 30)",
+                nextReviewDate: "2025-01-01"
+            },
+            // Narrative Fields (Textareas)
+            summary: {
+                narrative: "This report documents all system maintenance and lifecycle management activities performed during the reporting period. All maintenance was conducted in accordance with documented procedures, ensuring the continuous protection and integrity of Controlled Unclassified Information (CUI). Key activities included the successful deployment of Q3 security patches and a comprehensive quarterly server inspection. Emergency response protocols were tested successfully during a minor non-CUI network outage.",
+                keyFindings: "1. Security patching compliance reached 99.5%.\n2. One vendor (SecureNet) was terminated for non-compliance with supervision protocols.\n3. Four critical assets reached End-of-Life and replacement planning is underway."
+            },
+            // Tabular Data
+            cmmcControls: [
+                { id: 'CMM-1', controlID: 'MA.L2-3.7.1', status: 'Implemented', action: 'None', requirement: 'Perform maintenance on organizational systems and components.', implementation: 'Preventive maintenance is scheduled and executed according to the documented **Preventive Maintenance Schedule** (daily, weekly, monthly, quarterly). Corrective maintenance uses the Emergency Maintenance Response protocol.', evidence: 'Master Maintenance Calendar (SharePoint); Quarterly Server Maintenance Logs (ML-001 to ML-035); Emergency Change Management Tickets (CM-500 series).' },
+                { id: 'CMM-2', controlID: 'MA.L2-3.7.3', status: 'Implemented', action: 'None', requirement: 'Sanitize equipment before disposal or release for maintenance.', implementation: 'All media handled per NIST SP 800-88 Rev. 1 guidelines (Clear/Purge/Destroy).', evidence: 'Sanitization Certificate Register (SCR-001 to SCR-008)' },
+                { id: 'CMM-3', controlID: 'MA.L2-3.7.6', status: 'Implemented', action: 'None', requirement: 'Require personnel accessing system components to be approved, controlled, and monitored.', implementation: 'All internal maintenance staff are background checked. Third-party maintenance is governed by signed CMMC agreements and personnel are **continuously supervised** and **logged** via the MAL system.', evidence: 'Third-Party Service Agreements (Vendor Folder); Maintenance Access Logs (MAL-040); Security Awareness Briefing Records.' }
+            ],
+            // NEW TABLE DATA: Maintenance Activities Summary
+            maintenanceActivities: [
+                { id: 'ACT-1', activityType: 'Patch Deployment', scheduled: '100', completed: '99', pending: '1', complianceRate: '99%' },
+                { id: 'ACT-2', activityType: 'Server Hardware Insp.', scheduled: '4', completed: '4', pending: '0', complianceRate: '100%' },
+                { id: 'ACT-3', activityType: 'Network Firmware Upd.', scheduled: '12', completed: '12', pending: '0', complianceRate: '100%' }
+            ],
+            // NEW TABLE DATA: Asset Lifecycle Management
+            assetLifecycle: [
+                { id: 'LIF-1', assetCategory: 'CUI Assets', totalCount: '150', active: '146', maintenance: '4', endOfLife: '4', replacementPlanned: 'Yes' },
+                { id: 'LIF-2', assetCategory: 'Security Assets', totalCount: '25', active: '25', maintenance: '0', endOfLife: '0', replacementPlanned: 'No' },
+                { id: 'LIF-3', assetCategory: 'Specialized Assets', totalCount: '10', active: '8', maintenance: '2', endOfLife: '0', replacementPlanned: 'N/A' }
+            ],
+            // NEW TABLE DATA: Third-Party Maintenance Oversight
+            thirdPartyOversight: [
+                { id: 'TP-1', vendor: 'CloudHost Azure Gov', serviceType: 'IaaS/PaaS', accessLevel: 'System Admin (monitored)', lastActivity: '2024-09-15', complianceStatus: 'Compliant' },
+                { id: 'TP-2', vendor: 'SecureNet Support', serviceType: 'Network Diagnostics', accessLevel: 'Read-Only (supervised)', lastActivity: '2024-08-20', complianceStatus: 'Non-Compliant (Terminated)' }
+            ],
+            // NEW TABLE DATA: Sanitization Activities
+            sanitizationActivities: [
+                { id: 'SAN-1', date: '2024-07-05', asset: 'Backup Tape 105', method: 'Destroy', reason: 'End of retention policy', certificateID: 'CERT-5001' },
+                { id: 'SAN-2', date: '2024-09-10', asset: 'Engineer Laptop 7', method: 'Purge', reason: 'Off-site vendor maintenance', certificateID: 'CERT-5002' },
+                { id: 'SAN-3', date: '2024-08-01', asset: 'Old Hard Drive (Local)', method: 'Clear', reason: 'Internal repurposing', certificateID: 'N/A' }
+            ],
+            approvedTools: [
+                { id: 'TOL-1', toolName: 'Wireshark', version: '4.2.1', purpose: 'Network Analysis', lastScanned: '2024-09-01', approvalStatus: 'Approved' },
+                { id: 'TOL-2', toolName: 'Nessus Pro', version: '10.5.0', purpose: 'Vulnerability Scanning', lastScanned: '2024-09-01', approvalStatus: 'Approved' }
+            ],
+            identifiedRisk: [
+                { id: 'RISK-1', riskDescription: 'Unauthorized use of personal diagnostic media (USB).', likelihood: 'Medium', impact: 'High', riskLevel: 'High', mitigationStatus: 'In Progress (Policy Update)' },
+                { id: 'RISK-2', riskDescription: 'Vendor access creep (over-privilege).', likelihood: 'Low', impact: 'Medium', riskLevel: 'Medium', mitigationStatus: 'Mitigated (Access Review Policy)' }
+            ],
+            // KPI Checklist (Structured as an object for easy printing)
+            kpis: {
+                onSchedule: true, // 100% maintenance activities completed on schedule
+                zeroIncidents: true, // Zero security incidents during maintenance
+                sanitizationCompliance: true, // 100% sanitization compliance for off-site equipment
+                vendorCompliance: false, // All third-party vendors maintained compliance (false due to TP-2)
+                uptime: '99.7%', // Average system uptime
+                responseTime: '< 2 hours' // Emergency response time
+            },
+            // Improvement and Recommendations
+            narratives: {
+                improvement: "The primary area for improvement is enhancing third-party oversight training and implementing a centralized automated log for all maintenance tool usage to better enforce the 'Approved Tools Registry' policy.",
+                shortTerm: "1. Finalize replacement orders for End-of-Life assets. 2. Conduct mandatory refresher training on vendor supervision.",
+                longTerm: "1. Integrate asset lifecycle management directly into the Configuration Management Database (CMDB). 2. Implement continuous monitoring solution for all third-party remote access sessions."
+            },
+            // Attestation (Static text for printing/display)
+            attestation: "Based on this comprehensive review of maintenance activities for the reporting period, I attest that:\n\n- All CMMC 2.0 Level 2 maintenance controls (MA.L2-3.7.1 through MA.L2-3.7.6) are fully implemented and operational.\n- Maintenance activities are conducted in accordance with approved procedures that protect CUI.\n- All maintenance personnel are properly authorized and supervised as required.\n- Equipment sanitization procedures meet NIST standards and CMMC requirements.\n- Maintenance tools and diagnostic media are properly controlled and scanned for malicious code.\n- Remote maintenance sessions utilize required multi-factor authentication and proper session management."
+        };
+
+        let currentTab = 'admin';
+
+        // Configuration for tabs and their content
+        const tabsConfig = {
+            admin: {
+                displayName: 'Admin & Summary',
+                type: 'inputs',
+                sections: ['general', 'summary']
+            },
+            cmmc: {
+                displayName: 'CMMC Compliance',
+                type: 'table',
+                key: 'cmmcControls',
+                fields: [
+                    { key: 'controlID', label: 'Control ID', type: 'text', readOnly: true },
+                    { key: 'status', label: 'Status', type: 'select', options: ['Implemented', 'Partially Implemented', 'Not Implemented'] },
+                    { key: 'action', label: 'Action Needed', type: 'text' },
+                    { key: 'requirement', label: 'Requirement', type: 'textarea' },
+                    { key: 'implementation', label: 'Implementation Detail', type: 'textarea' },
+                    { key: 'evidence', label: 'Evidence/Reference', type: 'text' }
+                ]
+            },
+            operations: {
+                displayName: 'Operations & Lifecycle',
+                type: 'compound',
+                sections: ['maintenanceActivities', 'assetLifecycle', 'sanitizationActivities', 'preventiveSchedule'],
+                details: {
+                    maintenanceActivities: { title: 'Maintenance Activities Summary', fields: [{ key: 'activityType', label: 'Activity Type', type: 'text' }, { key: 'scheduled', label: 'Scheduled', type: 'number' }, { key: 'completed', label: 'Completed', type: 'number' }, { key: 'pending', label: 'Pending', type: 'number' }, { key: 'complianceRate', label: 'Compliance Rate', type: 'text' }] },
+                    assetLifecycle: { title: 'Asset Lifecycle Management', fields: [{ key: 'assetCategory', label: 'Asset Category', type: 'text' }, { key: 'totalCount', label: 'Total Count', type: 'number' }, { key: 'active', label: 'Active', type: 'number' }, { key: 'maintenance', label: 'In Maintenance', type: 'number' }, { key: 'endOfLife', label: 'End of Life', type: 'number' }, { key: 'replacementPlanned', label: 'Replacement Planned', type: 'select', options: ['Yes', 'No'] }] },
+                    sanitizationActivities: { title: 'Sanitization Activities (NIST SP 800-88 Rev. 1)', fields: [{ key: 'date', label: 'Date', type: 'date' }, { key: 'asset', label: 'Asset', type: 'text' }, { key: 'method', label: 'Method', type: 'select', options: ['Clear', 'Purge', 'Destroy'] }, { key: 'reason', label: 'Reason', type: 'text' }, { key: 'certificateID', label: 'Certificate ID', type: 'text' }] },
+                    preventiveSchedule: { title: 'Preventive Maintenance Schedule', type: 'schedule' } // New type for static schedule display
+                }
+            },
+            oversight: {
+                displayName: 'Oversight & Risk',
+                type: 'compound',
+                sections: ['thirdPartyOversight', 'approvedTools', 'identifiedRisk', 'kpis'],
+                details: {
+                    thirdPartyOversight: { title: 'Third-Party Maintenance Oversight', fields: [{ key: 'vendor', label: 'Vendor', type: 'text' }, { key: 'serviceType', label: 'Service Type', type: 'text' }, { key: 'accessLevel', label: 'Access Level', type: 'text' }, { key: 'lastActivity', label: 'Last Activity', type: 'date' }, { key: 'complianceStatus', label: 'Compliance Status', type: 'select', options: ['Compliant', 'Non-Compliant', 'Under Review'] }] },
+                    approvedTools: { title: 'Approved Maintenance Tools Registry', fields: [{ key: 'toolName', label: 'Tool Name', type: 'text' }, { key: 'version', label: 'Version', type: 'text' }, { key: 'purpose', label: 'Purpose', type: 'text' }, { key: 'lastScanned', label: 'Last Scanned', type: 'date' }, { key: 'approvalStatus', label: 'Approval Status', type: 'select', options: ['Approved', 'Pending', 'Denied'] }] },
+                    identifiedRisk: { title: 'Identified Risk', fields: [{ key: 'riskDescription', label: 'Risk Description', type: 'textarea' }, { key: 'likelihood', label: 'Likelihood', type: 'select', options: ['High', 'Medium', 'Low'] }, { key: 'impact', label: 'Impact', type: 'select', options: ['High', 'Medium', 'Low'] }, { key: 'riskLevel', label: 'Risk Level', type: 'select', options: ['High', 'Medium', 'Low'] }, { key: 'mitigationStatus', label: 'Mitigation Status', type: 'text' }] },
+                    kpis: { title: 'Performance Metrics and KPIs', type: 'kpi' }
+                }
+            },
+            final: {
+                displayName: 'Attestation & Actions',
+                type: 'inputs',
+                sections: ['narratives', 'attestation']
+            }
+        };
+        
+        // --- NEW DATA FOR SCHEDULE ---
+        const maintenanceSchedule = [
+            { frequency: 'Daily', procedure: 'Automated system health checks and log review' },
+            { frequency: 'Weekly', procedure: 'Security patch assessment and deployment planning' },
+            { frequency: 'Monthly', procedure: 'Network equipment inspection and firmware updates' },
+            { frequency: 'Quarterly', procedure: 'Server maintenance windows and hardware inspection' },
+            { frequency: 'Bi-annually', procedure: 'Workstation maintenance and software updates' },
+            { frequency: 'Annually', procedure: 'Comprehensive system lifecycle assessment' }
+        ];
+
+
+        // --- UTILITY FUNCTIONS ---
+
+        function showMessage(message, type = 'success') {
+            const msgBox = document.getElementById('message-box');
+            msgBox.textContent = message;
+            msgBox.className = 'fixed top-4 right-4 p-4 rounded-lg shadow-xl font-semibold transition-opacity duration-300 z-50';
+            
+            msgBox.classList.add(type === 'success' ? 'bg-green-500' : 'bg-red-500', 'text-white', 'opacity-100');
+            
+            setTimeout(() => {
+                msgBox.classList.remove('opacity-100');
+                setTimeout(() => msgBox.classList.add('hidden'), 300);
+            }, 3000);
+            msgBox.classList.remove('hidden');
+        }
+
+        function generateId() {
+            return 'REP-' + Math.random().toString(36).substring(2, 9).toUpperCase();
+        }
+
+        // --- RENDERING FUNCTIONS ---
+
+        function switchTab(newTab) {
+            currentTab = newTab;
+            renderNavTabs();
+            renderContent(newTab);
+        }
+
+        function renderNavTabs() {
+            const nav = document.getElementById('nav-tabs');
+            nav.innerHTML = '';
+            
+            Object.keys(tabsConfig).forEach(key => {
+                const config = tabsConfig[key];
+                const button = document.createElement('button');
+                button.textContent = config.displayName;
+                button.onclick = () => switchTab(key);
+                button.className = `px-4 py-3 text-sm font-medium transition-colors duration-150 focus:outline-none ${
+                    key === currentTab ? 'tab-active' : 'text-gray-500 hover:text-gray-700 hover:border-b-2 hover:border-gray-200'
+                }`;
+                nav.appendChild(button);
+            });
+        }
+
+        function renderContent(tabKey) {
+            const container = document.getElementById('dynamic-content-container');
+            const tabConfig = tabsConfig[tabKey];
+            container.innerHTML = '';
+            
+            // Hide/Show Add button based on content type
+            const addButton = document.getElementById('add-asset-btn');
+            addButton.classList.add('hidden');
+
+            if (tabConfig.type === 'table') {
+                // Only show Add button for pure table tabs like CMMC Compliance
+                addButton.classList.remove('hidden');
+                container.innerHTML = renderTable(tabConfig.key, tabsConfig[tabKey]);
+            } else if (tabConfig.type === 'inputs') {
+                container.innerHTML = renderInputSections(tabConfig.sections);
+            } else if (tabConfig.type === 'compound') {
+                // Check if any section in compound tab uses a table that needs adding
+                const needsAddButton = tabConfig.sections.some(s => tabsConfig[tabKey].details[s].type !== 'schedule' && tabsConfig[tabKey].details[s].type !== 'kpi');
+                if (needsAddButton) {
+                     addButton.classList.remove('hidden');
+                }
+                container.innerHTML = renderCompoundSections(tabConfig);
+            }
+        }
+
+        function renderTable(dataKey, config) {
+            const data = reportData[dataKey];
+            const fields = config.fields;
+            
+            if (data.length === 0) {
+                return `<p class="p-6 text-gray-500 bg-white shadow-lg rounded-lg border">No entries recorded in this section yet. Click "Add New Entry" to begin.</p>`;
+            }
+
+            const headerRow = fields
+                .filter(f => f.key !== 'id')
+                .map(f => `<th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-600">${f.label}</th>`)
+                .join('');
+            
+            return `
+                <div class="overflow-x-auto shadow-lg rounded-lg border border-gray-200">
+                    <table class="min-w-full divide-y divide-gray-200 report-table">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                ${headerRow}
+                                <th class="px-4 py-3 text-center text-xs font-bold uppercase tracking-wider text-gray-600">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            ${data.map(entry => `
+                                <tr class="hover:bg-green-50 transition-colors">
+                                    ${fields.filter(f => f.key !== 'id').map(field => `
+                                        <td class="px-4 py-3 text-sm text-gray-900 align-top">${entry[field.key] || 'N/A'}</td>
+                                    `).join('')}
+                                    <td class="px-4 py-3 whitespace-nowrap text-right text-sm font-medium space-x-2 text-center align-top">
+                                        <button onclick="showForm('${dataKey}', '${entry.id}')" class="text-primary-green hover:text-green-700 transition-colors font-medium">Edit</button>
+                                        <button onclick="deleteEntry('${dataKey}', '${entry.id}')" class="text-red-600 hover:text-red-800 ml-2 transition-colors font-medium">Delete</button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function renderInputSections(sections) {
+            let html = '';
+            sections.forEach(sectionKey => {
+                
+                if (sectionKey === 'general') {
+                    // Render Report General Information
+                    html += `
+                        <section class="mb-8 p-6 bg-gray-50 border border-gray-200 rounded-lg shadow-md">
+                            <h2 class="text-xl font-extrabold text-gray-800 mb-4 border-b pb-2 text-primary-green">Report General Information</h2>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                                ${Object.keys(reportData.general).map(key => `
+                                    <div class="flex flex-col">
+                                        <label for="${key}" class="text-sm font-medium text-gray-700">${key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}:</label>
+                                        <input type="${key.includes('Date') ? 'date' : 'text'}" id="${key}" value="${reportData.general[key]}" onchange="updateGeneralInfo('${key}', this.value)" class="mt-1 p-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-primary-green focus:border-primary-green">
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </section>
+                    `;
+                } else if (sectionKey === 'summary') {
+                    // Render Executive Summary
+                    html += `
+                        <section class="mb-8 p-6 bg-white border border-gray-200 rounded-lg shadow-md">
+                            <h2 class="text-xl font-extrabold text-gray-800 mb-4 border-b pb-2 text-primary-green">Executive Summary</h2>
+                            <div class="space-y-4">
+                                <div>
+                                    <label for="summary-narrative" class="text-sm font-medium text-gray-700">Narrative</label>
+                                    <textarea id="summary-narrative" rows="6" onchange="updateSummaryInfo('narrative', this.value)" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:ring-2 focus:ring-primary-green focus:border-primary-green">${reportData.summary.narrative}</textarea>
+                                </div>
+                                <div>
+                                    <label for="summary-keyfindings" class="text-sm font-medium text-gray-700">Key Findings (One per line)</label>
+                                    <textarea id="summary-keyfindings" rows="4" onchange="updateSummaryInfo('keyFindings', this.value)" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:ring-2 focus:ring-primary-green focus:border-primary-green">${reportData.summary.keyFindings}</textarea>
+                                </div>
+                            </div>
+                        </section>
+                    `;
+                } else if (sectionKey === 'narratives') {
+                    // Render Improvement and Recommendations
+                    html += `
+                        <section class="mb-8 p-6 bg-white border border-gray-200 rounded-lg shadow-md">
+                            <h2 class="text-xl font-extrabold text-gray-800 mb-4 border-b pb-2 text-primary-green">Improvement Areas</h2>
+                            <label for="improvement-area" class="text-sm font-medium text-gray-700">Description of Improvement Areas</label>
+                            <textarea id="improvement-area" rows="4" onchange="updateNarrativeInfo('improvement', this.value)" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:ring-2 focus:ring-primary-green focus:border-primary-green">${reportData.narratives.improvement}</textarea>
+                        </section>
+                        <section class="mb-8 p-6 bg-white border border-gray-200 rounded-lg shadow-md">
+                            <h2 class="text-xl font-extrabold text-gray-800 mb-4 border-b pb-2 text-primary-green">Recommendations and Next Steps</h2>
+                            <div class="space-y-4">
+                                <div>
+                                    <label for="short-term" class="text-sm font-medium text-gray-700">Short-term Actions (Next 90 Days) - One per line</label>
+                                    <textarea id="short-term" rows="4" onchange="updateNarrativeInfo('shortTerm', this.value)" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:ring-2 focus:ring-primary-green focus:border-primary-green">${reportData.narratives.shortTerm}</textarea>
+                                </div>
+                                <div>
+                                    <label for="long-term" class="text-sm font-medium text-gray-700">Long-term Strategic Initiatives (Next 12 Months) - One per line</label>
+                                    <textarea id="long-term" rows="4" onchange="updateNarrativeInfo('longTerm', this.value)" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:ring-2 focus:ring-primary-green focus:border-primary-green">${reportData.narratives.longTerm}</textarea>
+                                </div>
+                            </div>
+                        </section>
+                    `;
+                } else if (sectionKey === 'attestation') {
+                    // Render Compliance Attestation (Read-only/Static text)
+                     html += `
+                        <section class="mb-8 p-6 bg-gray-100 border border-gray-300 rounded-lg shadow-md">
+                            <h2 class="text-xl font-extrabold text-gray-800 mb-4 border-b pb-2 text-primary-green">Compliance Attestation</h2>
+                            <div class="text-sm text-gray-700 whitespace-pre-wrap p-3 border border-gray-200 rounded-md bg-white shadow-inner">
+                                ${reportData.attestation}
+                            </div>
+                        </section>
+                    `;
+                }
+            });
+            return html;
+        }
+
+        function renderCompoundSections(tabConfig) {
+            let html = '';
+            
+            tabConfig.sections.forEach(sectionKey => {
+                const details = tabConfig.details[sectionKey];
+                
+                html += `<section class="mb-8 p-6 bg-white border border-gray-200 rounded-lg shadow-md">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-extrabold text-gray-800 text-primary-green">${details.title}</h2>
+                        ${details.type !== 'kpi' && details.type !== 'schedule' ? `<button onclick="showForm('${sectionKey}')" class="text-sm text-primary-green hover:text-green-700 font-medium flex items-center">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                            Add
+                        </button>` : ''}
+                    </div>
+                    ${details.type === 'kpi' ? renderKPIs() : details.type === 'schedule' ? renderPreventiveSchedule() : renderTable(sectionKey, { fields: details.fields })}
+                </section>`;
+            });
+            
+            return html;
+        }
+
+        function renderPreventiveSchedule() {
+            // Static schedule display as requested in the assignment
+            return `
+                <div class="overflow-x-auto border border-gray-300 rounded-lg">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="px-4 py-3 text-left text-sm font-bold uppercase tracking-wider text-gray-700 w-1/4">Frequency</th>
+                                <th class="px-4 py-3 text-left text-sm font-bold uppercase tracking-wider text-gray-700 w-3/4">Procedure</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            ${maintenanceSchedule.map(item => `
+                                <tr class="hover:bg-gray-50 transition-colors">
+                                    <td class="px-4 py-3 font-semibold text-primary-green">${item.frequency}</td>
+                                    <td class="px-4 py-3 text-gray-800">${item.procedure}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+                <p class="mt-4 text-sm text-gray-600">This schedule forms the basis for demonstrating compliance with MA.L2-3.7.1 (Perform Maintenance).</p>
+            `;
+        }
+
+
+        function renderKPIs() {
+            // Render KPI Checklists and metrics
+            return `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-3 p-4 border border-gray-200 rounded-lg">
+                        <h3 class="text-md font-semibold text-gray-700 mb-2">Compliance Checklists</h3>
+                        ${Object.keys(reportData.kpis).filter(k => typeof reportData.kpis[k] === 'boolean').map(k => `
+                            <div class="flex items-center">
+                                <input id="kpi-${k}" type="checkbox" ${reportData.kpis[k] ? 'checked' : ''} onchange="updateKPI('${k}', this.checked)" class="h-5 w-5 text-primary-green border-gray-300 rounded focus:ring-primary-green cursor-pointer">
+                                <label for="kpi-${k}" class="ml-3 text-sm font-medium text-gray-700">${k.charAt(0).toUpperCase() + k.slice(1).replace(/([A-Z])/g, ' $1').replace('Response Time', 'Emergency Response Time')}</label>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="space-y-4 p-4 border border-gray-200 rounded-lg">
+                        <h3 class="text-md font-semibold text-gray-700 mb-2">Metrics</h3>
+                        <div class="flex flex-col">
+                            <label for="kpi-uptime" class="text-sm font-medium text-gray-700">Average System Uptime</label>
+                            <input type="text" id="kpi-uptime" value="${reportData.kpis.uptime}" onchange="updateKPI('uptime', this.value)" class="mt-1 p-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-primary-green focus:border-primary-green">
+                        </div>
+                        <div class="flex flex-col">
+                            <label for="kpi-responseTime" class="text-sm font-medium text-gray-700">Emergency Response Time</label>
+                            <input type="text" id="kpi-responseTime" value="${reportData.kpis.responseTime}" onchange="updateKPI('responseTime', this.value)" class="mt-1 p-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-primary-green focus:border-primary-green">
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+
+        // --- DATA MODIFICATION HANDLERS (for forms and inputs) ---
+
+        function updateGeneralInfo(key, value) {
+            reportData.general[key] = value;
+        }
+
+        function updateSummaryInfo(key, value) {
+            reportData.summary[key] = value;
+        }
+
+        function updateNarrativeInfo(key, value) {
+            reportData.narratives[key] = value;
+        }
+
+        function updateKPI(key, value) {
+            reportData.kpis[key] = typeof reportData.kpis[key] === 'boolean' ? value : value;
+        }
+
+        function showForm(dataKey, entryId = null) {
+            let config = tabsConfig[currentTab].details ? tabsConfig[currentTab].details[dataKey] : tabsConfig[currentTab];
+            let entry = null;
+            
+            if (entryId) {
+                entry = reportData[dataKey].find(a => a.id === entryId);
+                document.getElementById('form-title').textContent = `Edit Entry: ${dataKey}`;
+                document.getElementById('entry-id-input').value = entryId;
+            } else {
+                document.getElementById('form-title').textContent = `Add New Entry to: ${config.title || tabsConfig[currentTab].displayName}`;
+                document.getElementById('entry-id-input').value = ''; // Clear for new entry
+            }
+
+            document.getElementById('entry-type-input').value = dataKey;
+            generateFormFields(config.fields, entry);
+            document.getElementById('entry-form-modal').classList.remove('hidden');
+            document.getElementById('entry-form-modal').classList.add('flex');
+        }
+
+        function generateFormFields(fields, entry) {
+            const fieldsContainer = document.getElementById('form-fields');
+            fieldsContainer.innerHTML = '';
+            
+            fields.forEach(field => {
+                if (field.key === 'id') return; 
+
+                const currentValue = entry ? entry[field.key] || '' : '';
+                const required = true; // All fields are assumed important
+
+                let inputField;
+                const inputClasses = "mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:ring-2 focus:ring-primary-green focus:border-primary-green outline-none transition-all duration-150";
+
+                if (field.type === 'textarea') {
+                    inputField = `<textarea 
+                                    id="${field.key}" 
+                                    name="${field.key}" 
+                                    rows="3"
+                                    class="${inputClasses}"
+                                    ${required ? 'required' : ''}>${currentValue}</textarea>`;
+                } else if (field.type === 'select' && field.options) {
+                    inputField = `<select 
+                                    id="${field.key}" 
+                                    name="${field.key}"
+                                    class="${inputClasses}"
+                                    ${required ? 'required' : ''}>
+                                    <option value="" disabled ${currentValue ? '' : 'selected'}>Select...</option>
+                                    ${field.options.map(option => `<option value="${option}" ${currentValue === option ? 'selected' : ''}>${option}</option>`).join('')}
+                                </select>`;
+                } else {
+                    inputField = `<input 
+                                    type="${field.type}" 
+                                    id="${field.key}" 
+                                    name="${field.key}" 
+                                    value="${currentValue}"
+                                    class="${inputClasses}"
+                                    ${required ? 'required' : ''}
+                                    ${field.readOnly ? 'readonly disabled bg-gray-50 cursor-not-allowed' : ''}>`;
+                }
+
+                const fieldDiv = document.createElement('div');
+                fieldDiv.className = 'flex flex-col';
+                fieldDiv.innerHTML = `
+                    <label for="${field.key}" class="text-sm font-medium text-gray-700">
+                        ${field.label} ${required ? '<span class="text-red-500">*</span>' : ''}
+                    </label>
+                    ${inputField}
+                `;
+                fieldsContainer.appendChild(fieldDiv);
+            });
+        }
+
+        function hideForm() {
+            document.getElementById('entry-form-modal').classList.add('hidden');
+            document.getElementById('entry-form-modal').classList.remove('flex');
+            document.getElementById('entry-form').reset();
+        }
+
+        function saveEntry(event) {
+            event.preventDefault();
+            
+            const dataKey = document.getElementById('entry-type-input').value;
+            const entryId = document.getElementById('entry-id-input').value;
+            
+            let config = tabsConfig[currentTab].details ? tabsConfig[currentTab].details[dataKey] : tabsConfig[currentTab];
+            const fields = config.fields;
+            const newEntry = {};
+
+            fields.forEach(field => {
+                const element = document.getElementById(field.key);
+                if (element) {
+                    newEntry[field.key] = element.value.trim();
+                }
+            });
+
+            if (entryId) {
+                // Edit existing entry
+                const index = reportData[dataKey].findIndex(a => a.id === entryId);
+                if (index !== -1) {
+                    reportData[dataKey][index] = { ...reportData[dataKey][index], ...newEntry };
+                    showMessage(`Entry ${entryId} updated successfully.`);
+                }
+            } else {
+                // Add new entry
+                newEntry.id = generateId();
+                reportData[dataKey].push(newEntry);
+                showMessage(`New entry ${newEntry.id} added successfully.`);
+            }
+            
+            // Re-render the current content
+            renderContent(currentTab);
+            hideForm();
+        }
+
+        function deleteEntry(dataKey, entryId) {
+            console.log(`Deleting entry ${entryId} from ${dataKey}...`);
+            reportData[dataKey] = reportData[dataKey].filter(a => a.id !== entryId);
+            renderContent(currentTab);
+            showMessage(`Entry ${entryId} deleted.`, 'success');
+        }
+
+        // --- REPORTING & EXPORT ---
+
+        function downloadData() {
+            const dataStr = JSON.stringify(reportData, null, 2);
+            const blob = new Blob([dataStr], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'CMMC_Maintenance_Report_' + new Date().toISOString().slice(0, 10) + '.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showMessage('Report data downloaded as JSON.', 'success');
+        }
+
+        function printReport() {
+            const reportContainer = document.getElementById('print-report-container');
+            let reportHTML = `<h1>CMMC Maintenance and Lifecycle Management Report</h1>`;
+
+            // 1. Report General Information
+            reportHTML += `
+                <div class="print-section">
+                    <h2>Report General Information</h2>
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <tbody>
+                            ${Object.keys(reportData.general).map(key => `
+                                <tr>
+                                    <th>${key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}</th>
+                                    <td>${reportData.general[key] || 'N/A'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            // 2. Executive Summary
+            reportHTML += `
+                <div class="print-section">
+                    <h2>Executive Summary</h2>
+                    <h3>Narrative</h3>
+                    <div class="print-narrative"><p>${reportData.summary.narrative}</p></div>
+                    <h3>Key Findings</h3>
+                    <div class="print-narrative"><p>${reportData.summary.keyFindings.replace(/\n/g, '<br>')}</p></div>
+                </div>
+            `;
+            
+            // 3. Maintenance Controls Compliance Status (MA.L2-3.7.x)
+            reportHTML += renderPrintTableSection('CMMC Maintenance Controls Compliance Status', 'cmmcControls', tabsConfig.cmmc.fields);
+            
+            // 4. Maintenance Procedures and Controls - Schedule (New Static Table)
+            reportHTML += `
+                <div class="print-section">
+                    <h2>Maintenance Procedures and Controls</h2>
+                    <h3>Preventive Maintenance Schedule</h3>
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr>
+                                <th style="width: 25%;">Frequency</th>
+                                <th style="width: 75%;">Procedure</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${maintenanceSchedule.map(item => `
+                                <tr>
+                                    <td>${item.frequency}</td>
+                                    <td>${item.procedure}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            // 5. Maintenance Activities Summary
+            reportHTML += renderPrintTableSection(tabsConfig.operations.details.maintenanceActivities.title, 'maintenanceActivities', tabsConfig.operations.details.maintenanceActivities.fields);
+
+            // 6. Asset Lifecycle Management
+            reportHTML += renderPrintTableSection(tabsConfig.operations.details.assetLifecycle.title, 'assetLifecycle', tabsConfig.operations.details.assetLifecycle.fields);
+            
+            // 7. Sanitization Activities
+            reportHTML += renderPrintTableSection(tabsConfig.operations.details.sanitizationActivities.title, 'sanitizationActivities', tabsConfig.operations.details.sanitizationActivities.fields);
+
+            // 8. Third-Party Maintenance Oversight
+            reportHTML += renderPrintTableSection(tabsConfig.oversight.details.thirdPartyOversight.title, 'thirdPartyOversight', tabsConfig.oversight.details.thirdPartyOversight.fields);
+
+            // 9. Approved Maintenance Tools Registry
+            reportHTML += renderPrintTableSection(tabsConfig.oversight.details.approvedTools.title, 'approvedTools', tabsConfig.oversight.details.approvedTools.fields);
+
+            // 10. Identified Risk
+            reportHTML += renderPrintTableSection(tabsConfig.oversight.details.identifiedRisk.title, 'identifiedRisk', tabsConfig.oversight.details.identifiedRisk.fields);
+
+            // 11. Performance Metrics and KPIs
+            reportHTML += `
+                <div class="print-section">
+                    <h2>Performance Metrics and Key Performance Indicators (KPIs)</h2>
+                    <ul class="print-kpis">
+                        ${Object.keys(reportData.kpis).map(k => {
+                            const label = k.charAt(0).toUpperCase() + k.slice(1).replace(/([A-Z])/g, ' $1').replace('Response Time', 'Emergency Response Time');
+                            let value = reportData.kpis[k];
+                            if (typeof value === 'boolean') {
+                                value = value ? 'Compliant (Yes)' : 'Non-Compliant (No)';
+                            }
+                            return `<li><span class="font-bold">${label}:</span> ${value}</li>`;
+                        }).join('')}
+                    </ul>
+                </div>
+            `;
+            
+            // 12. Improvement Areas
+             reportHTML += `
+                <div class="print-section">
+                    <h2>Improvement Areas</h2>
+                    <div class="print-narrative"><p>${reportData.narratives.improvement}</p></div>
+                </div>
+            `;
+
+            // 13. Recommendations and Next Steps
+            reportHTML += `
+                <div class="print-section">
+                    <h2>Recommendations and Next Steps</h2>
+                    <h3>Short-term Actions (Next 90 Days)</h3>
+                    <div class="print-narrative"><p>${reportData.narratives.shortTerm.replace(/\n/g, '<br>')}</p></div>
+                    <h3>Long-term Strategic Initiatives (Next 12 Months)</h3>
+                    <div class="print-narrative"><p>${reportData.narratives.longTerm.replace(/\n/g, '<br>')}</p></div>
+                </div>
+            `;
+
+            // 14. Compliance Attestation
+            reportHTML += `
+                <div class="print-section">
+                    <h2>Compliance Attestation</h2>
+                    <div class="print-narrative"><p>${reportData.attestation.replace(/\n/g, '<br>')}</p></div>
+                </div>
+            `;
+
+
+            reportContainer.innerHTML = reportHTML;
+            window.print();
+        }
+
+        function renderPrintTableSection(title, dataKey, fields) {
+            const data = reportData[dataKey];
+            let html = `<div class="print-section"><h2>${title}</h2>`;
+
+            if (data.length === 0) {
+                html += `<p>No entries recorded.</p></div>`;
+                return html;
+            }
+            
+            const headers = fields.map(f => `<th>${f.label}</th>`).join('');
+            
+            const rows = data.map(entry => {
+                const cells = fields.map(field => `<td>${entry[field.key] || 'N/A'}</td>`).join('');
+                return `<tr>${cells}</tr>`;
+            }).join('');
+
+            html += `
+                <table>
+                    <thead><tr>${headers}</tr></thead>
+                    <tbody>${rows}</tbody>
+                </table
+                </div>
+            `;
+            return html;
+        }
+
+
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderNavTabs();
+            switchTab('admin');
+        });
+    </script>
+</body>
+</html>
