@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patriot Defense Systems - CMMC Case Study</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- D3.js for visualizations -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        pds: {
+                            dark: '#0f172a',
+                            primary: '#1e293b',
+                            accent: '#3b82f6',
+                            danger: '#ef4444',
+                            warning: '#f59e0b',
+                            success: '#10b981'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #f1f5f9;
+        }
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .nav-btn.active {
+            background-color: #3b82f6;
+            color: white;
+            border-bottom: 2px solid #1d4ed8;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col">
+
+    <!-- Top Navigation / Header -->
+    <header class="bg-slate-900 text-white shadow-lg sticky top-0 z-50 border-b-4 border-blue-600">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <!-- Logo Area -->
+                <div class="flex items-center gap-4">
+                    <div class="bg-white text-slate-900 p-2 rounded-lg shadow-inner">
+                        <i class="fa-solid fa-shield-halved text-3xl text-blue-700"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold tracking-tight uppercase">Patriot Defense Systems, Inc.</h1>
+                        <p class="text-xs text-slate-400 font-mono">CAGE: 8K7D9 | CMMC CLASSROOM CASE STUDY</p>
+                    </div>
+                </div>
+                
+                <!-- Instructor Badge -->
+                <div class="hidden md:flex items-center gap-3 bg-slate-800 px-4 py-2 rounded-full border border-slate-700">
+                    <i class="fa-solid fa-user-graduate text-yellow-500"></i>
+                    <span class="text-sm font-medium text-slate-300">Cybersecurity Curriculum Asset</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <nav class="bg-slate-800">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex space-x-1 overflow-x-auto no-scrollbar">
+                    <button onclick="switchTab('overview')" id="btn-overview" class="nav-btn active px-4 py-3 text-sm font-medium text-slate-300 hover:bg-slate-700 hover:text-white transition-all rounded-t-md whitespace-nowrap">
+                        <i class="fa-solid fa-building mr-2"></i>Company Profile
+                    </button>
+                    <button onclick="switchTab('contracts')" id="btn-contracts" class="nav-btn px-4 py-3 text-sm font-medium text-slate-300 hover:bg-slate-700 hover:text-white transition-all rounded-t-md whitespace-nowrap">
+                        <i class="fa-solid fa-file-contract mr-2"></i>DoD Contracts
+                    </button>
+                    <button onclick="switchTab('assets')" id="btn-assets" class="nav-btn px-4 py-3 text-sm font-medium text-slate-300 hover:bg-slate-700 hover:text-white transition-all rounded-t-md whitespace-nowrap">
+                        <i class="fa-solid fa-server mr-2"></i>IT & Assets
+                    </button>
+                    <button onclick="switchTab('network')" id="btn-network" class="nav-btn px-4 py-3 text-sm font-medium text-slate-300 hover:bg-slate-700 hover:text-white transition-all rounded-t-md whitespace-nowrap">
+                        <i class="fa-solid fa-network-wired mr-2"></i>Network & OT
+                    </button>
+                    <button onclick="switchTab('compliance')" id="btn-compliance" class="nav-btn px-4 py-3 text-sm font-medium text-slate-300 hover:bg-slate-700 hover:text-white transition-all rounded-t-md whitespace-nowrap">
+                        <i class="fa-solid fa-check-double mr-2"></i>Compliance & Risk
+                    </button>
+                    <button onclick="switchTab('instructor')" id="btn-instructor" class="nav-btn px-4 py-3 text-sm font-medium text-red-400 hover:bg-slate-700 hover:text-red-300 transition-all rounded-t-md whitespace-nowrap">
+                        <i class="fa-solid fa-chalkboard-user mr-2"></i>Instructor Mode
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+
+        <!-- TAB 1: OVERVIEW -->
+        <div id="overview" class="tab-content active">
+            <!-- Hero Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 border-l-4 border-l-blue-500">
+                    <div class="text-slate-500 text-xs font-bold uppercase">Annual Revenue</div>
+                    <div class="text-2xl font-bold text-slate-900">$42.8 Million</div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 border-l-4 border-l-blue-500">
+                    <div class="text-slate-500 text-xs font-bold uppercase">Employees</div>
+                    <div class="text-2xl font-bold text-slate-900">165</div>
+                    <div class="text-xs text-slate-400">Across 6 locations</div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 border-l-4 border-l-green-500">
+                    <div class="text-slate-500 text-xs font-bold uppercase">Clearance</div>
+                    <div class="text-2xl font-bold text-slate-900">FCL Active</div>
+                    <div class="text-xs text-slate-400">Since 2009</div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 border-l-4 border-l-indigo-500">
+                    <div class="text-slate-500 text-xs font-bold uppercase">Primary Customer</div>
+                    <div class="text-2xl font-bold text-slate-900">U.S. Army</div>
+                    <div class="text-xs text-slate-400">TACOM LCMC</div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Mission & Description -->
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                        <div class="bg-slate-50 px-6 py-4 border-b border-slate-200 font-bold text-slate-800">
+                            <i class="fa-solid fa-crosshairs mr-2 text-blue-600"></i> Mission & Overview
+                        </div>
+                        <div class="p-6">
+                            <blockquote class="p-4 my-4 border-l-4 border-slate-300 bg-slate-50 italic text-slate-700">
+                                "Delivering mission-critical vehicle components with unwavering quality, precision, and security to support America's defense readiness."
+                            </blockquote>
+                            <p class="text-slate-600 mb-4 leading-relaxed">
+                                Patriot Defense Systems, Inc. (est. 2008) is a mid-sized defense contractor specializing in the design, manufacturing, and delivery of critical replacement parts for U.S. Army tactical and combat vehicles. With advanced manufacturing capabilities across Texas and a strategic presence in Washington, DC, the company maintains multiple concurrent contracts within the Defense Industrial Base (DIB).
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Locations Grid -->
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                        <div class="bg-slate-50 px-6 py-4 border-b border-slate-200 font-bold text-slate-800">
+                            <i class="fa-solid fa-map-location-dot mr-2 text-blue-600"></i> Facilities
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-6">
+                            <div class="border rounded-lg p-4 hover:bg-slate-50 transition">
+                                <h3 class="font-bold text-slate-800">HQ - Fort Worth, TX</h3>
+                                <p class="text-sm text-slate-500">3450 Defense Industry Drive</p>
+                                <p class="text-xs mt-2"><span class="font-semibold">Functions:</span> Exec Leadership, Finance, HR, QA</p>
+                            </div>
+                            <div class="border rounded-lg p-4 hover:bg-slate-50 transition">
+                                <h3 class="font-bold text-slate-800">Sales - Fort Worth, TX</h3>
+                                <p class="text-sm text-slate-500">3460 Defense Industry Drive</p>
+                                <p class="text-xs mt-2"><span class="font-semibold">Functions:</span> Bus. Dev, Proposals, Cust. Service</p>
+                            </div>
+                            <div class="border rounded-lg p-4 hover:bg-slate-50 transition">
+                                <h3 class="font-bold text-slate-800">Manufacturing - Plano, TX</h3>
+                                <p class="text-sm text-slate-500">8920 Industrial Parkway</p>
+                                <p class="text-xs mt-2"><span class="font-semibold">Functions:</span> Precision Machining, Metal Fab, Assembly</p>
+                            </div>
+                            <div class="border rounded-lg p-4 hover:bg-slate-50 transition">
+                                <h3 class="font-bold text-slate-800">Manufacturing - San Antonio, TX</h3>
+                                <p class="text-sm text-slate-500">6735 Military Boulevard</p>
+                                <p class="text-xs mt-2"><span class="font-semibold">Functions:</span> Heavy Mfg, Welding, Warehouse</p>
+                            </div>
+                            <div class="border rounded-lg p-4 hover:bg-slate-50 transition">
+                                <h3 class="font-bold text-slate-800">IT Center - El Paso, TX</h3>
+                                <p class="text-sm text-slate-500">2100 Technology Center</p>
+                                <p class="text-xs mt-2"><span class="font-semibold">Functions:</span> SOC, NOC, Help Desk, Data Center</p>
+                            </div>
+                            <div class="border rounded-lg p-4 hover:bg-slate-50 transition">
+                                <h3 class="font-bold text-slate-800">Comms - Washington, DC</h3>
+                                <p class="text-sm text-slate-500">1875 K Street NW</p>
+                                <p class="text-xs mt-2"><span class="font-semibold">Functions:</span> Govt Liaison, Contracts, Compliance</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Leadership Sidebar -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden h-full">
+                        <div class="bg-slate-50 px-6 py-4 border-b border-slate-200 font-bold text-slate-800">
+                            <i class="fa-solid fa-users mr-2 text-blue-600"></i> Key Leadership
+                        </div>
+                        <div class="p-4 space-y-4">
+                            <div class="flex items-start gap-3">
+                                <div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-500"><i class="fa-solid fa-user-tie"></i></div>
+                                <div>
+                                    <div class="font-bold text-sm">Robert J. Martinez</div>
+                                    <div class="text-xs text-blue-600 font-semibold">CEO</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-500"><i class="fa-solid fa-user-gear"></i></div>
+                                <div>
+                                    <div class="font-bold text-sm">Jennifer L. Thompson</div>
+                                    <div class="text-xs text-blue-600 font-semibold">COO</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-500"><i class="fa-solid fa-calculator"></i></div>
+                                <div>
+                                    <div class="font-bold text-sm">Michael K. Patel</div>
+                                    <div class="text-xs text-blue-600 font-semibold">CFO</div>
+                                </div>
+                            </div>
+                            <div class="border-t my-2 pt-2"></div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-600"><i class="fa-solid fa-shield-virus"></i></div>
+                                <div>
+                                    <div class="font-bold text-sm">Dr. Maya Patel</div>
+                                    <div class="text-xs text-red-600 font-semibold">CISO</div>
+                                    <div class="text-[10px] text-slate-400">El Paso, TX</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-600"><i class="fa-solid fa-server"></i></div>
+                                <div>
+                                    <div class="font-bold text-sm">Rick Anderson</div>
+                                    <div class="text-xs text-red-600 font-semibold">CIO</div>
+                                    <div class="text-[10px] text-slate-400">El Paso, TX</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: CONTRACTS -->
+        <div id="contracts" class="tab-content">
+            <div class="mb-6 flex flex-col md:flex-row justify-between items-end bg-slate-800 text-white p-6 rounded-xl">
+                <div>
+                    <h2 class="text-2xl font-bold">DoD Contract Portfolio</h2>
+                    <p class="text-slate-400 text-sm mt-1">Total Contract Value: <span class="text-green-400 font-mono font-bold">$47,550,000</span></p>
+                </div>
+                <div class="flex gap-4 mt-4 md:mt-0">
+                    <div class="text-right">
+                        <div class="text-xs text-slate-400 uppercase">CMMC Level 2 Req</div>
+                        <div class="font-bold text-xl">4 Contracts</div>
+                    </div>
+                    <div class="text-right border-l border-slate-600 pl-4">
+                        <div class="text-xs text-slate-400 uppercase">CMMC Level 1 Req</div>
+                        <div class="font-bold text-xl">2 Contracts</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Contract Cards -->
+                
+                <!-- C1 -->
+                <div class="bg-white rounded-lg shadow border-t-4 border-t-red-500 overflow-hidden hover:shadow-md transition-shadow">
+                    <div class="p-5">
+                        <div class="flex justify-between items-start mb-3">
+                            <h3 class="font-bold text-lg text-slate-900">M1 Abrams Tank Parts</h3>
+                            <span class="bg-red-100 text-red-800 text-xs font-bold px-2 py-1 rounded border border-red-200">CMMC L2</span>
+                        </div>
+                        <div class="text-sm text-slate-500 mb-4">#W56HZV-23-C-0089 | IDIQ</div>
+                        <p class="text-sm text-slate-700 mb-4">Replacement components for M1A2 Abrams main battle tanks (hydraulics, suspension).</p>
+                        <div class="bg-slate-50 p-3 rounded text-xs space-y-2 border border-slate-200">
+                            <div class="flex justify-between"><span>Value:</span> <span class="font-mono font-semibold">$8,450,000</span></div>
+                            <div class="flex justify-between"><span>Data Type:</span> <span class="text-red-600 font-bold bg-red-50 px-1 rounded">CUI</span></div>
+                            <div class="text-slate-500 italic mt-1">Technical specs & engineering drawings</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- C2 -->
+                <div class="bg-white rounded-lg shadow border-t-4 border-t-red-500 overflow-hidden hover:shadow-md transition-shadow">
+                    <div class="p-5">
+                        <div class="flex justify-between items-start mb-3">
+                            <h3 class="font-bold text-lg text-slate-900">HMMWV Modernization</h3>
+                            <span class="bg-red-100 text-red-800 text-xs font-bold px-2 py-1 rounded border border-red-200">CMMC L2</span>
+                        </div>
+                        <div class="text-sm text-slate-500 mb-4">#W56HZV-22-C-0341 | FFP</div>
+                        <p class="text-sm text-slate-700 mb-4">Electrical systems and armor attachment brackets for vehicle upgrades.</p>
+                        <div class="bg-slate-50 p-3 rounded text-xs space-y-2 border border-slate-200">
+                            <div class="flex justify-between"><span>Value:</span> <span class="font-mono font-semibold">$12,200,000</span></div>
+                            <div class="flex justify-between"><span>Data Type:</span> <span class="text-red-600 font-bold bg-red-50 px-1 rounded">CUI</span></div>
+                            <div class="text-slate-500 italic mt-1">Design specs & installation procedures</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- C3 -->
+                <div class="bg-white rounded-lg shadow border-t-4 border-t-green-500 overflow-hidden hover:shadow-md transition-shadow">
+                    <div class="p-5">
+                        <div class="flex justify-between items-start mb-3">
+                            <h3 class="font-bold text-lg text-slate-900">Bradley Fighting Vehicle</h3>
+                            <span class="bg-green-100 text-green-800 text-xs font-bold px-2 py-1 rounded border border-green-200">CMMC L1</span>
+                        </div>
+                        <div class="text-sm text-slate-500 mb-4">#W56HZV-24-C-0156 | CPFF</div>
+                        <p class="text-sm text-slate-700 mb-4">Precision-machined transmission components and drive shafts.</p>
+                        <div class="bg-slate-50 p-3 rounded text-xs space-y-2 border border-slate-200">
+                            <div class="flex justify-between"><span>Value:</span> <span class="font-mono font-semibold">$5,850,000</span></div>
+                            <div class="flex justify-between"><span>Data Type:</span> <span class="text-green-600 font-bold bg-green-50 px-1 rounded">FCI</span></div>
+                            <div class="text-slate-500 italic mt-1">Performance data & delivery schedules</div>
+                        </div>
+                    </div>
+                </div>
+
+                 <!-- C4 -->
+                 <div class="bg-white rounded-lg shadow border-t-4 border-t-red-500 overflow-hidden hover:shadow-md transition-shadow">
+                    <div class="p-5">
+                        <div class="flex justify-between items-start mb-3">
+                            <h3 class="font-bold text-lg text-slate-900">JLTV Brake Systems</h3>
+                            <span class="bg-red-100 text-red-800 text-xs font-bold px-2 py-1 rounded border border-red-200">CMMC L2</span>
+                        </div>
+                        <div class="text-sm text-slate-500 mb-4">#W56HZV-23-C-0412 | FFP</div>
+                        <p class="text-sm text-slate-700 mb-4">Advanced braking system components and ABS modules.</p>
+                        <div class="bg-slate-50 p-3 rounded text-xs space-y-2 border border-slate-200">
+                            <div class="flex justify-between"><span>Value:</span> <span class="font-mono font-semibold">$9,750,000</span></div>
+                            <div class="flex justify-between"><span>Data Type:</span> <span class="text-red-600 font-bold bg-red-50 px-1 rounded">CUI</span></div>
+                            <div class="text-slate-500 italic mt-1">Performance specifications & test data</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- C5 -->
+                <div class="bg-white rounded-lg shadow border-t-4 border-t-green-500 overflow-hidden hover:shadow-md transition-shadow">
+                    <div class="p-5">
+                        <div class="flex justify-between items-start mb-3">
+                            <h3 class="font-bold text-lg text-slate-900">Paladin Howitzer Parts</h3>
+                            <span class="bg-green-100 text-green-800 text-xs font-bold px-2 py-1 rounded border border-green-200">CMMC L1</span>
+                        </div>
+                        <div class="text-sm text-slate-500 mb-4">#W56HZV-24-C-0278 | FFP</div>
+                        <p class="text-sm text-slate-700 mb-4">Critical replacement parts including hydraulic cylinders and elevation mechanisms.</p>
+                        <div class="bg-slate-50 p-3 rounded text-xs space-y-2 border border-slate-200">
+                            <div class="flex justify-between"><span>Value:</span> <span class="font-mono font-semibold">$4,200,000</span></div>
+                            <div class="flex justify-between"><span>Data Type:</span> <span class="text-green-600 font-bold bg-green-50 px-1 rounded">FCI</span></div>
+                            <div class="text-slate-500 italic mt-1">Delivery schedules & maintenance docs</div>
+                        </div>
+                    </div>
+                </div>
+
+                 <!-- C6 -->
+                 <div class="bg-white rounded-lg shadow border-t-4 border-t-red-500 overflow-hidden hover:shadow-md transition-shadow">
+                    <div class="p-5">
+                        <div class="flex justify-between items-start mb-3">
+                            <h3 class="font-bold text-lg text-slate-900">MRAP Suspension</h3>
+                            <span class="bg-red-100 text-red-800 text-xs font-bold px-2 py-1 rounded border border-red-200">CMMC L2</span>
+                        </div>
+                        <div class="text-sm text-slate-500 mb-4">#W56HZV-22-C-0523 | IDIQ</div>
+                        <p class="text-sm text-slate-700 mb-4">Enhanced suspension system components for harsh terrain.</p>
+                        <div class="bg-slate-50 p-3 rounded text-xs space-y-2 border border-slate-200">
+                            <div class="flex justify-between"><span>Value:</span> <span class="font-mono font-semibold">$7,100,000</span></div>
+                            <div class="flex justify-between"><span>Data Type:</span> <span class="text-red-600 font-bold bg-red-50 px-1 rounded">CUI</span></div>
+                            <div class="text-slate-500 italic mt-1">Engineering designs & test results</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: ASSETS -->
+        <div id="assets" class="tab-content">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+                <!-- Inventory Column 1: Servers & Cloud -->
+                <div class="lg:col-span-1 space-y-6">
+                    <div class="bg-white p-4 rounded-lg shadow border border-slate-200">
+                        <h3 class="text-lg font-bold text-slate-800 mb-4 border-b pb-2">Server Infrastructure (21)</h3>
+                        <ul class="space-y-3 text-sm">
+                            <li class="flex justify-between items-center p-2 bg-slate-50 rounded">
+                                <div><span class="font-semibold">Domain Controllers</span> <br><span class="text-xs text-slate-500">Dell R450, Win Svr 2022</span></div>
+                                <span class="bg-slate-200 px-2 py-1 rounded text-xs">4 Units</span>
+                            </li>
+                            <li class="flex justify-between items-center p-2 bg-slate-50 rounded">
+                                <div><span class="font-semibold">File Servers</span> <br><span class="text-xs text-slate-500">Dell R740, 20TB RAID</span></div>
+                                <span class="bg-slate-200 px-2 py-1 rounded text-xs">3 Units</span>
+                            </li>
+                            <li class="flex justify-between items-center p-2 bg-slate-50 rounded">
+                                <div><span class="font-semibold">Database Servers</span> <br><span class="text-xs text-slate-500">SQL 2022 (ERP/MES)</span></div>
+                                <span class="bg-slate-200 px-2 py-1 rounded text-xs">2 Units</span>
+                            </li>
+                            <li class="flex justify-between items-center p-2 bg-slate-50 rounded">
+                                <div><span class="font-semibold">App Servers</span> <br><span class="text-xs text-slate-500">Web/Business Apps</span></div>
+                                <span class="bg-slate-200 px-2 py-1 rounded text-xs">3 Units</span>
+                            </li>
+                            <li class="flex justify-between items-center p-2 bg-slate-50 rounded">
+                                <div><span class="font-semibold">Backup Servers</span> <br><span class="text-xs text-slate-500">Veeam, 40TB</span></div>
+                                <span class="bg-slate-200 px-2 py-1 rounded text-xs">2 Units</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-blue-50 p-4 rounded-lg shadow border border-blue-100">
+                        <h3 class="text-lg font-bold text-blue-900 mb-2"><i class="fa-solid fa-cloud mr-2"></i>Cloud Services</h3>
+                        <ul class="list-disc pl-4 text-sm text-blue-800 space-y-2">
+                            <li><strong>Microsoft 365 E5:</strong> All users (Exchange, Teams, SharePoint).</li>
+                            <li><strong>AWS:</strong> Dev/Test environments only (VPC, EC2).</li>
+                            <li><strong>Azure Gov (Planned):</strong> In procurement for CUI storage (CMMC L2).</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Inventory Column 2: OT / ICS -->
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="bg-white p-4 rounded-lg shadow border border-slate-200">
+                        <h3 class="text-lg font-bold text-slate-800 mb-4 border-b pb-2">Operational Technology (OT) & Manufacturing</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="border border-slate-200 rounded p-3">
+                                <h4 class="font-bold text-indigo-700 mb-2">Plano Facility</h4>
+                                <ul class="text-sm space-y-2">
+                                    <li><i class="fa-solid fa-gear text-slate-400"></i> 8x Haas CNC Vertical Machining Centers</li>
+                                    <li><i class="fa-solid fa-robot text-slate-400"></i> 4x FANUC Industrial Robots</li>
+                                    <li><i class="fa-solid fa-ruler-combined text-slate-400"></i> 2x Hexagon CMMs (Windows 10 IoT)</li>
+                                    <li><i class="fa-solid fa-desktop text-slate-400"></i> 12x MES Terminals (Advantech)</li>
+                                </ul>
+                            </div>
+                            <div class="border border-slate-200 rounded p-3">
+                                <h4 class="font-bold text-indigo-700 mb-2">San Antonio Facility</h4>
+                                <ul class="text-sm space-y-2">
+                                    <li><i class="fa-solid fa-gear text-slate-400"></i> 6x Haas VF-6SS CNC Machines</li>
+                                    <li><i class="fa-solid fa-robot text-slate-400"></i> 6x KUKA Welding Robots (KRC4)</li>
+                                    <li><i class="fa-solid fa-industry text-slate-400"></i> 2x Schuler Industrial Presses (Siemens PLC)</li>
+                                    <li><i class="fa-solid fa-desktop text-slate-400"></i> 10x MES Terminals (Advantech)</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="mt-4 bg-orange-50 border-l-4 border-orange-400 p-3 text-sm">
+                            <h5 class="font-bold text-orange-800">Security Note:</h5>
+                            <p class="text-orange-700">Some legacy CNC/PLC systems run older/embedded OS versions. Mitigation relies heavily on network segmentation (VLANs 50-80) and isolation.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-lg shadow border border-slate-200">
+                         <h3 class="text-lg font-bold text-slate-800 mb-4 border-b pb-2">Endpoints (200 Total)</h3>
+                         <div class="overflow-x-auto">
+                             <table class="min-w-full text-sm text-left text-slate-600">
+                                 <thead class="text-xs text-slate-700 uppercase bg-slate-100">
+                                     <tr>
+                                         <th class="px-4 py-2">Location</th>
+                                         <th class="px-4 py-2">Device Types</th>
+                                         <th class="px-4 py-2">Count</th>
+                                         <th class="px-4 py-2">Security</th>
+                                     </tr>
+                                 </thead>
+                                 <tbody>
+                                     <tr class="border-b">
+                                         <td class="px-4 py-2 font-medium">Fort Worth (HQ/Sales)</td>
+                                         <td class="px-4 py-2">Dell Latitude 5440/5540</td>
+                                         <td class="px-4 py-2">73</td>
+                                         <td class="px-4 py-2 text-xs">BitLocker, Intune, SEP</td>
+                                     </tr>
+                                     <tr class="border-b">
+                                         <td class="px-4 py-2 font-medium">Manufacturing (Plano/SA)</td>
+                                         <td class="px-4 py-2">Latitude 5440 + Precision 3581 (CAD)</td>
+                                         <td class="px-4 py-2">60</td>
+                                         <td class="px-4 py-2 text-xs">BitLocker, Intune, SEP</td>
+                                     </tr>
+                                     <tr class="border-b">
+                                         <td class="px-4 py-2 font-medium">El Paso (IT)</td>
+                                         <td class="px-4 py-2">Latitude 5540 + Precision 3581</td>
+                                         <td class="px-4 py-2">25</td>
+                                         <td class="px-4 py-2 text-xs">Privileged Access Controls</td>
+                                     </tr>
+                                      <tr class="border-b">
+                                         <td class="px-4 py-2 font-medium">Washington DC</td>
+                                         <td class="px-4 py-2">Dell Latitude 5440</td>
+                                         <td class="px-4 py-2">15</td>
+                                         <td class="px-4 py-2 text-xs">BitLocker, Intune, SEP</td>
+                                     </tr>
+                                 </tbody>
+                             </table>
+                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: NETWORK -->
+        <div id="network" class="tab-content">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-slate-800 rounded-xl p-6 shadow-lg text-white">
+                    <h3 class="text-xl font-bold mb-4"><i class="fa-solid fa-network-wired text-blue-400"></i> Network Segmentation Strategy</h3>
+                    <div class="space-y-3">
+                        <!-- VLAN Visualization -->
+                        <div class="flex items-center">
+                            <div class="w-16 text-xs font-mono text-blue-300">VLAN 10</div>
+                            <div class="flex-1 bg-slate-700 rounded h-8 flex items-center px-3 text-xs border-l-4 border-red-500">
+                                Management (IT Staff Only)
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-16 text-xs font-mono text-blue-300">VLAN 20</div>
+                            <div class="flex-1 bg-slate-700 rounded h-8 flex items-center px-3 text-xs border-l-4 border-green-500">
+                                Corporate (Office Users, Email)
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-16 text-xs font-mono text-blue-300">VLAN 40</div>
+                            <div class="flex-1 bg-slate-700 rounded h-8 flex items-center px-3 text-xs border-l-4 border-yellow-500">
+                                Engineering (CAD, Restricted Internet)
+                            </div>
+                        </div>
+                         <div class="flex items-center">
+                            <div class="w-16 text-xs font-mono text-blue-300">VLAN 50/60</div>
+                            <div class="flex-1 bg-slate-700 rounded h-8 flex items-center px-3 text-xs border-l-4 border-orange-500">
+                                Manufacturing (MES, No Internet)
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-16 text-xs font-mono text-blue-300">VLAN 70/80</div>
+                            <div class="flex-1 bg-slate-700 rounded h-8 flex items-center px-3 text-xs border-l-4 border-red-600">
+                                Automation/ICS (Robots, PLCs - ISOLATED)
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-16 text-xs font-mono text-blue-300">VLAN 90</div>
+                            <div class="flex-1 bg-slate-700 rounded h-8 flex items-center px-3 text-xs border-l-4 border-slate-400">
+                                Guest Wi-Fi (Complete Isolation)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-6 text-sm text-slate-400">
+                        <p><strong>Firewalls:</strong> Palo Alto PA-3260 (Edge) at El Paso, Fort Worth, DC.</p>
+                        <p class="mt-1"><strong>Core:</strong> Cisco Catalyst 9500s with 10Gbps uplinks.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 shadow border border-slate-200">
+                    <h3 class="text-xl font-bold mb-4 text-slate-800"><i class="fa-solid fa-lock text-red-600"></i> Security Stack</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="p-3 border rounded hover:bg-slate-50">
+                            <div class="font-bold text-sm text-slate-900">SIEM</div>
+                            <div class="text-xs text-slate-500">Splunk Enterprise Security</div>
+                        </div>
+                        <div class="p-3 border rounded hover:bg-slate-50">
+                            <div class="font-bold text-sm text-slate-900">IDS/IPS</div>
+                            <div class="text-xs text-slate-500">Cisco Firepower</div>
+                        </div>
+                        <div class="p-3 border rounded hover:bg-slate-50">
+                            <div class="font-bold text-sm text-slate-900">Vulnerability Scan</div>
+                            <div class="text-xs text-slate-500">Tenable Nessus Pro</div>
+                        </div>
+                        <div class="p-3 border rounded hover:bg-slate-50">
+                            <div class="font-bold text-sm text-slate-900">MFA</div>
+                            <div class="text-xs text-slate-500">Duo Security</div>
+                        </div>
+                        <div class="p-3 border rounded hover:bg-slate-50">
+                            <div class="font-bold text-sm text-slate-900">DLP</div>
+                            <div class="text-xs text-slate-500">Microsoft Purview</div>
+                        </div>
+                        <div class="p-3 border rounded hover:bg-slate-50">
+                            <div class="font-bold text-sm text-slate-900">Endpoint</div>
+                            <div class="text-xs text-slate-500">Symantec Endpoint Protection</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 5: COMPLIANCE -->
+        <div id="compliance" class="tab-content">
+             <!-- Status Bar -->
+             <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 mb-8">
+                <h2 class="text-lg font-bold mb-4">CMMC Compliance Progress</h2>
+                <div class="relative pt-1">
+                    <div class="flex mb-2 items-center justify-between">
+                        <div>
+                            <span class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-blue-600 bg-blue-200">
+                                NIST SP 800-171 (Level 2 Target)
+                            </span>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-xs font-semibold inline-block text-blue-600">
+                                87 / 110 Controls
+                            </span>
+                        </div>
+                    </div>
+                    <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-blue-200">
+                        <div style="width:79%" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500"></div>
+                    </div>
+                    <div class="text-sm text-slate-600 flex justify-between">
+                         <span><strong>Level 1 Self-Assessment:</strong> <span class="text-green-600 font-bold">Completed</span></span>
+                         <span><strong>Target Certification:</strong> April 2025</span>
+                    </div>
+                </div>
+             </div>
+
+             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Challenges -->
+                <div class="bg-red-50 p-6 rounded-xl border border-red-100">
+                    <h3 class="text-red-800 font-bold text-lg mb-3">Top Compliance Risks</h3>
+                    <ul class="space-y-3">
+                        <li class="flex gap-3 items-start">
+                            <i class="fa-solid fa-triangle-exclamation text-red-500 mt-1"></i>
+                            <div>
+                                <span class="font-bold text-red-900">Supply Chain:</span>
+                                <p class="text-sm text-red-800">Subcontractors may not meet CMMC flow-down requirements.</p>
+                            </div>
+                        </li>
+                        <li class="flex gap-3 items-start">
+                            <i class="fa-solid fa-triangle-exclamation text-red-500 mt-1"></i>
+                            <div>
+                                <span class="font-bold text-red-900">Legacy Mfg Equipment:</span>
+                                <p class="text-sm text-red-800">Cannot install agents on embedded OS CNC machines.</p>
+                            </div>
+                        </li>
+                        <li class="flex gap-3 items-start">
+                            <i class="fa-solid fa-triangle-exclamation text-red-500 mt-1"></i>
+                            <div>
+                                <span class="font-bold text-red-900">Incident Response:</span>
+                                <p class="text-sm text-red-800">Testing frequency gap; IR plan needs more tabletop validation.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Budget Chart Container -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200">
+                    <h3 class="text-slate-800 font-bold text-lg mb-3">Annual IT Budget Allocation ($2.8M)</h3>
+                    <div id="budget-chart" class="h-64 w-full flex justify-center items-center">
+                        <!-- D3 Chart will render here -->
+                    </div>
+                    <div class="text-center text-xs text-slate-400 mt-2">
+                        Personnel consumes 75% of budget
+                    </div>
+                </div>
+             </div>
+        </div>
+
+        <!-- TAB 6: INSTRUCTOR MODE -->
+        <div id="instructor" class="tab-content">
+            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-8 rounded-r shadow-sm">
+                <h2 class="text-2xl font-bold text-yellow-900 mb-4"><i class="fa-solid fa-lightbulb mr-2"></i>Instructor Guide</h2>
+                <p class="text-yellow-800 mb-4">Use this case study for the following learning objectives:</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white p-4 rounded shadow-sm bg-opacity-60">
+                        <h4 class="font-bold text-slate-900">1. CMMC Scoping</h4>
+                        <p class="text-sm text-slate-700 mt-2">Have students identify which VLANs constitute the "CUI Assessment Scope" and which are out of scope. Discuss why the Guest Network (VLAN 90) is treated differently.</p>
+                    </div>
+                    <div class="bg-white p-4 rounded shadow-sm bg-opacity-60">
+                        <h4 class="font-bold text-slate-900">2. Gap Analysis</h4>
+                        <p class="text-sm text-slate-700 mt-2">Using the asset inventory, ask students to map specific NIST 800-171 controls to the available tools (e.g., Control 3.14.1 to Splunk/Cisco Firepower).</p>
+                    </div>
+                    <div class="bg-white p-4 rounded shadow-sm bg-opacity-60">
+                        <h4 class="font-bold text-slate-900">3. Incident Response</h4>
+                        <p class="text-sm text-slate-700 mt-2">Run a tabletop exercise based on "Incident 2" (USB in manufacturing). How does the lack of agents on OT devices complicate this?</p>
+                    </div>
+                    <div class="bg-white p-4 rounded shadow-sm bg-opacity-60">
+                        <h4 class="font-bold text-slate-900">4. Cloud Governance</h4>
+                        <p class="text-sm text-slate-700 mt-2">Discuss the implications of moving CUI to Azure Government. What changes in the Shared Responsibility Model?</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-slate-900 text-slate-400 py-8 mt-auto border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 text-center text-sm">
+            <p>&copy; 2024 Patriot Defense Systems Case Study. Educational Material.</p>
+            <p class="mt-2 text-xs">Developed for CMMC Classroom Use. Not for actual operational security planning.</p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Tab Logic
+        function switchTab(tabId) {
+            // Hide all contents
+            document.querySelectorAll('.tab-content').forEach(el => {
+                el.classList.remove('active');
+            });
+            
+            // Show selected content
+            document.getElementById(tabId).classList.add('active');
+
+            // Update Button States
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+                btn.classList.remove('bg-blue-500', 'text-white', 'border-b-2', 'border-blue-700');
+                btn.classList.add('text-slate-300');
+            });
+
+            const activeBtn = document.getElementById('btn-' + tabId);
+            activeBtn.classList.add('active');
+            activeBtn.classList.remove('text-slate-300');
+        }
+
+        // Initialize D3 Chart for Budget
+        function renderBudgetChart() {
+            const data = [
+                {label: "Personnel", value: 75, color: "#3b82f6"},
+                {label: "Software", value: 10, color: "#10b981"},
+                {label: "Hardware", value: 7, color: "#f59e0b"},
+                {label: "Security Tools", value: 5, color: "#ef4444"},
+                {label: "Training", value: 2, color: "#8b5cf6"},
+                {label: "Consulting", value: 1, color: "#64748b"}
+            ];
+
+            const width = 300;
+            const height = 300;
+            const radius = Math.min(width, height) / 2;
+
+            const svg = d3.select("#budget-chart")
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height)
+                .append("g")
+                .attr("transform", `translate(${width / 2},${height / 2})`);
+
+            const pie = d3.pie()
+                .value(d => d.value)
+                .sort(null);
+
+            const arc = d3.arc()
+                .innerRadius(radius * 0.5)
+                .outerRadius(radius * 0.8);
+
+            const outerArc = d3.arc()
+                .innerRadius(radius * 0.9)
+                .outerRadius(radius * 0.9);
+
+            const paths = svg.selectAll("path")
+                .data(pie(data))
+                .enter()
+                .append("path")
+                .attr("d", arc)
+                .attr("fill", d => d.data.color)
+                .attr("stroke", "white")
+                .style("stroke-width", "2px");
+
+            // Add Tooltips (simple title attribute for standalone simplicity)
+            paths.append("title")
+                .text(d => `${d.data.label}: ${d.data.value}%`);
+
+            // Add Center Text
+            svg.append("text")
+                .attr("text-anchor", "middle")
+                .attr("dy", "0.3em")
+                .style("font-size", "20px")
+                .style("font-weight", "bold")
+                .style("fill", "#334155")
+                .text("75% Staff");
+        }
+
+        // Run on load
+        document.addEventListener('DOMContentLoaded', () => {
+            renderBudgetChart();
+        });
+
+    </script>
+</body>
+</html>
