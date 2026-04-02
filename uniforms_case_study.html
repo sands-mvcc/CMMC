@@ -1,0 +1,1821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ThreadBridge Solutions — CMMC Level 2 Case Study</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#1a2744;--navy-light:#243358;--gold:#f59e0b;--gold-light:#fcd34d;
+  --bg:#f0f4f8;--white:#ffffff;--card:#ffffff;
+  --red:#dc2626;--orange:#ea580c;--amber:#d97706;--purple:#7c3aed;--blue:#2563eb;--green:#16a34a;
+  --text:#1e293b;--text-muted:#64748b;--border:#e2e8f0;
+  --radius:8px;--radius-lg:12px;
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6}
+h1,h2,h3,h4,h5,h6{font-family:'Space Grotesk',sans-serif}
+
+/* HEADER */
+#site-header{background:var(--navy);color:white;padding:16px 24px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+#site-header h1{font-size:18px;font-weight:700;color:white;letter-spacing:-.3px}
+#site-header .subtitle{font-size:11px;color:var(--gold-light);margin-top:2px;font-family:'Inter',sans-serif;font-weight:400}
+#site-header .header-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+.header-badge{background:var(--gold);color:var(--navy);padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;font-family:'Space Grotesk',sans-serif;white-space:nowrap}
+
+/* NAV */
+#main-nav{background:var(--navy-light);border-bottom:2px solid var(--gold);position:sticky;top:73px;z-index:99;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+#main-nav .nav-inner{max-width:1200px;margin:0 auto;padding:8px 24px;display:flex;gap:6px;flex-wrap:wrap}
+.nav-btn{background:transparent;border:1.5px solid rgba(255,255,255,.2);color:rgba(255,255,255,.8);padding:6px 14px;border-radius:20px;cursor:pointer;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;transition:all .2s;white-space:nowrap}
+.nav-btn:hover{background:rgba(245,158,11,.15);border-color:var(--gold);color:white}
+.nav-btn.active{background:var(--gold);border-color:var(--gold);color:var(--navy);font-weight:700}
+
+/* MAIN CONTENT */
+#content{max-width:1200px;margin:0 auto;padding:24px}
+.section{display:none;animation:fadeIn .35s ease}
+.section.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* CARDS & CONTAINERS */
+.card{background:var(--card);border-radius:var(--radius-lg);border:1px solid var(--border);padding:20px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.card h3{font-size:15px;margin-bottom:12px;color:var(--navy)}
+.section-title{font-size:22px;font-weight:700;color:var(--navy);margin-bottom:6px}
+.section-subtitle{color:var(--text-muted);font-size:13px;margin-bottom:20px}
+
+/* BADGES */
+.badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700;font-family:'Space Grotesk',sans-serif;letter-spacing:.3px}
+.badge-critical{background:#fef2f2;color:var(--red);border:1px solid #fecaca}
+.badge-high{background:#fff7ed;color:var(--orange);border:1px solid #fed7aa}
+.badge-medium{background:#fffbeb;color:var(--amber);border:1px solid #fde68a}
+.badge-cui{background:#f5f3ff;color:var(--purple);border:1px solid #ddd6fe}
+.badge-fci{background:#eff6ff;color:var(--blue);border:1px solid #bfdbfe}
+.badge-strength{background:#f0fdf4;color:var(--green);border:1px solid #bbf7d0}
+.badge-gold{background:#fef3c7;color:#92400e;border:1px solid #fde68a}
+.badge-navy{background:var(--navy);color:white}
+.badge-warning{background:#fef3c7;color:#92400e;border:1px solid #fde68a}
+.badge-urgent{background:var(--red);color:white;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.7}}
+
+/* TABLES */
+.data-table{width:100%;border-collapse:collapse;font-size:13px}
+.data-table th{background:var(--navy);color:white;padding:10px 12px;text-align:left;font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:600}
+.data-table td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+.data-table tr:hover td{background:#f8fafc}
+.data-table tr:last-child td{border-bottom:none}
+.table-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border)}
+
+/* DISCLAIMER */
+.disclaimer{background:#fef3c7;border:2px solid var(--gold);border-radius:var(--radius-lg);padding:16px 20px;margin-bottom:20px}
+.disclaimer h3{color:#92400e;font-size:14px;margin-bottom:6px}
+.disclaimer p{color:#78350f;font-size:13px}
+
+/* META TABLE */
+.meta-table{width:100%;border-collapse:collapse;font-size:13px}
+.meta-table td{padding:8px 12px;border-bottom:1px solid var(--border)}
+.meta-table td:first-child{font-weight:600;width:170px;color:var(--navy);font-family:'Space Grotesk',sans-serif}
+
+/* ORG CHART */
+.org-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:16px}
+.org-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;cursor:pointer;transition:all .2s;position:relative}
+.org-card:hover{border-color:var(--navy);box-shadow:0 4px 12px rgba(26,39,68,.15);transform:translateY(-2px)}
+.org-card .role{font-size:11px;color:var(--text-muted);margin-top:2px}
+.org-card .name{font-weight:700;font-size:14px;color:var(--navy);font-family:'Space Grotesk',sans-serif}
+.org-card .access-badge{margin-top:8px;display:flex;flex-wrap:wrap;gap:4px}
+.popover{display:none;position:absolute;top:calc(100% + 6px);left:0;right:0;background:white;border:1.5px solid var(--navy);border-radius:var(--radius);padding:12px;z-index:200;box-shadow:0 8px 24px rgba(0,0,0,.15);font-size:12px}
+.popover.show{display:block}
+.popover h4{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:6px}
+.popover ul{list-style:none;padding:0}
+.popover ul li{padding:2px 0;color:var(--text);display:flex;align-items:center;gap:4px}
+.popover ul li::before{content:'›';color:var(--gold);font-weight:700}
+
+/* FILTER BAR */
+.filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.filter-btn{background:white;border:1.5px solid var(--border);color:var(--text-muted);padding:5px 14px;border-radius:20px;cursor:pointer;font-size:12px;font-weight:500;transition:all .2s}
+.filter-btn:hover,.filter-btn.active{background:var(--navy);color:white;border-color:var(--navy)}
+
+/* GAP CARDS */
+.gap-grid{display:grid;gap:12px}
+.gap-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;transition:all .2s}
+.gap-card-header{padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:10px;user-select:none}
+.gap-card-header:hover{background:#f8fafc}
+.gap-card .gap-id{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;color:var(--navy);min-width:50px}
+.gap-card .gap-title{flex:1;font-size:13px;font-weight:500}
+.gap-card .gap-domain{font-size:11px;color:var(--text-muted);background:#f1f5f9;padding:2px 8px;border-radius:10px;font-family:'Space Grotesk',sans-serif}
+.gap-card-body{display:none;padding:0 16px 16px;border-top:1px solid var(--border);margin-top:0}
+.gap-card-body.open{display:block}
+.gap-detail-row{display:flex;gap:8px;margin-top:10px;font-size:12px}
+.gap-detail-row label{font-weight:600;min-width:80px;color:var(--text-muted)}
+.gap-toggle{color:var(--text-muted);font-size:16px;transition:transform .2s}
+.gap-toggle.open{transform:rotate(180deg)}
+
+/* SUB-TABS */
+.sub-tabs{display:flex;gap:6px;margin-bottom:20px;border-bottom:2px solid var(--border);padding-bottom:0}
+.sub-tab{background:transparent;border:none;padding:10px 20px;cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;font-weight:500;color:var(--text-muted);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s}
+.sub-tab.active{color:var(--navy);border-bottom-color:var(--gold);font-weight:700}
+.sub-content{display:none}
+.sub-content.active{display:block}
+
+/* INTERVIEW CARDS */
+.interview-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:16px;overflow:hidden}
+.interview-header{padding:16px 20px;cursor:pointer;display:flex;align-items:center;gap:12px;background:var(--navy);color:white}
+.interview-header h3{color:white;font-size:15px;font-weight:700;flex:1}
+.interview-meta{font-size:11px;color:var(--gold-light)}
+.interview-body{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.interview-body.open{max-height:2000px}
+.interview-body-inner{padding:20px}
+.chat-exchange{margin-bottom:16px;border-radius:var(--radius);overflow:hidden}
+.chat-q{background:#f1f5f9;padding:10px 14px;font-size:13px;font-weight:600;color:var(--navy);border-left:3px solid var(--blue)}
+.chat-a{background:#f8fafc;padding:10px 14px;font-size:13px;color:var(--text);border-left:3px solid var(--border);font-style:italic}
+.chat-link{margin-top:6px;display:flex;gap:6px;align-items:center}
+.gap-ref{display:inline-block;background:var(--navy);color:var(--gold);padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Space Grotesk',sans-serif}
+.gap-ref:hover{background:var(--gold);color:var(--navy)}
+
+/* INCIDENT CARDS */
+.incident-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+@media(max-width:700px){.incident-grid{grid-template-columns:1fr}}
+.incident-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
+.incident-card-header{background:var(--navy);color:white;padding:14px 16px}
+.incident-card-header h3{color:white;font-size:14px;font-weight:700}
+.incident-card-header .inc-meta{font-size:11px;color:var(--gold-light);margin-top:3px}
+.incident-card-body{padding:16px}
+.incident-row{display:flex;gap:8px;margin-bottom:8px;font-size:13px}
+.incident-row label{font-weight:600;min-width:130px;color:var(--text-muted);font-size:12px}
+.analysis-panel{background:#f8fafc;border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-top:12px}
+.analysis-panel h4{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:8px}
+.analysis-btns{display:flex;gap:8px;margin-bottom:10px}
+.analysis-btn{padding:6px 16px;border-radius:20px;border:1.5px solid var(--border);cursor:pointer;font-size:12px;font-weight:600;font-family:'Inter',sans-serif;transition:all .2s}
+.analysis-btn.yes{border-color:var(--green);color:var(--green)}
+.analysis-btn.yes:hover,.analysis-btn.yes.sel{background:var(--green);color:white}
+.analysis-btn.no{border-color:var(--red);color:var(--red)}
+.analysis-btn.no:hover,.analysis-btn.no.sel{background:var(--red);color:white}
+.analysis-explanation{display:none;background:white;border-radius:var(--radius);padding:10px;font-size:12px;border-left:3px solid var(--gold)}
+.analysis-explanation.show{display:block}
+
+/* DOCUMENTS */
+#doc-subnav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:12px}
+.doc-nav-btn{background:white;border:1.5px solid var(--border);color:var(--text-muted);padding:5px 12px;border-radius:20px;cursor:pointer;font-size:11px;font-weight:600;transition:all .2s;font-family:'Space Grotesk',sans-serif}
+.doc-nav-btn:hover{border-color:var(--navy);color:var(--navy)}
+.doc-nav-btn.active{background:var(--navy);border-color:var(--navy);color:white}
+.doc-panel{display:none}
+.doc-panel.active{display:block}
+.doc-header{background:var(--navy);color:white;border-radius:var(--radius-lg) var(--radius-lg) 0 0;padding:16px 20px;margin-bottom:0}
+.doc-header h2{color:white;font-size:16px;font-weight:700}
+.doc-header .doc-purpose{font-size:12px;color:var(--gold-light);margin-top:4px}
+.doc-body{background:var(--card);border:1px solid var(--border);border-radius:0 0 var(--radius-lg) var(--radius-lg);padding:20px;margin-bottom:16px}
+.field-group{margin-bottom:16px}
+.field-group label{display:block;font-weight:600;font-size:12px;color:var(--navy);margin-bottom:6px;font-family:'Space Grotesk',sans-serif}
+.field-group textarea{width:100%;border:1.5px solid var(--border);border-radius:var(--radius);padding:10px 12px;font-family:'Inter',sans-serif;font-size:12px;resize:vertical;min-height:80px;transition:border-color .2s;color:var(--text)}
+.field-group textarea:focus{outline:none;border-color:var(--navy)}
+.field-group input[type=text],.field-group input[type=date]{width:100%;border:1.5px solid var(--border);border-radius:var(--radius);padding:8px 12px;font-family:'Inter',sans-serif;font-size:12px;color:var(--text)}
+.field-group input:focus{outline:none;border-color:var(--navy)}
+.field-group select{width:100%;border:1.5px solid var(--border);border-radius:var(--radius);padding:8px 12px;font-family:'Inter',sans-serif;font-size:12px;color:var(--text);background:white}
+.prefilled{background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:var(--radius);padding:10px 12px;font-size:12px;color:var(--text-muted);font-style:italic}
+.student-field-label{display:inline-block;background:var(--gold);color:var(--navy);font-size:10px;font-weight:700;padding:1px 6px;border-radius:8px;margin-bottom:4px;font-family:'Space Grotesk',sans-serif}
+.save-btn{background:var(--navy);color:white;border:none;padding:8px 20px;border-radius:20px;cursor:pointer;font-size:12px;font-weight:600;font-family:'Space Grotesk',sans-serif;transition:background .2s}
+.save-btn:hover{background:var(--gold);color:var(--navy)}
+.progress-bar-wrap{background:#e2e8f0;border-radius:10px;height:8px;margin:8px 0}
+.progress-bar-fill{background:var(--green);height:8px;border-radius:10px;transition:width .4s}
+.doc-progress{font-size:11px;color:var(--text-muted);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+
+/* QUIZ */
+.quiz-box{background:var(--card);border:2px solid var(--border);border-radius:var(--radius-lg);padding:20px;max-width:600px}
+.quiz-question{font-size:15px;font-weight:600;color:var(--navy);margin-bottom:16px;min-height:48px}
+.quiz-btns{display:flex;gap:10px;margin-bottom:14px}
+.quiz-btn{padding:10px 24px;border-radius:20px;border:2px solid var(--border);cursor:pointer;font-size:13px;font-weight:600;font-family:'Inter',sans-serif;transition:all .2s}
+.quiz-btn.fci{border-color:var(--blue);color:var(--blue)}
+.quiz-btn.fci:hover{background:var(--blue);color:white}
+.quiz-btn.cui{border-color:var(--purple);color:var(--purple)}
+.quiz-btn.cui:hover{background:var(--purple);color:white}
+.quiz-btn.neither{border-color:var(--text-muted);color:var(--text-muted)}
+.quiz-btn.neither:hover{background:var(--text-muted);color:white}
+.quiz-feedback{display:none;padding:10px 14px;border-radius:var(--radius);font-size:13px;font-weight:500;margin-bottom:12px}
+.quiz-feedback.correct{background:#f0fdf4;color:var(--green);border:1px solid #bbf7d0}
+.quiz-feedback.incorrect{background:#fef2f2;color:var(--red);border:1px solid #fecaca}
+.quiz-score{font-size:13px;color:var(--text-muted);margin-bottom:12px}
+.quiz-next-btn{background:var(--navy);color:white;border:none;padding:8px 20px;border-radius:20px;cursor:pointer;font-size:12px;font-weight:600;font-family:'Space Grotesk',sans-serif;display:none}
+
+/* SPRS CALCULATOR */
+.sprs-controls{display:grid;gap:10px;margin-bottom:20px}
+.sprs-row{display:grid;grid-template-columns:60px 1fr 90px 160px;gap:10px;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;font-size:12px}
+.sprs-row-header{font-weight:700;color:var(--text-muted);font-size:11px;font-family:'Space Grotesk',sans-serif}
+.sprs-radios{display:flex;gap:8px}
+.sprs-radios label{display:flex;align-items:center;gap:4px;cursor:pointer;font-size:11px;padding:4px 8px;border-radius:10px;border:1.5px solid var(--border);transition:all .2s;white-space:nowrap}
+.sprs-radios input[type=radio]{display:none}
+.sprs-radios input:checked+span{font-weight:700}
+.sprs-radios label:has(input:checked){border-color:var(--navy);background:#f0f4f8}
+.sprs-score-display{background:var(--navy);color:white;border-radius:var(--radius-lg);padding:20px;text-align:center;margin-bottom:20px}
+.sprs-score-display .score-number{font-size:52px;font-weight:700;font-family:'Space Grotesk',sans-serif;line-height:1}
+.sprs-score-display .score-label{font-size:12px;color:rgba(255,255,255,.6);margin-top:4px}
+.sprs-gauge-row{display:flex;gap:16px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+.gauge-item{text-align:center;font-size:11px}
+.gauge-item .gauge-val{font-size:18px;font-weight:700;font-family:'Space Grotesk',sans-serif}
+
+/* PROGRESS TRACKER */
+.progress-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-top:16px}
+.progress-doc-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:12px;text-align:center}
+.progress-doc-card .doc-num{font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:4px}
+.progress-doc-card .doc-name{font-size:12px;font-weight:600;color:var(--navy);margin-bottom:8px;font-family:'Space Grotesk',sans-serif;min-height:32px}
+.progress-doc-card .pct{font-size:18px;font-weight:700;color:var(--navy);font-family:'Space Grotesk',sans-serif}
+
+/* TWO PANEL */
+.two-panel{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:700px){.two-panel{grid-template-columns:1fr}}
+.panel-fci{background:var(--card);border:2px solid var(--blue);border-radius:var(--radius-lg);padding:16px}
+.panel-fci .panel-title{color:var(--blue);font-size:16px;font-weight:700;margin-bottom:12px;font-family:'Space Grotesk',sans-serif}
+.panel-cui{background:var(--card);border:2px solid var(--purple);border-radius:var(--radius-lg);padding:16px}
+.panel-cui .panel-title{color:var(--purple);font-size:16px;font-weight:700;margin-bottom:12px;font-family:'Space Grotesk',sans-serif}
+.data-item{border-bottom:1px solid var(--border);padding:10px 0;font-size:12px}
+.data-item:last-child{border-bottom:none}
+.data-item .item-name{font-weight:700;color:var(--text);margin-bottom:2px}
+.data-item .item-detail{color:var(--text-muted)}
+
+/* DOC GRID (overview) */
+.doc-overview-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-top:12px}
+.doc-overview-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:12px;cursor:pointer;transition:all .2s;text-align:center}
+.doc-overview-card:hover{border-color:var(--navy);transform:translateY(-2px);box-shadow:0 4px 12px rgba(26,39,68,.12)}
+.doc-overview-card .doc-icon{font-size:22px;margin-bottom:6px}
+.doc-overview-card .doc-num-badge{background:var(--navy);color:var(--gold);font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;font-family:'Space Grotesk',sans-serif;display:inline-block;margin-bottom:4px}
+.doc-overview-card .doc-card-name{font-size:11px;font-weight:600;color:var(--navy);font-family:'Space Grotesk',sans-serif}
+
+/* WARNING */
+.warn-box{background:#fef3c7;border:1.5px solid var(--gold);border-radius:var(--radius);padding:10px 14px;font-size:12px;color:#78350f;margin:10px 0}
+.warn-box strong{color:#92400e}
+.info-box{background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:var(--radius);padding:10px 14px;font-size:12px;color:#1e40af;margin:10px 0}
+
+/* SCOREBOARD */
+.scoreboard{display:flex;gap:12px;flex-wrap:wrap;margin:16px 0}
+.score-pill{padding:8px 20px;border-radius:20px;font-size:13px;font-weight:700;font-family:'Space Grotesk',sans-serif}
+.score-pill.critical{background:#fef2f2;color:var(--red);border:2px solid #fecaca}
+.score-pill.high{background:#fff7ed;color:var(--orange);border:2px solid #fed7aa}
+.score-pill.medium{background:#fffbeb;color:var(--amber);border:2px solid #fde68a}
+
+/* STRENGTH ITEMS */
+.strength-list{display:grid;gap:10px}
+.strength-item{background:var(--card);border:1px solid #bbf7d0;border-left:4px solid var(--green);border-radius:var(--radius);padding:12px 16px;display:flex;gap:10px;align-items:flex-start}
+.strength-item .s-icon{color:var(--green);font-size:16px;margin-top:2px}
+.strength-item .s-title{font-weight:700;font-size:13px;color:var(--navy);font-family:'Space Grotesk',sans-serif}
+.strength-item .s-detail{font-size:12px;color:var(--text-muted);margin-top:2px}
+
+/* MFA TABLE */
+.mfa-yes{color:var(--green);font-weight:700}
+.mfa-no{color:var(--red);font-weight:700}
+
+/* UTILITY */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:700px){.grid-2{grid-template-columns:1fr}}
+.mt8{margin-top:8px}.mt12{margin-top:12px}.mt16{margin-top:16px}.mt20{margin-top:20px}
+.flex-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.divider{border:none;border-top:1px solid var(--border);margin:16px 0}
+.text-muted{color:var(--text-muted);font-size:12px}
+small{font-size:11px}
+</style>
+</head>
+<body>
+
+<!-- FIXED HEADER -->
+<header id="site-header">
+  <div class="header-inner">
+    <div>
+      <h1>ThreadBridge Solutions, LLC — CMMC Level 2 Case Study</h1>
+      <div class="subtitle">Educational Practice | SANDS/MVCC CMMC Program Portal</div>
+    </div>
+    <div class="header-badge">CMMC Level 2</div>
+  </div>
+</header>
+
+<!-- STICKY NAV -->
+<nav id="main-nav">
+  <div class="nav-inner">
+    <button class="nav-btn active" onclick="showSection('overview')">Overview</button>
+    <button class="nav-btn" onclick="showSection('industry')">Industry</button>
+    <button class="nav-btn" onclick="showSection('company')">Company</button>
+    <button class="nav-btn" onclick="showSection('technology')">Technology</button>
+    <button class="nav-btn" onclick="showSection('data')">Data</button>
+    <button class="nav-btn" onclick="showSection('security')">Security</button>
+    <button class="nav-btn" onclick="showSection('interviews')">Interviews</button>
+    <button class="nav-btn" onclick="showSection('incidents')">Incidents</button>
+    <button class="nav-btn" onclick="showSection('documents')">Documents</button>
+    <button class="nav-btn" onclick="showSection('tools')">Tools</button>
+  </div>
+</nav>
+
+<div id="content">
+
+<!-- ===== SECTION 0: OVERVIEW ===== -->
+<div id="sec-overview" class="section active">
+  <div class="disclaimer">
+    <h3>⚠ Educational Use Only — Fictional Scenario</h3>
+    <p>All company names, personnel, contract numbers, CAGE codes, and data in this case study are entirely fictional and created for educational purposes. This material is part of the SANDS/MVCC CMMC Program curriculum. Do not use any information herein as actual legal, compliance, or cybersecurity guidance.</p>
+  </div>
+
+  <div class="card">
+    <h3>Case Study Metadata</h3>
+    <table class="meta-table">
+      <tr><td>Version</td><td>1.0 — June 2025</td></tr>
+      <tr><td>Scope</td><td>CMMC Level 2 — 110 NIST SP 800-171 practices across 14 domains</td></tr>
+      <tr><td>Learner Level</td><td>Intermediate — assumes basic familiarity with CMMC/DFARS</td></tr>
+      <tr><td>Deliverables</td><td>11 practitioner documents (SSP, POA&M, SAR, IRP, and more)</td></tr>
+      <tr><td>Educational Use</td><td>SANDS/MVCC CMMC Program — not for commercial distribution</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>About This Case Study</h3>
+    <p style="font-size:13px;line-height:1.8">ThreadBridge Solutions, LLC is a fictional small business that manufactures both combat utility uniforms for the Department of Defense and sells commercial office supplies to federal agencies via GSA Schedule. This dual-revenue model places ThreadBridge at the intersection of two distinct compliance regimes: CMMC Level 2 (for CUI-laden defense contracts) and CMMC Level 1 (for commercial GSA supply). Learners will analyze the company's technical environment, identify security gaps, evaluate two real security incidents, and produce the eleven practitioner documents required for a CMMC Level 2 assessment. The scenario deliberately embeds multiple realistic compliance failures common in small-to-midsize defense contractors.</p>
+  </div>
+
+  <div class="card">
+    <h3>Case Study Documents — Click to Open</h3>
+    <p class="text-muted mt8" style="margin-bottom:12px">Each card opens the corresponding document workspace in the Documents tab.</p>
+    <div class="doc-overview-grid">
+      <div class="doc-overview-card" onclick="goToDoc(1)"><div class="doc-num-badge">Doc 01</div><div class="doc-card-name">System Security Plan (SSP)</div></div>
+      <div class="doc-overview-card" onclick="goToDoc(2)"><div class="doc-num-badge">Doc 02</div><div class="doc-card-name">Plan of Action &amp; Milestones (POA&amp;M)</div></div>
+      <div class="doc-overview-card" onclick="goToDoc(3)"><div class="doc-num-badge">Doc 03</div><div class="doc-card-name">Asset Inventory</div></div>
+      <div class="doc-overview-card" onclick="goToDoc(4)"><div class="doc-num-badge">Doc 04</div><div class="doc-card-name">Security Assessment Report (SAR)</div></div>
+      <div class="doc-overview-card" onclick="goToDoc(5)"><div class="doc-num-badge">Doc 05</div><div class="doc-card-name">Incident Response Plan (IRP)</div></div>
+      <div class="doc-overview-card" onclick="goToDoc(6)"><div class="doc-num-badge">Doc 06</div><div class="doc-card-name">Access Control Matrix</div></div>
+      <div class="doc-overview-card" onclick="goToDoc(7)"><div class="doc-num-badge">Doc 07</div><div class="doc-card-name">Audit Log &amp; Monitoring Report</div></div>
+      <div class="doc-overview-card" onclick="goToDoc(8)"><div class="doc-num-badge">Doc 08</div><div class="doc-card-name">Configuration Management Plan</div></div>
+      <div class="doc-overview-card" onclick="goToDoc(9)"><div class="doc-num-badge">Doc 09</div><div class="doc-card-name">Vulnerability Scan Report</div></div>
+      <div class="doc-overview-card" onclick="goToDoc(10)"><div class="doc-num-badge">Doc 10</div><div class="doc-card-name">SPRS Score Worksheet</div></div>
+      <div class="doc-overview-card" onclick="goToDoc(11)"><div class="doc-num-badge">Doc 11</div><div class="doc-card-name">Maintenance Report</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SECTION 1: INDUSTRY ===== -->
+<div id="sec-industry" class="section">
+  <div class="section-title">Industry Context</div>
+  <div class="section-subtitle">Defense Textile &amp; Apparel — DoD Uniform Manufacturing Sector</div>
+
+  <div class="card">
+    <p style="font-size:13px;line-height:1.8;margin-bottom:16px">The defense uniform manufacturing sector is a specialized niche of the broader defense industrial base (DIB). Companies operating in this space typically hold Defense Logistics Agency (DLA) contracts for combat utility uniforms, physical fitness uniforms, and service dress components. The sector is characterized by high volume, tight delivery schedules, strict technical specifications, and substantial CUI obligations—particularly around material composition and camouflage pattern data that DLA provides to contractors. Below are five representative companies operating in adjacent or overlapping market segments to ThreadBridge Solutions.</p>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>Company</th><th>Location</th><th>Primary Products</th><th>Contract Vehicle</th><th>CUI/Compliance Notes</th></tr></thead>
+        <tbody>
+          <tr><td><strong>American Apparel Inc.</strong></td><td>Selma, AL</td><td>Combat utility uniforms for all branches</td><td>DLA Troop Support IDIQ ($48M)</td><td><span class="badge badge-cui">CUI</span> Uniform specs</td></tr>
+          <tr><td><strong>Bluewater Defense</strong></td><td>Corozal, PR</td><td>Major military uniforms, ~$1B DoD revenue</td><td>DLA multiple-award IDIQ</td><td><span class="badge badge-cui">CUI</span> Specs + delivery data</td></tr>
+          <tr><td><strong>Crye Precision</strong></td><td>Brooklyn, NY</td><td>Premium military uniform/equipment, ~150 employees</td><td>Direct DoD + DLA</td><td>ITAR-adjacent; CUI threshold applies</td></tr>
+          <tr><td><strong>Propper International</strong></td><td>St. Charles, MO</td><td>Full-line military uniforms</td><td>DLA + GSA accessories</td><td><span class="badge badge-fci">FCI</span> <span class="badge badge-cui">CUI</span> Both apply</td></tr>
+          <tr><td><strong>Staples Inc.</strong></td><td>Framingham, MA</td><td>Office supplies to DoD via GSA MAS</td><td>GSA MAS Contract 47QSEA19D008T</td><td><span class="badge badge-fci">FCI</span> Only — Level 1</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="info-box mt12">
+      <strong>ThreadBridge's Unique Position:</strong> Unlike pure-play defense apparel manufacturers or pure commercial suppliers, ThreadBridge occupies the intersection of both product lines—manufacturing combat utility uniforms under a DLA IDIQ (triggering CMMC Level 2 obligations) while simultaneously supplying office materials via GSA Schedule (Level 1 only). This dual exposure creates compliance complexity: different data classification requirements, different flow-down clauses, and different assessment timelines must be managed simultaneously within a single 82-person organization.
+    </div>
+  </div>
+</div>
+
+<!-- ===== SECTION 2: COMPANY ===== -->
+<div id="sec-company" class="section">
+  <div class="section-title">Company Background</div>
+  <div class="section-subtitle">ThreadBridge Solutions, LLC — Organizational Profile</div>
+
+  <div class="card">
+    <h3>Key Personnel — Click a card to view system access</h3>
+    <div class="org-grid" id="org-grid">
+      <div class="org-card" onclick="togglePopover('pop-holloway',this)">
+        <div class="name">Margaret Holloway</div>
+        <div class="role">Chief Executive Officer</div>
+        <div class="access-badge"><span class="badge badge-fci">FCI</span><span class="badge badge-cui">CUI</span></div>
+        <div class="popover" id="pop-holloway">
+          <h4>System Access</h4>
+          <ul><li>Email (M365)</li><li>SharePoint</li><li>QuickBooks (view-only)</li></ul>
+          <div style="margin-top:8px;font-size:11px;color:var(--text-muted)">Access Level: FCI + CUI All Categories</div>
+        </div>
+      </div>
+      <div class="org-card" onclick="togglePopover('pop-park',this)" style="border-color:#fca5a5">
+        <div class="name">Dennis Park</div>
+        <div class="role">IT Manager / de facto CISO</div>
+        <div class="access-badge"><span class="badge badge-fci">FCI</span><span class="badge badge-cui">CUI</span><span class="badge badge-critical">⚠ Risk</span></div>
+        <div class="popover" id="pop-park">
+          <h4>System Access</h4>
+          <ul><li>Domain Admin — ALL systems</li><li>ERP (admin)</li><li>All servers (local + remote)</li><li>VPN management</li><li>Firewall admin</li></ul>
+          <div class="warn-box" style="margin-top:8px">⚠ <strong>Least Privilege Violation:</strong> Domain Admin used for day-to-day operations. Links to G-02.</div>
+        </div>
+      </div>
+      <div class="org-card" onclick="togglePopover('pop-ybarra',this)">
+        <div class="name">Sandra Ybarra</div>
+        <div class="role">Contracts Manager</div>
+        <div class="access-badge"><span class="badge badge-fci">FCI</span><span class="badge badge-cui">CUI</span></div>
+        <div class="popover" id="pop-ybarra">
+          <h4>System Access</h4>
+          <ul><li>ERP (Epicor)</li><li>Email (M365)</li><li>SharePoint (contracts)</li></ul>
+          <div style="margin-top:8px;font-size:11px;color:var(--text-muted)">Access Level: FCI + CUI (Contracts)</div>
+        </div>
+      </div>
+      <div class="org-card" onclick="togglePopover('pop-chen',this)">
+        <div class="name">Robert Chen</div>
+        <div class="role">Production Manager</div>
+        <div class="access-badge"><span class="badge badge-fci">FCI</span><span class="badge badge-cui">CUI</span></div>
+        <div class="popover" id="pop-chen">
+          <h4>System Access</h4>
+          <ul><li>ERP (Epicor)</li><li>Email (M365)</li><li>Manufacturing tablets (Android)</li></ul>
+          <div style="margin-top:8px;font-size:11px;color:var(--text-muted)">Access Level: FCI + CUI (Specs)</div>
+        </div>
+      </div>
+      <div class="org-card" onclick="togglePopover('pop-nguyen',this)">
+        <div class="name">Lisa Nguyen</div>
+        <div class="role">HR Manager</div>
+        <div class="access-badge"><span class="badge badge-fci">FCI</span><span class="badge badge-cui">CUI</span></div>
+        <div class="popover" id="pop-nguyen">
+          <h4>System Access</h4>
+          <ul><li>Email (M365)</li><li>SharePoint (HR)</li><li>QuickBooks (HR view)</li></ul>
+          <div style="margin-top:8px;font-size:11px;color:var(--text-muted)">Access Level: FCI + CUI (Personnel)</div>
+        </div>
+      </div>
+      <div class="org-card" onclick="togglePopover('pop-webb',this)">
+        <div class="name">Marcus Webb</div>
+        <div class="role">Warehouse Supervisor</div>
+        <div class="access-badge"><span class="badge badge-fci">FCI</span></div>
+        <div class="popover" id="pop-webb">
+          <h4>System Access</h4>
+          <ul><li>ERP (Epicor — inventory module)</li><li>Email (M365)</li></ul>
+          <div style="margin-top:8px;font-size:11px;color:var(--text-muted)">Access Level: FCI Inventory Only</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h3>Organization Profile</h3>
+      <table class="meta-table">
+        <tr><td>Legal Name</td><td>ThreadBridge Solutions, LLC</td></tr>
+        <tr><td>CAGE Code</td><td>7T4X2 <span class="text-muted">(fictional)</span></td></tr>
+        <tr><td>DUNS/UEI</td><td>08-347-2198 / TBS22CUMBERLAND</td></tr>
+        <tr><td>Founded</td><td>2004</td></tr>
+        <tr><td>Ownership</td><td>Privately held; WOSB</td></tr>
+        <tr><td>HQ</td><td>1148 Industrial Parkway, Cumberland, MD 21502</td></tr>
+        <tr><td>Satellite</td><td>88 Commerce Drive, Frostburg, MD 21532<br><span class="text-muted">Warehouse — 12 miles from HQ</span></td></tr>
+        <tr><td>Employees</td><td>82 total</td></tr>
+        <tr><td>Annual DoD Revenue</td><td>~$14.2M</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3>Active Contracts</h3>
+      <div class="table-wrap">
+        <table class="data-table" style="font-size:12px">
+          <thead><tr><th>Contract #</th><th>Agency</th><th>Type</th><th>Value</th><th>Data</th><th>Renewal</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>FA4890-25-D-0014</strong></td>
+              <td>DLA Troop Support</td>
+              <td>IDIQ FFP</td>
+              <td>$11.2M / 5yr</td>
+              <td><span class="badge badge-cui">CUI</span></td>
+              <td>18 months <span class="badge badge-urgent">URGENT</span></td>
+            </tr>
+            <tr>
+              <td><strong>GS-02F-8847X</strong></td>
+              <td>GSA MAS Sch 75</td>
+              <td>MAS</td>
+              <td>$3.2M annual</td>
+              <td><span class="badge badge-fci">FCI</span> only</td>
+              <td>Annual renewal</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SECTION 3: TECHNOLOGY ===== -->
+<div id="sec-technology" class="section">
+  <div class="section-title">Technical Environment</div>
+  <div class="section-subtitle">Asset Inventory, MFA Status, and Third-Party Providers</div>
+
+  <div class="card">
+    <h3>Asset Inventory</h3>
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="filterAssets('all',this)">All</button>
+      <button class="filter-btn" onclick="filterAssets('server',this)">Servers</button>
+      <button class="filter-btn" onclick="filterAssets('endpoint',this)">Endpoints</button>
+      <button class="filter-btn" onclick="filterAssets('network',this)">Network</button>
+      <button class="filter-btn" onclick="filterAssets('cloud',this)">Cloud</button>
+      <button class="filter-btn" onclick="filterAssets('mobile',this)">Mobile</button>
+    </div>
+    <div class="table-wrap">
+      <table class="data-table" id="asset-table">
+        <thead><tr><th>Asset ID</th><th>Description</th><th>OS/Platform</th><th>Location</th><th>Function</th><th>FCI</th><th>CUI</th></tr></thead>
+        <tbody>
+          <tr data-cat="server"><td><strong>SRV-001</strong></td><td>ERP Server (Epicor 10.2)</td><td>Windows Server 2019</td><td>Cumberland server room</td><td>Production scheduling, inventory, contracts</td><td><span class="mfa-yes">YES</span></td><td><span class="mfa-yes">YES</span></td></tr>
+          <tr data-cat="server"><td><strong>SRV-002</strong></td><td>File Server TBS-FS01</td><td>Windows Server 2022</td><td>Cumberland server room</td><td>Centralized file storage</td><td><span class="mfa-yes">YES</span></td><td><span class="mfa-yes">YES</span></td></tr>
+          <tr data-cat="server"><td><strong>SRV-003</strong></td><td>Domain Controller TBS-DC01</td><td>Windows Server 2019</td><td>Cumberland server room</td><td>AD, DNS, DHCP, Group Policy</td><td><span class="mfa-yes">YES</span></td><td>Indirect</td></tr>
+          <tr data-cat="server"><td><strong>SRV-004</strong></td><td>Backup NAS (Synology DS1821+)</td><td>Synology DSM 7.2</td><td>Cumberland server room</td><td>Veeam backup target; NO offsite backup</td><td><span class="mfa-yes">YES</span></td><td><span class="mfa-yes">YES</span> <span class="badge badge-warning">Often Overlooked!</span></td></tr>
+          <tr data-cat="endpoint"><td><strong>WRK-001–040</strong></td><td>Windows Workstations (40)</td><td>Win 10/11 Pro</td><td>Cumberland (30) / Frostburg (10)</td><td>Office use, ERP, email</td><td><span class="mfa-yes">YES</span></td><td>PARTIAL (8 of 40)</td></tr>
+          <tr data-cat="mobile"><td><strong>MOB-001–008</strong></td><td>Android Tablets (8)</td><td>Android 12 Samsung</td><td>Manufacturing floor</td><td>Production tracking via ERP web client</td><td><span class="mfa-yes">YES</span></td><td><span class="mfa-no">NO</span> <span class="badge badge-warning">Same LAN as CUI servers</span></td></tr>
+          <tr data-cat="network"><td><strong>NET-001</strong></td><td>Sophos XG 310 Firewall</td><td>Sophos SFOS 19.5</td><td>Cumberland server room</td><td>Perimeter, VPN gateway, IDS/IPS</td><td>N/A</td><td>N/A</td></tr>
+          <tr data-cat="network"><td><strong>NET-002</strong></td><td>Cisco SG350 Switches (3)</td><td>Cisco IOS</td><td>Cumberland (2) / Frostburg (1)</td><td>LAN <span class="badge badge-critical">NO VLANs</span></td><td>N/A</td><td>N/A</td></tr>
+          <tr data-cat="cloud"><td><strong>CLO-001</strong></td><td>Microsoft 365 Business Premium</td><td>Cloud (Azure)</td><td>Microsoft-hosted</td><td>Email, Teams, SharePoint, OneDrive</td><td><span class="mfa-yes">YES</span></td><td><span class="mfa-yes">YES</span> — SharePoint folders</td></tr>
+          <tr data-cat="cloud"><td><strong>CLO-002</strong></td><td>QuickBooks Enterprise</td><td>Win 10 (ACCT-WRK-01)</td><td>Accounting office</td><td>AP/AR, payroll support</td><td><span class="mfa-yes">YES</span></td><td><span class="mfa-no">NO</span> <span class="badge badge-critical">Orphaned admin account</span></td></tr>
+          <tr data-cat="endpoint"><td><strong>PRN-001–003</strong></td><td>Ricoh IM C4500 MFPs (3)</td><td>Ricoh OS</td><td>Cumberland (2) / Frostburg (1)</td><td>Print, scan-to-email, copy</td><td><span class="mfa-yes">YES</span></td><td>POTENTIAL — can scan to any email</td></tr>
+          <tr data-cat="network"><td><strong>VPN-001</strong></td><td>Sophos SSL VPN (12 users)</td><td>Embedded in NET-001</td><td>Remote access</td><td>Remote workers</td><td><span class="mfa-yes">YES</span></td><td><span class="mfa-yes">YES</span> — tunnels CUI traffic <span class="badge badge-critical">NO MFA</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>MFA Status by System</h3>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>System</th><th>MFA Enforced?</th><th>Method</th><th>Gap Reference</th></tr></thead>
+        <tbody>
+          <tr><td>M365 (Email/SharePoint/Teams)</td><td><span class="mfa-yes">YES</span></td><td>Conditional Access — Azure AD</td><td>—</td></tr>
+          <tr><td>ERP (Epicor 10.2)</td><td><span class="mfa-no">NO</span></td><td>Local password only</td><td><span class="gap-ref" onclick="gotoGap('G-01')">⚠ Gap G-01</span></td></tr>
+          <tr><td>File Server (TBS-FS01)</td><td><span class="mfa-no">NO</span></td><td>AD credentials</td><td><span class="gap-ref" onclick="gotoGap('G-01')">⚠ Gap G-01</span></td></tr>
+          <tr><td>Domain Controller (RDP)</td><td><span class="mfa-no">NO</span></td><td>AD credentials</td><td><span class="gap-ref" onclick="gotoGap('G-01')">⚠ Gap G-01</span></td></tr>
+          <tr><td>Sophos VPN</td><td><span class="mfa-no">NO</span></td><td>AD credentials</td><td><span class="gap-ref" onclick="gotoGap('G-01')">⚠ Gap G-01</span></td></tr>
+          <tr><td>QuickBooks Enterprise</td><td><span class="mfa-no">NO</span></td><td>Local QB database</td><td><span class="gap-ref" onclick="gotoGap('G-01')">⚠ G-01</span> + orphaned account</td></tr>
+          <tr><td>Backup NAS (Synology)</td><td><span class="mfa-no">NO</span></td><td>Shared local account</td><td><span class="gap-ref" onclick="gotoGap('G-01')">⚠ Gap G-01</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Third-Party Service Providers</h3>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>Provider</th><th>Location</th><th>Services</th><th>CUI Access?</th><th>Contract Status</th></tr></thead>
+        <tbody>
+          <tr><td><strong>TechServ LLC</strong></td><td>Frederick, MD</td><td>ERP maintenance; monthly on-site + remote VPN</td><td><span class="badge badge-critical">YES — ERP (CUI)</span></td><td>Basic MSA only <span class="badge badge-critical">NO CUI clause</span></td></tr>
+          <tr><td><strong>Cascade Networks</strong></td><td>Local</td><td>ISP + managed firewall</td><td>Firewall access only</td><td>ISP agreement — no security addendum</td></tr>
+          <tr><td><strong>ADP</strong></td><td>Cloud</td><td>Payroll processing</td><td>Employee PII = CUI-Privacy</td><td>Standard ADP agreement — no flow-down clause</td></tr>
+          <tr><td><strong>Ricoh USA</strong></td><td>National</td><td>Printer maintenance (quarterly)</td><td>Physical MFP access</td><td>Standard maintenance contract</td></tr>
+          <tr><td><strong>Microsoft</strong></td><td>Cloud</td><td>M365 cloud services</td><td>All email + SharePoint data</td><td><span class="badge badge-strength">FedRAMP Moderate ✓</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SECTION 4: DATA ===== -->
+<div id="sec-data" class="section">
+  <div class="section-title">Data Classification</div>
+  <div class="section-subtitle">Federal Contract Information (FCI) and Controlled Unclassified Information (CUI) at ThreadBridge</div>
+
+  <div class="two-panel">
+    <div class="panel-fci">
+      <div class="panel-title"><span class="badge badge-fci">FCI</span> Federal Contract Information</div>
+      <div class="data-item">
+        <div class="item-name">Contract Pricing Data</div>
+        <div class="item-detail">Bid data, cost proposals to DLA/GSA</div>
+        <div class="item-detail mt8"><strong>Location:</strong> File Server + SharePoint</div>
+        <div class="item-detail"><strong>Access:</strong> Holloway, Ybarra</div>
+      </div>
+      <div class="data-item">
+        <div class="item-name">Production/Delivery Schedules</div>
+        <div class="item-detail">Manufacturing timelines, lot quantities</div>
+        <div class="item-detail mt8"><strong>Location:</strong> ERP + File Server</div>
+        <div class="item-detail"><strong>Access:</strong> Ybarra, Chen, Webb</div>
+      </div>
+      <div class="data-item">
+        <div class="item-name">Contract Performance Reports</div>
+        <div class="item-detail">Monthly metrics to DLA COR</div>
+        <div class="item-detail mt8"><strong>Location:</strong> SharePoint + Email</div>
+        <div class="item-detail"><strong>Access:</strong> Ybarra, Holloway</div>
+      </div>
+      <div class="data-item">
+        <div class="item-name">Purchase Order Data (GSA)</div>
+        <div class="item-detail">Office supply orders, billing codes</div>
+        <div class="item-detail mt8"><strong>Location:</strong> ERP + Email</div>
+        <div class="item-detail"><strong>Access:</strong> Sales team, Ybarra</div>
+      </div>
+      <div class="data-item">
+        <div class="item-name">Subcontractor Pricing</div>
+        <div class="item-detail">Vendor bids, raw material pricing</div>
+        <div class="item-detail mt8"><strong>Location:</strong> File Server + Email</div>
+        <div class="item-detail"><strong>Access:</strong> Ybarra, Chen</div>
+      </div>
+    </div>
+
+    <div class="panel-cui">
+      <div class="panel-title"><span class="badge badge-cui">CUI</span> Controlled Unclassified Information</div>
+      <div class="data-item">
+        <div class="item-name">Critical Technology — Uniform Technical Specs</div>
+        <div class="item-detail">Material composition, camo patterns, Army/AF OCP tolerances</div>
+        <div class="item-detail mt8"><strong>Location:</strong> /CUI/Contracts/DLA/Specs + SharePoint</div>
+        <div class="item-detail"><strong>Access:</strong> Chen, Park, Ybarra</div>
+      </div>
+      <div class="data-item">
+        <div class="item-name">CTI — Delivery Destination Data</div>
+        <div class="item-detail">Military unit locations, installation addresses for shipments</div>
+        <div class="item-detail mt8"><strong>Location:</strong> ERP delivery module + File Server</div>
+        <div class="item-detail"><strong>Access:</strong> Ybarra, Chen, Webb</div>
+      </div>
+      <div class="data-item">
+        <div class="item-name">Privacy—Personnel — Employee Clearance Submissions</div>
+        <div class="item-detail">SF-86 data, personnel security questionnaire responses</div>
+        <div class="item-detail mt8"><strong>Location:</strong> /HR/Clearances + SharePoint</div>
+        <div class="item-detail"><strong>Access:</strong> Nguyen, Holloway</div>
+      </div>
+      <div class="data-item">
+        <div class="item-name">Export Controlled (EAR) — Synthetic Fabric Data</div>
+        <div class="item-detail">EAR-controlled synthetic material specs (not ITAR)</div>
+        <div class="item-detail mt8"><strong>Location:</strong> /CUI/Materials/EAR + encrypted email</div>
+        <div class="item-detail"><strong>Access:</strong> Chen, Park</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="warn-box mt16">
+    <strong>NOT ALL SENSITIVE DATA IS CUI:</strong> Production labor hours, employee payroll, and commercial vendor invoices are sensitive business data but do NOT meet the CUI definition under 32 CFR Part 2002 or the CUI Registry. Misclassifying non-CUI data as CUI creates unnecessary compliance burden without legal basis.
+  </div>
+
+  <div class="card mt20">
+    <h3>Interactive Quiz: FCI or CUI?</h3>
+    <p class="text-muted mt8" style="margin-bottom:16px">Classify each data item. You'll receive immediate feedback after each answer.</p>
+    <div class="quiz-box" id="quiz-box">
+      <div class="quiz-score" id="quiz-score">Question <span id="q-num">1</span> of 6</div>
+      <div class="quiz-question" id="quiz-question">Unit pricing submitted to DLA contracting officer</div>
+      <div class="quiz-btns">
+        <button class="quiz-btn fci" onclick="answerQuiz('FCI')">FCI</button>
+        <button class="quiz-btn cui" onclick="answerQuiz('CUI')">CUI</button>
+        <button class="quiz-btn neither" onclick="answerQuiz('NEITHER')">Neither</button>
+      </div>
+      <div class="quiz-feedback" id="quiz-feedback"></div>
+      <button class="quiz-next-btn" id="quiz-next" onclick="nextQuestion()">Next Question →</button>
+    </div>
+  </div>
+</div>
+</div><!-- end #content -->
+
+<script>
+// ============================================================
+// NAVIGATION
+// ============================================================
+const SECTIONS = ['overview','industry','company','technology','data','security','interviews','incidents','documents','tools'];
+let currentSection = 'overview';
+let currentDoc = 1;
+
+function showSection(id) {
+  SECTIONS.forEach(s => {
+    const el = document.getElementById('sec-' + s);
+    if(el) { el.classList.remove('active'); el.style.display = 'none'; }
+  });
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  const target = document.getElementById('sec-' + id);
+  if(target) { target.classList.add('active'); target.style.display = 'block'; currentSection = id; }
+  const btns = document.querySelectorAll('.nav-btn');
+  const idx = SECTIONS.indexOf(id);
+  if(btns[idx]) btns[idx].classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function goToDoc(n) {
+  showSection('documents');
+  setTimeout(() => showDocument(n), 100);
+}
+
+function gotoGap(id) {
+  showSection('security');
+  setTimeout(() => {
+    document.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.sub-content').forEach(c => c.classList.remove('active'));
+    const gapTab = document.getElementById('tab-gaps');
+    const gapContent = document.getElementById('sub-gaps');
+    if(gapTab) gapTab.classList.add('active');
+    if(gapContent) gapContent.classList.add('active');
+    const el = document.getElementById('gap-' + id);
+    if(el) { el.scrollIntoView({behavior:'smooth', block:'center'}); el.style.boxShadow='0 0 0 3px var(--gold)'; setTimeout(()=>el.style.boxShadow='',2000); }
+  }, 200);
+}
+
+// ============================================================
+// POPOVERS
+// ============================================================
+function togglePopover(id, card) {
+  const pop = document.getElementById(id);
+  const isOpen = pop.classList.contains('show');
+  document.querySelectorAll('.popover.show').forEach(p => p.classList.remove('show'));
+  if(!isOpen) pop.classList.add('show');
+}
+document.addEventListener('click', function(e) {
+  if(!e.target.closest('.org-card')) document.querySelectorAll('.popover.show').forEach(p => p.classList.remove('show'));
+});
+
+// ============================================================
+// ASSET FILTER
+// ============================================================
+function filterAssets(cat, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('#asset-table tbody tr').forEach(row => {
+    row.style.display = (cat === 'all' || row.dataset.cat === cat) ? '' : 'none';
+  });
+}
+
+// ============================================================
+// QUIZ
+// ============================================================
+const quizData = [
+  { q: 'Unit pricing submitted to DLA contracting officer', a: 'FCI', exp: 'Contract pricing data provided to a federal agency in performance of a federal contract is FCI under FAR 52.204-21.' },
+  { q: 'Camouflage pattern specifications provided by DLA', a: 'CUI', exp: 'Technical specifications provided by DoD fall under CUI — Critical Technology category.' },
+  { q: 'Employee SF-86 security clearance questionnaire data', a: 'CUI', exp: 'SF-86 data is CUI under the Privacy category (CUI//PRVCY) per the CUI Registry.' },
+  { q: 'Office supply delivery confirmation to a DoD base', a: 'FCI', exp: 'Delivery and order confirmation data related to federal contracts is FCI.' },
+  { q: 'Army uniform delivery address identifying a specific military unit', a: 'CUI', exp: 'Military unit delivery addresses fall under CUI — Controlled Technical Information (CTI).' },
+  { q: 'Employee payroll hours worked this month', a: 'NEITHER', exp: 'Payroll records are sensitive business data but do not meet the CUI definition and are not FCI (not provided by the government). Label as sensitive/proprietary.' },
+];
+let qIndex = 0, qScore = 0, qAnswered = false;
+
+function answerQuiz(choice) {
+  if(qAnswered) return;
+  qAnswered = true;
+  const correct = quizData[qIndex].a;
+  const fb = document.getElementById('quiz-feedback');
+  fb.style.display = 'block';
+  if(choice === correct) {
+    qScore++;
+    fb.className = 'quiz-feedback correct';
+    fb.innerHTML = '✓ Correct! ' + quizData[qIndex].exp;
+  } else {
+    fb.className = 'quiz-feedback incorrect';
+    fb.innerHTML = '✗ Incorrect. The answer is <strong>' + correct + '</strong>. ' + quizData[qIndex].exp;
+  }
+  const nextBtn = document.getElementById('quiz-next');
+  nextBtn.style.display = qIndex < quizData.length - 1 ? 'inline-block' : 'none';
+  if(qIndex === quizData.length - 1) {
+    fb.innerHTML += '<br><br><strong>Quiz Complete! Score: ' + qScore + '/' + quizData.length + '</strong>' + (qScore === 6 ? ' — Perfect score!' : qScore >= 4 ? ' — Good work!' : ' — Review the Data Classification section.');
+  }
+}
+function nextQuestion() {
+  qIndex++;
+  qAnswered = false;
+  document.getElementById('q-num').textContent = qIndex + 1;
+  document.getElementById('quiz-question').textContent = quizData[qIndex].q;
+  document.getElementById('quiz-feedback').style.display = 'none';
+  document.getElementById('quiz-next').style.display = 'none';
+}
+</script>
+
+<!-- ===== SECTION 5: SECURITY ===== -->
+<div id="sec-security" class="section" style="display:none">
+  <div class="section-title">Security Posture</div>
+  <div class="section-subtitle">Current Strengths and Identified Compliance Gaps — CMMC Level 2</div>
+
+  <div class="sub-tabs">
+    <button class="sub-tab active" id="tab-strengths" onclick="switchSubTab('strengths')">Strengths (8)</button>
+    <button class="sub-tab" id="tab-gaps" onclick="switchSubTab('gaps')">Gaps (13)</button>
+  </div>
+
+  <div class="sub-content active" id="sub-strengths">
+    <div class="scoreboard">
+      <div class="score-pill" style="background:#f0fdf4;color:#15803d;border:2px solid #bbf7d0">8 STRENGTHS IDENTIFIED</div>
+    </div>
+    <div class="strength-list">
+      <div class="strength-item"><span class="s-icon">✓</span><div><div class="s-title">Microsoft 365 MFA</div><div class="s-detail">All 82 accounts enrolled; 100% MFA via Azure Conditional Access — strongest control in the environment.</div></div></div>
+      <div class="strength-item"><span class="s-icon">✓</span><div><div class="s-title">Endpoint Antivirus</div><div class="s-detail">Windows Defender on all Windows systems; Malwarebytes Business on 35/40 workstations.</div></div></div>
+      <div class="strength-item"><span class="s-icon">✓</span><div><div class="s-title">Perimeter Firewall</div><div class="s-detail">Sophos XG 310 with IDS/IPS active; signatures updated weekly; outbound filtering configured.</div></div></div>
+      <div class="strength-item"><span class="s-icon">✓</span><div><div class="s-title">Encrypted Laptops</div><div class="s-detail">All 12 remote laptops BitLocker-encrypted; recovery keys stored in Active Directory.</div></div></div>
+      <div class="strength-item"><span class="s-icon">✓</span><div><div class="s-title">Data Backups</div><div class="s-detail">Veeam nightly incremental + weekly full to Synology NAS; ~95% success rate. (Note: no offsite copy — partial strength.)</div></div></div>
+      <div class="strength-item"><span class="s-icon">✓</span><div><div class="s-title">Security Awareness Training</div><div class="s-detail">KnowBe4 annual campaigns — 60% completion rate (49/82 employees). Improvement needed but program exists.</div></div></div>
+      <div class="strength-item"><span class="s-icon">✓</span><div><div class="s-title">Physical Security Cameras</div><div class="s-detail">8 cameras at Cumberland facility; 30-day footage retention policy in place.</div></div></div>
+      <div class="strength-item"><span class="s-icon">✓</span><div><div class="s-title">Server Room Physical Lock</div><div class="s-detail">4-digit keypad access; limited to Dennis Park and Jennifer Torres only.</div></div></div>
+    </div>
+  </div>
+
+  <div class="sub-content" id="sub-gaps">
+    <div class="scoreboard">
+      <div class="score-pill critical">6 CRITICAL</div>
+      <div class="score-pill high">5 HIGH</div>
+      <div class="score-pill medium">2 MEDIUM</div>
+    </div>
+    <div class="filter-bar" style="margin-bottom:16px">
+      <button class="filter-btn active" onclick="filterGaps('all',this)">All</button>
+      <button class="filter-btn" onclick="filterGaps('critical',this)">Critical</button>
+      <button class="filter-btn" onclick="filterGaps('high',this)">High</button>
+      <button class="filter-btn" onclick="filterGaps('medium',this)">Medium</button>
+    </div>
+    <div class="gap-grid" id="gap-grid">
+
+      <div class="gap-card" id="gap-G-01" data-priority="critical">
+        <div class="gap-card-header" onclick="toggleGap(this)">
+          <span class="gap-id">G-01</span>
+          <span class="badge badge-critical">CRITICAL</span>
+          <span class="gap-domain">IA</span>
+          <span class="gap-title">MFA only on M365 — ERP, File Server, DC RDP, VPN, NAS all unprotected</span>
+          <span class="gap-toggle">▼</span>
+        </div>
+        <div class="gap-card-body">
+          <div class="gap-detail-row"><label>NIST Control</label><span>IA.L2-3.5.3</span></div>
+          <div class="gap-detail-row"><label>Finding</label><span>Multi-factor authentication is enforced only on Microsoft 365 via Conditional Access. The ERP server (Epicor 10.2), file server, domain controller RDP, SSL VPN, and backup NAS all rely on single-factor AD credentials or local passwords. This means a compromised password—through phishing, credential stuffing, or insider threat—provides direct access to CUI with no secondary verification.</span></div>
+          <div class="gap-detail-row"><label>Impact</label><span>CRITICAL — all CUI systems accessible with a single credential. Combined with INC-001 (phishing credential exposure), this represents an active attack surface.</span></div>
+        </div>
+      </div>
+
+      <div class="gap-card" id="gap-G-02" data-priority="critical">
+        <div class="gap-card-header" onclick="toggleGap(this)">
+          <span class="gap-id">G-02</span>
+          <span class="badge badge-critical">CRITICAL</span>
+          <span class="gap-domain">AC</span>
+          <span class="gap-title">No Access Control Matrix; Dennis manages access from memory; orphaned QB admin account (14 months)</span>
+          <span class="gap-toggle">▼</span>
+        </div>
+        <div class="gap-card-body">
+          <div class="gap-detail-row"><label>NIST Control</label><span>AC.L2-3.1.1, AC.L2-3.1.2</span></div>
+          <div class="gap-detail-row"><label>Finding</label><span>No formal access control matrix exists. Dennis Park manages user permissions from memory with no documented baseline. A QuickBooks administrator account has been active for 14 months after its owner left the company. There is no account review or recertification process. Sandra Ybarra is unsure who has access to the CUI contract folder she requested be restricted months ago.</span></div>
+          <div class="gap-detail-row"><label>Impact</label><span>CRITICAL — orphaned privileged accounts are a top initial access vector. Without an access matrix, separation of duties and least privilege cannot be enforced or audited.</span></div>
+        </div>
+      </div>
+
+      <div class="gap-card" id="gap-G-03" data-priority="high">
+        <div class="gap-card-header" onclick="toggleGap(this)">
+          <span class="gap-id">G-03</span>
+          <span class="badge badge-high">HIGH</span>
+          <span class="gap-domain">AU</span>
+          <span class="gap-title">Logs enabled but never reviewed; no retention policy; no SIEM</span>
+          <span class="gap-toggle">▼</span>
+        </div>
+        <div class="gap-card-body">
+          <div class="gap-detail-row"><label>NIST Control</label><span>AU.L2-3.3.1, AU.L2-3.3.2</span></div>
+          <div class="gap-detail-row"><label>Finding</label><span>Windows Event Logs and Sophos firewall logs are enabled but Dennis Park only reviews them reactively (when a problem arises). No retention schedule is documented. No SIEM or log aggregation tool is in use. The 30-day camera retention exists but is not linked to an overall audit/review program.</span></div>
+          <div class="gap-detail-row"><label>Impact</label><span>HIGH — without regular log review, intrusions (e.g., TechServ after-hours access, lateral movement post-phishing) would go undetected. Retention gaps may also violate contractual obligations.</span></div>
+        </div>
+      </div>
+
+      <div class="gap-card" id="gap-G-04" data-priority="critical">
+        <div class="gap-card-header" onclick="toggleGap(this)">
+          <span class="gap-id">G-04</span>
+          <span class="badge badge-critical">CRITICAL</span>
+          <span class="gap-domain">RA</span>
+          <span class="gap-title">Last vuln scan 14 months ago; no recurring schedule; no remediation tracking</span>
+          <span class="gap-toggle">▼</span>
+        </div>
+        <div class="gap-card-body">
+          <div class="gap-detail-row"><label>NIST Control</label><span>RA.L2-3.11.2</span></div>
+          <div class="gap-detail-row"><label>Finding</label><span>A third-party vulnerability scan was conducted approximately 14 months ago. Dennis Park received only a summary (not a full report). Some findings were patched; remediation was not tracked. No recurring scan schedule exists. Several systems (ERP, NAS, workstations) have not been formally assessed in over a year.</span></div>
+          <div class="gap-detail-row"><label>Impact</label><span>CRITICAL — unpatched vulnerabilities on CUI-bearing systems create direct exploitation risk. Without tracking, there is no way to confirm prior findings were fully remediated.</span></div>
+        </div>
+      </div>
+
+      <div class="gap-card" id="gap-G-05" data-priority="critical">
+        <div class="gap-card-header" onclick="toggleGap(this)">
+          <span class="gap-id">G-05</span>
+          <span class="badge badge-critical">CRITICAL</span>
+          <span class="gap-domain">IR</span>
+          <span class="gap-title">No written IRP; 2 incidents handled informally by email; no lessons learned</span>
+          <span class="gap-toggle">▼</span>
+        </div>
+        <div class="gap-card-body">
+          <div class="gap-detail-row"><label>NIST Control</label><span>IR.L2-3.6.1, IR.L2-3.6.2</span></div>
+          <div class="gap-detail-row"><label>Finding</label><span>No written Incident Response Plan exists. INC-001 (phishing/credential exposure) and INC-002 (lost laptop) were both handled via informal email chains with no formal investigation, timeline, or root cause analysis. Neither incident was evaluated against DFARS 252.204-7012 reporting requirements. Sandra Ybarra made a judgment call not to report INC-001 without consulting legal counsel or the contracting officer.</span></div>
+          <div class="gap-detail-row"><label>Impact</label><span>CRITICAL — DFARS reporting failures can constitute False Claims Act violations. Absence of an IRP means the next incident will also be mishandled.</span></div>
+        </div>
+      </div>
+
+      <div class="gap-card" id="gap-G-06" data-priority="high">
+        <div class="gap-card-header" onclick="toggleGap(this)">
+          <span class="gap-id">G-06</span>
+          <span class="badge badge-high">HIGH</span>
+          <span class="gap-domain">CM</span>
+          <span class="gap-title">No baseline configs; no change management process; Dennis installs software on request</span>
+          <span class="gap-toggle">▼</span>
+        </div>
+        <div class="gap-card-body">
+          <div class="gap-detail-row"><label>NIST Control</label><span>CM.L2-3.4.1, CM.L2-3.4.3</span></div>
+          <div class="gap-detail-row"><label>Finding</label><span>No documented baseline configurations exist for any system. Dennis Park installs requested software without a formal approval process, security review, or change log. There is no authorized software list. Software on the 40 workstations is inconsistent and undocumented.</span></div>
+          <div class="gap-detail-row"><label>Impact</label><span>HIGH — uncontrolled software introduces malware risk and creates an inconsistent security posture that cannot be audited or reproduced.</span></div>
+        </div>
+      </div>
+
+      <div class="gap-card" id="gap-G-07" data-priority="critical">
+        <div class="gap-card-header" onclick="toggleGap(this)">
+          <span class="gap-id">G-07</span>
+          <span class="badge badge-critical">CRITICAL</span>
+          <span class="gap-domain">MA</span>
+          <span class="gap-title">TechServ has ERP access (CUI) with no CUI clause, no escort requirement, no media sanitization</span>
+          <span class="gap-toggle">▼</span>
+        </div>
+        <div class="gap-card-body">
+          <div class="gap-detail-row"><label>NIST Control</label><span>MA.L2-3.7.5</span></div>
+          <div class="gap-detail-row"><label>Finding</label><span>TechServ LLC has remote VPN access and on-site access to the ERP server, which contains CUI. Their contract (basic MSA) contains no CUI handling clause, no security requirements, and no flow-down obligations. Dennis Park monitors their on-site work informally but cannot detect or control after-hours remote access. No media sanitization requirement exists for any equipment they handle.</span></div>
+          <div class="gap-detail-row"><label>Impact</label><span>CRITICAL — third-party access to CUI without appropriate contractual protections is a direct DFARS flow-down violation and potential data exposure risk.</span></div>
+        </div>
+      </div>
+
+      <div class="gap-card" id="gap-G-08" data-priority="critical">
+        <div class="gap-card-header" onclick="toggleGap(this)">
+          <span class="gap-id">G-08</span>
+          <span class="badge badge-critical">CRITICAL</span>
+          <span class="gap-domain">PL</span>
+          <span class="gap-title">No SSP exists — foundational CMMC document entirely absent</span>
+          <span class="gap-toggle">▼</span>
+        </div>
+        <div class="gap-card-body">
+          <div class="gap-detail-row"><label>NIST Control</label><span>PL.L2-3.12.1</span></div>
+          <div class="gap-detail-row"><label>Finding</label><span>ThreadBridge has no System Security Plan. Dennis Park has never documented the system boundary, data flows, control implementations, or interconnections. The SSP is the foundational document for CMMC assessment — without it, no assessment can be completed, no POA&M can be validated, and the organization cannot demonstrate systematic NIST 800-171 compliance.</span></div>
+          <div class="gap-detail-row"><label>Impact</label><span>CRITICAL — an SSP is required by DFARS 252.204-7012 and is the primary artifact reviewed by a C3PAO during a CMMC Level 2 assessment. Its absence alone could result in contract suspension.</span></div>
+        </div>
+      </div>
+
+      <div class="gap-card" id="gap-G-09" data-priority="high">
+        <div class="gap-card-header" onclick="toggleGap(this)">
+          <span class="gap-id">G-09</span>
+          <span class="badge badge-high">HIGH</span>
+          <span class="gap-domain">SC</span>
+          <span class="gap-title">No VLANs; unmanaged Android tablets on same LAN as ERP server and file server</span>
+          <span class="gap-toggle">▼</span>
+        </div>
+        <div class="gap-card-body">
+          <div class="gap-detail-row"><label>NIST Control</label><span>SC.L2-3.13.3</span></div>
+          <div class="gap-detail-row"><label>Finding</label><span>The Cisco SG350 switches have no VLAN configuration. The manufacturing floor Android tablets (Android 12, not MDM-enrolled) are on the same flat network as the ERP server and file server containing CUI. An Android device could be used to access ERP via web browser with only a username/password.</span></div>
+          <div class="gap-detail-row"><label>Impact</label><span>HIGH — network segmentation is a foundational security control. Flat networks dramatically expand the blast radius of any compromise.</span></div>
+        </div>
+      </div>
+
+      <div class="gap-card" id="gap-G-10" data-priority="high">
+        <div class="gap-card-header" onclick="toggleGap(this)">
+          <span class="gap-id">G-10</span>
+          <span class="badge badge-high">HIGH</span>
+          <span class="gap-domain">MP</span>
+          <span class="gap-title">No USB/removable media policy; no sanitization procedure; USB drives used freely</span>
+          <span class="gap-toggle">▼</span>
+        </div>
+        <div class="gap-card-body">
+          <div class="gap-detail-row"><label>NIST Control</label><span>MP.L2-3.8.7</span></div>
+          <div class="gap-detail-row"><label>Finding</label><span>No policy governs use of USB drives or removable media. Employees freely use personal USB drives on workstations, including those that handle CUI. No media sanitization procedure exists for retiring or repurposing drives. No DLP controls are in place to block unauthorized file transfers.</span></div>
+          <div class="gap-detail-row"><label>Impact</label><span>HIGH — uncontrolled removable media is a major data exfiltration and malware introduction vector.</span></div>
+        </div>
+      </div>
+
+      <div class="gap-card" id="gap-G-11" data-priority="medium">
+        <div class="gap-card-header" onclick="toggleGap(this)">
+          <span class="gap-id">G-11</span>
+          <span class="badge badge-medium">MEDIUM</span>
+          <span class="gap-domain">AT</span>
+          <span class="gap-title">60% training completion; no role-based training for IT/CUI handlers</span>
+          <span class="gap-toggle">▼</span>
+        </div>
+        <div class="gap-card-body">
+          <div class="gap-detail-row"><label>NIST Control</label><span>AT.L2-3.2.2</span></div>
+          <div class="gap-detail-row"><label>Finding</label><span>KnowBe4 phishing and security awareness training is provided annually but only 49/82 employees (60%) have completed it. The training content does not specifically address CUI handling requirements, DFARS obligations, or the company's specific data classification policies. No role-based supplemental training exists for CUI handlers or IT staff.</span></div>
+          <div class="gap-detail-row"><label>Impact</label><span>MEDIUM — with 40% of staff untrained, the next phishing incident (see INC-001) is likely. Without CUI-specific training, employees cannot recognize when they are handling regulated data.</span></div>
+        </div>
+      </div>
+
+      <div class="gap-card" id="gap-G-12" data-priority="medium">
+        <div class="gap-card-header" onclick="toggleGap(this)">
+          <span class="gap-id">G-12</span>
+          <span class="badge badge-medium">MEDIUM</span>
+          <span class="gap-domain">PE</span>
+          <span class="gap-title">No visitor access log for server room; no badge access at Frostburg</span>
+          <span class="gap-toggle">▼</span>
+        </div>
+        <div class="gap-card-body">
+          <div class="gap-detail-row"><label>NIST Control</label><span>PE.L1-3.10.3</span></div>
+          <div class="gap-detail-row"><label>Finding</label><span>While the Cumberland server room has keypad access, there is no visitor log for third-party technicians (Ricoh, TechServ) who access the space. The Frostburg warehouse facility has no electronic badge access — physical entry is unmonitored and unlogged. Ten workstations at Frostburg handle FCI.</span></div>
+          <div class="gap-detail-row"><label>Impact</label><span>MEDIUM — unlogged physical access prevents forensic reconstruction of physical security events and creates accountability gaps.</span></div>
+        </div>
+      </div>
+
+      <div class="gap-card" id="gap-G-13" data-priority="critical">
+        <div class="gap-card-header" onclick="toggleGap(this)">
+          <span class="gap-id">G-13</span>
+          <span class="badge badge-critical">CRITICAL</span>
+          <span class="gap-domain">RA/SPRS</span>
+          <span class="gap-title">SPRS score never submitted — DFARS 252.204-7019 requires current score on record</span>
+          <span class="gap-toggle">▼</span>
+        </div>
+        <div class="gap-card-body">
+          <div class="gap-detail-row"><label>NIST Control</label><span>DFARS 252.204-7019</span></div>
+          <div class="gap-detail-row"><label>Finding</label><span>ThreadBridge has never calculated or submitted a score to the Supplier Performance Risk System (SPRS). DFARS 252.204-7019 requires contractors to complete a NIST SP 800-171 self-assessment and post the score to SPRS before contract award and annually thereafter. The DLA contract FA4890-25-D-0014 requires this. The current situation means ThreadBridge is operating in violation of its active contract terms.</span></div>
+          <div class="gap-detail-row"><label>Impact</label><span>CRITICAL — SPRS non-submission is a contractual violation and can trigger a stop-work order, contract termination, or referral to the DoD IG. With a CMMC assessment renewal 18 months out, this must be remediated immediately.</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ===== SECTION 6: INTERVIEWS ===== -->
+<div id="sec-interviews" class="section" style="display:none">
+  <div class="section-title">Stakeholder Interviews</div>
+  <div class="section-subtitle">Field interview summaries conducted June 3–4, 2025</div>
+
+  <div class="interview-card">
+    <div class="interview-header" onclick="toggleInterview(this)">
+      <div>
+        <h3>Dennis Park — IT Manager / de facto CISO</h3>
+        <div class="interview-meta">June 3, 2025 | Cumberland, MD HQ | Duration: ~45 minutes</div>
+      </div>
+      <span style="color:var(--gold);font-size:18px;margin-left:auto">▼</span>
+    </div>
+    <div class="interview-body">
+      <div class="interview-body-inner">
+        <div class="chat-exchange">
+          <div class="chat-q">Q: Do you have a written System Security Plan?</div>
+          <div class="chat-a">"No, not formally. I know the systems inside and out — I built most of this infrastructure. But no, nothing written down."</div>
+          <div class="chat-link"><span class="gap-ref" onclick="gotoGap('G-08')">→ G-08 (SSP)</span></div>
+        </div>
+        <div class="chat-exchange">
+          <div class="chat-q">Q: Who has administrative access to the domain controller?</div>
+          <div class="chat-a">"That's me and Jennifer Torres, my IT specialist. We're both domain admins. We need that for our day-to-day work."</div>
+          <div class="chat-link"><span class="gap-ref" onclick="gotoGap('G-02')">→ G-02 (Access Control)</span></div>
+        </div>
+        <div class="chat-exchange">
+          <div class="chat-q">Q: Does TechServ have any restrictions when they come in to work on the ERP?</div>
+          <div class="chat-a">"They use a VPN account I set up for them. I usually watch when they're on-site, but honestly if they remote in at midnight I wouldn't know."</div>
+          <div class="chat-link"><span class="gap-ref" onclick="gotoGap('G-07')">→ G-07 (Maintenance)</span></div>
+        </div>
+        <div class="chat-exchange">
+          <div class="chat-q">Q: When were vulnerability scans last run?</div>
+          <div class="chat-a">"We hired a company to do it about a year and a half ago, maybe fourteen months. Found a few things, we patched some of them. I never got a full report — they gave us a summary."</div>
+          <div class="chat-link"><span class="gap-ref" onclick="gotoGap('G-04')">→ G-04 (Vuln Assessment)</span></div>
+        </div>
+        <div class="chat-exchange">
+          <div class="chat-q">Q: Are audit logs reviewed regularly?</div>
+          <div class="chat-a">"Logging is on. I check them when there's a problem. Day-to-day? No."</div>
+          <div class="chat-link"><span class="gap-ref" onclick="gotoGap('G-03')">→ G-03 (Audit Logging)</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="interview-card">
+    <div class="interview-header" onclick="toggleInterview(this)">
+      <div>
+        <h3>Sandra Ybarra — Contracts Manager</h3>
+        <div class="interview-meta">June 3, 2025 | Cumberland, MD HQ | Duration: ~30 minutes</div>
+      </div>
+      <span style="color:var(--gold);font-size:18px;margin-left:auto">▼</span>
+    </div>
+    <div class="interview-body">
+      <div class="interview-body-inner">
+        <div class="chat-exchange">
+          <div class="chat-q">Q: How do you receive CUI documents from DLA?</div>
+          <div class="chat-a">"They email them. Sometimes they come through PIEE. I save them to the shared drive under the contract folder."</div>
+          <div class="chat-link"><span style="font-size:11px;color:var(--text-muted)">→ See Data Classification section</span></div>
+        </div>
+        <div class="chat-exchange">
+          <div class="chat-q">Q: Is that folder restricted?</div>
+          <div class="chat-a">"I asked Dennis to restrict it a few months ago. I think it's set up now, but I'm not sure who exactly has access."</div>
+          <div class="chat-link"><span class="gap-ref" onclick="gotoGap('G-02')">→ G-02 (Access Control)</span></div>
+        </div>
+        <div class="chat-exchange">
+          <div class="chat-q">Q: What happened when the phishing email was clicked last year?</div>
+          <div class="chat-a">"It was one of the accounting staff. She told me, I told Dennis. He reset her password and we sent an all-staff reminder email. That was it."</div>
+          <div class="chat-link"><span class="gap-ref" onclick="showSection('incidents')">→ INC-001</span></div>
+        </div>
+        <div class="chat-exchange">
+          <div class="chat-q">Q: Was any report filed? Did you notify the contracting officer?</div>
+          <div class="chat-a">"No report. We didn't think it rose to that level since nothing was actually stolen. In hindsight, probably should have documented it better."</div>
+          <div class="chat-link"><span class="gap-ref" onclick="gotoGap('G-05')">→ G-05 (IRP)</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="interview-card">
+    <div class="interview-header" onclick="toggleInterview(this)">
+      <div>
+        <h3>Lisa Nguyen — HR Manager</h3>
+        <div class="interview-meta">June 4, 2025 | Cumberland, MD HQ | Duration: ~20 minutes</div>
+      </div>
+      <span style="color:var(--gold);font-size:18px;margin-left:auto">▼</span>
+    </div>
+    <div class="interview-body">
+      <div class="interview-body-inner">
+        <div class="chat-exchange">
+          <div class="chat-q">Q: Where are employee security clearance submission documents stored?</div>
+          <div class="chat-a">"On the shared drive. There's a folder called HR/Clearances. I don't think it's restricted — I just assumed nobody else would go in there."</div>
+          <div class="chat-link"><span class="gap-ref" onclick="gotoGap('G-02')">→ G-02</span> <span class="badge badge-cui" style="font-size:10px;margin-left:4px">CUI-Privacy</span></div>
+        </div>
+        <div class="chat-exchange">
+          <div class="chat-q">Q: Has any employee received training specifically on handling CUI?</div>
+          <div class="chat-a">"We do the KnowBe4 training every year. It covers phishing and general security. I don't think it mentions CUI specifically."</div>
+          <div class="chat-link"><span class="gap-ref" onclick="gotoGap('G-11')">→ G-11 (Training)</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SECTION 7: INCIDENTS ===== -->
+<div id="sec-incidents" class="section" style="display:none">
+  <div class="section-title">Security Incidents</div>
+  <div class="section-subtitle">Two incidents occurred in the 12 months prior to assessment. Neither was formally documented or reported.</div>
+
+  <div class="incident-grid">
+    <div class="incident-card">
+      <div class="incident-card-header">
+        <h3>INC-001 — Phishing / Credential Exposure</h3>
+        <div class="inc-meta">~10 months ago | Severity: HIGH</div>
+      </div>
+      <div class="incident-card-body">
+        <div class="incident-row"><label>Victim</label><span>Carla Mendez (accounting staff)</span></div>
+        <div class="incident-row"><label>What Happened</label><span>Clicked phishing email spoofing a DLA vendor; entered M365 credentials on a fake login page</span></div>
+        <div class="incident-row"><label>Response Taken</label><span>Password reset; all-staff reminder email sent by Dennis Park</span></div>
+        <div class="incident-row"><label>Documentation</label><span>Email thread only — no formal incident report, no timeline, no root cause analysis</span></div>
+        <div class="incident-row"><label>Forensic Review</label><span style="color:var(--red)">NONE</span></div>
+        <div class="incident-row"><label>DoD Notification</label><span style="color:var(--red)">NO — Sandra Ybarra judged it below threshold without legal review</span></div>
+
+        <div class="analysis-panel">
+          <h4>Should INC-001 have triggered DFARS 252.204-7012 notification?</h4>
+          <div class="analysis-btns">
+            <button class="analysis-btn yes" onclick="analyzeIncident('inc1','yes')">YES</button>
+            <button class="analysis-btn no" onclick="analyzeIncident('inc1','no')">NO</button>
+          </div>
+          <div class="analysis-explanation" id="inc1-yes">
+            <strong>Correct.</strong> The compromised M365 account had access to SharePoint, which contains CUI (uniform specs, delivery destinations). The 72-hour reporting clock under DFARS 252.204-7012 began when ThreadBridge learned of the phishing incident. Failure to report where CUI was potentially accessible constitutes a reporting violation and creates potential False Claims Act exposure.
+          </div>
+          <div class="analysis-explanation" id="inc1-no">
+            <strong>Incorrect.</strong> Even though Ybarra concluded "nothing was stolen," the compromised M365 account had access to SharePoint folders containing CUI. The reporting obligation under DFARS 252.204-7012 triggers when a cyber incident affects a system that <em>processes, stores, or transmits</em> CUI — not only when data is confirmed stolen. A forensic determination was never made.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="incident-card">
+      <div class="incident-card-header">
+        <h3>INC-002 — Lost/Stolen Device</h3>
+        <div class="inc-meta">~4 months ago | Severity: MEDIUM</div>
+      </div>
+      <div class="incident-card-body">
+        <div class="incident-row"><label>Victim</label><span>Jordan Reyes (remote sales rep)</span></div>
+        <div class="incident-row"><label>What Happened</label><span>Reported work laptop missing after a business trip; laptop was BitLocker-encrypted</span></div>
+        <div class="incident-row"><label>Response Taken</label><span>AD account disabled; M365 remote wipe via Intune; VPN access revoked</span></div>
+        <div class="incident-row"><label>Documentation</label><span>Single email from Reyes to Dennis Park — no formal record, no CUI exposure determination</span></div>
+        <div class="incident-row"><label>Forensic Review</label><span style="color:var(--amber)">Partial — no determination of CUI accessibility made</span></div>
+        <div class="incident-row"><label>DoD Notification</label><span style="color:var(--amber)">NO — no formal determination made either way</span></div>
+
+        <div class="analysis-panel">
+          <h4>Should INC-002 have triggered DFARS 252.204-7012 notification?</h4>
+          <div class="analysis-btns">
+            <button class="analysis-btn yes" onclick="analyzeIncident('inc2','yes')">YES</button>
+            <button class="analysis-btn no" onclick="analyzeIncident('inc2','no')">NO</button>
+          </div>
+          <div class="analysis-explanation" id="inc2-yes">
+            <strong>Possibly correct.</strong> Whether reporting was required depends on whether the laptop contained or could access CUI. Jordan Reyes is in sales — primarily GSA/FCI work. If CUI was never on the device or accessible from it, no reporting obligation may exist. However, the key failure is that a formal determination was <em>never made</em>. Best practice requires documenting the determination either way.
+          </div>
+          <div class="analysis-explanation" id="inc2-no">
+            <strong>Possibly correct, but the process was wrong.</strong> BitLocker encryption mitigates the risk of data exposure from a lost laptop. If the device never contained or accessed CUI, the reporting obligation may not apply. However, this determination was never formally documented. The correct approach is: assess the device's data exposure, document the conclusion, and then make an informed reporting decision — not simply assume no reporting is needed.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Incident Analysis — Key Takeaways</h3>
+    <ul style="padding-left:20px;font-size:13px;line-height:2">
+      <li>DFARS 252.204-7012 requires reporting cyber incidents on systems that <strong>process, store, or transmit</strong> CUI — the threshold is system access, not confirmed data theft.</li>
+      <li>The 72-hour reporting clock begins when the contractor <strong>discovers</strong> the incident, not when they confirm a breach.</li>
+      <li>Both incidents lacked a documented root cause analysis, leaving the organization vulnerable to recurrence.</li>
+      <li>INC-001 combined with G-01 (no MFA on ERP) represents an unresolved attack chain that remains active.</li>
+      <li>Lesson: Every potential incident should produce a written record — even if the conclusion is "no reporting required, here's why."</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ===== SECTION 8: DOCUMENTS ===== -->
+<div id="sec-documents" class="section" style="display:none">
+  <div class="section-title">Document Workspace</div>
+  <div class="section-subtitle">Complete each document using the case study information. Your progress is saved automatically.</div>
+
+  <div id="doc-subnav">
+    <button class="doc-nav-btn active" onclick="showDocument(1)">01 SSP</button>
+    <button class="doc-nav-btn" onclick="showDocument(2)">02 POA&amp;M</button>
+    <button class="doc-nav-btn" onclick="showDocument(3)">03 Assets</button>
+    <button class="doc-nav-btn" onclick="showDocument(4)">04 SAR</button>
+    <button class="doc-nav-btn" onclick="showDocument(5)">05 IRP</button>
+    <button class="doc-nav-btn" onclick="showDocument(6)">06 AC Matrix</button>
+    <button class="doc-nav-btn" onclick="showDocument(7)">07 Audit Log</button>
+    <button class="doc-nav-btn" onclick="showDocument(8)">08 CM Plan</button>
+    <button class="doc-nav-btn" onclick="showDocument(9)">09 Vuln Scan</button>
+    <button class="doc-nav-btn" onclick="showDocument(10)">10 SPRS</button>
+    <button class="doc-nav-btn" onclick="showDocument(11)">11 Maint.</button>
+  </div>
+
+  <!-- DOC 1: SSP -->
+  <div class="doc-panel active" id="doc-1">
+    <div class="doc-header"><h2>Document 1 — System Security Plan (SSP)</h2><div class="doc-purpose">Purpose: Describe the information system, its authorization boundary, operating environment, and how each NIST SP 800-171 control is implemented.</div></div>
+    <div class="doc-body">
+      <div class="doc-progress" id="prog-1"><span>Progress:</span><div class="progress-bar-wrap" style="flex:1"><div class="progress-bar-fill" id="pbar-1" style="width:0%"></div></div><span id="pct-1">0%</span></div>
+      <div class="grid-2">
+        <div>
+          <div class="field-group"><label>System Name (Pre-filled)</label><div class="prefilled">ThreadBridge Solutions, LLC — Information System</div></div>
+          <div class="field-group"><label>System Owner (Pre-filled)</label><div class="prefilled">Margaret Holloway, CEO</div></div>
+          <div class="field-group"><label>ISSO (Pre-filled)</label><div class="prefilled">Dennis Park, IT Manager</div></div>
+          <div class="field-group"><label>Data Types (Pre-filled)</label><div class="prefilled">FCI (Federal Contract Information), CUI — Critical Technology, CUI — CTI, CUI — Privacy, EAR-controlled data</div></div>
+          <div class="field-group"><label>CMMC Level (Pre-filled)</label><div class="prefilled">Level 2 — 110 practices, NIST SP 800-171</div></div>
+          <div class="field-group"><label>Assessment Baseline (Pre-filled)</label><div class="prefilled">NIST SP 800-171 Rev 2</div></div>
+        </div>
+        <div>
+          <div class="field-group"><span class="student-field-label">STUDENT COMPLETES</span><label>System Description</label><textarea id="doc_1_system_desc" placeholder="Describe the information system in 3–5 sentences. Include primary function, user base (~82 employees), locations (Cumberland HQ + Frostburg warehouse), and types of work performed." oninput="saveField(this)"></textarea></div>
+          <div class="field-group"><span class="student-field-label">STUDENT COMPLETES</span><label>Authorization Boundary</label><textarea id="doc_1_boundary" placeholder="Define what is inside the authorization boundary. Which systems, networks, and locations are in scope? What is explicitly excluded?" oninput="saveField(this)"></textarea></div>
+          <div class="field-group"><span class="student-field-label">STUDENT COMPLETES</span><label>Operating Environment</label><textarea id="doc_1_environment" placeholder="Describe the technical operating environment: server room details, network topology (flat LAN, Sophos XG 310 perimeter), M365 cloud services, VPN for 12 remote users, and the Frostburg warehouse connection." oninput="saveField(this)"></textarea></div>
+        </div>
+      </div>
+      <div class="field-group"><span class="student-field-label">STUDENT COMPLETES</span><label>Interconnections and External Systems</label><textarea id="doc_1_interconnections" placeholder="List all system interconnections: M365/Azure (FedRAMP Moderate), TechServ LLC VPN, ADP payroll, Cascade Networks ISP, Ricoh MFP maintenance. For each, note data types exchanged and contractual protections in place (or gaps)." oninput="saveField(this)" style="min-height:100px"></textarea></div>
+      <div class="field-group"><span class="student-field-label">STUDENT COMPLETES</span><label>Control Implementation Summary (Address at least 5 NIST control families: AC, IA, AU, IR, SC)</label><textarea id="doc_1_controls" placeholder="For each control family, describe how ThreadBridge currently implements (or fails to implement) the controls. Example: AC — Access control is partially implemented. M365 uses role-based access; however, no formal access control matrix exists and orphaned accounts have not been removed (see G-02)..." oninput="saveField(this)" style="min-height:140px"></textarea></div>
+      <button class="save-btn" onclick="saveDoc(1)">Save Progress</button>
+    </div>
+  </div>
+
+  <!-- DOC 2: POA&M -->
+  <div class="doc-panel" id="doc-2">
+    <div class="doc-header"><h2>Document 2 — Plan of Action &amp; Milestones (POA&amp;M)</h2><div class="doc-purpose">Purpose: Document each security gap, assign ownership, and establish a remediation timeline with milestones.</div></div>
+    <div class="doc-body">
+      <div class="doc-progress" id="prog-2"><span>Progress:</span><div class="progress-bar-wrap" style="flex:1"><div class="progress-bar-fill" id="pbar-2" style="width:0%"></div></div><span id="pct-2">0%</span></div>
+      <div class="table-wrap">
+        <table class="data-table" style="font-size:12px">
+          <thead><tr><th>POA&amp;M ID</th><th>Gap</th><th>Priority</th><th>NIST Control</th><th style="min-width:200px">Recommended Remediation <span class="student-field-label">STUDENT</span></th><th style="min-width:120px">Target Date <span class="student-field-label">STUDENT</span></th></tr></thead>
+          <tbody>
+            <tr><td>POA-001</td><td>G-01 — MFA Gaps</td><td><span class="badge badge-critical">CRITICAL</span></td><td>IA.L2-3.5.3</td><td><textarea id="doc_2_poa001_rem" style="width:100%;min-height:60px;font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:4px" placeholder="Describe remediation steps..." oninput="saveField(this)"></textarea></td><td><input type="date" id="doc_2_poa001_date" style="width:100%;border:1px solid #e2e8f0;border-radius:4px;padding:4px;font-size:11px" oninput="saveField(this)"></td></tr>
+            <tr><td>POA-002</td><td>G-02 — Access Control Matrix</td><td><span class="badge badge-critical">CRITICAL</span></td><td>AC.L2-3.1.1/1.2</td><td><textarea id="doc_2_poa002_rem" style="width:100%;min-height:60px;font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:4px" placeholder="Describe remediation steps..." oninput="saveField(this)"></textarea></td><td><input type="date" id="doc_2_poa002_date" style="width:100%;border:1px solid #e2e8f0;border-radius:4px;padding:4px;font-size:11px" oninput="saveField(this)"></td></tr>
+            <tr><td>POA-003</td><td>G-03 — Audit Log Review</td><td><span class="badge badge-high">HIGH</span></td><td>AU.L2-3.3.1/3.2</td><td><textarea id="doc_2_poa003_rem" style="width:100%;min-height:60px;font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:4px" placeholder="Describe remediation steps..." oninput="saveField(this)"></textarea></td><td><input type="date" id="doc_2_poa003_date" style="width:100%;border:1px solid #e2e8f0;border-radius:4px;padding:4px;font-size:11px" oninput="saveField(this)"></td></tr>
+            <tr><td>POA-004</td><td>G-04 — Vuln Scanning</td><td><span class="badge badge-critical">CRITICAL</span></td><td>RA.L2-3.11.2</td><td><textarea id="doc_2_poa004_rem" style="width:100%;min-height:60px;font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:4px" placeholder="Describe remediation steps..." oninput="saveField(this)"></textarea></td><td><input type="date" id="doc_2_poa004_date" style="width:100%;border:1px solid #e2e8f0;border-radius:4px;padding:4px;font-size:11px" oninput="saveField(this)"></td></tr>
+            <tr><td>POA-005</td><td>G-05 — Incident Response Plan</td><td><span class="badge badge-critical">CRITICAL</span></td><td>IR.L2-3.6.1/6.2</td><td><textarea id="doc_2_poa005_rem" style="width:100%;min-height:60px;font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:4px" placeholder="Describe remediation steps..." oninput="saveField(this)"></textarea></td><td><input type="date" id="doc_2_poa005_date" style="width:100%;border:1px solid #e2e8f0;border-radius:4px;padding:4px;font-size:11px" oninput="saveField(this)"></td></tr>
+            <tr><td>POA-006</td><td>G-06 — Config Management</td><td><span class="badge badge-high">HIGH</span></td><td>CM.L2-3.4.1/4.3</td><td><textarea id="doc_2_poa006_rem" style="width:100%;min-height:60px;font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:4px" placeholder="Describe remediation steps..." oninput="saveField(this)"></textarea></td><td><input type="date" id="doc_2_poa006_date" style="width:100%;border:1px solid #e2e8f0;border-radius:4px;padding:4px;font-size:11px" oninput="saveField(this)"></td></tr>
+            <tr><td>POA-007</td><td>G-07 — Third-Party Maintenance</td><td><span class="badge badge-critical">CRITICAL</span></td><td>MA.L2-3.7.5</td><td><textarea id="doc_2_poa007_rem" style="width:100%;min-height:60px;font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:4px" placeholder="Describe remediation steps..." oninput="saveField(this)"></textarea></td><td><input type="date" id="doc_2_poa007_date" style="width:100%;border:1px solid #e2e8f0;border-radius:4px;padding:4px;font-size:11px" oninput="saveField(this)"></td></tr>
+            <tr><td>POA-008</td><td>G-08 — SSP Missing</td><td><span class="badge badge-critical">CRITICAL</span></td><td>PL.L2-3.12.1</td><td><textarea id="doc_2_poa008_rem" style="width:100%;min-height:60px;font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:4px" placeholder="Describe remediation steps..." oninput="saveField(this)"></textarea></td><td><input type="date" id="doc_2_poa008_date" style="width:100%;border:1px solid #e2e8f0;border-radius:4px;padding:4px;font-size:11px" oninput="saveField(this)"></td></tr>
+            <tr><td>POA-009</td><td>G-09 — Network Segmentation</td><td><span class="badge badge-high">HIGH</span></td><td>SC.L2-3.13.3</td><td><textarea id="doc_2_poa009_rem" style="width:100%;min-height:60px;font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:4px" placeholder="Describe remediation steps..." oninput="saveField(this)"></textarea></td><td><input type="date" id="doc_2_poa009_date" style="width:100%;border:1px solid #e2e8f0;border-radius:4px;padding:4px;font-size:11px" oninput="saveField(this)"></td></tr>
+            <tr><td>POA-010</td><td>G-10 — Removable Media</td><td><span class="badge badge-high">HIGH</span></td><td>MP.L2-3.8.7</td><td><textarea id="doc_2_poa010_rem" style="width:100%;min-height:60px;font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:4px" placeholder="Describe remediation steps..." oninput="saveField(this)"></textarea></td><td><input type="date" id="doc_2_poa010_date" style="width:100%;border:1px solid #e2e8f0;border-radius:4px;padding:4px;font-size:11px" oninput="saveField(this)"></td></tr>
+            <tr><td>POA-011</td><td>G-11 — Security Training</td><td><span class="badge badge-medium">MEDIUM</span></td><td>AT.L2-3.2.2</td><td><textarea id="doc_2_poa011_rem" style="width:100%;min-height:60px;font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:4px" placeholder="Describe remediation steps..." oninput="saveField(this)"></textarea></td><td><input type="date" id="doc_2_poa011_date" style="width:100%;border:1px solid #e2e8f0;border-radius:4px;padding:4px;font-size:11px" oninput="saveField(this)"></td></tr>
+            <tr><td>POA-012</td><td>G-12 — Physical Access Logging</td><td><span class="badge badge-medium">MEDIUM</span></td><td>PE.L1-3.10.3</td><td><textarea id="doc_2_poa012_rem" style="width:100%;min-height:60px;font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:4px" placeholder="Describe remediation steps..." oninput="saveField(this)"></textarea></td><td><input type="date" id="doc_2_poa012_date" style="width:100%;border:1px solid #e2e8f0;border-radius:4px;padding:4px;font-size:11px" oninput="saveField(this)"></td></tr>
+            <tr><td>POA-013</td><td>G-13 — SPRS Score Missing</td><td><span class="badge badge-critical">CRITICAL</span></td><td>DFARS 252.204-7019</td><td><textarea id="doc_2_poa013_rem" style="width:100%;min-height:60px;font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:4px" placeholder="Describe remediation steps..." oninput="saveField(this)"></textarea></td><td><input type="date" id="doc_2_poa013_date" style="width:100%;border:1px solid #e2e8f0;border-radius:4px;padding:4px;font-size:11px" oninput="saveField(this)"></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <button class="save-btn" style="margin-top:12px" onclick="saveDoc(2)">Save Progress</button>
+    </div>
+  </div>
+
+  <!-- DOC 3: ASSET INVENTORY -->
+  <div class="doc-panel" id="doc-3">
+    <div class="doc-header"><h2>Document 3 — Asset Inventory</h2><div class="doc-purpose">Purpose: Formally document all assets in the authorization boundary, their sensitivity, and responsible owners.</div></div>
+    <div class="doc-body">
+      <div class="doc-progress" id="prog-3"><span>Progress:</span><div class="progress-bar-wrap" style="flex:1"><div class="progress-bar-fill" id="pbar-3" style="width:0%"></div></div><span id="pct-3">0%</span></div>
+      <div class="table-wrap">
+        <table class="data-table" style="font-size:12px">
+          <thead><tr><th>Asset ID</th><th>Description</th><th>FCI</th><th>CUI</th><th>In Boundary? <span class="student-field-label">STUDENT</span></th><th>Sensitivity <span class="student-field-label">STUDENT</span></th><th>Owner <span class="student-field-label">STUDENT</span></th></tr></thead>
+          <tbody>
+            <tr><td>SRV-001</td><td>ERP Server (Epicor 10.2)</td><td>YES</td><td>YES</td><td><select id="doc_3_srv001_bound" onchange="saveField(this)" style="font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:3px"><option value="">--</option><option>YES</option><option>NO</option></select></td><td><select id="doc_3_srv001_sens" onchange="saveField(this)" style="font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:3px"><option value="">--</option><option>HIGH</option><option>MODERATE</option><option>LOW</option></select></td><td><input id="doc_3_srv001_owner" type="text" placeholder="Name" style="width:100%;font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:3px" oninput="saveField(this)"></td></tr>
+            <tr><td>SRV-002</td><td>File Server TBS-FS01</td><td>YES</td><td>YES</td><td><select id="doc_3_srv002_bound" onchange="saveField(this)" style="font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:3px"><option value="">--</option><option>YES</option><option>NO</option></select></td><td><select id="doc_3_srv002_sens" onchange="saveField(this)" style="font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:3px"><option value="">--</option><option>HIGH</option><option>MODERATE</option><option>LOW</option></select></td><td><input id="doc_3_srv002_owner" type="text" placeholder="Name" style="width:100%;font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:3px" oninput="saveField(this)"></td></tr>
+            <tr><td>SRV-003</td><td>Domain Controller TBS-DC01</td><td>YES</td><td>Indirect</td><td><select id="doc_3_srv003_bound" onchange="saveField(this)" style="font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:3px"><option value="">--</option><option>YES</option><option>NO</option></select></td><td><select id="doc_3_srv003_sens" onchange="saveField(this)" style="font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:3px"><option value="">--</option><option>HIGH</option><option>MODERATE</option><option>LOW</option></select></td><td><input id="doc_3_srv003_owner" type="text" placeholder="Name" style="width:100%;font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:3px" oninput="saveField(this)"></td></tr>
+            <tr><td>SRV-004</td><td>Backup NAS (Synology DS1821+)</td><td>YES</td><td>YES</td><td><select id="doc_3_srv004_bound" onchange="saveField(this)" style="font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:3px"><option value="">--</option><option>YES</option><option>NO</option></select></td><td><select id="doc_3_srv004_sens" onchange="saveField(this)" style="font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:3px"><option value="">--</option><option>HIGH</option><option>MODERATE</option><option>LOW</option></select></td><td><input id="doc_3_srv004_owner" type="text" placeholder="Name" style="width:100%;font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:3px" oninput="saveField(this)"></td></tr>
+            <tr><td>WRK-001–040</td><td>Windows Workstations (40)</td><td>YES</td><td>PARTIAL</td><td><select id="doc_3_wrk_bound" onchange="saveField(this)" style="font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:3px"><option value="">--</option><option>YES</option><option>NO</option></select></td><td><select id="doc_3_wrk_sens" onchange="saveField(this)" style="font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:3px"><option value="">--</option><option>HIGH</option><option>MODERATE</option><option>LOW</option></select></td><td><input id="doc_3_wrk_owner" type="text" placeholder="Name" style="width:100%;font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:3px" oninput="saveField(this)"></td></tr>
+            <tr><td>MOB-001–008</td><td>Android Tablets (8)</td><td>YES</td><td>NO</td><td><select id="doc_3_mob_bound" onchange="saveField(this)" style="font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:3px"><option value="">--</option><option>YES</option><option>NO</option></select></td><td><select id="doc_3_mob_sens" onchange="saveField(this)" style="font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:3px"><option value="">--</option><option>HIGH</option><option>MODERATE</option><option>LOW</option></select></td><td><input id="doc_3_mob_owner" type="text" placeholder="Name" style="width:100%;font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:3px" oninput="saveField(this)"></td></tr>
+            <tr><td>NET-001</td><td>Sophos XG 310 Firewall</td><td>N/A</td><td>N/A</td><td><select id="doc_3_net001_bound" onchange="saveField(this)" style="font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:3px"><option value="">--</option><option>YES</option><option>NO</option></select></td><td><select id="doc_3_net001_sens" onchange="saveField(this)" style="font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:3px"><option value="">--</option><option>HIGH</option><option>MODERATE</option><option>LOW</option></select></td><td><input id="doc_3_net001_owner" type="text" placeholder="Name" style="width:100%;font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:3px" oninput="saveField(this)"></td></tr>
+            <tr><td>NET-002</td><td>Cisco SG350 Switches (3)</td><td>N/A</td><td>N/A</td><td><select id="doc_3_net002_bound" onchange="saveField(this)" style="font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:3px"><option value="">--</option><option>YES</option><option>NO</option></select></td><td><select id="doc_3_net002_sens" onchange="saveField(this)" style="font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:3px"><option value="">--</option><option>HIGH</option><option>MODERATE</option><option>LOW</option></select></td><td><input id="doc_3_net002_owner" type="text" placeholder="Name" style="width:100%;font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:3px" oninput="saveField(this)"></td></tr>
+            <tr><td>CLO-001</td><td>Microsoft 365 Business Premium</td><td>YES</td><td>YES</td><td><select id="doc_3_clo001_bound" onchange="saveField(this)" style="font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:3px"><option value="">--</option><option>YES</option><option>NO</option></select></td><td><select id="doc_3_clo001_sens" onchange="saveField(this)" style="font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:3px"><option value="">--</option><option>HIGH</option><option>MODERATE</option><option>LOW</option></select></td><td><input id="doc_3_clo001_owner" type="text" placeholder="Name" style="width:100%;font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:3px" oninput="saveField(this)"></td></tr>
+            <tr><td>CLO-002</td><td>QuickBooks Enterprise</td><td>YES</td><td>NO</td><td><select id="doc_3_clo002_bound" onchange="saveField(this)" style="font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:3px"><option value="">--</option><option>YES</option><option>NO</option></select></td><td><select id="doc_3_clo002_sens" onchange="saveField(this)" style="font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:3px"><option value="">--</option><option>HIGH</option><option>MODERATE</option><option>LOW</option></select></td><td><input id="doc_3_clo002_owner" type="text" placeholder="Name" style="width:100%;font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:3px" oninput="saveField(this)"></td></tr>
+            <tr><td>PRN-001–003</td><td>Ricoh IM C4500 MFPs (3)</td><td>YES</td><td>POTENTIAL</td><td><select id="doc_3_prn_bound" onchange="saveField(this)" style="font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:3px"><option value="">--</option><option>YES</option><option>NO</option></select></td><td><select id="doc_3_prn_sens" onchange="saveField(this)" style="font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:3px"><option value="">--</option><option>HIGH</option><option>MODERATE</option><option>LOW</option></select></td><td><input id="doc_3_prn_owner" type="text" placeholder="Name" style="width:100%;font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:3px" oninput="saveField(this)"></td></tr>
+            <tr><td>VPN-001</td><td>Sophos SSL VPN (12 users)</td><td>YES</td><td>YES</td><td><select id="doc_3_vpn_bound" onchange="saveField(this)" style="font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:3px"><option value="">--</option><option>YES</option><option>NO</option></select></td><td><select id="doc_3_vpn_sens" onchange="saveField(this)" style="font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:3px"><option value="">--</option><option>HIGH</option><option>MODERATE</option><option>LOW</option></select></td><td><input id="doc_3_vpn_owner" type="text" placeholder="Name" style="width:100%;font-size:11px;border:1px solid #e2e8f0;border-radius:4px;padding:3px" oninput="saveField(this)"></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <button class="save-btn" style="margin-top:12px" onclick="saveDoc(3)">Save Progress</button>
+    </div>
+  </div>
+
+  <!-- DOC 4: SAR -->
+  <div class="doc-panel" id="doc-4">
+    <div class="doc-header"><h2>Document 4 — Security Assessment Report (SAR)</h2><div class="doc-purpose">Purpose: Summarize the findings from a formal security assessment of ThreadBridge's implementation of NIST SP 800-171 controls.</div></div>
+    <div class="doc-body">
+      <div class="doc-progress" id="prog-4"><span>Progress:</span><div class="progress-bar-wrap" style="flex:1"><div class="progress-bar-fill" id="pbar-4" style="width:0%"></div></div><span id="pct-4">0%</span></div>
+      <div class="grid-2">
+        <div class="field-group"><span class="student-field-label">STUDENT COMPLETES</span><label>Assessment Date Range</label><input type="text" id="doc_4_dates" placeholder="e.g., June 3–7, 2025" oninput="saveField(this)"></div>
+        <div class="field-group"><span class="student-field-label">STUDENT COMPLETES</span><label>Assessment Scope</label><textarea id="doc_4_scope" placeholder="Define scope: which systems, locations, personnel, and data types were in scope for this assessment?" oninput="saveField(this)"></textarea></div>
+      </div>
+      <div class="field-group"><span class="student-field-label">STUDENT COMPLETES</span><label>Controls Assessed</label><textarea id="doc_4_controls" placeholder="List the NIST 800-171 control families and specific controls assessed (e.g., AC, IA, AU, IR, SC, CM, RA, MA, PL, AT, PE). Note assessment method: interview, observation, documentation review." oninput="saveField(this)"></textarea></div>
+      <div class="field-group"><span class="student-field-label">STUDENT COMPLETES</span><label>Evidence Reviewed</label><textarea id="doc_4_evidence" placeholder="List evidence reviewed: interview notes (Park, Ybarra, Nguyen), system screenshots, policy documents, contract files, network diagrams, etc." oninput="saveField(this)"></textarea></div>
+      <div class="field-group"><span class="student-field-label">STUDENT COMPLETES</span><label>Executive Summary</label><textarea id="doc_4_exec" placeholder="Provide a 3–5 sentence executive summary of ThreadBridge's overall security posture, key risk areas, and immediate priorities." oninput="saveField(this)" style="min-height:100px"></textarea></div>
+      <div class="grid-2">
+        <div class="field-group"><span class="student-field-label">STUDENT COMPLETES</span><label>Critical Findings (6)</label><textarea id="doc_4_critical" placeholder="Summarize all 6 critical findings (G-01, G-02, G-04, G-05, G-07, G-08, G-13). For each: what was found, what control it maps to, and why it's critical." oninput="saveField(this)" style="min-height:120px"></textarea></div>
+        <div class="field-group"><span class="student-field-label">STUDENT COMPLETES</span><label>High Findings (5)</label><textarea id="doc_4_high" placeholder="Summarize all 5 high findings (G-03, G-06, G-09, G-10). For each: what was found and recommended remediation." oninput="saveField(this)" style="min-height:120px"></textarea></div>
+      </div>
+      <div class="field-group"><span class="student-field-label">STUDENT COMPLETES</span><label>Medium Findings (2)</label><textarea id="doc_4_medium" placeholder="Summarize the 2 medium findings (G-11, G-12)." oninput="saveField(this)"></textarea></div>
+      <div class="field-group"><span class="student-field-label">STUDENT COMPLETES</span><label>Assessment Conclusion</label><textarea id="doc_4_conclusion" placeholder="State whether ThreadBridge is currently ready for CMMC Level 2 assessment, what must be completed first, and your overall risk rating." oninput="saveField(this)"></textarea></div>
+      <button class="save-btn" onclick="saveDoc(4)">Save Progress</button>
+    </div>
+  </div>
+
+  <!-- DOC 5: IRP -->
+  <div class="doc-panel" id="doc-5">
+    <div class="doc-header"><h2>Document 5 — Incident Response Plan (IRP)</h2><div class="doc-purpose">Purpose: Establish a formal, written procedure for identifying, containing, eradicating, and reporting cyber incidents, including DFARS 252.204-7012 notification requirements.</div></div>
+    <div class="doc-body">
+      <div class="doc-progress" id="prog-5"><span>Progress:</span><div class="progress-bar-wrap" style="flex:1"><div class="progress-bar-fill" id="pbar-5" style="width:0%"></div></div><span id="pct-5">0%</span></div>
+      <div class="grid-2">
+        <div class="field-group"><span class="student-field-label">STUDENT COMPLETES</span><label>Review Date and Cycle</label><input type="text" id="doc_5_review" placeholder="e.g., Reviewed annually; next review June 2026" oninput="saveField(this)"></div>
+        <div class="field-group"><span class="student-field-label">STUDENT COMPLETES</span><label>Severity Level Definitions</label><textarea id="doc_5_severity" placeholder="Define at least 3 severity levels (e.g., Critical, High, Medium) with criteria for each level and response time requirements." oninput="saveField(this)"></textarea></div>
+      </div>
+      <div class="field-group"><span class="student-field-label">STUDENT COMPLETES</span><label>Incident Categories (at least 5)</label><textarea id="doc_5_categories" placeholder="List incident categories applicable to ThreadBridge: e.g., Phishing/Credential Theft, Ransomware/Malware, Lost/Stolen Device, Unauthorized Access, Data Exfiltration, Third-Party Breach, Insider Threat..." oninput="saveField(this)"></textarea></div>
+      <div class="field-group"><span class="student-field-label">STUDENT COMPLETES</span><label>Containment Steps (step-by-step)</label><textarea id="doc_5_containment" placeholder="Provide step-by-step containment procedures. Reference specific ThreadBridge systems: M365 Intune remote wipe, AD account disablement, Sophos VPN revocation, network isolation procedures." oninput="saveField(this)" style="min-height:100px"></textarea></div>
+      <div class="field-group"><span class="student-field-label">STUDENT COMPLETES</span><label>DFARS 252.204-7012 Reporting Summary</label><textarea id="doc_5_dfars" placeholder="Summarize when and how to report under DFARS 252.204-7012: 72-hour reporting window, what triggers it, how to submit to DIBNet, and what to include in the report." oninput="saveField(this)"></textarea></div>
+      <div class="grid-2">
+        <div class="field-group"><span class="student-field-label">STUDENT COMPLETES</span><label>INC-001 Retrospective Analysis</label><textarea id="doc_5_inc001" placeholder="Apply your IRP retroactively to INC-001 (phishing/Carla Mendez). Should it have been reported? What steps were missed? What is the remediation plan going forward?" oninput="saveField(this)"></textarea></div>
+        <div class="field-group"><span class="student-field-label">STUDENT COMPLETES</span><label>INC-002 Retrospective Analysis</label><textarea id="doc_5_inc002" placeholder="Apply your IRP retroactively to INC-002 (lost laptop/Jordan Reyes). Was the response adequate? What formal determination about CUI exposure should have been made?" oninput="saveField(this)"></textarea></div>
+      </div>
+      <div class="field-group"><span class="student-field-label">STUDENT COMPLETES</span><label>Post-Incident Review Process</label><textarea id="doc_5_pir" placeholder="Describe the post-incident review (lessons-learned) process: timeline, participants, outputs, and how findings are incorporated into future training and policy." oninput="saveField(this)"></textarea></div>
+      <button class="save-btn" onclick="saveDoc(5)">Save Progress</button>
+    </div>
+  </div>
+
+  <!-- DOC 6: ACCESS CONTROL MATRIX -->
+  <div class="doc-panel" id="doc-6">
+    <div class="doc-header"><h2>Document 6 — Access Control Matrix</h2><div class="doc-purpose">Purpose: Document the authorized access level for each user/role across each system, enforce least privilege, and identify orphaned or excessive accounts.</div></div>
+    <div class="doc-body">
+      <div class="doc-progress" id="prog-6"><span>Progress:</span><div class="progress-bar-wrap" style="flex:1"><div class="progress-bar-fill" id="pbar-6" style="width:0%"></div></div><span id="pct-6">0%</span></div>
+      <div class="warn-box">⚠ <strong>Dennis Park</strong> and <strong>TechServ LLC</strong> rows require special attention — both have excessive or uncontrolled access that must be addressed.</div>
+      <div class="table-wrap mt12">
+        <table class="data-table" style="font-size:11px">
+          <thead><tr><th>User/Role</th><th>M365</th><th>ERP (Epicor)</th><th>File Server</th><th>Domain Controller</th><th>QuickBooks</th><th>NAS</th><th>Access Level <span class="student-field-label">STUDENT</span></th><th>Notes <span class="student-field-label">STUDENT</span></th></tr></thead>
+          <tbody>
+            <tr><td><strong>M. Holloway</strong> (CEO)</td><td>User</td><td>Read-only</td><td>Exec share</td><td>None</td><td>View-only</td><td>None</td><td><select id="doc_6_holloway_lvl" onchange="saveField(this)" style="font-size:10px;border:1px solid #e2e8f0;border-radius:3px;padding:2px"><option value="">--select--</option><option>Appropriate</option><option>Excessive</option><option>Insufficient</option></select></td><td><input id="doc_6_holloway_note" type="text" style="width:100%;font-size:10px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="Notes..." oninput="saveField(this)"></td></tr>
+            <tr style="background:#fff5f5"><td><strong>D. Park</strong> (IT Mgr) ⚠</td><td>Admin</td><td>Domain Admin</td><td>Domain Admin</td><td>Domain Admin</td><td>Admin</td><td>Admin</td><td><select id="doc_6_park_lvl" onchange="saveField(this)" style="font-size:10px;border:1px solid #e2e8f0;border-radius:3px;padding:2px"><option value="">--select--</option><option>Appropriate</option><option>Excessive</option><option>Insufficient</option></select></td><td><input id="doc_6_park_note" type="text" style="width:100%;font-size:10px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="Notes on least privilege risk..." oninput="saveField(this)"></td></tr>
+            <tr><td><strong>S. Ybarra</strong> (Contracts)</td><td>User</td><td>Contracts module</td><td>CUI folder</td><td>None</td><td>None</td><td>None</td><td><select id="doc_6_ybarra_lvl" onchange="saveField(this)" style="font-size:10px;border:1px solid #e2e8f0;border-radius:3px;padding:2px"><option value="">--select--</option><option>Appropriate</option><option>Excessive</option><option>Insufficient</option></select></td><td><input id="doc_6_ybarra_note" type="text" style="width:100%;font-size:10px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="Notes..." oninput="saveField(this)"></td></tr>
+            <tr><td><strong>R. Chen</strong> (Production)</td><td>User</td><td>Production module</td><td>Specs folder</td><td>None</td><td>None</td><td>None</td><td><select id="doc_6_chen_lvl" onchange="saveField(this)" style="font-size:10px;border:1px solid #e2e8f0;border-radius:3px;padding:2px"><option value="">--select--</option><option>Appropriate</option><option>Excessive</option><option>Insufficient</option></select></td><td><input id="doc_6_chen_note" type="text" style="width:100%;font-size:10px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="Notes..." oninput="saveField(this)"></td></tr>
+            <tr><td><strong>L. Nguyen</strong> (HR)</td><td>User</td><td>None</td><td>HR folder</td><td>None</td><td>HR view</td><td>None</td><td><select id="doc_6_nguyen_lvl" onchange="saveField(this)" style="font-size:10px;border:1px solid #e2e8f0;border-radius:3px;padding:2px"><option value="">--select--</option><option>Appropriate</option><option>Excessive</option><option>Insufficient</option></select></td><td><input id="doc_6_nguyen_note" type="text" style="width:100%;font-size:10px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="Notes..." oninput="saveField(this)"></td></tr>
+            <tr><td><strong>M. Webb</strong> (Warehouse)</td><td>User</td><td>Inventory module</td><td>Delivery folder</td><td>None</td><td>None</td><td>None</td><td><select id="doc_6_webb_lvl" onchange="saveField(this)" style="font-size:10px;border:1px solid #e2e8f0;border-radius:3px;padding:2px"><option value="">--select--</option><option>Appropriate</option><option>Excessive</option><option>Insufficient</option></select></td><td><input id="doc_6_webb_note" type="text" style="width:100%;font-size:10px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="Notes..." oninput="saveField(this)"></td></tr>
+            <tr><td>Mfg. Floor Staff (32)</td><td>User</td><td>Tablet web only</td><td>None</td><td>None</td><td>None</td><td>None</td><td><select id="doc_6_mfg_lvl" onchange="saveField(this)" style="font-size:10px;border:1px solid #e2e8f0;border-radius:3px;padding:2px"><option value="">--select--</option><option>Appropriate</option><option>Excessive</option><option>Insufficient</option></select></td><td><input id="doc_6_mfg_note" type="text" style="width:100%;font-size:10px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="Notes..." oninput="saveField(this)"></td></tr>
+            <tr><td>Remote Sales (12)</td><td>User</td><td>None</td><td>None</td><td>None</td><td>None</td><td>None</td><td><select id="doc_6_sales_lvl" onchange="saveField(this)" style="font-size:10px;border:1px solid #e2e8f0;border-radius:3px;padding:2px"><option value="">--select--</option><option>Appropriate</option><option>Excessive</option><option>Insufficient</option></select></td><td><input id="doc_6_sales_note" type="text" style="width:100%;font-size:10px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="Notes..." oninput="saveField(this)"></td></tr>
+            <tr style="background:#fff5f5"><td><strong>TechServ LLC</strong> (3rd party) ⚠</td><td>None</td><td>VPN + Admin</td><td>None</td><td>None</td><td>None</td><td>None</td><td><select id="doc_6_techserv_lvl" onchange="saveField(this)" style="font-size:10px;border:1px solid #e2e8f0;border-radius:3px;padding:2px"><option value="">--select--</option><option>Appropriate</option><option>Excessive</option><option>Insufficient</option></select></td><td><input id="doc_6_techserv_note" type="text" style="width:100%;font-size:10px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="Note CUI contract gap..." oninput="saveField(this)"></td></tr>
+            <tr style="background:#fef2f2"><td><strong>ORPHANED — QB Admin</strong></td><td>None</td><td>None</td><td>None</td><td>None</td><td>Admin (active)</td><td>None</td><td><select id="doc_6_orphan_lvl" onchange="saveField(this)" style="font-size:10px;border:1px solid #e2e8f0;border-radius:3px;padding:2px"><option value="">--select--</option><option>Must Disable</option><option>Appropriate</option><option>Excessive</option></select></td><td><input id="doc_6_orphan_note" type="text" style="width:100%;font-size:10px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="Active 14 months — document action required" oninput="saveField(this)"></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <button class="save-btn" style="margin-top:12px" onclick="saveDoc(6)">Save Progress</button>
+    </div>
+  </div>
+
+  <!-- DOC 7: AUDIT LOG -->
+  <div class="doc-panel" id="doc-7">
+    <div class="doc-header"><h2>Document 7 — Audit Log and Monitoring Report</h2><div class="doc-purpose">Purpose: Document log sources, review frequency, retention periods, and gaps in audit and monitoring coverage.</div></div>
+    <div class="doc-body">
+      <div class="doc-progress" id="prog-7"><span>Progress:</span><div class="progress-bar-wrap" style="flex:1"><div class="progress-bar-fill" id="pbar-7" style="width:0%"></div></div><span id="pct-7">0%</span></div>
+      <div class="table-wrap">
+        <table class="data-table" style="font-size:12px">
+          <thead><tr><th>Log Source</th><th>Log Type</th><th>Currently Enabled?</th><th>Retention Period <span class="student-field-label">STUDENT</span></th><th>Review Frequency <span class="student-field-label">STUDENT</span></th><th>Gap? <span class="student-field-label">STUDENT</span></th><th>Gap Description <span class="student-field-label">STUDENT</span></th></tr></thead>
+          <tbody>
+            <tr><td>Windows Event Logs (Servers)</td><td>Authentication, privilege use, policy change</td><td>YES</td><td><input id="doc_7_winserver_ret" type="text" style="width:80px;font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="e.g. 90 days" oninput="saveField(this)"></td><td><input id="doc_7_winserver_freq" type="text" style="width:80px;font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="e.g. Weekly" oninput="saveField(this)"></td><td><select id="doc_7_winserver_gap" onchange="saveField(this)" style="font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px"><option value="">--</option><option>YES</option><option>NO</option></select></td><td><textarea id="doc_7_winserver_desc" style="width:100%;min-height:40px;font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="Describe gap..." oninput="saveField(this)"></textarea></td></tr>
+            <tr><td>Windows Event Logs (Workstations)</td><td>Login events, USB activity</td><td>YES</td><td><input id="doc_7_winwrk_ret" type="text" style="width:80px;font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="days" oninput="saveField(this)"></td><td><input id="doc_7_winwrk_freq" type="text" style="width:80px;font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="frequency" oninput="saveField(this)"></td><td><select id="doc_7_winwrk_gap" onchange="saveField(this)" style="font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px"><option value="">--</option><option>YES</option><option>NO</option></select></td><td><textarea id="doc_7_winwrk_desc" style="width:100%;min-height:40px;font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="Describe gap..." oninput="saveField(this)"></textarea></td></tr>
+            <tr><td>Sophos XG 310 Firewall Logs</td><td>Inbound/outbound traffic, IDS alerts, VPN sessions</td><td>YES</td><td><input id="doc_7_fw_ret" type="text" style="width:80px;font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="days" oninput="saveField(this)"></td><td><input id="doc_7_fw_freq" type="text" style="width:80px;font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="frequency" oninput="saveField(this)"></td><td><select id="doc_7_fw_gap" onchange="saveField(this)" style="font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px"><option value="">--</option><option>YES</option><option>NO</option></select></td><td><textarea id="doc_7_fw_desc" style="width:100%;min-height:40px;font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="Describe gap..." oninput="saveField(this)"></textarea></td></tr>
+            <tr><td>M365 Unified Audit Log</td><td>Email, SharePoint, Teams, login events</td><td>YES</td><td><input id="doc_7_m365_ret" type="text" style="width:80px;font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="days" oninput="saveField(this)"></td><td><input id="doc_7_m365_freq" type="text" style="width:80px;font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="frequency" oninput="saveField(this)"></td><td><select id="doc_7_m365_gap" onchange="saveField(this)" style="font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px"><option value="">--</option><option>YES</option><option>NO</option></select></td><td><textarea id="doc_7_m365_desc" style="width:100%;min-height:40px;font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="Describe gap..." oninput="saveField(this)"></textarea></td></tr>
+            <tr><td>ERP (Epicor) Application Logs</td><td>User logins, data access, report generation</td><td>Partial</td><td><input id="doc_7_erp_ret" type="text" style="width:80px;font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="days" oninput="saveField(this)"></td><td><input id="doc_7_erp_freq" type="text" style="width:80px;font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="frequency" oninput="saveField(this)"></td><td><select id="doc_7_erp_gap" onchange="saveField(this)" style="font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px"><option value="">--</option><option>YES</option><option>NO</option></select></td><td><textarea id="doc_7_erp_desc" style="width:100%;min-height:40px;font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="Describe gap..." oninput="saveField(this)"></textarea></td></tr>
+            <tr><td>Synology NAS Access Logs</td><td>File access, authentication, admin changes</td><td>Unknown</td><td><input id="doc_7_nas_ret" type="text" style="width:80px;font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="days" oninput="saveField(this)"></td><td><input id="doc_7_nas_freq" type="text" style="width:80px;font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="frequency" oninput="saveField(this)"></td><td><select id="doc_7_nas_gap" onchange="saveField(this)" style="font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px"><option value="">--</option><option>YES</option><option>NO</option></select></td><td><textarea id="doc_7_nas_desc" style="width:100%;min-height:40px;font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="Describe gap..." oninput="saveField(this)"></textarea></td></tr>
+            <tr><td>Physical Security Cameras</td><td>Facility footage (30-day retention)</td><td>YES</td><td><input id="doc_7_cam_ret" type="text" style="width:80px;font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="days" oninput="saveField(this)"></td><td><input id="doc_7_cam_freq" type="text" style="width:80px;font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="frequency" oninput="saveField(this)"></td><td><select id="doc_7_cam_gap" onchange="saveField(this)" style="font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px"><option value="">--</option><option>YES</option><option>NO</option></select></td><td><textarea id="doc_7_cam_desc" style="width:100%;min-height:40px;font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="Describe gap..." oninput="saveField(this)"></textarea></td></tr>
+            <tr><td>VPN Session Logs</td><td>Connection attempts, session duration, source IPs</td><td>YES (Sophos)</td><td><input id="doc_7_vpn_ret" type="text" style="width:80px;font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="days" oninput="saveField(this)"></td><td><input id="doc_7_vpn_freq" type="text" style="width:80px;font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="frequency" oninput="saveField(this)"></td><td><select id="doc_7_vpn_gap" onchange="saveField(this)" style="font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px"><option value="">--</option><option>YES</option><option>NO</option></select></td><td><textarea id="doc_7_vpn_desc" style="width:100%;min-height:40px;font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="Describe gap..." oninput="saveField(this)"></textarea></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="field-group mt16"><span class="student-field-label">STUDENT COMPLETES</span><label>Overall Audit Summary Finding</label><textarea id="doc_7_summary" placeholder="Summarize the overall state of audit and monitoring at ThreadBridge. What is the most significant gap? What immediate actions should be taken? What tool (e.g., SIEM) would you recommend?" oninput="saveField(this)"></textarea></div>
+      <button class="save-btn" onclick="saveDoc(7)">Save Progress</button>
+    </div>
+  </div>
+
+  <!-- DOC 8: CM PLAN -->
+  <div class="doc-panel" id="doc-8">
+    <div class="doc-header"><h2>Document 8 — Configuration Management Plan</h2><div class="doc-purpose">Purpose: Establish baseline configurations, a change management process, and patch management timelines for all systems in the authorization boundary.</div></div>
+    <div class="doc-body">
+      <div class="doc-progress" id="prog-8"><span>Progress:</span><div class="progress-bar-wrap" style="flex:1"><div class="progress-bar-fill" id="pbar-8" style="width:0%"></div></div><span id="pct-8">0%</span></div>
+      <div class="field-group"><span class="student-field-label">STUDENT COMPLETES</span><label>Change Request Process</label><textarea id="doc_8_change" placeholder="Describe a formal change request process for ThreadBridge. Who submits? Who approves? What documentation is required? How are emergency changes handled? Reference G-06." oninput="saveField(this)"></textarea></div>
+      <div class="field-group"><span class="student-field-label">STUDENT COMPLETES</span><label>Authorized Software List</label><textarea id="doc_8_software" placeholder="List categories of authorized software for ThreadBridge workstations and servers. Include: productivity (M365), ERP (Epicor), antivirus (Defender + Malwarebytes), etc. How will unauthorized software be detected and removed?" oninput="saveField(this)"></textarea></div>
+      <div class="card" style="margin:12px 0">
+        <h3 style="font-size:13px;margin-bottom:12px">Patch Management Timelines <span class="student-field-label">STUDENT COMPLETES</span></h3>
+        <div style="display:flex;gap:16px;flex-wrap:wrap">
+          <div class="field-group" style="flex:1;min-width:140px"><label>Critical Patches — days to remediate</label><input type="text" id="doc_8_patch_crit" placeholder="e.g. 7 days" oninput="saveField(this)"></div>
+          <div class="field-group" style="flex:1;min-width:140px"><label>High Patches — days to remediate</label><input type="text" id="doc_8_patch_high" placeholder="e.g. 30 days" oninput="saveField(this)"></div>
+          <div class="field-group" style="flex:1;min-width:140px"><label>Medium Patches — days to remediate</label><input type="text" id="doc_8_patch_med" placeholder="e.g. 90 days" oninput="saveField(this)"></div>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="field-group"><span class="student-field-label">STUDENT COMPLETES</span><label>Server Baseline Settings (at least 6 items)</label><textarea id="doc_8_server_baseline" placeholder="List baseline configuration settings for ThreadBridge servers. Examples: disable unnecessary services, enable Windows Firewall, enforce password complexity, enable audit logging, disable auto-run, restrict RDP access..." oninput="saveField(this)" style="min-height:120px"></textarea></div>
+        <div class="field-group"><span class="student-field-label">STUDENT COMPLETES</span><label>Workstation Baseline Settings (at least 5 items)</label><textarea id="doc_8_workstation_baseline" placeholder="List baseline settings for the 40 Windows workstations. Examples: BitLocker encryption, screensaver lock, standard user accounts only, Windows Defender enabled, USB storage restricted..." oninput="saveField(this)" style="min-height:120px"></textarea></div>
+      </div>
+      <div class="field-group"><span class="student-field-label">STUDENT COMPLETES</span><label>Tablet MDM Controls (Android — Manufacturing Floor)</label><textarea id="doc_8_tablet_mdm" placeholder="Describe MDM controls for the 8 Android tablets. Should they be enrolled in MDM? What policies would you enforce? How would you address G-09 (network segmentation for tablets)?" oninput="saveField(this)"></textarea></div>
+      <div class="field-group"><span class="student-field-label">STUDENT COMPLETES</span><label>Deviation Documentation Process</label><textarea id="doc_8_deviation" placeholder="Describe how authorized deviations from the baseline will be documented, approved, and tracked. What is the process for exception requests?" oninput="saveField(this)"></textarea></div>
+      <button class="save-btn" onclick="saveDoc(8)">Save Progress</button>
+    </div>
+  </div>
+
+  <!-- DOC 9: VULN SCAN -->
+  <div class="doc-panel" id="doc-9">
+    <div class="doc-header"><h2>Document 9 — Vulnerability Scan Report</h2><div class="doc-purpose">Purpose: Document vulnerability scan findings, assign remediation actions, and establish a recurring scan schedule.</div></div>
+    <div class="doc-body">
+      <div class="doc-progress" id="prog-9"><span>Progress:</span><div class="progress-bar-wrap" style="flex:1"><div class="progress-bar-fill" id="pbar-9" style="width:0%"></div></div><span id="pct-9">0%</span></div>
+      <div class="warn-box">Note: These vulnerabilities are illustrative findings consistent with ThreadBridge's environment. Students assign remediation based on their analysis of the case study.</div>
+      <div class="table-wrap mt12">
+        <table class="data-table" style="font-size:12px">
+          <thead><tr><th>VULN ID</th><th>System</th><th>Vulnerability</th><th>CVSS</th><th>Severity</th><th>Remediation Action <span class="student-field-label">STUDENT</span></th><th>Assigned To <span class="student-field-label">STUDENT</span></th><th>Target Date <span class="student-field-label">STUDENT</span></th></tr></thead>
+          <tbody>
+            <tr><td>VULN-001</td><td>SRV-001 (ERP)</td><td>Epicor 10.2 — known unpatched RCE vulnerability (CVE published 14 months ago)</td><td>9.8</td><td><span class="badge badge-critical">CRITICAL</span></td><td><textarea id="doc_9_v001_rem" style="width:100%;min-height:50px;font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="Remediation action..." oninput="saveField(this)"></textarea></td><td><input id="doc_9_v001_to" type="text" style="width:80px;font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="Owner" oninput="saveField(this)"></td><td><input id="doc_9_v001_date" type="date" style="font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" oninput="saveField(this)"></td></tr>
+            <tr><td>VULN-002</td><td>WRK-001–040</td><td>Windows 10 workstations missing 14+ cumulative updates; 6 workstations on EOL Win 10 21H2</td><td>7.8</td><td><span class="badge badge-high">HIGH</span></td><td><textarea id="doc_9_v002_rem" style="width:100%;min-height:50px;font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="Remediation action..." oninput="saveField(this)"></textarea></td><td><input id="doc_9_v002_to" type="text" style="width:80px;font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="Owner" oninput="saveField(this)"></td><td><input id="doc_9_v002_date" type="date" style="font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" oninput="saveField(this)"></td></tr>
+            <tr><td>VULN-003</td><td>SRV-004 (NAS)</td><td>Synology DSM running version with known authentication bypass; shared local admin account in use</td><td>9.1</td><td><span class="badge badge-critical">CRITICAL</span></td><td><textarea id="doc_9_v003_rem" style="width:100%;min-height:50px;font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="Remediation action..." oninput="saveField(this)"></textarea></td><td><input id="doc_9_v003_to" type="text" style="width:80px;font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="Owner" oninput="saveField(this)"></td><td><input id="doc_9_v003_date" type="date" style="font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" oninput="saveField(this)"></td></tr>
+            <tr><td>VULN-004</td><td>VPN-001</td><td>SSL VPN using default TLS 1.0/1.1 settings; no MFA; 12 users on split-tunnel with CUI access</td><td>8.1</td><td><span class="badge badge-high">HIGH</span></td><td><textarea id="doc_9_v004_rem" style="width:100%;min-height:50px;font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="Remediation action..." oninput="saveField(this)"></textarea></td><td><input id="doc_9_v004_to" type="text" style="width:80px;font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="Owner" oninput="saveField(this)"></td><td><input id="doc_9_v004_date" type="date" style="font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" oninput="saveField(this)"></td></tr>
+            <tr><td>VULN-005</td><td>CLO-002 (QuickBooks)</td><td>Orphaned admin account active 14 months; no MFA; QuickBooks 2021 — out of mainstream support</td><td>7.5</td><td><span class="badge badge-high">HIGH</span></td><td><textarea id="doc_9_v005_rem" style="width:100%;min-height:50px;font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="Remediation action..." oninput="saveField(this)"></textarea></td><td><input id="doc_9_v005_to" type="text" style="width:80px;font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="Owner" oninput="saveField(this)"></td><td><input id="doc_9_v005_date" type="date" style="font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" oninput="saveField(this)"></td></tr>
+            <tr><td>VULN-006</td><td>PRN-001–003 (MFPs)</td><td>Ricoh MFPs configured to allow scan-to-any-email; admin web interface accessible from production VLAN</td><td>6.5</td><td><span class="badge badge-medium">MEDIUM</span></td><td><textarea id="doc_9_v006_rem" style="width:100%;min-height:50px;font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="Remediation action..." oninput="saveField(this)"></textarea></td><td><input id="doc_9_v006_to" type="text" style="width:80px;font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="Owner" oninput="saveField(this)"></td><td><input id="doc_9_v006_date" type="date" style="font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" oninput="saveField(this)"></td></tr>
+            <tr><td>VULN-007</td><td>MOB-001–008 (Tablets)</td><td>Android 12 tablets not enrolled in MDM; no screen lock enforced; on same LAN as ERP server</td><td>6.1</td><td><span class="badge badge-medium">MEDIUM</span></td><td><textarea id="doc_9_v007_rem" style="width:100%;min-height:50px;font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="Remediation action..." oninput="saveField(this)"></textarea></td><td><input id="doc_9_v007_to" type="text" style="width:80px;font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="Owner" oninput="saveField(this)"></td><td><input id="doc_9_v007_date" type="date" style="font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" oninput="saveField(this)"></td></tr>
+            <tr><td>VULN-008</td><td>SRV-003 (DC)</td><td>Domain Controller allowing RDP from all internal IPs; no privileged access workstation (PAW) requirement</td><td>7.2</td><td><span class="badge badge-high">HIGH</span></td><td><textarea id="doc_9_v008_rem" style="width:100%;min-height:50px;font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="Remediation action..." oninput="saveField(this)"></textarea></td><td><input id="doc_9_v008_to" type="text" style="width:80px;font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" placeholder="Owner" oninput="saveField(this)"></td><td><input id="doc_9_v008_date" type="date" style="font-size:11px;border:1px solid #e2e8f0;border-radius:3px;padding:2px" oninput="saveField(this)"></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="field-group mt16"><span class="student-field-label">STUDENT COMPLETES</span><label>Which vulnerability poses the greatest ransomware risk? Explain your reasoning.</label><textarea id="doc_9_ransomware" placeholder="Identify the vulnerability (VULN-XXX) that represents the greatest ransomware delivery or propagation risk. Explain why: consider network access, CUI exposure, exploitation history, and patch availability." oninput="saveField(this)" style="min-height:80px"></textarea></div>
+      <button class="save-btn" onclick="saveDoc(9)">Save Progress</button>
+    </div>
+  </div>
+
+  <!-- DOC 10: SPRS -->
+  <div class="doc-panel" id="doc-10">
+    <div class="doc-header"><h2>Document 10 — SPRS Score Worksheet</h2><div class="doc-purpose">Purpose: Calculate ThreadBridge's NIST SP 800-171 self-assessment score for submission to the Supplier Performance Risk System (SPRS).</div></div>
+    <div class="doc-body">
+      <div class="doc-progress" id="prog-10"><span>Progress:</span><div class="progress-bar-wrap" style="flex:1"><div class="progress-bar-fill" id="pbar-10" style="width:0%"></div></div><span id="pct-10">0%</span></div>
+      <div class="info-box">Starting score is 110. Each unmet control deducts points per DoD Assessment Methodology. Partial credit (50% deduction) is available for partially implemented controls.</div>
+      <div class="sprs-score-display" id="doc10-score-display">
+        <div class="sprs-gauge-row">
+          <div class="gauge-item"><div class="gauge-val" style="color:#94a3b8">110</div><div style="color:rgba(255,255,255,.6);font-size:11px">Starting</div></div>
+          <div class="gauge-item"><div class="gauge-val" id="doc10-deduct" style="color:#f87171">-0</div><div style="color:rgba(255,255,255,.6);font-size:11px">Deductions</div></div>
+          <div class="gauge-item"><div class="gauge-val" id="doc10-score" style="color:var(--gold)">110</div><div style="color:rgba(255,255,255,.6);font-size:11px">SPRS Score</div></div>
+        </div>
+        <div style="margin-top:12px"><span class="badge" id="doc10-risk-badge" style="font-size:13px;padding:4px 16px">Risk Level: Calculating...</span></div>
+      </div>
+      <h4 style="font-size:13px;margin:16px 0 10px;color:var(--navy)">Gap-Related Controls — Rate Each</h4>
+      <div class="sprs-controls" id="doc10-controls"></div>
+      <div class="card mt16">
+        <h4 style="font-size:13px;margin-bottom:10px">Remaining 94 Controls (not covered by identified gaps)</h4>
+        <p class="text-muted" style="font-size:12px;margin-bottom:12px">Enter your estimated total point deduction for the remaining 94 controls based on your review of the case study. The default assumption (25 points) represents a partially compliant posture for non-gap controls.</p>
+        <div class="field-group" style="max-width:300px"><label>Estimated additional deduction (0–94)</label><input type="number" id="doc10-other-ded" min="0" max="94" value="25" style="border:1.5px solid var(--border);border-radius:var(--radius);padding:8px 12px;font-size:14px;font-weight:700;width:100%" oninput="saveField(this);calcSPRS()"></div>
+      </div>
+      <button class="save-btn" onclick="saveDoc(10)">Save Progress</button>
+    </div>
+  </div>
+
+  <!-- DOC 11: MAINTENANCE -->
+  <div class="doc-panel" id="doc-11">
+    <div class="doc-header"><h2>Document 11 — Maintenance Report</h2><div class="doc-purpose">Purpose: Document third-party and internal maintenance activities, assess CUI exposure during maintenance, and identify policy improvements.</div></div>
+    <div class="doc-body">
+      <div class="doc-progress" id="prog-11"><span>Progress:</span><div class="progress-bar-wrap" style="flex:1"><div class="progress-bar-fill" id="pbar-11" style="width:0%"></div></div><span id="pct-11">0%</span></div>
+      <div class="card" style="border:2px solid #fecaca;margin-bottom:16px">
+        <h3 style="font-size:14px;color:var(--navy)">Maintenance Log Entry 1 — TechServ LLC</h3>
+        <table class="meta-table" style="margin-bottom:12px">
+          <tr><td>Provider</td><td>TechServ LLC (Frederick, MD)</td></tr>
+          <tr><td>Date</td><td>May 14, 2025</td></tr>
+          <tr><td>Activity</td><td>Monthly ERP maintenance — on-site + remote VPN access</td></tr>
+          <tr><td>Systems Accessed</td><td>SRV-001 (ERP Server / Epicor 10.2)</td></tr>
+          <tr><td>Escort Provided?</td><td style="color:var(--amber)">Informal — Dennis Park present on-site but no log</td></tr>
+          <tr><td>Contract Status</td><td style="color:var(--red)">Basic MSA only — no CUI clause, no NDA with CUI requirements</td></tr>
+        </table>
+        <div class="grid-2">
+          <div class="field-group"><span class="student-field-label">STUDENT COMPLETES</span><label>CUI Accessible During This Maintenance?</label><select id="doc_11_ts_cui" onchange="saveField(this)"><option value="">--select--</option><option>YES — CUI was accessible</option><option>NO — CUI was not accessible</option><option>UNSURE — cannot determine</option></select><textarea id="doc_11_ts_cui_just" style="width:100%;min-height:50px;font-size:12px;border:1.5px solid var(--border);border-radius:var(--radius);padding:8px;margin-top:6px" placeholder="Justify your answer. Consider: what data is on SRV-001? What access does TechServ have?" oninput="saveField(this)"></textarea></div>
+          <div class="field-group"><span class="student-field-label">STUDENT COMPLETES</span><label>Media Sanitized?</label><select id="doc_11_ts_media" onchange="saveField(this)"><option value="">--select--</option><option>YES</option><option>NO</option><option>N/A</option></select></div>
+        </div>
+        <div class="field-group"><span class="student-field-label">STUDENT COMPLETES</span><label>Gaps Identified in This Maintenance Event</label><textarea id="doc_11_ts_gaps" placeholder="List gaps you identify in this maintenance event. Reference G-07, G-02, and any others that apply." oninput="saveField(this)"></textarea></div>
+        <div class="field-group"><span class="student-field-label">STUDENT COMPLETES</span><label>Recommended Policy Changes</label><textarea id="doc_11_ts_policy" placeholder="What policy and contractual changes should ThreadBridge make before TechServ's next visit? Be specific." oninput="saveField(this)"></textarea></div>
+      </div>
+
+      <div class="card">
+        <h3 style="font-size:14px;color:var(--navy)">Maintenance Log Entry 2 — Internal IT (Dennis Park)</h3>
+        <table class="meta-table" style="margin-bottom:12px">
+          <tr><td>Technician</td><td>Dennis Park, IT Manager</td></tr>
+          <tr><td>Date</td><td>June 1, 2025</td></tr>
+          <tr><td>Activity</td><td>Quarterly patch cycle on servers SRV-001 through SRV-004; installed 3 software updates on workstations per user requests</td></tr>
+          <tr><td>Change Request?</td><td style="color:var(--red)">None — no formal change request process exists</td></tr>
+          <tr><td>Baseline Config Used?</td><td style="color:var(--red)">No documented baseline — changes made from memory</td></tr>
+        </table>
+        <div class="grid-2">
+          <div class="field-group"><span class="student-field-label">STUDENT COMPLETES</span><label>CUI Accessible During This Maintenance?</label><select id="doc_11_int_cui" onchange="saveField(this)"><option value="">--select--</option><option>YES — CUI was accessible</option><option>NO — CUI was not accessible</option><option>UNSURE — cannot determine</option></select><textarea id="doc_11_int_cui_just" style="width:100%;min-height:50px;font-size:12px;border:1.5px solid var(--border);border-radius:var(--radius);padding:8px;margin-top:6px" placeholder="Justify your determination for internal maintenance activity." oninput="saveField(this)"></textarea></div>
+          <div class="field-group"><span class="student-field-label">STUDENT COMPLETES</span><label>Media Sanitized?</label><select id="doc_11_int_media" onchange="saveField(this)"><option value="">--select--</option><option>YES</option><option>NO</option><option>N/A</option></select></div>
+        </div>
+        <div class="field-group"><span class="student-field-label">STUDENT COMPLETES</span><label>Gaps Identified in This Maintenance Event</label><textarea id="doc_11_int_gaps" placeholder="List gaps in this internal maintenance event. Reference G-06 (no change management), G-04 (patch tracking), and any others." oninput="saveField(this)"></textarea></div>
+        <div class="field-group"><span class="student-field-label">STUDENT COMPLETES</span><label>Recommended Policy Changes</label><textarea id="doc_11_int_policy" placeholder="What process improvements should Dennis Park implement? How should maintenance be documented going forward?" oninput="saveField(this)"></textarea></div>
+      </div>
+      <button class="save-btn" onclick="saveDoc(11)">Save Progress</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SECTION 9: TOOLS ===== -->
+<div id="sec-tools" class="section" style="display:none">
+  <div class="section-title">Tools &amp; Calculators</div>
+  <div class="section-subtitle">Interactive tools to support your analysis and document completion</div>
+
+  <!-- SPRS CALCULATOR -->
+  <div class="card">
+    <h3>SPRS Score Calculator</h3>
+    <p class="text-muted mt8" style="margin-bottom:16px">Rate each gap control as NOT MET, PARTIAL, or MET. The score updates in real time. A score of 110 = fully compliant; a score of -203 = all controls failed.</p>
+    <div class="sprs-score-display">
+      <div style="font-size:11px;color:rgba(255,255,255,.5);margin-bottom:8px">LIVE SPRS SCORE</div>
+      <div class="score-number" id="sprs-score-val">110</div>
+      <div class="score-label">Starting: 110 | Deductions: <span id="sprs-ded-val">0</span></div>
+      <div style="margin-top:10px"><span class="badge" id="sprs-risk-badge" style="font-size:13px;padding:5px 18px;background:#16a34a;color:white">Low Risk (88–110)</span></div>
+    </div>
+    <div style="margin:16px 0">
+      <div class="sprs-row sprs-row-header" style="background:#f8fafc">
+        <span>Gap ID</span><span>Control / Description</span><span>Point Value</span><span>Status</span>
+      </div>
+      <div id="sprs-rows"></div>
+    </div>
+    <div class="card" style="margin-top:0">
+      <h4 style="font-size:13px;margin-bottom:10px">Remaining 94 Controls</h4>
+      <p class="text-muted" style="font-size:12px;margin-bottom:10px">Estimate additional deductions for the 94 controls not covered by identified gaps (0–200 points):</p>
+      <div style="display:flex;align-items:center;gap:12px">
+        <input type="range" id="sprs-other-slider" min="0" max="100" value="20" oninput="document.getElementById('sprs-other-val').textContent=this.value;calcSPRSTool()" style="flex:1">
+        <span id="sprs-other-val" style="font-weight:700;font-size:16px;min-width:40px">20</span>
+        <span class="text-muted">estimated additional deductions</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- DOCUMENT PROGRESS TRACKER -->
+  <div class="card mt20">
+    <h3>Document Progress Tracker</h3>
+    <p class="text-muted mt8" style="margin-bottom:8px">Your progress is automatically saved. Click a document to open its workspace.</p>
+    <div style="background:#f8fafc;border-radius:var(--radius);padding:12px;margin-bottom:16px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:12px;font-weight:600"><span>Overall Completion</span><span id="overall-pct-label">0%</span></div>
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" id="overall-pbar" style="width:0%;background:var(--navy)"></div></div>
+    </div>
+    <div class="progress-grid" id="progress-grid"></div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// SUB TABS (Security section)
+// ============================================================
+function switchSubTab(id) {
+  document.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.sub-content').forEach(c => c.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  document.getElementById('sub-' + id).classList.add('active');
+}
+
+// ============================================================
+// GAP CARDS
+// ============================================================
+function toggleGap(header) {
+  const body = header.nextElementSibling;
+  const toggle = header.querySelector('.gap-toggle');
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  if(toggle) toggle.classList.toggle('open', !isOpen);
+}
+
+function filterGaps(priority, btn) {
+  document.querySelectorAll('#gap-grid .filter-btn, .filter-bar .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.gap-card').forEach(card => {
+    card.style.display = (priority === 'all' || card.dataset.priority === priority) ? '' : 'none';
+  });
+}
+
+// ============================================================
+// INTERVIEWS
+// ============================================================
+function toggleInterview(header) {
+  const body = header.parentElement.querySelector('.interview-body');
+  body.classList.toggle('open');
+}
+
+// ============================================================
+// INCIDENT ANALYSIS
+// ============================================================
+function analyzeIncident(incId, choice) {
+  const yesBtn = document.querySelector('[onclick="analyzeIncident(\'' + incId + '\',\'yes\')"]');
+  const noBtn = document.querySelector('[onclick="analyzeIncident(\'' + incId + '\',\'no\')"]');
+  [yesBtn, noBtn].forEach(b => { if(b) b.classList.remove('sel'); });
+  if(choice === 'yes') yesBtn && yesBtn.classList.add('sel');
+  else noBtn && noBtn.classList.add('sel');
+  document.querySelectorAll('[id^="' + incId + '-"]').forEach(el => el.classList.remove('show'));
+  const target = document.getElementById(incId + '-' + choice);
+  if(target) target.classList.add('show');
+}
+
+// ============================================================
+// DOCUMENT NAVIGATION
+// ============================================================
+function showDocument(n) {
+  currentDoc = n;
+  document.querySelectorAll('.doc-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.doc-nav-btn').forEach(b => b.classList.remove('active'));
+  const panel = document.getElementById('doc-' + n);
+  if(panel) panel.classList.add('active');
+  const btns = document.querySelectorAll('.doc-nav-btn');
+  if(btns[n-1]) btns[n-1].classList.add('active');
+  updateDocProgress(n);
+}
+
+// ============================================================
+// LOCAL STORAGE
+// ============================================================
+function saveField(el) {
+  if(!el || !el.id) return;
+  localStorage.setItem(el.id, el.value !== undefined ? el.value : el.checked);
+  const docMatch = el.id.match(/^doc_(\d+)_/);
+  if(docMatch) updateDocProgress(parseInt(docMatch[1]));
+  updateOverallProgress();
+}
+
+function loadAllFields() {
+  const allInputs = document.querySelectorAll('textarea[id], input[id], select[id]');
+  allInputs.forEach(el => {
+    const saved = localStorage.getItem(el.id);
+    if(saved !== null) {
+      el.value = saved;
+    }
+  });
+}
+
+// ============================================================
+// PROGRESS TRACKING
+// ============================================================
+const docFields = {
+  1: ['doc_1_system_desc','doc_1_boundary','doc_1_environment','doc_1_interconnections','doc_1_controls'],
+  2: ['doc_2_poa001_rem','doc_2_poa002_rem','doc_2_poa003_rem','doc_2_poa004_rem','doc_2_poa005_rem','doc_2_poa006_rem','doc_2_poa007_rem','doc_2_poa008_rem','doc_2_poa009_rem','doc_2_poa010_rem','doc_2_poa011_rem','doc_2_poa012_rem','doc_2_poa013_rem','doc_2_poa001_date','doc_2_poa002_date','doc_2_poa003_date'],
+  3: ['doc_3_srv001_bound','doc_3_srv001_sens','doc_3_srv001_owner','doc_3_srv002_bound','doc_3_srv002_sens','doc_3_clo001_bound','doc_3_clo001_sens','doc_3_vpn_bound','doc_3_mob_bound'],
+  4: ['doc_4_dates','doc_4_scope','doc_4_controls','doc_4_evidence','doc_4_exec','doc_4_critical','doc_4_high','doc_4_medium','doc_4_conclusion'],
+  5: ['doc_5_review','doc_5_categories','doc_5_severity','doc_5_containment','doc_5_dfars','doc_5_inc001','doc_5_inc002','doc_5_pir'],
+  6: ['doc_6_holloway_lvl','doc_6_park_lvl','doc_6_ybarra_lvl','doc_6_chen_lvl','doc_6_nguyen_lvl','doc_6_webb_lvl','doc_6_techserv_lvl','doc_6_orphan_lvl','doc_6_park_note','doc_6_techserv_note'],
+  7: ['doc_7_winserver_gap','doc_7_winwrk_gap','doc_7_fw_gap','doc_7_m365_gap','doc_7_erp_gap','doc_7_nas_gap','doc_7_cam_gap','doc_7_vpn_gap','doc_7_summary','doc_7_winserver_ret','doc_7_fw_ret'],
+  8: ['doc_8_change','doc_8_software','doc_8_patch_crit','doc_8_patch_high','doc_8_patch_med','doc_8_server_baseline','doc_8_workstation_baseline','doc_8_tablet_mdm','doc_8_deviation'],
+  9: ['doc_9_v001_rem','doc_9_v002_rem','doc_9_v003_rem','doc_9_v004_rem','doc_9_v005_rem','doc_9_v006_rem','doc_9_v007_rem','doc_9_v008_rem','doc_9_ransomware'],
+  10: ['doc10-other-ded'],
+  11: ['doc_11_ts_cui','doc_11_ts_cui_just','doc_11_ts_gaps','doc_11_ts_policy','doc_11_int_cui','doc_11_int_cui_just','doc_11_int_gaps','doc_11_int_policy']
+};
+
+const docNames = ['System Security Plan','POA&M','Asset Inventory','Security Assessment Report','Incident Response Plan','Access Control Matrix','Audit Log Report','Config Management Plan','Vulnerability Scan Report','SPRS Score Worksheet','Maintenance Report'];
+
+function countDocProgress(n) {
+  const fields = docFields[n] || [];
+  if(fields.length === 0) return 0;
+  let filled = 0;
+  fields.forEach(id => {
+    const val = localStorage.getItem(id) || (document.getElementById(id) ? document.getElementById(id).value : '');
+    if(val && val.trim() !== '' && val !== '--') filled++;
+  });
+  return Math.round((filled / fields.length) * 100);
+}
+
+function updateDocProgress(n) {
+  const pct = countDocProgress(n);
+  const pbar = document.getElementById('pbar-' + n);
+  const pctEl = document.getElementById('pct-' + n);
+  if(pbar) pbar.style.width = pct + '%';
+  if(pctEl) pctEl.textContent = pct + '%';
+}
+
+function updateOverallProgress() {
+  let total = 0;
+  for(let i = 1; i <= 11; i++) total += countDocProgress(i);
+  const avg = Math.round(total / 11);
+  const el = document.getElementById('overall-pbar');
+  const lbl = document.getElementById('overall-pct-label');
+  if(el) el.style.width = avg + '%';
+  if(lbl) lbl.textContent = avg + '%';
+}
+
+function saveDoc(n) {
+  updateDocProgress(n);
+  updateOverallProgress();
+  const btn = event.target;
+  const orig = btn.textContent;
+  btn.textContent = '✓ Saved!';
+  btn.style.background = 'var(--green)';
+  setTimeout(() => { btn.textContent = orig; btn.style.background = ''; }, 1800);
+}
+
+// ============================================================
+// PROGRESS TRACKER GRID (Tools section)
+// ============================================================
+function buildProgressGrid() {
+  const grid = document.getElementById('progress-grid');
+  if(!grid) return;
+  grid.innerHTML = '';
+  for(let i = 1; i <= 11; i++) {
+    const pct = countDocProgress(i);
+    const card = document.createElement('div');
+    card.className = 'progress-doc-card';
+    card.style.cursor = 'pointer';
+    card.onclick = () => goToDoc(i);
+    card.innerHTML = `<div class="doc-num">Document ${i < 10 ? '0'+i : i}</div><div class="doc-name">${docNames[i-1]}</div><div class="pct">${pct}%</div><div class="progress-bar-wrap" style="margin-top:6px"><div class="progress-bar-fill" style="width:${pct}%"></div></div>`;
+    grid.appendChild(card);
+  }
+  updateOverallProgress();
+}
+
+// ============================================================
+// SPRS CONTROLS DATA
+// ============================================================
+const sprsGapControls = [
+  {id:'G-01', ctrl:'IA.L2-3.5.3', desc:'Multi-factor authentication for CUI access', pts:5},
+  {id:'G-02', ctrl:'AC.L2-3.1.1/1.2', desc:'Limit system access + least privilege', pts:5},
+  {id:'G-03', ctrl:'AU.L2-3.3.1/3.2', desc:'Create and review audit logs', pts:3},
+  {id:'G-04', ctrl:'RA.L2-3.11.2', desc:'Periodic vulnerability scanning', pts:3},
+  {id:'G-05', ctrl:'IR.L2-3.6.1/6.2', desc:'Written incident response capability', pts:3},
+  {id:'G-06', ctrl:'CM.L2-3.4.1/4.3', desc:'Baseline configs + change management', pts:3},
+  {id:'G-07', ctrl:'MA.L2-3.7.5', desc:'Control maintenance org access to CUI', pts:3},
+  {id:'G-08', ctrl:'PL.L2-3.12.1', desc:'System Security Plan (SSP)', pts:3},
+  {id:'G-09', ctrl:'SC.L2-3.13.3', desc:'Network segmentation for CUI', pts:5},
+  {id:'G-10', ctrl:'MP.L2-3.8.7', desc:'Removable media access controls', pts:3},
+  {id:'G-11', ctrl:'AT.L2-3.2.2', desc:'Role-based CUI handling training', pts:3},
+  {id:'G-12', ctrl:'PE.L1-3.10.3', desc:'Physical access control and logging', pts:1},
+  {id:'G-13', ctrl:'DFARS 7019', desc:'SPRS score submission (regulatory)', pts:0}
+];
+
+function buildSPRSRows() {
+  const container = document.getElementById('sprs-rows');
+  if(!container) return;
+  sprsGapControls.forEach((g, idx) => {
+    const div = document.createElement('div');
+    div.className = 'sprs-row';
+    div.innerHTML = `
+      <span class="badge badge-navy" style="font-size:11px">${g.id}</span>
+      <span style="font-size:12px"><strong>${g.ctrl}</strong><br><span style="color:var(--text-muted)">${g.desc}</span></span>
+      <span style="font-weight:700;color:var(--red);font-size:12px">−${g.pts}</span>
+      <div class="sprs-radios">
+        <label><input type="radio" name="sprs_${idx}" value="0" onchange="calcSPRSTool()"><span style="color:var(--red)">NOT MET</span></label>
+        <label><input type="radio" name="sprs_${idx}" value="${g.pts*0.5}" onchange="calcSPRSTool()"><span style="color:var(--amber)">PARTIAL</span></label>
+        <label><input type="radio" name="sprs_${idx}" value="${g.pts}" checked onchange="calcSPRSTool()"><span style="color:var(--green)">MET</span></label>
+      </div>`;
+    container.appendChild(div);
+  });
+}
+
+function buildSPRSDoc10() {
+  const container = document.getElementById('doc10-controls');
+  if(!container) return;
+  sprsGapControls.forEach((g, idx) => {
+    const div = document.createElement('div');
+    div.className = 'sprs-row';
+    const saved = localStorage.getItem('doc10_ctrl_' + idx) || g.pts.toString();
+    div.innerHTML = `
+      <span class="badge badge-navy" style="font-size:11px">${g.id}</span>
+      <span style="font-size:12px"><strong>${g.ctrl}</strong><br><span style="color:var(--text-muted)">${g.desc}</span></span>
+      <span style="font-weight:700;color:var(--red);font-size:12px">−${g.pts}</span>
+      <div class="sprs-radios">
+        <label><input type="radio" name="doc10_ctrl_${idx}" value="0" ${saved==='0'?'checked':''} onchange="localStorage.setItem('doc10_ctrl_${idx}',this.value);calcSPRSDoc10()"><span style="color:var(--red)">NOT MET</span></label>
+        <label><input type="radio" name="doc10_ctrl_${idx}" value="${g.pts*0.5}" ${saved===(g.pts*0.5).toString()?'checked':''} onchange="localStorage.setItem('doc10_ctrl_${idx}',this.value);calcSPRSDoc10()"><span style="color:var(--amber)">PARTIAL</span></label>
+        <label><input type="radio" name="doc10_ctrl_${idx}" value="${g.pts}" ${saved===g.pts.toString()||saved===g.pts.toString()?'checked':''} onchange="localStorage.setItem('doc10_ctrl_${idx}',this.value);calcSPRSDoc10()"><span style="color:var(--green)">MET</span></label>
+      </div>`;
+    container.appendChild(div);
+  });
+}
+
+function calcSPRSTool() {
+  let deduction = 0;
+  sprsGapControls.forEach((g, idx) => {
+    const checked = document.querySelector(`input[name="sprs_${idx}"]:checked`);
+    if(checked) { deduction += (g.pts - parseFloat(checked.value)); }
+  });
+  const otherDed = parseInt(document.getElementById('sprs-other-slider').value) || 0;
+  deduction += otherDed;
+  const score = 110 - deduction;
+  document.getElementById('sprs-score-val').textContent = score;
+  document.getElementById('sprs-ded-val').textContent = deduction;
+  const badge = document.getElementById('sprs-risk-badge');
+  if(score >= 88) { badge.style.background='#16a34a'; badge.textContent='Low Risk (88–110)'; }
+  else if(score >= 72) { badge.style.background='#d97706'; badge.textContent='Elevated Risk (72–87)'; }
+  else if(score >= 45) { badge.style.background='#ea580c'; badge.textContent='High Risk (45–71)'; }
+  else { badge.style.background='#dc2626'; badge.textContent='Critical Risk (< 45)'; }
+}
+
+function calcSPRSDoc10() {
+  let deduction = 0;
+  sprsGapControls.forEach((g, idx) => {
+    const checked = document.querySelector(`input[name="doc10_ctrl_${idx}"]:checked`);
+    if(checked) { deduction += (g.pts - parseFloat(checked.value)); }
+  });
+  const otherDed = parseInt((document.getElementById('doc10-other-ded') || {}).value) || 25;
+  deduction += otherDed;
+  const score = 110 - deduction;
+  const scoreEl = document.getElementById('doc10-score');
+  const dedEl = document.getElementById('doc10-deduct');
+  const badge = document.getElementById('doc10-risk-badge');
+  if(scoreEl) scoreEl.textContent = score;
+  if(dedEl) dedEl.textContent = '-' + deduction;
+  if(badge) {
+    if(score >= 88) { badge.style.background='#16a34a'; badge.style.color='white'; badge.textContent='Risk Level: Low'; }
+    else if(score >= 72) { badge.style.background='#d97706'; badge.style.color='white'; badge.textContent='Risk Level: Elevated'; }
+    else if(score >= 45) { badge.style.background='#ea580c'; badge.style.color='white'; badge.textContent='Risk Level: High'; }
+    else { badge.style.background='#dc2626'; badge.style.color='white'; badge.textContent='Risk Level: Critical'; }
+  }
+}
+
+// ============================================================
+// INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', function() {
+  loadAllFields();
+  buildSPRSRows();
+  buildSPRSDoc10();
+  buildProgressGrid();
+  calcSPRSTool();
+  calcSPRSDoc10();
+  for(let i = 1; i <= 11; i++) updateDocProgress(i);
+  updateOverallProgress();
+  // Ensure sections other than overview are hidden
+  SECTIONS.forEach(s => {
+    const el = document.getElementById('sec-' + s);
+    if(el && s !== 'overview') el.style.display = 'none';
+  });
+});
+</script>
+</body>
+</html>
