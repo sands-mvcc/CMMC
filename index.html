@@ -1,302 +1,1931 @@
-
-
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>CMMC Program Portal</title> <style> * { margin: 0; padding: 0; box-sizing: border-box;
-
-pasted
-
-Act as an expert HTML and JavaScript coder. Analyze the index.html file. Modify the code to make the following changes.
- 
-1)    Add the following tables and link to the files associated.
- 
-CMMC Ecosystem                                                                               eco.html
-Introduction to FCI & CUI                                                              cui.html
-CMMC & NIST SP 800-171 Framework                              nist171.html
- 
- 
-2)    Change the order of the tables:
- 
-CMMC Ecosystem                                                                               eco.html
-Introduction to FCI & CUI                                                              cui.html
-CMMC & NIST SP 800-171 Framework                              nist171.html
-CMMC Audit Evidence Guide                                                    evidence.html
-CMMC Documents and Reports                                            reports.html
-Cybersecurity Data Management Roles                          roles.html
-CMMC Applicability Checklist Tools                                   applicability.html                          
-CMMC Plan of Action & Milestone tracker                     POAM.html
-CMMC Auditor Progress Dashboard                                   dashboard.html
- 
- 
-3)    Change the footer to:
-4)     
-National Cybersecurity Training and Education Center (NCYTE)
-Cybersecurity Maturity Model Certification (CMMC) Program
-Study and Implementation Guide
-For workshop use only.
-Last updated: June 14, 2025 | Version 2.0
- 
-The NCyTE Center is funded by the National Science Foundation grant 2054724.
-
-
-Strategized HTML modifications for CMMC resource page.
-4s
-
-
-
-
-
-I'll analyze and modify the HTML file according to your requirements. The changes include adding three new navigation cards, reordering all cards, and updating the footer.
-
-
-Modified DoD CMMC Program Portal
-Interactive artifact 
-
-Engineered HTML modifications for CMMC documentation site.
-5s
-
-
-
-I've successfully modified the HTML file according to your specifications. Here are the key changes made:
-
-Changes Implemented:
-1. Added Three New Navigation Cards:
-CMMC Ecosystem (eco.html) - with globe icon 🌐
-Introduction to FCI & CUI (cui.html) - with lock icon 🔐
-CMMC & NIST SP 800-171 Framework (nist171.html) - with books icon 📚
-2. Reordered All Cards:
-The navigation cards now appear in the exact order you specified, with the three new cards at the top followed by the existing cards in your requested sequence.
-
-3. Updated Footer:
-Changed from "Department of Defense" to "National Cybersecurity Training and Education Center (NCYTE)"
-Updated all footer text as specified
-Added the NSF grant information
-Additional Improvements:
-Created appropriate descriptions for the new cards that match the existing style
-Selected meaningful icons that are visually consistent with the current design
-Maintained all existing styling and responsive design features
-Updated some card titles to match your specifications (e.g., "CMMC Documents and Reports", "CMMC Applicability Checklist Tools")
-The modified portal now provides a comprehensive
-
-
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DoD CMMC Program Portal</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CMMC Level 2 Audit Training — Meridian Precision Defense Systems</title>
+<style>
+  :root {
+    --navy:    #0d1b2a;
+    --navy2:   #1b2d42;
+    --steel:   #2e4a6b;
+    --accent:  #1e90ff;
+    --gold:    #f0a500;
+    --red:     #d9363e;
+    --green:   #2ecc71;
+    --yellow:  #f1c40f;
+    --gray1:   #f4f6f9;
+    --gray2:   #e2e8f0;
+    --gray3:   #94a3b8;
+    --text:    #1e293b;
+    --white:   #ffffff;
+    --font:    'Segoe UI', system-ui, -apple-system, sans-serif;
+    --mono:    'Courier New', Courier, monospace;
+    --radius:  8px;
+    --shadow:  0 2px 12px rgba(0,0,0,.12);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--font); background: var(--gray1); color: var(--text); font-size: 15px; line-height: 1.6; }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            min-height: 100vh;
-            color: #333;
-        }
+  /* ── TOP BANNER ── */
+  #banner {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--steel) 100%);
+    color: var(--white); padding: 0 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px; position: sticky; top: 0; z-index: 1000;
+    box-shadow: 0 2px 8px rgba(0,0,0,.4);
+  }
+  #banner .logo { display: flex; align-items: center; gap: .75rem; }
+  #banner .logo-icon {
+    width: 38px; height: 38px; background: var(--accent);
+    border-radius: 6px; display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; font-weight: 900; color: var(--white);
+  }
+  #banner .logo-text { font-size: 1rem; font-weight: 700; line-height: 1.2; }
+  #banner .logo-text span { display: block; font-size: .72rem; font-weight: 400; color: var(--gray3); }
+  #banner .badge {
+    background: var(--gold); color: var(--navy); font-size: .7rem;
+    font-weight: 800; padding: .2rem .6rem; border-radius: 4px; letter-spacing: .05em;
+  }
+  .disclaimer-bar {
+    background: #fff3cd; border-bottom: 2px solid var(--gold);
+    padding: .5rem 2rem; font-size: .78rem; color: #7a5900; text-align: center;
+  }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
+  /* ── HERO ── */
+  #hero {
+    background: linear-gradient(160deg, var(--navy2) 0%, #14324f 60%, var(--steel) 100%);
+    color: var(--white); padding: 4rem 2rem 3rem;
+    text-align: center; position: relative; overflow: hidden;
+  }
+  #hero::before {
+    content: ''; position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%231e90ff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    opacity: 1;
+  }
+  #hero .tag {
+    display: inline-block; background: rgba(30,144,255,.25); border: 1px solid var(--accent);
+    color: var(--accent); font-size: .75rem; font-weight: 700; padding: .25rem .8rem;
+    border-radius: 20px; letter-spacing: .08em; margin-bottom: 1rem; text-transform: uppercase;
+  }
+  #hero h1 { font-size: 2.2rem; font-weight: 800; line-height: 1.2; margin-bottom: .5rem; }
+  #hero h1 span { color: var(--accent); }
+  #hero p { max-width: 680px; margin: .75rem auto 0; color: #b0c4d8; font-size: 1rem; }
+  .hero-meta {
+    display: flex; justify-content: center; gap: 2.5rem; margin-top: 2rem;
+    flex-wrap: wrap;
+  }
+  .hero-meta .stat { text-align: center; }
+  .hero-meta .stat .num { font-size: 1.8rem; font-weight: 800; color: var(--accent); }
+  .hero-meta .stat .lbl { font-size: .72rem; color: var(--gray3); text-transform: uppercase; letter-spacing: .06em; }
 
-        .header {
-            text-align: center;
-            margin-bottom: 3rem;
-            padding: 2rem;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
+  /* ── NAV TABS ── */
+  #tab-nav {
+    background: var(--white); border-bottom: 2px solid var(--gray2);
+    position: sticky; top: 64px; z-index: 900;
+    display: flex; overflow-x: auto; gap: 0; padding: 0 1rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,.06);
+  }
+  #tab-nav::-webkit-scrollbar { height: 3px; }
+  #tab-nav::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+  .tab-btn {
+    flex-shrink: 0; padding: .85rem 1.1rem; font-size: .82rem; font-weight: 600;
+    color: var(--gray3); background: none; border: none; border-bottom: 3px solid transparent;
+    cursor: pointer; white-space: nowrap; transition: all .2s; margin-bottom: -2px;
+    letter-spacing: .02em;
+  }
+  .tab-btn:hover { color: var(--accent); }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab-btn .tb-num {
+    display: inline-block; background: var(--gray2); color: var(--gray3);
+    font-size: .65rem; border-radius: 10px; padding: .05rem .4rem; margin-left: .3rem;
+  }
+  .tab-btn.active .tb-num { background: rgba(30,144,255,.15); color: var(--accent); }
 
-        .header h1 {
-            font-size: 2.5rem;
-            color: #1e3c72;
-            margin-bottom: 0.5rem;
-            font-weight: 700;
-        }
+  /* ── MAIN LAYOUT ── */
+  #main { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
 
-        .header .subtitle {
-            font-size: 1.2rem;
-            color: #666;
-            font-weight: 300;
-        }
+  /* ── SECTION CARDS ── */
+  .card {
+    background: var(--white); border-radius: var(--radius);
+    box-shadow: var(--shadow); margin-bottom: 1.5rem; overflow: hidden;
+  }
+  .card-header {
+    background: var(--navy2); color: var(--white);
+    padding: .9rem 1.25rem; display: flex; align-items: center; gap: .75rem;
+    cursor: pointer; user-select: none;
+  }
+  .card-header .ch-icon {
+    width: 30px; height: 30px; background: var(--accent); border-radius: 6px;
+    display: flex; align-items: center; justify-content: center; font-size: .9rem; flex-shrink: 0;
+  }
+  .card-header h2 { font-size: .95rem; font-weight: 700; flex: 1; }
+  .card-header .ch-toggle {
+    font-size: 1.1rem; color: var(--gray3); transition: transform .25s;
+  }
+  .card-header.open .ch-toggle { transform: rotate(180deg); }
+  .card-body { padding: 1.25rem; display: none; }
+  .card-body.open { display: block; }
 
-        .nav-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
+  /* ── TABLES ── */
+  .tbl-wrap { overflow-x: auto; margin: .75rem 0; }
+  table { width: 100%; border-collapse: collapse; font-size: .84rem; }
+  thead { background: var(--navy); color: var(--white); }
+  thead th { padding: .6rem .75rem; text-align: left; font-weight: 600; white-space: nowrap; }
+  tbody tr:nth-child(even) { background: var(--gray1); }
+  tbody td { padding: .55rem .75rem; border-bottom: 1px solid var(--gray2); vertical-align: top; }
+  .tbl-wrap table tbody tr:hover { background: #eef4ff; }
 
-        .nav-card {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            padding: 2rem;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-            transition: all 0.3s ease;
-            text-decoration: none;
-            color: inherit;
-            border: 2px solid transparent;
-        }
+  /* ── SEVERITY BADGES ── */
+  .sev {
+    display: inline-block; font-size: .68rem; font-weight: 800; padding: .15rem .5rem;
+    border-radius: 4px; letter-spacing: .04em; text-transform: uppercase;
+  }
+  .sev-critical { background: #fde8e8; color: #9b1c1c; border: 1px solid #f5c6c6; }
+  .sev-high     { background: #fef3e2; color: #92400e; border: 1px solid #fde68a; }
+  .sev-medium   { background: #fef9c3; color: #78350f; border: 1px solid #fde68a; }
+  .sev-low      { background: #dcfce7; color: #14532d; border: 1px solid #bbf7d0; }
+  .sev-met      { background: #dcfce7; color: #14532d; border: 1px solid #bbf7d0; }
+  .sev-notmet   { background: #fde8e8; color: #9b1c1c; border: 1px solid #f5c6c6; }
+  .sev-partial  { background: #fef3e2; color: #92400e; border: 1px solid #fde68a; }
 
-        .nav-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
-            border-color: #2a5298;
-        }
+  /* ── ALERTS ── */
+  .alert {
+    border-radius: var(--radius); padding: .8rem 1rem .8rem 1rem;
+    margin: .6rem 0; font-size: .84rem; display: flex; gap: .75rem; align-items: flex-start;
+    border-left: 4px solid;
+  }
+  .alert-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: .05rem; }
+  .alert-red    { background: #fff1f2; border-color: var(--red);    color: #7f1d1d; }
+  .alert-yellow { background: #fffbeb; border-color: var(--gold);   color: #78350f; }
+  .alert-blue   { background: #eff6ff; border-color: var(--accent); color: #1e3a5f; }
+  .alert-green  { background: #f0fdf4; border-color: var(--green);  color: #14532d; }
 
-        .nav-card .icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            display: block;
-        }
+  /* ── TAGS / PILLS ── */
+  .pill {
+    display: inline-block; background: var(--gray2); color: var(--steel);
+    font-size: .72rem; font-weight: 600; padding: .15rem .55rem;
+    border-radius: 20px; margin: .15rem;
+  }
+  .pill-blue { background: rgba(30,144,255,.12); color: var(--accent); }
+  .pill-red  { background: #fde8e8; color: #9b1c1c; }
+  .pill-gold { background: #fef3e2; color: #92400e; }
 
-        .nav-card h3 {
-            font-size: 1.4rem;
-            color: #1e3c72;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-        }
+  /* ── FLOW DIAGRAM ── */
+  .flow { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin: 1rem 0; }
+  .flow-node {
+    background: var(--navy2); color: var(--white); border-radius: 6px;
+    padding: .45rem .9rem; font-size: .78rem; font-weight: 600;
+    border: 2px solid var(--steel); text-align: center;
+  }
+  .flow-node.cui { border-color: var(--accent); background: #0d253f; }
+  .flow-node.gap { border-color: var(--red); background: #2d0a0a; }
+  .flow-arrow { color: var(--gray3); font-size: 1.2rem; }
 
-        .nav-card p {
-            color: #666;
-            line-height: 1.5;
-            font-size: 0.95rem;
-        }
+  /* ── GRID LAYOUTS ── */
+  .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
 
-        .footer {
-            text-align: center;
-            padding: 2rem;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            color: white;
-            margin-top: 2rem;
-        }
+  .info-block {
+    background: var(--gray1); border-radius: 6px; padding: .9rem 1rem;
+    border-left: 4px solid var(--accent);
+  }
+  .info-block h4 { font-size: .8rem; color: var(--gray3); text-transform: uppercase; letter-spacing: .06em; margin-bottom: .35rem; }
+  .info-block p { font-size: .9rem; font-weight: 600; color: var(--text); }
 
-        .footer p {
-            margin-bottom: 0.5rem;
-        }
+  /* ── GAP CARDS ── */
+  .gap-card {
+    border: 1px solid var(--gray2); border-radius: var(--radius);
+    margin-bottom: 1rem; overflow: hidden;
+  }
+  .gap-card-header {
+    display: flex; align-items: center; gap: .75rem;
+    padding: .75rem 1rem; background: var(--gray1);
+    cursor: pointer; border-left: 5px solid;
+  }
+  .gap-card-header.critical { border-left-color: var(--red); }
+  .gap-card-header.high     { border-left-color: var(--gold); }
+  .gap-card-header.medium   { border-left-color: var(--yellow); }
+  .gap-card-header h4 { font-size: .88rem; font-weight: 700; flex: 1; }
+  .gap-card-body { padding: 1rem; display: none; font-size: .84rem; }
+  .gap-card-body.open { display: block; }
+  .gap-card-body dl { display: grid; grid-template-columns: 120px 1fr; gap: .3rem .75rem; }
+  .gap-card-body dt { font-weight: 700; color: var(--gray3); font-size: .78rem; text-transform: uppercase; }
+  .gap-card-body dd { color: var(--text); }
 
-        .security-badge {
-            display: inline-block;
-            background: #28a745;
-            color: white;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            margin-top: 1rem;
-        }
+  /* ── DOCUMENT GROUP CARDS ── */
+  .doc-card {
+    background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow);
+    margin-bottom: 1rem; overflow: hidden;
+  }
+  .doc-card-header {
+    display: flex; align-items: center; gap: 1rem; padding: 1rem 1.25rem;
+    background: linear-gradient(90deg, var(--navy2) 0%, var(--steel) 100%);
+    color: var(--white); cursor: pointer;
+  }
+  .doc-num {
+    width: 36px; height: 36px; background: var(--accent); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .9rem; font-weight: 800; flex-shrink: 0;
+  }
+  .doc-card-header h3 { font-size: .95rem; font-weight: 700; flex: 1; }
+  .doc-card-body { padding: 1.25rem; display: none; }
+  .doc-card-body.open { display: block; }
+  .doc-sections { display: flex; flex-wrap: wrap; gap: .3rem; margin: .5rem 0; }
+  .q-block { background: var(--gray1); border-radius: 6px; padding: .8rem 1rem; margin: .5rem 0; }
+  .q-block p { font-size: .84rem; }
+  .q-num { font-weight: 800; color: var(--accent); margin-right: .3rem; }
 
-        @media (max-width: 768px) {
-            .container {
-                padding: 1rem;
-            }
-            
-            .header h1 {
-                font-size: 2rem;
-            }
-            
-            .nav-grid {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-            
-            .nav-card {
-                padding: 1.5rem;
-            }
-        }
-    </style>
+  /* ── NETWORK DIAGRAM ── */
+  .net-zone {
+    border: 2px dashed; border-radius: 10px; padding: 1rem;
+    margin: .75rem 0; position: relative;
+  }
+  .net-zone-label {
+    position: absolute; top: -12px; left: 12px; background: var(--white);
+    padding: 0 .4rem; font-size: .72rem; font-weight: 800; letter-spacing: .05em;
+    text-transform: uppercase;
+  }
+  .net-zone.corp  { border-color: var(--accent); }
+  .net-zone.corp .net-zone-label  { color: var(--accent); }
+  .net-zone.eng   { border-color: var(--gold); }
+  .net-zone.eng   .net-zone-label { color: #b07700; }
+  .net-zone.mgmt  { border-color: var(--green); }
+  .net-zone.mgmt  .net-zone-label { color: #1a7a45; }
+  .net-zone.gap-zone { border-color: var(--red); border-style: solid; }
+  .net-zone.gap-zone .net-zone-label { color: var(--red); }
+  .net-devices { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .5rem; }
+  .net-device {
+    background: var(--navy2); color: var(--white); border-radius: 6px;
+    padding: .4rem .75rem; font-size: .75rem; font-weight: 600; text-align: center;
+  }
+  .net-device .dev-id { display: block; font-size: .65rem; color: var(--gray3); }
+  .net-device.cui-dev { border: 2px solid var(--accent); }
+  .net-device.gap-dev { border: 2px solid var(--red); }
+
+  /* ── PROGRESS BARS ── */
+  .prog-bar { background: var(--gray2); border-radius: 20px; height: 10px; margin: .25rem 0; }
+  .prog-fill { height: 100%; border-radius: 20px; transition: width .8s ease; }
+  .prog-blue   { background: var(--accent); }
+  .prog-red    { background: var(--red); }
+  .prog-yellow { background: var(--gold); }
+  .prog-green  { background: var(--green); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 640px) {
+    #hero h1 { font-size: 1.5rem; }
+    #main { padding: 1rem .75rem; }
+    .hero-meta { gap: 1.5rem; }
+    .gap-card-body dl { grid-template-columns: 1fr; }
+  }
+
+  /* ── BANNER ACTION BUTTONS ── */
+  .banner-actions { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
+  .btn-banner {
+    background: rgba(255,255,255,.12); color: var(--white); border: 1px solid rgba(255,255,255,.25);
+    border-radius: 6px; padding: .35rem .8rem; font-size: .78rem; font-weight: 600;
+    cursor: pointer; transition: all .2s; white-space: nowrap;
+  }
+  .btn-banner:hover { background: rgba(255,255,255,.22); border-color: rgba(255,255,255,.5); }
+  .btn-banner.btn-active { background: var(--accent); border-color: var(--accent); color: var(--white); }
+  .btn-print { background: rgba(30,144,255,.25); border-color: var(--accent); }
+  .btn-reset  { background: rgba(209,54,62,.25); border-color: rgba(209,54,62,.6); }
+  .print-menu-wrap { position: relative; }
+  .print-menu {
+    position: absolute; right: 0; top: calc(100% + 8px); background: var(--white);
+    border-radius: var(--radius); box-shadow: 0 4px 20px rgba(0,0,0,.2);
+    overflow: hidden; z-index: 2000; min-width: 200px;
+  }
+  .print-menu button {
+    display: block; width: 100%; text-align: left; padding: .65rem 1rem;
+    background: none; border: none; color: var(--text); font-size: .84rem;
+    cursor: pointer; border-bottom: 1px solid var(--gray2);
+  }
+  .print-menu button:last-child { border-bottom: none; }
+  .print-menu button:hover { background: var(--gray1); }
+
+  /* ── EDIT TOOLBAR ── */
+  #edit-toolbar {
+    display: none; align-items: center; gap: .75rem;
+    background: #0d3a6b; color: var(--white); padding: .6rem 1.5rem;
+    font-size: .82rem; font-weight: 600; border-bottom: 2px solid var(--accent);
+    position: sticky; top: 64px; z-index: 899; flex-wrap: wrap;
+  }
+  #edit-toolbar.visible { display: flex; }
+  #edit-toolbar .et-icon { font-size: 1rem; }
+  #edit-toolbar button {
+    background: rgba(255,255,255,.15); color: var(--white); border: 1px solid rgba(255,255,255,.3);
+    border-radius: 5px; padding: .25rem .7rem; font-size: .78rem; cursor: pointer;
+    transition: background .15s;
+  }
+  #edit-toolbar button:hover { background: rgba(255,255,255,.25); }
+  #edit-toolbar .et-save { background: rgba(46,204,113,.3); border-color: var(--green); }
+  #edit-toolbar .et-done { background: rgba(30,144,255,.3); border-color: var(--accent); }
+  #save-status { font-size: .74rem; color: rgba(255,255,255,.65); font-weight: 400; }
+
+  /* ── EDIT MODE — EDITABLE ELEMENT STYLES ── */
+  body.edit-active [data-edit-id] {
+    outline: 1.5px dashed rgba(30,144,255,.4);
+    border-radius: 3px; cursor: text;
+    transition: outline-color .15s, background .15s;
+  }
+  body.edit-active [data-edit-id]:hover {
+    outline-color: var(--accent);
+    background: rgba(30,144,255,.06);
+  }
+  body.edit-active [data-edit-id]:focus {
+    outline: 2px solid var(--accent);
+    background: rgba(30,144,255,.08);
+    box-shadow: 0 0 0 3px rgba(30,144,255,.15);
+  }
+  body.edit-active [data-edit-id][contenteditable="true"]::before {
+    content: '';
+  }
+  /* Edit mode indicator bar on left of editable cards */
+  body.edit-active .card-body,
+  body.edit-active .gap-card-body,
+  body.edit-active .doc-card-body {
+    border-left: 3px solid rgba(30,144,255,.25);
+  }
+  /* Highlight table cells distinctly */
+  body.edit-active td[data-edit-id] {
+    min-width: 60px;
+  }
+
+  /* ── IMAGE VIEWER ── */
+  .img-btn {
+    display: inline-flex; align-items: center; gap: .45rem;
+    background: var(--navy2); color: var(--white); border: 1px solid var(--steel);
+    border-radius: var(--radius); padding: .45rem .9rem; font-size: .82rem; font-weight: 600;
+    cursor: pointer; margin-bottom: 1rem; transition: background .2s, border-color .2s;
+    box-shadow: var(--shadow);
+  }
+  .img-btn:hover { background: var(--steel); border-color: var(--accent); }
+  .img-btn .ib-icon { font-size: 1rem; }
+
+  /* Floating image panels — pinned inside #main */
+  .img-panel {
+    display: none; position: fixed; z-index: 800;
+    background: var(--white); border-radius: var(--radius);
+    box-shadow: 0 8px 32px rgba(0,0,0,.35); border: 2px solid var(--steel);
+    max-width: 480px; width: 90vw;
+  }
+  .img-panel.show { display: block; }
+  .img-panel-left  { top: 120px; left: 20px; }
+  .img-panel-right { top: 120px; right: 20px; }
+  .img-panel-header {
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--navy2); color: var(--white);
+    padding: .5rem .8rem; border-radius: calc(var(--radius) - 2px) calc(var(--radius) - 2px) 0 0;
+    cursor: move; user-select: none;
+  }
+  .img-panel-header span { font-size: .82rem; font-weight: 700; }
+  .img-panel-close {
+    background: none; border: none; color: var(--gray3); font-size: 1.1rem;
+    cursor: pointer; line-height: 1; padding: 0 .2rem;
+    transition: color .15s;
+  }
+  .img-panel-close:hover { color: var(--white); }
+  .img-panel img {
+    display: block; width: 100%; border-radius: 0 0 calc(var(--radius) - 2px) calc(var(--radius) - 2px);
+    object-fit: contain; max-height: 60vh;
+  }
+  /* hide image panels in print */
+  @media print { .img-panel { display: none !important; } .img-btn { display: none !important; } }
+
+  /* ── TOAST NOTIFICATION ── */
+  #toast {
+    position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--navy); color: var(--white); padding: .6rem 1.2rem;
+    border-radius: 20px; font-size: .82rem; font-weight: 600;
+    box-shadow: 0 4px 16px rgba(0,0,0,.25); opacity: 0;
+    transition: opacity .3s, transform .3s; z-index: 9999; pointer-events: none;
+    white-space: nowrap;
+  }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ── PRINT STYLES ── */
+  @media print {
+    /* Reset layout for print */
+    *, *::before, *::after { box-sizing: border-box !important; }
+    html, body { margin: 0; padding: 0; font-size: 11pt; background: white !important; color: black !important; }
+
+    /* Hide all UI chrome */
+    #banner .banner-actions,
+    #edit-toolbar,
+    #tab-nav,
+    #toast,
+    .ch-toggle,
+    .card-header .ch-toggle { display: none !important; }
+
+    /* De-sticky everything */
+    #banner, .disclaimer-bar { position: static !important; }
+    #banner {
+      background: none !important; color: black !important;
+      border-bottom: 2pt solid #000; padding: .5rem 0; height: auto;
+      box-shadow: none !important;
+    }
+    #banner .logo-icon { background: #000 !important; }
+    #banner .logo-text { color: black !important; font-size: 13pt; }
+    #banner .logo-text span { color: #555 !important; }
+    .disclaimer-bar {
+      background: #fffbeb !important; font-size: 8pt; border: 1pt solid #999;
+      margin-bottom: .5rem;
+    }
+
+    /* Hero — compact */
+    #hero {
+      background: none !important; color: black !important;
+      padding: .75rem 0; text-align: left; border-bottom: 1pt solid #ccc;
+      margin-bottom: .75rem;
+    }
+    #hero::before { display: none; }
+    #hero .tag { background: none; border: 1pt solid #999; color: #333 !important; }
+    #hero h1 { font-size: 16pt; color: black !important; }
+    #hero h1 span { color: #1e90ff !important; }
+    #hero p { color: #333 !important; font-size: 10pt; }
+    .hero-meta .stat .num { color: #1e90ff !important; font-size: 13pt; }
+    .hero-meta .stat .lbl { color: #666 !important; }
+
+    /* Panels: show only the active one UNLESS print-all */
+    body:not(.print-all) .tab-panel { display: none !important; }
+    body:not(.print-all) .tab-panel.active { display: block !important; }
+    body.print-all .tab-panel { display: block !important; }
+
+    /* Open all cards in print scope */
+    .card-body.print-open,
+    .gap-card-body.print-open,
+    .doc-card-body.print-open { display: block !important; }
+    body.print-all .card-body,
+    body.print-all .gap-card-body,
+    body.print-all .doc-card-body { display: block !important; }
+
+    /* Remove interactive shadows/borders */
+    .card, .doc-card, .gap-card {
+      box-shadow: none !important; border: 1pt solid #ccc !important;
+      break-inside: avoid; margin-bottom: .75rem !important;
+    }
+    .card-header, .doc-card-header, .gap-card-header {
+      background: #1b2d42 !important; color: white !important;
+      -webkit-print-color-adjust: exact; print-color-adjust: exact;
+      padding: .4rem .75rem !important;
+    }
+    .card-header h2, .doc-card-header h3 { font-size: 10pt !important; }
+    .gap-card-header h4 { font-size: 9.5pt !important; }
+
+    /* Tables */
+    table { border-collapse: collapse !important; width: 100% !important; font-size: 9pt; }
+    thead { background: #1b2d42 !important; color: white !important;
+      -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    thead th { padding: .3rem .5rem !important; }
+    tbody td { padding: .3rem .5rem !important; border: .5pt solid #ccc !important; }
+    tbody tr:nth-child(even) { background: #f4f6f9 !important;
+      -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+    /* Severity badges — keep color */
+    .sev { -webkit-print-color-adjust: exact; print-color-adjust: exact; font-size: 7.5pt !important; }
+    .sev-critical { background: #fde8e8 !important; color: #9b1c1c !important; }
+    .sev-high     { background: #fef3e2 !important; color: #92400e !important; }
+    .sev-medium   { background: #fef9c3 !important; color: #78350f !important; }
+    .sev-low      { background: #dcfce7 !important; color: #14532d !important; }
+    .sev-met      { background: #dcfce7 !important; color: #14532d !important; }
+    .sev-notmet   { background: #fde8e8 !important; color: #9b1c1c !important; }
+    .sev-partial  { background: #fef3e2 !important; color: #92400e !important; }
+
+    /* Alerts */
+    .alert { -webkit-print-color-adjust: exact; print-color-adjust: exact; font-size: 9pt !important; padding: .4rem .6rem !important; }
+    .alert-red    { background: #fff1f2 !important; border-left-color: #d9363e !important; }
+    .alert-yellow { background: #fffbeb !important; border-left-color: #f0a500 !important; }
+    .alert-blue   { background: #eff6ff !important; border-left-color: #1e90ff !important; }
+    .alert-green  { background: #f0fdf4 !important; border-left-color: #2ecc71 !important; }
+
+    /* Pills */
+    .pill { -webkit-print-color-adjust: exact; print-color-adjust: exact; font-size: 7pt !important; }
+    .pill-blue { background: rgba(30,144,255,.12) !important; color: #1e3a5f !important; }
+    .pill-red  { background: #fde8e8 !important; color: #9b1c1c !important; }
+
+    /* Network diagram — simplified for print */
+    .net-zone { break-inside: avoid; }
+    .net-device { background: #1b2d42 !important; color: white !important;
+      -webkit-print-color-adjust: exact; print-color-adjust: exact; font-size: 8pt !important; }
+
+    /* Info blocks */
+    .info-block { background: #f4f6f9 !important; font-size: 9pt !important;
+      -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+    /* Gap cards */
+    .gap-card-header.critical { border-left-color: #d9363e !important;
+      -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .gap-card-header.high     { border-left-color: #f0a500 !important;
+      -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+    /* Question blocks */
+    .q-block { background: #f4f6f9 !important; font-size: 9pt !important;
+      -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+    /* Section break between major tabs in print-all */
+    body.print-all .tab-panel + .tab-panel { page-break-before: always; }
+    body.print-all .card { break-inside: avoid; }
+
+    /* Page header via @page */
+    @page {
+      size: letter;
+      margin: .75in .75in .75in .75in;
+    }
+
+    /* Print section label */
+    body.print-single #main::before {
+      content: 'Section: ' attr(data-print-label);
+      display: block; font-size: 9pt; color: #555;
+      border-bottom: .5pt solid #ccc; padding-bottom: .25rem; margin-bottom: .5rem;
+    }
+
+    /* Remove sticky from edit-marker bars */
+    body.edit-active .card-body,
+    body.edit-active .gap-card-body,
+    body.edit-active .doc-card-body { border-left: none !important; }
+    body.edit-active [data-edit-id] { outline: none !important; }
+  }
+</style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>DoD CMMC Program Portal</h1>
-            <p class="subtitle">Cybersecurity Maturity Model Certification Management System</p>
-            <div class="security-badge">🔒 SECURE ACCESS</div>
-        </div>
 
-        <div class="nav-grid">
-            <a href="eco.html" class="nav-card">
-                <span class="icon">🌐</span>
-                <h3>CMMC Ecosystem</h3>
-                <p>Explore the comprehensive CMMC ecosystem including stakeholders, processes, and relationships within the cybersecurity certification framework.</p>
-            </a>
-
-            <a href="cui.html" class="nav-card">
-                <span class="icon">🔐</span>
-                <h3>Introduction to FCI & CUI</h3>
-                <p>Learn about Federal Contract Information (FCI) and Controlled Unclassified Information (CUI) classification, handling, and protection requirements.</p>
-            </a>
-
-            <a href="nist171.html" class="nav-card">
-                <span class="icon">📚</span>
-                <h3>CMMC & NIST SP 800-171 Framework</h3>
-                <p>Comprehensive guide to understanding the relationship between CMMC levels and NIST SP 800-171 security control requirements and implementation.</p>
-            </a>
-
-            <a href="evidence.html" class="nav-card">
-                <span class="icon">📁</span>
-                <h3>CMMC Audit Evidence Guide</h3>
-                <p>Guidance and templates for collecting, organizing, and presenting evidence required for CMMC assessment and audit processes.</p>
-            </a>
-
-            <a href="reports.html" class="nav-card">
-                <span class="icon">📄</span>
-                <h3>CMMC Documents and Reports</h3>
-                <p>Access all required documentation, policies, procedures, and reports necessary for CMMC compliance and certification readiness.</p>
-            </a>
-
-            <a href="roles.html" class="nav-card">
-                <span class="icon">👥</span>
-                <h3>Cybersecurity Data Management Roles</h3>
-                <p>Define and manage user roles, responsibilities, and access controls for cybersecurity data management within your organization.</p>
-            </a>
-
-            <a href="applicability.html" class="nav-card">
-                <span class="icon">✅</span>
-                <h3>CMMC Applicability Checklist Tools</h3>
-                <p>Comprehensive checklist tools to determine which CMMC and NIST SP 800-171 security requirements apply to your organization and systems.</p>
-            </a>
-
-            <a href="POAM.html" class="nav-card">
-                <span class="icon">📋</span>
-                <h3>CMMC Plan of Action & Milestone Tracker</h3>
-                <p>Track remediation efforts, milestone progress, and action items required for CMMC compliance and certification readiness.</p>
-            </a>
-
-            <a href="dashboard.html" class="nav-card">
-                <span class="icon">📊</span>
-                <h3>CMMC Auditor Progress Dashboard</h3>
-                <p>Real-time dashboard displaying audit progress, compliance status, findings, and overall certification readiness metrics.</p>
-            </a>
-        </div>
-
-        <div class="footer">
-            <p><strong>National Cybersecurity Training and Education Center (NCYTE)</strong></p>
-            <p>Cybersecurity Maturity Model Certification (CMMC) Program</p>
-            <p>Study and Implementation Guide</p>
-            <p>For workshop use only.</p>
-            <p style="font-size: 0.8rem; margin-top: 1rem; opacity: 0.8;">
-                Last updated: June 14, 2025 | Version 2.0
-            </p>
-            <p style="font-size: 0.8rem; opacity: 0.8;">
-                The NCyTE Center is funded by the National Science Foundation grant 2054724.
-            </p>
-        </div>
+<!-- TOP BANNER -->
+<header id="banner">
+  <div class="logo">
+    <div class="logo-icon">M</div>
+    <div class="logo-text">
+      Meridian Precision Defense Systems, Inc.
+      <span>CMMC Level 2 Audit Training Case Study</span>
     </div>
+  </div>
+  <div class="banner-actions">
+    <span class="badge">CMMC 2.0 · NIST 800-171</span>
+    <button id="edit-btn" class="btn-banner" onclick="toggleEditMode()">✏ Edit Mode</button>
+    <div class="print-menu-wrap">
+      <button class="btn-banner btn-print" onclick="togglePrintMenu(event)">🖨 Print ▾</button>
+      <div id="print-menu" class="print-menu" style="display:none">
+        <button onclick="printCurrentTab(); closePrintMenu()">🖨 Print Current Tab</button>
+        <button onclick="printAll(); closePrintMenu()">📄 Print All Sections</button>
+      </div>
+    </div>
+    <button class="btn-banner btn-reset" onclick="resetEdits()" title="Reset all edits to original">↺ Reset</button>
+  </div>
+</header>
+
+<div class="disclaimer-bar">
+  ⚠ This case study is entirely fictitious and created for educational purposes only. Any resemblance to real organizations, contracts, or individuals is coincidental.
+</div>
+
+<!-- FLOATING IMAGE PANELS -->
+<div id="img-meridian" class="img-panel img-panel-left">
+  <div class="img-panel-header" onmousedown="startDrag(event,'img-meridian')">
+    <span>🏢 Meridian Precision Defense Systems</span>
+    <button class="img-panel-close" onclick="closeImg('img-meridian')" title="Close">✕</button>
+  </div>
+  <img src="Meridian.jpg" alt="Meridian Precision Defense Systems">
+</div>
+
+<div id="img-network" class="img-panel img-panel-right">
+  <div class="img-panel-header" onmousedown="startDrag(event,'img-network')">
+    <span>🌐 MPDS Network Diagram</span>
+    <button class="img-panel-close" onclick="closeImg('img-network')" title="Close">✕</button>
+  </div>
+  <img src="Network.jpg" alt="MPDS Network Diagram">
+</div>
+
+<!-- EDIT TOOLBAR (visible only in edit mode) -->
+<div id="edit-toolbar">
+  <span class="et-icon">✏</span>
+  <span>Edit Mode Active — click any text to modify it</span>
+  <span id="save-status"></span>
+  <button class="et-save" onclick="saveEdits()">💾 Save Now</button>
+  <button class="et-done" onclick="toggleEditMode()">✓ Done Editing</button>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="tag">DoD Subcontractor · Audit Training Scenario</div>
+  <h1>Meridian Precision <span>Defense Systems</span></h1>
+  <p>A complete, self-contained CMMC Level 2 audit training scenario supporting nine student document groups. Explore organizational data, find the gaps, and build your findings.</p>
+  <div class="hero-meta">
+    <div class="stat"><div class="num">147</div><div class="lbl">Employees</div></div>
+    <div class="stat"><div class="num">3</div><div class="lbl">Active Contracts</div></div>
+    <div class="stat"><div class="num">8</div><div class="lbl">Seeded Gaps</div></div>
+    <div class="stat"><div class="num">9</div><div class="lbl">Audit Documents</div></div>
+    <div class="stat"><div class="num">$17.9M</div><div class="lbl">Contract Value</div></div>
+  </div>
+</section>
+
+<!-- TAB NAV -->
+<nav id="tab-nav">
+  <button class="tab-btn active" onclick="showTab('overview')">🏢 Overview</button>
+  <button class="tab-btn" onclick="showTab('contracts')">📋 Contracts</button>
+  <button class="tab-btn" onclick="showTab('org')">👥 Organization</button>
+  <button class="tab-btn" onclick="showTab('it')">🖥 IT Environment</button>
+  <button class="tab-btn" onclick="showTab('posture')">🛡 Security Posture <span class="tb-num">8</span></button>
+  <button class="tab-btn" onclick="showTab('personnel')">🔑 Personnel & Training</button>
+  <button class="tab-btn" onclick="showTab('physical')">🏛 Physical Security</button>
+  <button class="tab-btn" onclick="showTab('incidents')">🚨 Incidents & Risks <span class="tb-num">6</span></button>
+  <button class="tab-btn" onclick="showTab('supply')">🔗 Supply Chain</button>
+  <button class="tab-btn" onclick="showTab('audit')">📂 Audit Documents</button>
+  <button class="tab-btn" onclick="showTab('instructor')">🎓 Instructor Guide</button>
+</nav>
+
+<main id="main">
+
+<!-- ═══════════════════════════════════════════ OVERVIEW ═══ -->
+<div id="tab-overview" class="tab-panel active">
+  <button class="img-btn" onclick="toggleImg('img-meridian')">
+    <span class="ib-icon">🏢</span> View Company Image
+  </button>
+  <div class="card">
+    <div class="card-header open" onclick="toggleCard(this)">
+      <div class="ch-icon">🏢</div>
+      <h2>Company Profile</h2>
+      <span class="ch-toggle">▼</span>
+    </div>
+    <div class="card-body open">
+      <div class="grid-2">
+        <div>
+          <div class="info-block"><h4>Legal Name</h4><p>Meridian Precision Defense Systems, Inc. (MPDS)</p></div>
+          <div class="info-block" style="margin-top:.75rem"><h4>CAGE Code</h4><p>7RK42</p></div>
+          <div class="info-block" style="margin-top:.75rem"><h4>UEI Number</h4><p>MPDS2024UEI881</p></div>
+          <div class="info-block" style="margin-top:.75rem"><h4>Year Founded</h4><p>1998</p></div>
+          <div class="info-block" style="margin-top:.75rem"><h4>Ownership</h4><p>Privately held — ESOP (~72% employee-owned, 28% founding family)</p></div>
+        </div>
+        <div>
+          <div class="info-block"><h4>Primary NAICS</h4><p>332995 — Other Ordnance and Accessories Manufacturing</p></div>
+          <div class="info-block" style="margin-top:.75rem"><h4>Secondary NAICS</h4><p>541330 — Engineering Services</p></div>
+          <div class="info-block" style="margin-top:.75rem"><h4>Revenue Range</h4><p>$28M–$34M annually (FY2024 estimate)</p></div>
+          <div class="info-block" style="margin-top:.75rem"><h4>Employees</h4><p>147 total — 112 Dayton OH · 35 Huntsville AL</p></div>
+          <div class="info-block" style="margin-top:.75rem"><h4>FOCI Status</h4><p>No known foreign ownership, control, or influence. Annual review completed March 2025.</p></div>
+        </div>
+      </div>
+      <div class="alert alert-blue" style="margin-top:1rem">
+        <span class="alert-icon">ℹ</span>
+        <div><strong>Mission:</strong> "To deliver precision-engineered defense components and systems integration services that meet the exacting standards of the U.S. warfighter — on time, on spec, and fully compliant."</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header open" onclick="toggleCard(this)">
+      <div class="ch-icon">📍</div>
+      <h2>Locations</h2>
+      <span class="ch-toggle">▼</span>
+    </div>
+    <div class="card-body open">
+      <div class="grid-2">
+        <div class="info-block">
+          <h4>Headquarters — Primary Site</h4>
+          <p>1440 Industrial Parkway<br>Dayton, OH 45401<br><small style="color:var(--gray3)">112 employees · All servers on-prem here · Primary CUI processing</small></p>
+        </div>
+        <div class="info-block">
+          <h4>Secondary Site</h4>
+          <p>820 Technology Drive<br>Huntsville, AL 35806<br><small style="color:var(--gray3)">35 employees · Systems Integration Team · Connected via IPsec VPN to Dayton</small></p>
+          <div class="alert alert-yellow" style="margin-top:.5rem; font-size:.78rem; padding:.5rem .75rem">
+            <span class="alert-icon">⚠</span>
+            <div>Commercial office lease — MPDS does not control building access system</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header open" onclick="toggleCard(this)">
+      <div class="ch-icon">⚙</div>
+      <h2>Core Competencies</h2>
+      <span class="ch-toggle">▼</span>
+    </div>
+    <div class="card-body open">
+      <ul style="padding-left:1.25rem; line-height:2">
+        <li>Precision machining and fabrication of guidance system housings and actuator assemblies</li>
+        <li>Systems integration support for unmanned aerial vehicle (UAV) subsystems</li>
+        <li>Technical data package (TDP) development and configuration documentation</li>
+        <li>Defense acquisition lifecycle support — engineering change proposals, failure analysis</li>
+      </ul>
+    </div>
+  </div>
+</div><!-- /overview -->
+
+<!-- ═══════════════════════════════════════════ CONTRACTS ═══ -->
+<div id="tab-contracts" class="tab-panel">
+  <div class="alert alert-blue">
+    <span class="alert-icon">📋</span>
+    <div>MPDS holds three active DoD contracts — one prime, one subcontract, one SBIR Phase II. All include DFARS 252.204-7012. The prime contract also includes 7019, 7020, and 7021.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-header open" onclick="toggleCard(this)">
+      <div class="ch-icon">①</div>
+      <h2>Contract 1 — Army Prime Contract (W58RGZ-23-C-0174)</h2>
+      <span class="ch-toggle">▼</span>
+    </div>
+    <div class="card-body open">
+      <div class="tbl-wrap">
+        <table>
+          <tbody>
+            <tr><td style="font-weight:700;width:200px">Contract Number</td><td>W58RGZ-23-C-0174</td></tr>
+            <tr><td style="font-weight:700">Agency</td><td>U.S. Army Aviation and Missile Command (AMCOM), Redstone Arsenal, AL</td></tr>
+            <tr><td style="font-weight:700">Type</td><td>Firm Fixed Price (FFP)</td></tr>
+            <tr><td style="font-weight:700">Value</td><td>$11.4M</td></tr>
+            <tr><td style="font-weight:700">Period of Performance</td><td>01 Oct 2023 – 30 Sep 2026</td></tr>
+            <tr><td style="font-weight:700">Deliverables</td><td>Actuator housing assemblies (NSN 1270-01-594-3311); associated TDPs; qualification test reports</td></tr>
+            <tr><td style="font-weight:700">CUI Categories</td><td>
+              <span class="pill pill-red">CUI//CTI</span>
+              <span class="pill pill-red">EAR99 Baseline</span>
+              <span class="pill pill-red">ITAR-Controlled Drawings</span>
+            </td></tr>
+            <tr><td style="font-weight:700">DFARS Clauses</td><td>
+              <span class="pill pill-blue">252.204-7012</span>
+              <span class="pill pill-blue">252.204-7019</span>
+              <span class="pill pill-blue">252.204-7020</span>
+              <span class="pill pill-blue">252.204-7021</span>
+            </td></tr>
+            <tr><td style="font-weight:700">Classified?</td><td>No — all CUI, no classified information</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header open" onclick="toggleCard(this)">
+      <div class="ch-icon">②</div>
+      <h2>Contract 2 — Raytheon Subcontract (RTX-SUB-2024-4489)</h2>
+      <span class="ch-toggle">▼</span>
+    </div>
+    <div class="card-body open">
+      <div class="tbl-wrap">
+        <table>
+          <tbody>
+            <tr><td style="font-weight:700;width:200px">Subcontract Number</td><td>RTX-SUB-2024-4489 / Prime: FA8650-24-C-0033</td></tr>
+            <tr><td style="font-weight:700">Agency (via Prime)</td><td>AFLCMC, Wright-Patterson AFB, OH (Raytheon Technologies prime)</td></tr>
+            <tr><td style="font-weight:700">Type</td><td>Cost Plus Fixed Fee (CPFF) subcontract</td></tr>
+            <tr><td style="font-weight:700">Value</td><td>$4.7M</td></tr>
+            <tr><td style="font-weight:700">Period of Performance</td><td>15 Mar 2024 – 14 Mar 2027</td></tr>
+            <tr><td style="font-weight:700">Deliverables</td><td>UAV airframe bracket design support; FEA reports; engineering drawings per MIL-DTL-31000C</td></tr>
+            <tr><td style="font-weight:700">CUI Categories</td><td>
+              <span class="pill pill-red">CUI//CTI</span>
+              <span class="pill pill-red">CUI//PRVCY (limited)</span>
+              <span class="pill pill-red">ITAR — 22 CFR Part 121</span>
+            </td></tr>
+            <tr><td style="font-weight:700">DFARS Clauses</td><td>
+              <span class="pill pill-blue">252.204-7012</span>
+              <span class="pill pill-blue">252.225-7048</span>
+              <span class="pill">Flow-down from Raytheon prime</span>
+            </td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header open" onclick="toggleCard(this)">
+      <div class="ch-icon">③</div>
+      <h2>Contract 3 — NAVAIR SBIR Phase II (N68335-22-C-0552)</h2>
+      <span class="ch-toggle">▼</span>
+    </div>
+    <div class="card-body open">
+      <div class="tbl-wrap">
+        <table>
+          <tbody>
+            <tr><td style="font-weight:700;width:200px">Contract Number</td><td>N68335-22-C-0552</td></tr>
+            <tr><td style="font-weight:700">Agency</td><td>Naval Air Systems Command (NAVAIR), Patuxent River, MD</td></tr>
+            <tr><td style="font-weight:700">Value</td><td>$1.85M</td></tr>
+            <tr><td style="font-weight:700">Period of Performance</td><td>01 Jun 2022 – 31 May 2025 (final reports phase)</td></tr>
+            <tr><td style="font-weight:700">Deliverables</td><td>R&D prototype — lightweight composite actuator; final technical report</td></tr>
+            <tr><td style="font-weight:700">CUI Categories</td><td>
+              <span class="pill pill-red">CUI//CTI</span>
+              <span class="pill pill-red">CUI//SP-EXPT</span>
+            </td></tr>
+            <tr><td style="font-weight:700">DFARS Clauses</td><td><span class="pill pill-blue">252.204-7012</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div><!-- /contracts -->
+
+<!-- ═══════════════════════════════════════════ ORG ═══ -->
+<div id="tab-org" class="tab-panel">
+  <div class="card">
+    <div class="card-header open" onclick="toggleCard(this)">
+      <div class="ch-icon">👥</div>
+      <h2>Key Personnel — Cybersecurity Responsibilities</h2>
+      <span class="ch-toggle">▼</span>
+    </div>
+    <div class="card-body open">
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Name</th><th>Title</th><th>Cybersecurity Role</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Marcus T. Ellison</strong></td><td>President / CEO</td><td>Authorizing Official (AO) — signs risk acceptance; CMMC compliance sponsor</td></tr>
+            <tr><td><strong>Diana L. Kowalczyk</strong></td><td>CISO / IT Security Manager</td><td>SSP owner; policy oversight; IR coordination; CMMC assessment lead; POA&M management</td></tr>
+            <tr><td><strong>Trevor J. Nakamura</strong></td><td>IT Administrator / Sys Admin</td><td>Day-to-day sysadmin; patch mgmt; account provisioning; backup mgmt; log collection</td></tr>
+            <tr><td><strong>Priya S. Mehta</strong></td><td>Contract Manager</td><td>DFARS clause tracking; CUI flow-down requirements; supplier agreements</td></tr>
+            <tr><td><strong>Renata M. Bauer</strong></td><td>HR Director</td><td>Personnel security; background checks; onboarding/offboarding; SAT enrollment</td></tr>
+            <tr><td><strong>Gregory A. Farris</strong></td><td>FSO / Physical Security Mgr</td><td>Physical access control; visitor management; media destruction; DISS records</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header open" onclick="toggleCard(this)">
+      <div class="ch-icon">🤝</div>
+      <h2>Third-Party Relationships</h2>
+      <span class="ch-toggle">▼</span>
+    </div>
+    <div class="card-body open">
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Party</th><th>Role</th><th>CUI Access?</th><th>Notes / Gaps</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>ClearPath IT Solutions</strong></td>
+              <td>Managed Service Provider (MSP)</td>
+              <td><span class="sev sev-notmet">YES</span></td>
+              <td>Remote admin via VPN · Month-to-month · <strong>No DFARS flow-down · No CMMC requirement in contract</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Microsoft (M365 GCC High)</strong></td>
+              <td>Cloud productivity suite</td>
+              <td><span class="sev sev-notmet">YES</span></td>
+              <td>FedRAMP High authorized · Meets ITAR/CUI for GCC High · Partially configured (see §IT)</td>
+            </tr>
+            <tr>
+              <td><strong>AWS GovCloud (US-West)</strong></td>
+              <td>Cloud compute — SBIR analysis</td>
+              <td><span class="sev sev-notmet">YES</span></td>
+              <td>FedRAMP High authorized · MPDS manages IAM directly · Root account MFA enabled</td>
+            </tr>
+            <tr>
+              <td><strong>Whitmore & Associates LLC</strong></td>
+              <td>External accounting (CPA)</td>
+              <td><span class="sev sev-met">NO</span></td>
+              <td>Read-only QuickBooks; not in SSP scope</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="alert alert-red" style="margin-top:.75rem">
+        <span class="alert-icon">🚨</span>
+        <div><strong>Critical Gap:</strong> ClearPath MSP holds standing domain admin rights with NO MFA, NO background check verification, NO contractual cybersecurity requirements, and NO right-to-audit provision. This is a supply chain risk and access control finding (GAP-02, GAP-06).</div>
+      </div>
+    </div>
+  </div>
+</div><!-- /org -->
+
+<!-- ═══════════════════════════════════════════ IT ═══ -->
+<div id="tab-it" class="tab-panel">
+  <div style="display:flex; justify-content:flex-end; margin-bottom:.25rem">
+    <button class="img-btn" onclick="toggleImg('img-network')">
+      <span class="ib-icon">🌐</span> View Network Diagram
+    </button>
+  </div>
+  <div class="card">
+    <div class="card-header open" onclick="toggleCard(this)">
+      <div class="ch-icon">🖥</div>
+      <h2>In-Scope Systems</h2>
+      <span class="ch-toggle">▼</span>
+    </div>
+    <div class="card-body open">
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>System ID</th><th>Name</th><th>Type</th><th>Platform</th><th>Location</th><th>CUI?</th></tr></thead>
+          <tbody>
+            <tr><td><span class="pill">SYS-001</span></td><td>MPDS-CORP-DC01</td><td>AD Domain Controller</td><td>Windows Server 2019</td><td>Dayton</td><td><span class="sev sev-notmet">Yes</span></td></tr>
+            <tr><td><span class="pill">SYS-002</span></td><td>MPDS-CORP-DC02</td><td>AD Secondary DC / DNS</td><td>Windows Server 2019</td><td>Dayton</td><td><span class="sev sev-notmet">Yes</span></td></tr>
+            <tr><td><span class="pill">SYS-003</span></td><td>MPDS-FILE-SRV01</td><td>Windows File Server</td><td>Windows Server 2022</td><td>Dayton</td><td><span class="sev sev-notmet">PRIMARY</span></td></tr>
+            <tr><td><span class="pill">SYS-004</span></td><td>MPDS-APP-LNX01</td><td>Linux App Server — PLM</td><td>Ubuntu 22.04 LTS</td><td>Dayton</td><td><span class="sev sev-notmet">Yes</span></td></tr>
+            <tr><td><span class="pill">SYS-005</span></td><td>MPDS-ENG-WS (×14)</td><td>Engineering Workstations CAD/CAM</td><td>Windows 10 Enterprise 22H2</td><td>Dayton</td><td><span class="sev sev-notmet">Yes</span></td></tr>
+            <tr><td><span class="pill">SYS-006</span></td><td>MPDS-HVL-WS (×6)</td><td>Engineering Workstations</td><td>Windows 11 Enterprise</td><td>Huntsville</td><td><span class="sev sev-notmet">Yes</span></td></tr>
+            <tr><td><span class="pill">SYS-007</span></td><td>M365-GCC-HIGH</td><td>M365 GCC High Tenant</td><td>Cloud — Microsoft</td><td>Cloud</td><td><span class="sev sev-notmet">Yes</span></td></tr>
+            <tr><td><span class="pill">SYS-008</span></td><td>AWS-GOVCLOUD-ENV</td><td>AWS GovCloud Compute/S3</td><td>Cloud — AWS</td><td>Cloud</td><td><span class="sev sev-notmet">Yes</span></td></tr>
+            <tr><td><span class="pill">SYS-009</span></td><td>MPDS-FW-01</td><td>Perimeter Firewall</td><td>Fortinet FortiGate 200F</td><td>Dayton</td><td><span class="sev sev-met">No</span></td></tr>
+            <tr><td><span class="pill">SYS-010</span></td><td>MPDS-VPN-GW</td><td>VPN Gateway</td><td>FortiGate 200F (module)</td><td>Dayton</td><td><span class="sev sev-met">No</span></td></tr>
+            <tr><td><span class="pill">SYS-011</span></td><td>MPDS-IDS-01</td><td>IDS/IPS Sensor</td><td>Snort 3.x on Ubuntu 20.04</td><td>Dayton</td><td><span class="sev sev-met">No</span></td></tr>
+            <tr><td><span class="pill">SYS-012</span></td><td>MPDS-PRNT-01</td><td>MFP Printer/Scanner</td><td>Xerox AltaLink C8045</td><td>Dayton</td><td><span class="sev sev-notmet">Yes</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header open" onclick="toggleCard(this)">
+      <div class="ch-icon">🌐</div>
+      <h2>Network Architecture — Dayton HQ</h2>
+      <span class="ch-toggle">▼</span>
+    </div>
+    <div class="card-body open">
+      <div class="alert alert-red">
+        <span class="alert-icon">🚨</span>
+        <div><strong>GAP-08:</strong> All three subnets route freely through the core Cisco Catalyst 2960-X switch. There is NO VLAN-enforced microsegmentation between CORP-LAN and ENG-LAN. A compromise on CORP-LAN has direct SMB/NFS access to CUI file stores.</div>
+      </div>
+      <div style="margin-top:1rem">
+        <div class="net-zone corp">
+          <div class="net-zone-label">CORP-LAN · 10.10.1.0/24</div>
+          <div class="net-devices">
+            <div class="net-device cui-dev">MPDS-CORP-DC01<span class="dev-id">SYS-001</span></div>
+            <div class="net-device cui-dev">MPDS-CORP-DC02<span class="dev-id">SYS-002</span></div>
+            <div class="net-device cui-dev">MPDS-FILE-SRV01<span class="dev-id">SYS-003</span></div>
+            <div class="net-device">Admin Workstations<span class="dev-id">General Users</span></div>
+          </div>
+        </div>
+        <div style="text-align:center;font-size:1.4rem;color:var(--red);margin:.25rem 0">⇅ <span style="font-size:.72rem;color:var(--red);font-weight:700">UNRESTRICTED ROUTING (GAP-08)</span></div>
+        <div class="net-zone eng">
+          <div class="net-zone-label">ENG-LAN · 10.10.2.0/24</div>
+          <div class="net-devices">
+            <div class="net-device cui-dev">MPDS-APP-LNX01<span class="dev-id">SYS-004 · PLM</span></div>
+            <div class="net-device cui-dev">MPDS-ENG-WS ×14<span class="dev-id">SYS-005 · CAD/CAM</span></div>
+            <div class="net-device gap-dev">MPDS-PRNT-01<span class="dev-id">SYS-012 · Xerox MFP</span></div>
+          </div>
+        </div>
+        <div style="text-align:center;font-size:1.4rem;color:var(--gray3);margin:.25rem 0">⇅</div>
+        <div class="net-zone mgmt">
+          <div class="net-zone-label">MGMT-LAN · 10.10.3.0/24</div>
+          <div class="net-devices">
+            <div class="net-device">IT Admin Systems<span class="dev-id">Nakamura</span></div>
+            <div class="net-device">MPDS-IDS-01<span class="dev-id">SYS-011</span></div>
+            <div class="net-device">FW Mgmt Interface<span class="dev-id">SYS-009</span></div>
+          </div>
+          <div class="alert alert-yellow" style="margin-top:.5rem;font-size:.78rem;padding:.4rem .6rem">
+            <span class="alert-icon">⚠</span><div>Mgmt-LAN access <strong>not enforced at switch level</strong> — policy-only segregation, not technical</div>
+          </div>
+        </div>
+        <div style="text-align:center;padding:1rem 0">
+          <div style="display:inline-block;background:var(--navy2);border-radius:8px;padding:.6rem 1.5rem;color:var(--white);font-size:.82rem;font-weight:700">
+            🔥 FortiGate 200F — SYS-009<br>
+            <span style="font-size:.7rem;color:var(--gray3);font-weight:400">Single ISP · 1Gbps · No DMZ · IPsec VPN on SYS-010</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:1rem">
+        <strong style="font-size:.85rem">Huntsville Secondary Site (192.168.5.0/24)</strong>
+        <div class="net-devices" style="margin-top:.5rem">
+          <div class="net-device cui-dev">MPDS-HVL-WS ×6<span class="dev-id">SYS-006</span></div>
+          <div class="net-device gap-dev">Cisco RV345<span class="dev-id">Perimeter Router</span></div>
+          <div class="net-device">Always-On IPsec Tunnel<span class="dev-id">→ Dayton DCs</span></div>
+        </div>
+        <div class="alert alert-red" style="margin-top:.5rem;font-size:.78rem">
+          <span class="alert-icon">🚨</span>
+          <div>Network equipment in <strong>unlocked utility closet</strong> accessible to building maintenance. MPDS does not control building access system.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header open" onclick="toggleCard(this)">
+      <div class="ch-icon">🔄</div>
+      <h2>CUI Data Flow</h2>
+      <span class="ch-toggle">▼</span>
+    </div>
+    <div class="card-body open">
+      <div class="flow">
+        <div class="flow-node">Contracting Agency / Prime<br><small>SFTP / Encrypted Email</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node cui">M365 GCC High<br><small>SYS-007 · Email receipt</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node cui">File Server<br><small>SYS-003 · Primary CUI store</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node cui">PLM (Arena)<br><small>SYS-004 · Drawings, BOMs</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node cui">ENG Workstations<br><small>SYS-005/006 · CAD/CAM</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node gap">PRNT-01 (SYS-012)<br><small>Hard-copy CUI output</small></div>
+      </div>
+      <div class="flow" style="margin-top:.5rem">
+        <div class="flow-node">SYS-003 (on-prem)</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node gap">Manual Upload<br><small>⚠ No automated control</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node cui">AWS GovCloud<br><small>SYS-008 · FEA data</small></div>
+      </div>
+      <div class="alert alert-yellow" style="margin-top:.75rem">
+        <span class="alert-icon">⚠</span>
+        <div><strong>Remote Access Gap (GAP-01):</strong> VPN authentication uses AD username/password only. MFA is enforced only at the M365 layer — not at the network access layer. ~22 VPN users, 6 accounts belong to former employees (GAP-02).</div>
+      </div>
+    </div>
+  </div>
+</div><!-- /it -->
+
+<!-- ═══════════════════════════════════════════ POSTURE ═══ -->
+<div id="tab-posture" class="tab-panel">
+  <div class="card">
+    <div class="card-header open" onclick="toggleCard(this)">
+      <div class="ch-icon">📄</div>
+      <h2>Existing Policies & Documents</h2>
+      <span class="ch-toggle">▼</span>
+    </div>
+    <div class="card-body open">
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>ID</th><th>Document Title</th><th>Version</th><th>Last Reviewed</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>POL-001</td><td>Access Control Policy</td><td>1.2</td><td>Jan 2024</td><td><span class="sev sev-met">Current</span></td></tr>
+            <tr><td>POL-002</td><td>Incident Response Plan</td><td>1.0</td><td>Mar 2022</td><td><span class="sev sev-notmet">Stale — 3+ yrs</span></td></tr>
+            <tr><td>POL-003</td><td>Configuration Management Plan</td><td>1.1</td><td>Sep 2023</td><td><span class="sev sev-partial">Aging</span></td></tr>
+            <tr><td>POL-004</td><td>Media Protection Policy</td><td>1.0</td><td>Nov 2021</td><td><span class="sev sev-notmet">Stale — 4+ yrs</span></td></tr>
+            <tr><td>POL-005</td><td>Security Awareness Training Program</td><td>2.0</td><td>Feb 2024</td><td><span class="sev sev-met">Current</span></td></tr>
+            <tr><td>POL-006</td><td>Risk Assessment Report</td><td>—</td><td>Jun 2023 (19+ mo ago)</td><td><span class="sev sev-notmet">Overdue</span></td></tr>
+            <tr><td>POL-007</td><td>System & Communications Protection Policy</td><td>1.0</td><td>Aug 2022</td><td><span class="sev sev-notmet">Stale — 3+ yrs</span></td></tr>
+            <tr><td>POL-008</td><td>System Security Plan (SSP)</td><td>2.1</td><td>Oct 2023</td><td><span class="sev sev-partial">Needs update</span></td></tr>
+            <tr><td>POL-009</td><td>Physical Security Plan</td><td>1.3</td><td>Jan 2024</td><td><span class="sev sev-met">Current</span></td></tr>
+            <tr><td>POL-010</td><td>Contingency / Business Continuity Plan</td><td>0.9 DRAFT</td><td>Never finalized</td><td><span class="sev sev-notmet">Draft — not approved</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header open" onclick="toggleCard(this)">
+      <div class="ch-icon">🚨</div>
+      <h2>Identified Security Gaps (8 Seeded Findings)</h2>
+      <span class="ch-toggle">▼</span>
+    </div>
+    <div class="card-body open">
+
+      <div class="gap-card">
+        <div class="gap-card-header critical" onclick="toggleGap(this)">
+          <span class="sev sev-critical">CRITICAL</span>
+          <h4>GAP-01 — MFA Not Enforced on SSL VPN</h4>
+          <span class="sev sev-notmet" style="margin-left:auto">IA</span>
+        </div>
+        <div class="gap-card-body">
+          <dl>
+            <dt>Domain</dt><dd>IA — Identification &amp; Authentication</dd>
+            <dt>Practice</dt><dd>3.5.3 — Use multifactor authentication for local and network access</dd>
+            <dt>Finding</dt><dd>Remote access to all in-scope systems is accessible with username/password only. MFA is enforced only at the M365 layer, not at the network access (VPN) layer.</dd>
+            <dt>Evidence Needed</dt><dd>VPN configuration screenshots; authentication logs; MFA policy documentation</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="gap-card">
+        <div class="gap-card-header critical" onclick="toggleGap(this)">
+          <span class="sev sev-critical">CRITICAL</span>
+          <h4>GAP-02 — Six Stale VPN Accounts for Separated Employees</h4>
+          <span class="sev sev-notmet" style="margin-left:auto">AC</span>
+        </div>
+        <div class="gap-card-body">
+          <dl>
+            <dt>Domain</dt><dd>AC — Access Control</dd>
+            <dt>Practices</dt><dd>3.1.1 — Limit system access to authorized users; 3.1.2 — Limit system access to transactions and functions users are authorized to execute</dd>
+            <dt>Finding</dt><dd>Six VPN accounts for separated employees remain active. No automated deprovisioning tie-in between Convergent HR and AD/VPN gateway.</dd>
+            <dt>Root Cause</dt><dd>Offboarding email notification process — VPN deprovisioning not included in offboarding checklist</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="gap-card">
+        <div class="gap-card-header high" onclick="toggleGap(this)">
+          <span class="sev sev-high">HIGH</span>
+          <h4>GAP-03 — Audit Logs Not Regularly Reviewed; 30-Day Retention</h4>
+          <span class="sev sev-partial" style="margin-left:auto">AU</span>
+        </div>
+        <div class="gap-card-body">
+          <dl>
+            <dt>Domain</dt><dd>AU — Audit &amp; Accountability</dd>
+            <dt>Practices</dt><dd>3.3.1 — Create and retain system audit logs; 3.3.2 — Ensure actions of individual users can be traced</dd>
+            <dt>Finding</dt><dd>SYS-003 and SYS-004 generate logs but no formal review process exists. Retention is 30 days (below 90-day minimum). No SIEM deployed.</dd>
+            <dt>Evidence Needed</dt><dd>Log retention configuration; review schedule / ticketing records; SIEM or equivalent documentation</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="gap-card">
+        <div class="gap-card-header high" onclick="toggleGap(this)">
+          <span class="sev sev-high">HIGH</span>
+          <h4>GAP-04 — No Asset Inventory; Unpatched Engineering Workstations</h4>
+          <span class="sev sev-partial" style="margin-left:auto">CM</span>
+        </div>
+        <div class="gap-card-body">
+          <dl>
+            <dt>Domain</dt><dd>CM — Configuration Management</dd>
+            <dt>Practices</dt><dd>3.4.1 — Establish and maintain baseline configurations; 3.4.2 — Establish and maintain a component inventory</dd>
+            <dt>Finding</dt><dd>Engineering workstations (SYS-005 ×14) not enrolled in any configuration management tool. ~4 workstations are 90+ days behind on critical Windows Updates. No formal asset inventory exists.</dd>
+            <dt>Evidence Needed</dt><dd>Patch management reports; WSUS/SCCM enrollment; configuration baseline documentation</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="gap-card">
+        <div class="gap-card-header high" onclick="toggleGap(this)">
+          <span class="sev sev-high">HIGH</span>
+          <h4>GAP-05 — No Formal POA&M; Informal Spreadsheet Not AO-Approved</h4>
+          <span class="sev sev-partial" style="margin-left:auto">CA</span>
+        </div>
+        <div class="gap-card-body">
+          <dl>
+            <dt>Domain</dt><dd>CA — Security Assessment</dd>
+            <dt>Practice</dt><dd>3.12.4 — Develop, document, and periodically update system security plans</dd>
+            <dt>Finding</dt><dd>Kowalczyk maintains an informal spreadsheet (stored in personal OneDrive — NOT GCC High). It has no version control, no remediation owners, no target dates, no resource estimates, and has not been reviewed by the AO in 18+ months.</dd>
+            <dt>Additional Gap</dt><dd>POA&M stored outside the authorized CUI boundary (personal OneDrive vs. GCC High tenant)</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="gap-card">
+        <div class="gap-card-header critical" onclick="toggleGap(this)">
+          <span class="sev sev-critical">CRITICAL</span>
+          <h4>GAP-06 — No Supply Chain Risk Management Program</h4>
+          <span class="sev sev-notmet" style="margin-left:auto">SR</span>
+        </div>
+        <div class="gap-card-body">
+          <dl>
+            <dt>Domain</dt><dd>SR — Supply Chain Risk Management</dd>
+            <dt>Practices</dt><dd>3.17.1 — Assess cybersecurity risks associated with suppliers; 3.17.2 — Use SCRM plans to reduce risk</dd>
+            <dt>Finding</dt><dd>MPDS has not assessed the cybersecurity posture of ClearPath MSP or any hardware/material suppliers. MSP contract contains no DFARS flow-down, no right-to-audit, and no cybersecurity requirements.</dd>
+            <dt>Scope</dt><dd>Affects ClearPath MSP, Acuitas Machining (receives CUI drawings), Secure Shred AL (handles CUI paper, no NDA)</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="gap-card">
+        <div class="gap-card-header high" onclick="toggleGap(this)">
+          <span class="sev sev-high">HIGH</span>
+          <h4>GAP-07 — IRP Not Tested Since 2022; Missing DIBCAC Reporting Language</h4>
+          <span class="sev sev-partial" style="margin-left:auto">IR</span>
+        </div>
+        <div class="gap-card-body">
+          <dl>
+            <dt>Domain</dt><dd>IR — Incident Response</dd>
+            <dt>Practices</dt><dd>3.6.1 — Establish an IR capability; 3.6.2 — Track, document, and report incidents; 3.6.3 — Test the IR capability</dd>
+            <dt>Finding</dt><dd>No tabletop exercise since IRP creation (2022). IRP lacks DFARS 72-hour reporting requirement language. Contact list includes former employee (Chen, PM — departed early 2024).</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="gap-card">
+        <div class="gap-card-header critical" onclick="toggleGap(this)">
+          <span class="sev sev-critical">CRITICAL</span>
+          <h4>GAP-08 — No Network Segmentation Between CORP-LAN and ENG-LAN</h4>
+          <span class="sev sev-notmet" style="margin-left:auto">SC</span>
+        </div>
+        <div class="gap-card-body">
+          <dl>
+            <dt>Domain</dt><dd>SC — System &amp; Communications Protection</dd>
+            <dt>Practice</dt><dd>3.13.3 — Separate user functionality from system management functionality</dd>
+            <dt>Finding</dt><dd>CUI on ENG-LAN (SYS-003, SYS-004, SYS-005) is reachable from CORP-LAN without restriction. A workstation compromise on CORP-LAN provides direct SMB/NFS access to all CUI file stores.</dd>
+          </dl>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div><!-- /posture -->
+
+<!-- ═══════════════════════════════════════════ PERSONNEL ═══ -->
+<div id="tab-personnel" class="tab-panel">
+  <div class="card">
+    <div class="card-header open" onclick="toggleCard(this)">
+      <div class="ch-icon">🔑</div>
+      <h2>Onboarding & Offboarding</h2>
+      <span class="ch-toggle">▼</span>
+    </div>
+    <div class="card-body open">
+      <div class="grid-2">
+        <div>
+          <h4 style="font-size:.85rem;margin-bottom:.5rem;color:var(--steel)">Onboarding</h4>
+          <ul style="padding-left:1.25rem;line-height:1.9;font-size:.87rem">
+            <li>Background check via HireRight prior to Day 1 (criminal, employment, education)</li>
+            <li>CUI Handling Agreement (Form HR-07) signed before AD account provisioned</li>
+            <li>IT provisioning via manual ticket from HR — avg. lag 1–2 business days</li>
+          </ul>
+        </div>
+        <div>
+          <h4 style="font-size:.85rem;margin-bottom:.5rem;color:var(--red)">Offboarding — GAPS</h4>
+          <ul style="padding-left:1.25rem;line-height:1.9;font-size:.87rem">
+            <li>HR notifies IT via <strong>email only</strong> — no formal workflow or checklist</li>
+            <li>Average AD account disable lag: <strong>3–7 business days after separation</strong></li>
+            <li><strong>VPN deprovisioning NOT part of standard offboarding</strong> (source of GAP-02)</li>
+            <li>Physical badge deactivation done by FSO Farris — generally same day</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header open" onclick="toggleCard(this)">
+      <div class="ch-icon">📚</div>
+      <h2>Security Awareness Training</h2>
+      <span class="ch-toggle">▼</span>
+    </div>
+    <div class="card-body open">
+      <div class="grid-2">
+        <div>
+          <div class="info-block"><h4>Platform</h4><p>KnowBe4 (annual subscription)</p></div>
+          <div class="info-block" style="margin-top:.5rem"><h4>Frequency</h4><p>Annual required training; quarterly phishing simulations</p></div>
+          <div class="info-block" style="margin-top:.5rem"><h4>Records Storage</h4><p>KnowBe4 platform; exported quarterly to M365 GCC High SharePoint</p></div>
+        </div>
+        <div>
+          <h4 style="font-size:.82rem;color:var(--gray3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.75rem">FY2024 Completion Rates</h4>
+          <div style="font-size:.84rem;margin-bottom:.25rem">Overall <strong>89%</strong></div>
+          <div class="prog-bar"><div class="prog-fill prog-blue" style="width:89%"></div></div>
+          <div style="font-size:.84rem;margin:.5rem 0 .25rem">Dayton <strong>94%</strong></div>
+          <div class="prog-bar"><div class="prog-fill prog-green" style="width:94%"></div></div>
+          <div style="font-size:.84rem;margin:.5rem 0 .25rem">Huntsville <strong>71%</strong> <span class="sev sev-high" style="font-size:.65rem">Below target</span></div>
+          <div class="prog-bar"><div class="prog-fill prog-yellow" style="width:71%"></div></div>
+        </div>
+      </div>
+      <div class="alert alert-yellow" style="margin-top:.75rem">
+        <span class="alert-icon">⚠</span>
+        <div><strong>Gap:</strong> No separate privileged-user training track. Nakamura and ClearPath MSP technicians receive the same standard annual training as all employees. NIST 800-171 practice 3.2.2 requires role-based training.</div>
+      </div>
+    </div>
+  </div>
+</div><!-- /personnel -->
+
+<!-- ═══════════════════════════════════════════ PHYSICAL ═══ -->
+<div id="tab-physical" class="tab-panel">
+  <div class="card">
+    <div class="card-header open" onclick="toggleCard(this)">
+      <div class="ch-icon">🏛</div>
+      <h2>Dayton HQ — Physical Controls</h2>
+      <span class="ch-toggle">▼</span>
+    </div>
+    <div class="card-body open">
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Area</th><th>Access Control</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>Main Entrance</td><td>HID card reader</td><td>Visitor check-in — paper log + photo ID</td></tr>
+            <tr><td>Rear Manufacturing Entrance</td><td>HID card reader</td><td>Manufacturing staff badge zone</td></tr>
+            <tr><td>Server Room (Room 104)</td><td>HID card + PIN keypad</td><td>Accessible to Nakamura, Kowalczyk, Ellison. MSP escorted — <strong>escort policy informal (not documented)</strong></td></tr>
+            <tr><td>Engineering Area</td><td>Corporate badge only</td><td><strong>No separate access control</strong> — all CORP badge holders can reach ENG workstations</td></tr>
+            <tr><td>Manufacturing Floor</td><td>Separate badge zone</td><td>Required for floor personnel and visitors</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="alert alert-yellow" style="margin-top:.75rem">
+        <span class="alert-icon">⚠</span>
+        <div>Server room has APC UPS (2 kVA), wall HVAC, smoke detector. <strong>No water/humidity sensor. No formal environmental monitoring log.</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header open" onclick="toggleCard(this)">
+      <div class="ch-icon">🔴</div>
+      <h2>Huntsville — Physical Security Gaps</h2>
+      <span class="ch-toggle">▼</span>
+    </div>
+    <div class="card-body open">
+      <div class="alert alert-red">
+        <span class="alert-icon">🚨</span>
+        <div>Commercial office lease. MPDS does not control the building access control system. Network switch and UPS are in an <strong>unlocked utility closet accessible to building maintenance</strong>. No local IT staff present.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header open" onclick="toggleCard(this)">
+      <div class="ch-icon">🗑</div>
+      <h2>Media Handling & Destruction</h2>
+      <span class="ch-toggle">▼</span>
+    </div>
+    <div class="card-body open">
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Media Type</th><th>Location</th><th>Method</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>Hard-copy CUI</td><td>Dayton</td><td>Cross-cut shredder (DIN 66399 P-4)</td><td><span class="sev sev-met">Compliant</span></td></tr>
+            <tr><td>Hard-copy CUI</td><td>Huntsville</td><td>Secure Shred AL (offsite vendor)</td><td><span class="sev sev-notmet">NO NDA — No CUI handling agreement</span></td></tr>
+            <tr><td>Digital media (HDD/USB)</td><td>Dayton</td><td>Degauss + physical destruction, Assured Destruction Services — certs retained</td><td><span class="sev sev-met">Compliant</span></td></tr>
+            <tr><td>Decommissioned HDDs ×3 (2022)</td><td>Dayton server room</td><td><strong>Awaiting disposal in cardboard box</strong></td><td><span class="sev sev-notmet">Untracked — No timeline</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div><!-- /physical -->
+
+<!-- ═══════════════════════════════════════════ INCIDENTS ═══ -->
+<div id="tab-incidents" class="tab-panel">
+  <div class="card">
+    <div class="card-header open" onclick="toggleCard(this)">
+      <div class="ch-icon">🚨</div>
+      <h2>Incident History</h2>
+      <span class="ch-toggle">▼</span>
+    </div>
+    <div class="card-body open">
+
+      <div class="alert alert-red">
+        <span class="alert-icon">📌</span>
+        <div><strong>Incident 1 — Phishing / Malware Attempt (Oct 2023)</strong><br>
+        PM Kowalski received a spearphishing email impersonating the Army contracting officer. Kowalski clicked the link; CrowdStrike Falcon (Dayton only) blocked the payload. Informally reported to Nakamura via chat. No formal IR report filed. Kowalczyk learned of it two weeks later in casual conversation. <strong>No DIBCAC notification made.</strong></div>
+      </div>
+      <div class="alert alert-yellow" style="margin-top:.75rem">
+        <span class="alert-icon">📌</span>
+        <div><strong>Incident 2 — Lost USB Drive (Feb 2024)</strong><br>
+        Engineering technician reported losing a USB drive that "may have had some drawing files on it." Drive was <strong>unencrypted</strong>. No formal investigation. No determination made of whether CUI was on the drive. <strong>No DoD notification made.</strong> Media Protection Policy prohibits unencrypted removable media — enforcement is policy-only, no technical control.</div>
+      </div>
+
+      <div class="alert alert-blue" style="margin-top:.75rem">
+        <span class="alert-icon">ℹ</span>
+        <div>MPDS has submitted <strong>zero reports</strong> to the DoD CIO cyber incident reporting portal (dibnet.dod.mil) in the past 24 months. The non-reporting decision for both incidents was made informally without documented analysis against DFARS 252.204-7012(c) thresholds.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header open" onclick="toggleCard(this)">
+      <div class="ch-icon">📊</div>
+      <h2>Open Risk Register</h2>
+      <span class="ch-toggle">▼</span>
+    </div>
+    <div class="card-body open">
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Risk ID</th><th>Description</th><th>Likelihood</th><th>Impact</th><th>Level</th><th>Remediation</th><th>Owner</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>RISK-01</td>
+              <td>Unpatched ENG workstations exploited via network</td>
+              <td>High</td><td>High</td>
+              <td><span class="sev sev-critical">Critical</span></td>
+              <td>Planned — no target date</td>
+              <td>Nakamura</td>
+            </tr>
+            <tr>
+              <td>RISK-02</td>
+              <td>MSP privileged access abused or compromised (no MFA, no SCRM)</td>
+              <td>Medium</td><td>High</td>
+              <td><span class="sev sev-high">High</span></td>
+              <td>No remediation initiated</td>
+              <td>Kowalczyk</td>
+            </tr>
+            <tr>
+              <td>RISK-03</td>
+              <td>Stale VPN accounts used by former employee or attacker</td>
+              <td>Medium</td><td>High</td>
+              <td><span class="sev sev-high">High</span></td>
+              <td>Partial — HR notified; IT review pending</td>
+              <td>Nakamura</td>
+            </tr>
+            <tr>
+              <td>RISK-04</td>
+              <td>CUI exfiltrated via unencrypted removable media</td>
+              <td>Medium</td><td>Medium</td>
+              <td><span class="sev sev-medium">Medium</span></td>
+              <td>Policy exists; no technical enforcement</td>
+              <td>Kowalczyk / Nakamura</td>
+            </tr>
+            <tr>
+              <td>RISK-05</td>
+              <td>Fire/flood in Dayton server room — no offsite backup for SYS-003</td>
+              <td>Low</td><td>High</td>
+              <td><span class="sev sev-medium">Medium</span></td>
+              <td>Backups to local NAS only — no offsite</td>
+              <td>Nakamura</td>
+            </tr>
+            <tr>
+              <td>RISK-06</td>
+              <td>Huntsville utility closet equipment physically accessed/tampered</td>
+              <td>Low</td><td>Medium</td>
+              <td><span class="sev sev-low">Low-Med</span></td>
+              <td>Not addressed</td>
+              <td>Farris</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="alert alert-red" style="margin-top:.75rem">
+        <span class="alert-icon">🚨</span>
+        <div><strong>POA&M Status (GAP-05):</strong> Informal spreadsheet only. Maintained by Kowalczyk in personal OneDrive (outside GCC High CUI boundary). Not AO-approved. Not version-controlled. Oct 2023 and Feb 2024 incidents not captured. No completion history for any closed items.</div>
+      </div>
+    </div>
+  </div>
+</div><!-- /incidents -->
+
+<!-- ═══════════════════════════════════════════ SUPPLY ═══ -->
+<div id="tab-supply" class="tab-panel">
+  <div class="card">
+    <div class="card-header open" onclick="toggleCard(this)">
+      <div class="ch-icon">🔗</div>
+      <h2>Critical Suppliers</h2>
+      <span class="ch-toggle">▼</span>
+    </div>
+    <div class="card-body open">
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Supplier</th><th>Role</th><th>CUI Access?</th><th>DFARS Flow-Down?</th><th>Assessment?</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>ClearPath IT Solutions</strong></td>
+              <td>MSP — remote admin, helpdesk</td>
+              <td><span class="sev sev-notmet">YES — domain admin</span></td>
+              <td><span class="sev sev-notmet">NO</span></td>
+              <td><span class="sev sev-notmet">NO</span></td>
+            </tr>
+            <tr>
+              <td><strong>FastenerTech Supply</strong></td>
+              <td>Precision hardware components</td>
+              <td><span class="sev sev-met">No</span></td>
+              <td>N/A</td>
+              <td>N/A</td>
+            </tr>
+            <tr>
+              <td><strong>AeroComp Composites LLC</strong></td>
+              <td>Composite structural parts for UAV brackets</td>
+              <td><span class="sev sev-partial">2D drawings via encrypted email</span></td>
+              <td><span class="sev sev-partial">Partial — ref. in PO, not verified</span></td>
+              <td><span class="sev sev-notmet">NO</span></td>
+            </tr>
+            <tr>
+              <td><strong>Acuitas Machining Inc.</strong></td>
+              <td>Sub-tier machining overflow</td>
+              <td><span class="sev sev-notmet">YES — SharePoint link (GCC High)</span></td>
+              <td><span class="sev sev-notmet">NO formal agreement</span></td>
+              <td><span class="sev sev-notmet">NO</span></td>
+            </tr>
+            <tr>
+              <td><strong>Secure Shred AL</strong></td>
+              <td>Offsite paper shredding (Huntsville)</td>
+              <td><span class="sev sev-notmet">Physical CUI paper</span></td>
+              <td><span class="sev sev-notmet">NO NDA — no CUI handling agreement</span></td>
+              <td><span class="sev sev-notmet">NO</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header open" onclick="toggleCard(this)">
+      <div class="ch-icon">☁</div>
+      <h2>Cloud Service Providers</h2>
+      <span class="ch-toggle">▼</span>
+    </div>
+    <div class="card-body open">
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Provider</th><th>Service</th><th>FedRAMP</th><th>CUI Compliant?</th><th>IAM Owner</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Microsoft M365 GCC High</strong></td>
+              <td>Email, Teams, SharePoint, OneDrive</td>
+              <td><span class="sev sev-met">High — Authorized</span></td>
+              <td><span class="sev sev-partial">Platform: Yes; Config: Partial</span></td>
+              <td>Nakamura (Global Admin)</td>
+            </tr>
+            <tr>
+              <td><strong>AWS GovCloud (US-West)</strong></td>
+              <td>Compute, S3 — SBIR analysis</td>
+              <td><span class="sev sev-met">High — Authorized</span></td>
+              <td><span class="sev sev-met">Yes</span></td>
+              <td>Nakamura (root acct, MFA enabled)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="alert alert-yellow" style="margin-top:.75rem">
+        <span class="alert-icon">⚠</span>
+        <div><strong>M365 Configuration Gaps:</strong> (a) Conditional Access policies partially configured — guest access to SharePoint not fully restricted. (b) Shared service account <code>mpds-admin@meridianpds.onmicrosoft.com</code> holds Global Admin rights with no individual owner assigned.</div>
+      </div>
+    </div>
+  </div>
+</div><!-- /supply -->
+
+<!-- ═══════════════════════════════════════════ AUDIT DOCS ═══ -->
+<div id="tab-audit" class="tab-panel">
+  <div class="alert alert-blue">
+    <span class="alert-icon">📂</span>
+    <div>Nine student groups — each assigned one audit document. All groups receive the <strong>full case study</strong>. Expand each document below to see scope, key sections, CMMC domains, and the primary finding to identify.</div>
+  </div>
+
+  <div id="doc-cards"></div>
+</div><!-- /audit -->
+
+<!-- ═══════════════════════════════════════════ INSTRUCTOR ═══ -->
+<div id="tab-instructor" class="tab-panel">
+  <div class="card">
+    <div class="card-header open" onclick="toggleCard(this)">
+      <div class="ch-icon">🎓</div>
+      <h2>Logistics & Delivery Options</h2>
+      <span class="ch-toggle">▼</span>
+    </div>
+    <div class="card-body open">
+      <div class="grid-3">
+        <div class="info-block"><h4>Group Size</h4><p>3–5 students per document group (9 groups total; 27–45 students)</p></div>
+        <div class="info-block"><h4>Distribution</h4><p>Full case study to all groups — real auditors review full organizational context</p></div>
+        <div class="info-block"><h4>Duration</h4><p>Recommended 2–3 hours in-class plus 30–60 min prep reading</p></div>
+      </div>
+      <div style="margin-top:1rem">
+        <h4 style="font-size:.85rem;margin-bottom:.5rem;color:var(--steel)">Deliverable Options</h4>
+        <div class="grid-3">
+          <div class="alert alert-blue"><span class="alert-icon">📝</span><div><strong>Option A — Foundational</strong><br>Written findings memo (1–2 pp): list findings, cite NIST 800-171 practice IDs, assign severity, recommend remediation.</div></div>
+          <div class="alert alert-yellow"><span class="alert-icon">📋</span><div><strong>Option B — Intermediate</strong><br>Formal audit workpaper in C3PAO style — finding narrative, evidence required, practice met/not met determination.</div></div>
+          <div class="alert alert-red"><span class="alert-icon">🎤</span><div><strong>Option C — Advanced</strong><br>Mock debrief oral presentation (10 min) to "MPDS executive team" — deliver findings and respond to pushback.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="instructor-qs"></div>
+</div><!-- /instructor -->
+
+</main>
+
+<script>
+// ── Tab switching ──────────────────────────────────────────
+function showTab(id) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+// ── Card toggle ────────────────────────────────────────────
+function toggleCard(header) {
+  header.classList.toggle('open');
+  header.nextElementSibling.classList.toggle('open');
+}
+
+// ── Gap toggle ─────────────────────────────────────────────
+function toggleGap(header) {
+  header.nextElementSibling.classList.toggle('open');
+}
+
+// ── Audit Documents Data ───────────────────────────────────
+const docs = [
+  {
+    num:1, title:'System Security Plan (SSP)',
+    sections:'§1, §2, §4, §5',
+    domains:'All 14 domains — system boundary, CUI scope, control implementation',
+    finding:'SSP not updated to reflect Huntsville expansion; MSP not documented as external service provider per scoping guidance',
+    questions:[
+      'The SSP was last updated Oct 2023. DFARS 252.204-7019 requires annual affirmation. What environmental changes since that date trigger an SSP update, and how does this relate to practice 3.12.4?',
+      'Huntsville shares an AD domain and authenticates over VPN to Dayton DCs. Should Huntsville be a separate authorization boundary or included in the same SSP? Justify using CMMC scoping guidance.',
+      'ClearPath MSP has domain admin access. How should an external service provider with privileged access be represented in an SSP, and what additional artifacts (FIPS 140-2, background checks) should be documented?'
+    ]
+  },
+  {
+    num:2, title:'Plan of Action & Milestones (POA&M)',
+    sections:'§5, §8',
+    domains:'All domains — gap remediation, AO accountability',
+    finding:"POA&M stored in personal OneDrive (outside CUI boundary); no AO signature; no target dates; incidents not captured",
+    questions:[
+      "Kowalczyk's informal POA&M is stored in her personal OneDrive, not in GCC High. Beyond the CMMC compliance implication, what operational risks arise, and how does this undermine the POA&M's accountability function?",
+      'GAP-01 (no MFA on VPN) and GAP-02 (stale accounts) represent a chain of risk. Should these be one POA&M entry or two? What are the tradeoffs of each approach?',
+      "The POA&M has never been reviewed by the AO (CEO Ellison). Under NIST SP 800-171A and CMMC methodology, what is the AO's required role in POA&M management, and what evidence would an assessor look for?"
+    ]
+  },
+  {
+    num:3, title:'Network Diagram & Architecture Review',
+    sections:'§4',
+    domains:'SC (3.13.x), CM (3.4.x), AC (3.1.x)',
+    finding:'No VLAN segmentation between CORP-LAN and ENG-LAN; Huntsville on single flat subnet; no DMZ',
+    questions:[
+      'MPDS has no formal DMZ and all subnets route freely through the core switch. Map the specific NIST 800-171 practices within SC 3.13.x that may be unmet and describe the minimum segmentation change to move toward compliance.',
+      "Huntsville uses a landlord-managed key fob system with no local IT staff. What compensating controls, if any, are acceptable for this site's physical and logical security risks?",
+      'CUI data flows show FEA files are "manually uploaded" to AWS GovCloud. What specific AC, SC, and AU domain practices are implicated, and what questions would you ask to assess whether they are met?'
+    ]
+  },
+  {
+    num:4, title:'Access Control Policy & User Access Review',
+    sections:'§3, §4, §5, §6',
+    domains:'AC (3.1.1–3.1.22), IA (3.5.1–3.5.11)',
+    finding:'Six stale VPN accounts; MSP standing domain admin with no MFA; no automated deprovisioning',
+    questions:[
+      'Six VPN accounts for separated employees remain active. Identify the specific NIST 800-171 practices violated, explain the mechanism of the gap, and propose a short-term remediation AND a long-term preventive control.',
+      'The ClearPath MSP account has standing domain admin rights with no MFA. Evaluate against practices 3.1.5 (least privilege), 3.1.6 (non-privileged account use), and 3.5.3 (MFA). What is the minimum change set for compliance?',
+      'The Access Control Policy (POL-001) was last reviewed Jan 2024 but several conditions have changed. What is the standard for determining whether a policy is "current," and how would you document a finding for an outdated-but-technically-accurate policy?'
+    ]
+  },
+  {
+    num:5, title:'Incident Response Plan Review',
+    sections:'§5, §6, §8',
+    domains:'IR (3.6.1–3.6.3)',
+    finding:'IRP not tested since 2022; no DIBCAC reporting language; stale contact list; neither incident reported to DoD',
+    questions:[
+      'Neither the phishing incident (Oct 2023) nor the lost USB drive (Feb 2024) was reported to DoD via dibnet.dod.mil. Using DFARS 252.204-7012(c), evaluate whether each incident met the reporting threshold. What information would you need, and what is the consequence of incorrect non-reporting?',
+      'The IRP contact list includes a former employee (Chen, PM — departed early 2024). Beyond updating the contact, what process controls prevent contact list decay, and which NIST 800-171 practices most directly apply?',
+      'No tabletop exercise has been conducted since 2022. Practice 3.6.3 requires testing IR capability. Design a 30-minute tabletop using the Oct 2023 phishing incident as the trigger. What roles must participate, and what outcomes demonstrate IR capability?'
+    ]
+  },
+  {
+    num:6, title:'Risk Assessment Report',
+    sections:'§5, §7, §8, §9',
+    domains:'RA (3.11.1–3.11.3), CA (3.12.1–3.12.4)',
+    finding:'Risk assessment 19+ months old; POA&M not AO-approved; 3 decommissioned HDDs untracked',
+    questions:[
+      'The last formal risk assessment was Jun 2023 — now 19+ months ago. Practice 3.11.1 requires organizations to "periodically assess risk." What constitutes "periodically," and what triggering events at MPDS should have prompted a reassessment?',
+      "RISK-05 (no offsite backup) is rated Low-Medium because likelihood is low. Critique this rating using NIST SP 800-30 methodology. Is the likelihood defensible given single-ISP dependency and no environmental monitoring in the server room?",
+      "Huntsville's network equipment is in an unlocked utility closet (RISK-06, rated Low-Medium). How does this physical gap interact with the encrypted VPN tunnel as a logical control? Does the layered control change the residual risk rating?"
+    ]
+  },
+  {
+    num:7, title:'Supply Chain Risk Management Review',
+    sections:'§2, §9',
+    domains:'SR (3.17.1–3.17.3), CM (3.4.x)',
+    finding:'Acuitas Machining receives CUI drawings with no agreement; Secure Shred AL has no NDA; MSP has no DFARS flow-down',
+    questions:[
+      'Acuitas Machining receives CUI drawings via SharePoint with no formal agreement, no DFARS flow-down, and no CMMC requirement. Practice 3.17.2 requires protecting CUI in supply chains. What contractual and technical controls must MPDS implement before the next drawing package is shared?',
+      'ClearPath MSP has no SOC 2 report, no right-to-audit, and no cybersecurity contractual requirements. Rank the three most critical contractual remediation items in priority order with a risk-based rationale tied to specific CMMC practices.',
+      'AeroComp Composites receives 2D drawings via encrypted email. DFARS 7012 is "referenced" in PO terms but not verified. What does "verified" mean for supply chain CMMC compliance, and what evidence would an assessor expect?'
+    ]
+  },
+  {
+    num:8, title:'Configuration Management & Patch Status Review',
+    sections:'§4, §5',
+    domains:'CM (3.4.1–3.4.9), SI (3.14.1–3.14.7)',
+    finding:'~4 workstations 90+ days behind on patches; no asset inventory or configuration management tool; printer not in patch scope',
+    questions:[
+      'Four engineering workstations are 90+ days behind on Windows Update. Using practices 3.14.1 (flaw remediation) and 3.4.1 (baseline configuration), describe what an assessor would look for as evidence these practices are met, and what artifacts MPDS must produce.',
+      'The Configuration Management Plan (POL-003) was last reviewed Sep 2023 and references no configuration management tool. Practice 3.4.2 requires baseline configurations. Is a CMP document without tooling sufficient to meet 3.4.2, and what must MPDS add?',
+      'SYS-012 (Xerox AltaLink C8045 MFP) processes CUI. Printers are frequently overlooked in patch programs. What CMMC practices apply to networked printers in scope, and what specific questions assess printer security posture?'
+    ]
+  },
+  {
+    num:9, title:'Audit & Accountability Log Review',
+    sections:'§4, §5, §8',
+    domains:'AU (3.3.1–3.3.9)',
+    finding:'30-day log retention; no log review process; phishing incident not formally logged; M365 Conditional Access partially configured',
+    questions:[
+      'Logs on SYS-003 and SYS-004 are retained for only 30 days with no formal review process. Practices 3.3.1 and 3.3.2 require audit record generation and protection. What is the minimum retention period supported by NIST guidance, and how would you document this finding?',
+      'The Oct 2023 phishing incident was blocked by CrowdStrike but no formal incident report or audit log workflow was triggered. Evaluate what AU controls (3.3.1–3.3.5) should have fired and trace each failure point.',
+      'MPDS has no SIEM. Practice 3.3.2 requires protecting audit records from unauthorized access, modification, and deletion. What alternative mechanisms could meet 3.3.2 without a full SIEM, and what evidence would each produce for an assessment?'
+    ]
+  }
+];
+
+// Render doc cards
+const docContainer = document.getElementById('doc-cards');
+docs.forEach(d => {
+  docContainer.innerHTML += `
+    <div class="doc-card">
+      <div class="doc-card-header" onclick="this.nextElementSibling.classList.toggle('open')">
+        <div class="doc-num">${d.num}</div>
+        <h3>${d.title}</h3>
+      </div>
+      <div class="doc-card-body">
+        <div class="grid-2" style="margin-bottom:.75rem">
+          <div class="info-block"><h4>Primary Case Study Sections</h4><p>${d.sections}</p></div>
+          <div class="info-block"><h4>Key CMMC Domains &amp; Practices</h4><p>${d.domains}</p></div>
+        </div>
+        <div class="alert alert-red">
+          <span class="alert-icon">🔍</span>
+          <div><strong>Primary Finding to Identify:</strong> ${d.finding}</div>
+        </div>
+        <div style="margin-top:.75rem">
+          <strong style="font-size:.82rem;color:var(--gray3);text-transform:uppercase;letter-spacing:.05em">Discussion Questions</strong>
+          ${d.questions.map((q,i) => `<div class="q-block"><p><span class="q-num">Q${i+1}.</span>${q}</p></div>`).join('')}
+        </div>
+      </div>
+    </div>`;
+});
+
+// Render instructor Q sections
+const iqContainer = document.getElementById('instructor-qs');
+docs.forEach(d => {
+  iqContainer.innerHTML += `
+    <div class="card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="ch-icon">${d.num}</div>
+        <h2>Doc ${d.num} — ${d.title}</h2>
+        <span class="ch-toggle">▼</span>
+      </div>
+      <div class="card-body">
+        <div class="alert alert-blue" style="margin-bottom:.75rem">
+          <span class="alert-icon">🎯</span>
+          <div><strong>Bloom's Target:</strong> Analyze, Evaluate, Create — not just recall. Students must synthesize evidence from multiple sections.<br>
+          <strong>Key Finding:</strong> ${d.finding}</div>
+        </div>
+        ${d.questions.map((q,i) => `<div class="q-block"><p><span class="q-num">Q${i+1}.</span>${q}</p></div>`).join('')}
+      </div>
+    </div>`;
+});
+
+// ── Image Viewer ───────────────────────────────────────────
+
+function toggleImg(id) {
+  const panel = document.getElementById(id);
+  if (!panel) return;
+  panel.classList.toggle('show');
+}
+
+function closeImg(id) {
+  const panel = document.getElementById(id);
+  if (panel) panel.classList.remove('show');
+}
+
+// Drag-to-reposition panels
+function startDrag(e, id) {
+  const panel = document.getElementById(id);
+  if (!panel) return;
+  const rect = panel.getBoundingClientRect();
+  const offX = e.clientX - rect.left;
+  const offY = e.clientY - rect.top;
+
+  // Switch from CSS class positioning to absolute inline positioning
+  panel.style.left   = rect.left + 'px';
+  panel.style.top    = rect.top  + 'px';
+  panel.style.right  = 'auto';
+  panel.style.bottom = 'auto';
+
+  function onMove(ev) {
+    panel.style.left = (ev.clientX - offX) + 'px';
+    panel.style.top  = (ev.clientY - offY) + 'px';
+  }
+  function onUp() {
+    document.removeEventListener('mousemove', onMove);
+    document.removeEventListener('mouseup',   onUp);
+  }
+  document.addEventListener('mousemove', onMove);
+  document.addEventListener('mouseup',   onUp);
+}
+
+// ── Edit & Print System ────────────────────────────────────
+
+const STORAGE_KEY = 'mpds_case_study_edits_v1';
+let editMode = false;
+
+const EDITABLE_SEL = [
+  '.card-body td',
+  '.card-body p',
+  '.card-body li',
+  '.card-body h2',
+  '.card-body dd',
+  '.card-body dt',
+  '.card-body h4',
+  '.gap-card-body dd',
+  '.gap-card-body dt',
+  '.doc-card-body p',
+  '.doc-card-body h3',
+  '.alert > div',
+  '.info-block p',
+  '.info-block h4',
+  '.q-block p',
+  '#hero p',
+  '.hero-meta .num',
+  '.hero-meta .lbl',
+  '.net-zone-label',
+].join(', ');
+
+function assignEditIds() {
+  document.querySelectorAll(EDITABLE_SEL).forEach((el, i) => {
+    if (!el.dataset.editId && !el.closest('#toast') && !el.closest('#edit-toolbar')) {
+      el.dataset.editId = 'e' + i;
+    }
+  });
+}
+
+function toggleEditMode() {
+  editMode = !editMode;
+  document.body.classList.toggle('edit-active', editMode);
+
+  const btn = document.getElementById('edit-btn');
+  const toolbar = document.getElementById('edit-toolbar');
+
+  if (editMode) {
+    document.querySelectorAll('[data-edit-id]').forEach(el => {
+      el.contentEditable = 'true';
+      el.spellcheck = true;
+    });
+    btn.textContent = '✓ Exit Edit Mode';
+    btn.classList.add('btn-active');
+    toolbar.classList.add('visible');
+    showToast('Edit mode on — click any text to edit');
+  } else {
+    document.querySelectorAll('[data-edit-id]').forEach(el => {
+      el.contentEditable = 'false';
+    });
+    btn.textContent = '✏ Edit Mode';
+    btn.classList.remove('btn-active');
+    toolbar.classList.remove('visible');
+    saveEdits();
+    showToast('Changes saved');
+  }
+}
+
+function saveEdits() {
+  const data = {};
+  document.querySelectorAll('[data-edit-id]').forEach(el => {
+    data[el.dataset.editId] = el.innerHTML;
+  });
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    const ts = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    updateSaveStatus('Saved ' + ts);
+  } catch(e) {
+    updateSaveStatus('Save failed — storage full?');
+  }
+}
+
+function loadEdits() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (!raw) return;
+  try {
+    const data = JSON.parse(raw);
+    let count = 0;
+    document.querySelectorAll('[data-edit-id]').forEach(el => {
+      if (data[el.dataset.editId] !== undefined) {
+        el.innerHTML = data[el.dataset.editId];
+        count++;
+      }
+    });
+    if (count > 0) updateSaveStatus('Restored ' + count + ' saved edits');
+  } catch(e) {}
+}
+
+function resetEdits() {
+  if (!confirm('Reset all edits and restore the original case study content?\n\nThis cannot be undone.')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  showToast('Resetting…');
+  setTimeout(() => location.reload(), 600);
+}
+
+function updateSaveStatus(msg) {
+  const el = document.getElementById('save-status');
+  if (el) el.textContent = msg;
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// Auto-save 1.5 s after last keystroke in edit mode
+document.addEventListener('input', (e) => {
+  if (editMode && e.target.dataset.editId) {
+    updateSaveStatus('Unsaved changes…');
+    clearTimeout(window._autoSave);
+    window._autoSave = setTimeout(saveEdits, 1500);
+  }
+});
+
+// Plain-text paste only while editing
+document.addEventListener('paste', (e) => {
+  if (!editMode || !e.target.dataset.editId) return;
+  e.preventDefault();
+  const text = (e.clipboardData || window.clipboardData).getData('text/plain');
+  document.execCommand('insertText', false, text);
+});
+
+// ── Print ──────────────────────────────────────────────────
+
+function printCurrentTab() {
+  const active = document.querySelector('.tab-panel.active');
+  if (!active) return;
+  active.querySelectorAll('.card-body, .gap-card-body, .doc-card-body').forEach(el => el.classList.add('print-open'));
+  document.body.classList.add('print-single');
+  document.getElementById('main').dataset.printLabel =
+    (active.id || '').replace('tab-', '').replace(/-/g,' ').toUpperCase();
+  window.print();
+  setTimeout(() => {
+    document.body.classList.remove('print-single');
+    document.querySelectorAll('.print-open').forEach(el => el.classList.remove('print-open'));
+  }, 1000);
+}
+
+function printAll() {
+  document.querySelectorAll('.card-body, .gap-card-body, .doc-card-body').forEach(el => el.classList.add('print-open'));
+  document.body.classList.add('print-all');
+  window.print();
+  setTimeout(() => {
+    document.body.classList.remove('print-all');
+    document.querySelectorAll('.print-open').forEach(el => el.classList.remove('print-open'));
+  }, 1000);
+}
+
+// ── Print menu ─────────────────────────────────────────────
+function togglePrintMenu(e) {
+  if (e) e.stopPropagation();
+  const m = document.getElementById('print-menu');
+  m.style.display = m.style.display === 'none' ? 'block' : 'none';
+}
+function closePrintMenu() {
+  const m = document.getElementById('print-menu');
+  if (m) m.style.display = 'none';
+}
+document.addEventListener('click', () => closePrintMenu());
+
+// ── Initialize after dynamic content renders ───────────────
+setTimeout(() => {
+  assignEditIds();
+  loadEdits();
+}, 150);
+</script>
 </body>
 </html>
-Claude
-
-
-
-
-Prompt Genie Logo
