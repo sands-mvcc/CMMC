@@ -1,303 +1,267 @@
 
-
-
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>CMMC Program Portal</title> <style> * { margin: 0; padding: 0; box-sizing: border-box;
-
-pasted
-
-Act as an expert HTML and JavaScript coder. Analyze the index.html file. Modify the code to make the following changes.
- 
-1)    Add the following tables and link to the files associated.
- 
-CMMC Ecosystem                                                                               eco.html
-Introduction to FCI & CUI                                                              cui.html
-CMMC & NIST SP 800-171 Framework                              nist171.html
- 
- 
-2)    Change the order of the tables:
- 
-CMMC Ecosystem                                                                               eco.html
-Introduction to FCI & CUI                                                              cui.html
-CMMC & NIST SP 800-171 Framework                              nist171.html
-CMMC Audit Evidence Guide                                                    evidence.html
-CMMC Documents and Reports                                            reports.html
-Cybersecurity Data Management Roles                          roles.html
-CMMC Applicability Checklist Tools                                   applicability.html                          
-CMMC Plan of Action & Milestone tracker                     POAM.html
-CMMC Auditor Progress Dashboard                                   dashboard.html
- 
- 
-3)    Change the footer to:
-4)     
-National Cybersecurity Training and Education Center (NCYTE)
-Cybersecurity Maturity Model Certification (CMMC) Program
-Study and Implementation Guide
-For workshop use only.
-Last updated: June 14, 2025 | Version 2.0
- 
-The NCyTE Center is funded by the National Science Foundation grant 2054724.
-
-
-Strategized HTML modifications for CMMC resource page.
-4s
-
-
-
-
-
-I'll analyze and modify the HTML file according to your requirements. The changes include adding three new navigation cards, reordering all cards, and updating the footer.
-
-
-Modified DoD CMMC Program Portal
-Interactive artifact 
-
-Engineered HTML modifications for CMMC documentation site.
-5s
-
-
-
-I've successfully modified the HTML file according to your specifications. Here are the key changes made:
-
-Changes Implemented:
-1. Added Three New Navigation Cards:
-CMMC Ecosystem (eco.html) - with globe icon 🌐
-Introduction to FCI & CUI (cui.html) - with lock icon 🔐
-CMMC & NIST SP 800-171 Framework (nist171.html) - with books icon 📚
-2. Reordered All Cards:
-The navigation cards now appear in the exact order you specified, with the three new cards at the top followed by the existing cards in your requested sequence.
-
-3. Updated Footer:
-Changed from "Department of Defense" to "National Cybersecurity Training and Education Center (NCYTE)"
-Updated all footer text as specified
-Added the NSF grant information
-Additional Improvements:
-Created appropriate descriptions for the new cards that match the existing style
-Selected meaningful icons that are visually consistent with the current design
-Maintained all existing styling and responsive design features
-Updated some card titles to match your specifications (e.g., "CMMC Documents and Reports", "CMMC Applicability Checklist Tools")
-The modified portal now provides a comprehensive
-
-
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DoD CMMC Program Portal</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CMMC 2.0 Training Portal</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(135deg,#0d1b2a 0%,#1b3a5c 100%);min-height:100vh;color:#333;}
+  a{text-decoration:none;color:inherit;}
+  .container{max-width:1200px;margin:0 auto;padding:2rem;}
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            min-height: 100vh;
-            color: #333;
-        }
+  /* ── Header ── */
+  .header{text-align:center;margin-bottom:2.5rem;padding:2.5rem 2rem;background:rgba(255,255,255,.97);border-radius:18px;box-shadow:0 12px 40px rgba(0,0,0,.25);position:relative;overflow:hidden;}
+  .header::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,#0d1b2a,#1e90ff,#f0a500,#2ecc71,#1e90ff);}
+  .header .gov-badge{display:inline-flex;align-items:center;gap:.5rem;background:#e8f0fa;border:1px solid #b0c8e8;color:#0d1b2a;padding:.3rem .9rem;border-radius:20px;font-size:.82rem;font-weight:700;margin-bottom:1rem;}
+  .header h1{font-size:2.8rem;color:#0d1b2a;margin-bottom:.4rem;font-weight:800;letter-spacing:-.5px;}
+  .header h1 span{color:#1e90ff;}
+  .header .subtitle{font-size:1.1rem;color:#555;font-weight:300;margin-bottom:1.5rem;}
+  .header .badges{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;}
+  .badge{display:inline-block;padding:.3rem .9rem;border-radius:20px;font-size:.8rem;font-weight:700;}
+  .badge-blue{background:#dbeafe;color:#1e3a5f;}
+  .badge-gold{background:#fef3c7;color:#7c4a00;}
+  .badge-green{background:#d1fae5;color:#064e3b;}
+  .badge-red{background:#fee2e2;color:#7f1d1d;}
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
+  /* ── Stats ── */
+  .stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;margin-bottom:2.5rem;}
+  .stat-card{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.22);border-radius:14px;padding:1.4rem 1rem;text-align:center;color:#fff;backdrop-filter:blur(5px);transition:transform .2s,background .2s;}
+  .stat-card:hover{transform:translateY(-3px);background:rgba(255,255,255,.2);}
+  .stat-card .icon{font-size:1.8rem;margin-bottom:.4rem;display:block;}
+  .stat-card .num{font-size:2.4rem;font-weight:800;line-height:1;margin-bottom:.25rem;}
+  .stat-card .lbl{font-size:.78rem;opacity:.85;font-weight:500;}
 
-        .header {
-            text-align: center;
-            margin-bottom: 3rem;
-            padding: 2rem;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
+  /* ── Section label ── */
+  .section-label{color:rgba(255,255,255,.8);font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:.8rem;}
 
-        .header h1 {
-            font-size: 2.5rem;
-            color: #1e3c72;
-            margin-bottom: 0.5rem;
-            font-weight: 700;
-        }
+  /* ── Domain chips ── */
+  .domains-strip{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:.65rem;margin-bottom:2.5rem;}
+  .domain-chip{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:.65rem .9rem;color:#fff;display:flex;align-items:center;gap:.5rem;transition:all .2s;font-size:.83rem;font-weight:600;cursor:default;}
+  .domain-chip:hover{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.38);transform:translateY(-2px);}
+  .chip-abbr{background:rgba(255,255,255,.18);padding:.1rem .4rem;border-radius:5px;font-size:.7rem;letter-spacing:.4px;}
 
-        .header .subtitle {
-            font-size: 1.2rem;
-            color: #666;
-            font-weight: 300;
-        }
+  /* ── Nav cards ── */
+  .nav-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:1.4rem;margin-bottom:2rem;}
+  .nav-card{background:rgba(255,255,255,.97);border-radius:15px;padding:1.7rem;box-shadow:0 8px 25px rgba(0,0,0,.15);transition:all .3s;color:inherit;border:2px solid transparent;display:flex;gap:1.1rem;align-items:flex-start;}
+  .nav-card:hover{transform:translateY(-5px);box-shadow:0 16px 45px rgba(0,0,0,.22);border-color:#1e90ff;}
+  .nav-card .card-icon{font-size:2.2rem;flex-shrink:0;width:54px;height:54px;background:#e8f0fa;border-radius:12px;display:flex;align-items:center;justify-content:center;}
+  .nav-card .card-content h3{font-size:1.1rem;color:#0d1b2a;margin-bottom:.35rem;font-weight:700;}
+  .nav-card .card-content p{color:#555;line-height:1.55;font-size:.88rem;}
+  .nav-card .card-content .card-tag{display:inline-block;margin-top:.55rem;background:#e8f0fa;color:#1e90ff;font-size:.72rem;font-weight:700;padding:.15rem .5rem;border-radius:7px;}
+  .nav-card.featured{border-color:#1e90ff;background:linear-gradient(135deg,rgba(255,255,255,.98),#f0f6ff);}
+  .nav-card.featured .card-icon{background:#0d1b2a;}
 
-        .nav-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
+  /* ── Case studies banner ── */
+  .cases-banner{display:flex;align-items:flex-start;gap:1.5rem;background:rgba(255,255,255,.97);border-radius:15px;padding:2rem 2rem 2rem 1.8rem;box-shadow:0 8px 30px rgba(0,0,0,.16);color:inherit;border:2px solid transparent;border-left:6px solid #f0a500;transition:all .3s;position:relative;overflow:hidden;margin-bottom:0;}
+  .cases-banner::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#0d1b2a,#1e90ff,#f0a500,#2ecc71);}
+  .cases-banner:hover{transform:translateY(-4px);box-shadow:0 16px 50px rgba(0,0,0,.22);border-color:#f0a500;}
+  .cases-banner-icon{font-size:3rem;flex-shrink:0;width:70px;height:70px;background:linear-gradient(135deg,#0d1b2a,#2e4a6b);border-radius:14px;display:flex;align-items:center;justify-content:center;margin-top:.2rem;}
+  .cases-banner-body{flex:1;}
+  .cases-banner-body h2{font-size:1.4rem;color:#0d1b2a;font-weight:800;margin-bottom:.5rem;}
+  .cases-banner-body p{color:#555;line-height:1.65;font-size:.91rem;margin-bottom:.85rem;}
+  .cases-banner-tags{display:flex;flex-wrap:wrap;gap:.45rem;}
+  .cases-banner-tags span{background:#e8f0fa;color:#0d1b2a;font-size:.77rem;font-weight:700;padding:.22rem .65rem;border-radius:20px;border:1px solid #b0c8e8;}
+  .cases-banner-cta{flex-shrink:0;align-self:center;background:linear-gradient(135deg,#0d1b2a,#2e4a6b);color:#fff;font-size:.9rem;font-weight:700;padding:.65rem 1.4rem;border-radius:25px;white-space:nowrap;transition:all .2s;box-shadow:0 4px 12px rgba(13,27,42,.35);}
+  .cases-banner:hover .cases-banner-cta{background:linear-gradient(135deg,#1e90ff,#2e4a6b);box-shadow:0 6px 18px rgba(30,144,255,.45);}
 
-        .nav-card {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            padding: 2rem;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-            transition: all 0.3s ease;
-            text-decoration: none;
-            color: inherit;
-            border: 2px solid transparent;
-        }
+  /* ── Meridian banner (existing case study) ── */
+  .meridian-banner{display:flex;align-items:flex-start;gap:1.5rem;background:rgba(255,255,255,.97);border-radius:15px;padding:2rem 2rem 2rem 1.8rem;box-shadow:0 8px 30px rgba(0,0,0,.16);color:inherit;border:2px solid transparent;border-left:6px solid #1e90ff;transition:all .3s;position:relative;overflow:hidden;}
+  .meridian-banner::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#1e90ff,#2e4a6b,#f0a500);}
+  .meridian-banner:hover{transform:translateY(-4px);box-shadow:0 16px 50px rgba(0,0,0,.22);border-color:#1e90ff;}
+  .meridian-banner-icon{font-size:3rem;flex-shrink:0;width:70px;height:70px;background:linear-gradient(135deg,#1e3a6b,#1e90ff);border-radius:14px;display:flex;align-items:center;justify-content:center;margin-top:.2rem;}
+  .meridian-banner .cases-banner-cta{background:linear-gradient(135deg,#1e3a6b,#1e90ff);}
+  .meridian-banner:hover .cases-banner-cta{background:linear-gradient(135deg,#1e90ff,#2ecc71);}
 
-        .nav-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
-            border-color: #2a5298;
-        }
+  /* ── Footer ── */
+  .footer{text-align:center;padding:2rem;background:rgba(255,255,255,.08);border-radius:15px;color:rgba(255,255,255,.85);margin-top:2rem;border:1px solid rgba(255,255,255,.12);}
+  .footer p{margin-bottom:.4rem;font-size:.88rem;}
+  .version-badge{display:inline-block;background:rgba(255,255,255,.15);color:#fff;padding:.25rem .8rem;border-radius:20px;font-size:.78rem;font-weight:600;margin-top:.8rem;}
 
-        .nav-card .icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            display: block;
-        }
-
-        .nav-card h3 {
-            font-size: 1.4rem;
-            color: #1e3c72;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-        }
-
-        .nav-card p {
-            color: #666;
-            line-height: 1.5;
-            font-size: 0.95rem;
-        }
-
-        .footer {
-            text-align: center;
-            padding: 2rem;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            color: white;
-            margin-top: 2rem;
-        }
-
-        .footer p {
-            margin-bottom: 0.5rem;
-        }
-
-        .security-badge {
-            display: inline-block;
-            background: #28a745;
-            color: white;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            margin-top: 1rem;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 1rem;
-            }
-            
-            .header h1 {
-                font-size: 2rem;
-            }
-            
-            .nav-grid {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-            
-            .nav-card {
-                padding: 1.5rem;
-            }
-        }
-    </style>
+  @media(max-width:768px){
+    .container{padding:1rem;}
+    .header h1{font-size:1.9rem;}
+    .nav-grid{grid-template-columns:1fr;gap:1rem;}
+    .cases-banner,.meridian-banner{flex-direction:column;gap:1rem;}
+    .cases-banner-cta{align-self:flex-start;}
+    .stats-row{grid-template-columns:repeat(2,1fr);}
+  }
+</style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>DoD CMMC Program Portal</h1>
-            <p class="subtitle">Cybersecurity Maturity Model Certification Management System</p>
-            <div class="security-badge">🔒 SECURE ACCESS</div>
-        </div>
+<div class="container">
 
-        <div class="nav-grid">
-            <a href="eco.html" class="nav-card">
-                <span class="icon">🌐</span>
-                <h3>CMMC Ecosystem</h3>
-                <p>Explore the comprehensive CMMC ecosystem including stakeholders, processes, and relationships within the cybersecurity certification framework.</p>
-            </a>
-
-            <a href="cui.html" class="nav-card">
-                <span class="icon">🔐</span>
-                <h3>Introduction to FCI & CUI</h3>
-                <p>Learn about Federal Contract Information (FCI) and Controlled Unclassified Information (CUI) classification, handling, and protection requirements.</p>
-            </a>
-
-            <a href="nist171.html" class="nav-card">
-                <span class="icon">📚</span>
-                <h3>CMMC & NIST SP 800-171 Framework</h3>
-                <p>Comprehensive guide to understanding the relationship between CMMC levels and NIST SP 800-171 security control requirements and implementation.</p>
-            </a>
-
-            <a href="evidence.html" class="nav-card">
-                <span class="icon">📁</span>
-                <h3>CMMC Audit Evidence Guide</h3>
-                <p>Guidance and templates for collecting, organizing, and presenting evidence required for CMMC assessment and audit processes.</p>
-            </a>
-
-            <a href="reports.html" class="nav-card">
-                <span class="icon">📄</span>
-                <h3>CMMC Documents and Reports</h3>
-                <p>Access all required documentation, policies, procedures, and reports necessary for CMMC compliance and certification readiness.</p>
-            </a>
-
-            <a href="roles.html" class="nav-card">
-                <span class="icon">👥</span>
-                <h3>Cybersecurity Data Management Roles</h3>
-                <p>Define and manage user roles, responsibilities, and access controls for cybersecurity data management within your organization.</p>
-            </a>
-
-            <a href="applicability.html" class="nav-card">
-                <span class="icon">✅</span>
-                <h3>CMMC Applicability Checklist Tools</h3>
-                <p>Comprehensive checklist tools to determine which CMMC and NIST SP 800-171 security requirements apply to your organization and systems.</p>
-            </a>
-
-            <a href="POAM.html" class="nav-card">
-                <span class="icon">📋</span>
-                <h3>CMMC Plan of Action & Milestone Tracker</h3>
-                <p>Track remediation efforts, milestone progress, and action items required for CMMC compliance and certification readiness.</p>
-            </a>
-
-            <a href="dashboard.html" class="nav-card">
-                <span class="icon">📊</span>
-                <h3>CMMC Auditor Progress Dashboard</h3>
-                <p>Real-time dashboard displaying audit progress, compliance status, findings, and overall certification readiness metrics.</p>
-            </a>
-        </div>
-
-        <div class="footer">
-            <p><strong>National Cybersecurity Training and Education Center (NCYTE)</strong></p>
-            <p>Cybersecurity Maturity Model Certification (CMMC) Program</p>
-            <p>Study and Implementation Guide</p>
-            <p>For workshop use only.</p>
-            <p style="font-size: 0.8rem; margin-top: 1rem; opacity: 0.8;">
-                Last updated: June 14, 2025 | Version 2.0
-            </p>
-            <p style="font-size: 0.8rem; opacity: 0.8;">
-                The NCyTE Center is funded by the National Science Foundation grant 2054724.
-            </p>
-        </div>
+  <!-- Header -->
+  <div class="header">
+    <div class="gov-badge">🛡 U.S. Department of Defense | Defense Industrial Base</div>
+    <h1>CMMC 2.0 <span>Training</span> Portal</h1>
+    <p class="subtitle">Cybersecurity Maturity Model Certification — Level 2 Instructor & Student Reference</p>
+    <div class="badges">
+      <span class="badge badge-blue">NIST SP 800-171 Rev 2</span>
+      <span class="badge badge-gold">110 Practices</span>
+      <span class="badge badge-green">14 Domains</span>
+      <span class="badge badge-red">DFARS 252.204-7012/7019/7020/7021</span>
     </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <span class="icon">🏛</span>
+      <div class="num">14</div>
+      <div class="lbl">CMMC Domains</div>
+    </div>
+    <div class="stat-card">
+      <span class="icon">📋</span>
+      <div class="num">110</div>
+      <div class="lbl">Level 2 Practices</div>
+    </div>
+    <div class="stat-card">
+      <span class="icon">📂</span>
+      <div class="num">9</div>
+      <div class="lbl">Audit Document Types</div>
+    </div>
+    <div class="stat-card">
+      <span class="icon">🏭</span>
+      <div class="num">80K+</div>
+      <div class="lbl">DIB Companies Affected</div>
+    </div>
+    <div class="stat-card">
+      <span class="icon">🎓</span>
+      <div class="num">8</div>
+      <div class="lbl">Training Case Studies</div>
+    </div>
+  </div>
+
+  <!-- Domain Quick Nav -->
+  <div class="section-label">CMMC 2.0 Level 2 — 14 Domains</div>
+  <div class="domains-strip">
+    <div class="domain-chip"><span class="chip-abbr">AC</span>🔑 Access Control</div>
+    <div class="domain-chip"><span class="chip-abbr">AT</span>📚 Awareness &amp; Training</div>
+    <div class="domain-chip"><span class="chip-abbr">AU</span>📊 Audit &amp; Accountability</div>
+    <div class="domain-chip"><span class="chip-abbr">CA</span>🔍 Security Assessment</div>
+    <div class="domain-chip"><span class="chip-abbr">CM</span>⚙ Config Management</div>
+    <div class="domain-chip"><span class="chip-abbr">IA</span>🪪 Identification &amp; Auth</div>
+    <div class="domain-chip"><span class="chip-abbr">IR</span>🚨 Incident Response</div>
+    <div class="domain-chip"><span class="chip-abbr">MA</span>🔧 Maintenance</div>
+    <div class="domain-chip"><span class="chip-abbr">MP</span>💾 Media Protection</div>
+    <div class="domain-chip"><span class="chip-abbr">PE</span>🏛 Physical Protection</div>
+    <div class="domain-chip"><span class="chip-abbr">PS</span>👤 Personnel Security</div>
+    <div class="domain-chip"><span class="chip-abbr">RA</span>⚖ Risk Assessment</div>
+    <div class="domain-chip"><span class="chip-abbr">SC</span>🌐 System &amp; Comms Prot.</div>
+    <div class="domain-chip"><span class="chip-abbr">SI</span>🛡 System &amp; Info Integrity</div>
+  </div>
+
+  <!-- Nav Cards -->
+  <div class="section-label">CMMC Ecosystem</div>
+  <div class="nav-grid">
+    <a href="https://sands-mvcc.github.io/CMMC/eco.html" class="nav-card">
+      <div class="card-icon">🌐</div>
+      <div class="card-content">
+        <h3>CMMC Ecosystem</h3>
+        <p>Explore the comprehensive CMMC ecosystem including stakeholders, processes, and relationships within the cybersecurity certification framework.</p>
+        <span class="card-tag">START HERE</span>
+      </div>
+    </a>
+    <a href="https://sands-mvcc.github.io/CMMC/cui.html" class="nav-card">
+      <div class="card-icon">🔒</div>
+      <div class="card-content">
+        <h3>Introduction to FCI &amp; CUI</h3>
+        <p>Learn about Federal Contract Information (FCI) and Controlled Unclassified Information (CUI) classification, handling, and protection requirements.</p>
+        <span class="card-tag">FOUNDATIONS</span>
+      </div>
+    </a>
+    <a href="https://sands-mvcc.github.io/CMMC/nist171.html" class="nav-card featured">
+      <div class="card-icon">📋</div>
+      <div class="card-content">
+        <h3>CMMC &amp; NIST SP 800-171 Framework</h3>
+        <p>Comprehensive guide to understanding the relationship between CMMC levels and NIST SP 800-171 security control requirements and implementation.</p>
+        <span class="card-tag">FRAMEWORK</span>
+      </div>
+    </a>
+    <a href="https://sands-mvcc.github.io/CMMC/roles.html" class="nav-card">
+      <div class="card-icon">👥</div>
+      <div class="card-content">
+        <h3>Cybersecurity Data Management Roles</h3>
+        <p>Define and manage user roles, responsibilities, and access controls for cybersecurity data management within your organization.</p>
+        <span class="card-tag">GOVERNANCE</span>
+      </div>
+    </a>
+    <a href="https://sands-mvcc.github.io/CMMC/evidence.html" class="nav-card">
+      <div class="card-icon">📁</div>
+      <div class="card-content">
+        <h3>CMMC Audit Evidence Guide</h3>
+        <p>Guidance and templates for collecting, organizing, and presenting evidence required for CMMC assessment and audit processes.</p>
+        <span class="card-tag">AUDIT PREP</span>
+      </div>
+    </a>
+    <a href="https://sands-mvcc.github.io/CMMC/applicability.html" class="nav-card">
+      <div class="card-icon">✅</div>
+      <div class="card-content">
+        <h3>CMMC Applicability Checklist Tools</h3>
+        <p>Comprehensive checklist tools to determine which CMMC and NIST SP 800-171 security requirements apply to your organization and systems.</p>
+        <span class="card-tag">TOOLS</span>
+      </div>
+    </a>
+    <a href="https://sands-mvcc.github.io/CMMC/dashboard.html" class="nav-card">
+      <div class="card-icon">📊</div>
+      <div class="card-content">
+        <h3>CMMC Auditor Progress Dashboard</h3>
+        <p>Real-time dashboard displaying audit progress, compliance status, findings, and overall certification readiness metrics.</p>
+        <span class="card-tag">DASHBOARD</span>
+      </div>
+    </a>
+  </div>
+
+  <!-- Case Studies Banner -->
+  <div class="section-label" style="margin-top:2rem">Case Studies</div>
+  <a href="casestudies.html" class="cases-banner">
+    <div class="cases-banner-icon">🏫</div>
+    <div class="cases-banner-body">
+      <h2>CMMC Level 2 Training Case Studies</h2>
+      <p>Eight sector-specific fictional DoD contractors built for hands-on CMMC Level 2 training exercises. Each case study provides a complete organizational profile, IT environment inventory, network architecture, CUI data flows, security control gaps, third-party risk exposure, and a CMMC domain assessment — giving students realistic data to practice SSP review, gap analysis, POA&amp;M development, and audit document preparation.</p>
+      <div class="cases-banner-tags">
+        <span>🏭 Defense Manufacturing</span>
+        <span>💻 IT Services</span>
+        <span>✈ Aerospace</span>
+        <span>🔬 Research</span>
+        <span>📦 Logistics</span>
+        <span>🖥 Embedded Systems</span>
+        <span>📋 Consulting</span>
+        <span>🧬 BioDefense</span>
+      </div>
+    </div>
+    <div class="cases-banner-cta">View Case Studies →</div>
+  </a>
+
+  <!-- Required CMMC Tools & Documents Banner -->
+  <div class="section-label" style="margin-top:2rem">Required CMMC Tools &amp; Documents</div>
+  <a href="https://sands-mvcc.github.io/CMMC/reports.html" class="meridian-banner">
+    <div class="meridian-banner-icon">📄</div>
+    <div class="cases-banner-body">
+      <h2>Required CMMC Tools &amp; Documents</h2>
+      <p>Access all required documentation, policies, procedures, and reports necessary for CMMC compliance and certification readiness.</p>
+      <div class="cases-banner-tags">
+        <span>📋 Policies &amp; Procedures</span>
+        <span>🗂 SSP Templates</span>
+        <span>📊 POA&amp;M Frameworks</span>
+        <span>🔍 Assessment Reports</span>
+        <span>✅ Compliance Checklists</span>
+        <span>📁 Audit Documentation</span>
+      </div>
+    </div>
+    <div class="cases-banner-cta">View All Documents →</div>
+  </a>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p><strong>Cybersecurity Maturity Model Certification (CMMC) 2.0 Training Portal</strong></p>
+    <p>CMMC Level 2 | NIST SP 800-171 Rev 2 | DFARS 252.204-7012/7019/7020/7021</p>
+    <p style="margin-top:.5rem;font-size:.8rem;opacity:.7">For educational and classroom use only. Always verify against official CMMC 2.0 model documentation from the Office of the Under Secretary of Defense for Acquisition &amp; Sustainment.</p>
+    <span class="version-badge">🛡 CMMC 2.0 | Last updated: April 2026</span>
+  </div>
+
+</div>
 </body>
 </html>
-Claude
-
-
-
-
-Prompt Genie Logo
