@@ -1,0 +1,1400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMMC 2.0 Level 2 Incident Response Plan (IRP) – Student Practice Tool</title>
+    <style>
+        /* ===== BASE ===== */
+        *, *::before, *::after { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f4f8;
+            color: #1f2937;
+        }
+
+        /* ===== TOOLBAR ===== */
+        .toolbar {
+            max-width: 1300px;
+            margin: 0 auto 16px auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            background: #1e3a8a;
+            padding: 12px 20px;
+            border-radius: 10px;
+        }
+        .toolbar-title {
+            color: #93c5fd;
+            font-weight: 700;
+            font-size: 0.85em;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-right: auto;
+        }
+        .toolbar button {
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.85em;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: filter 0.2s;
+            white-space: nowrap;
+        }
+        .toolbar button:hover { filter: brightness(1.12); }
+        .btn-edit    { background: #10b981; color: white; }
+        .btn-edit.active { background: #059669; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3); }
+        .btn-save    { background: #f59e0b; color: #1f2937; }
+        .btn-load    { background: #6366f1; color: white; }
+        .btn-export  { background: #0ea5e9; color: white; }
+        .btn-tabletop{ background: #8b5cf6; color: white; }
+        .btn-print   { background: #64748b; color: white; }
+        .btn-reset   { background: #ef4444; color: white; }
+        .edit-status {
+            font-size: 0.82em; font-weight: 700;
+            padding: 5px 12px; border-radius: 20px;
+            background: #374151; color: #9ca3af;
+            white-space: nowrap;
+        }
+        .edit-status.on { background: #065f46; color: #6ee7b7; }
+
+        /* ===== CONTAINER ===== */
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+            overflow: hidden;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+        .header h1 { margin: 0 0 8px; font-size: 2em; font-weight: 700; }
+        .header .subtitle { font-size: 1em; opacity: 0.9; margin: 0 0 14px; }
+        .cui-badge {
+            background: #ef4444;
+            color: white;
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.82em;
+            display: inline-block;
+            letter-spacing: 0.06em;
+            animation: pulse 2.5s infinite;
+        }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.75} }
+        .student-badge {
+            position: absolute; top: 14px; right: 14px;
+            background: #fbbf24; color: #1f2937;
+            padding: 6px 14px; border-radius: 20px;
+            font-weight: 700; font-size: 0.8em;
+        }
+        .unsaved-indicator {
+            position: absolute; top: 14px; left: 14px;
+            background: #ef4444; color: white;
+            padding: 6px 14px; border-radius: 20px;
+            font-weight: 700; font-size: 0.8em; display: none;
+        }
+
+        /* ===== INSTRUCTION BOX ===== */
+        .instruction-box {
+            background: #eff6ff;
+            border: 2px dashed #3b82f6;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 20px;
+            font-size: 0.88em;
+            color: #1e40af;
+        }
+        .instruction-box strong { display: block; margin-bottom: 6px; font-size: 1em; }
+        .instruction-box ul { margin: 6px 0 0; padding-left: 20px; }
+        .instruction-box li { margin: 3px 0; }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content { padding: 20px; }
+
+        /* ===== IRP SECTIONS ===== */
+        .irp-section {
+            background: white;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.09);
+            overflow: hidden;
+            border-left: 5px solid #3b82f6;
+        }
+
+        .section-header {
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            padding: 16px 20px;
+            border-bottom: 1px solid #bfdbfe;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s;
+        }
+        .section-header:hover { background: linear-gradient(135deg, #bfdbfe, #93c5fd); }
+
+        .section-title {
+            font-size: 1.15em;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .section-num {
+            background: #1e3a8a;
+            color: white;
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85em;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .header-right { display: flex; align-items: center; gap: 8px; }
+        .toggle-icon { font-size: 1em; color: #1e3a8a; transition: transform 0.3s; flex-shrink: 0; }
+        .irp-section.collapsed .toggle-icon { transform: rotate(-90deg); }
+        .irp-section.collapsed .section-body { display: none; }
+
+        .section-body { padding: 22px 24px; background: #fafbfc; }
+        .section-body h3 {
+            color: #1e3a8a;
+            font-size: 1em;
+            margin: 18px 0 8px;
+            border-left: 3px solid #3b82f6;
+            padding-left: 9px;
+        }
+        .section-body h3:first-child { margin-top: 0; }
+        .section-body h4 { color: #1e40af; font-size: 0.92em; margin: 12px 0 5px; }
+        .section-body p { margin: 6px 0; font-size: 0.9em; }
+        .section-body ul, .section-body ol {
+            padding-left: 20px; margin: 6px 0; font-size: 0.9em;
+        }
+        .section-body li { margin: 3px 0; }
+
+        /* ===== EDITABLE BLOCKS ===== */
+        .editable {
+            border: 2px dashed #d1d5db;
+            padding: 12px 14px;
+            border-radius: 7px;
+            min-height: 50px;
+            transition: border-color 0.2s, background 0.2s;
+            margin: 8px 0;
+            color: #9ca3af;
+            font-style: italic;
+        }
+        .editable.has-content { color: #1f2937; font-style: normal; border-color: #e5e7eb; }
+        .editable.edit-active {
+            border-color: #3b82f6;
+            background: #fefce8;
+            color: #1f2937;
+            font-style: normal;
+            outline: none;
+        }
+        .editable[data-placeholder]:empty::before {
+            content: attr(data-placeholder);
+            color: #9ca3af;
+            font-style: italic;
+            pointer-events: none;
+            display: block;
+        }
+
+        /* ===== INLINE FIELD ===== */
+        .inline-field {
+            border: none;
+            border-bottom: 1px dashed #d1d5db;
+            background: transparent;
+            font-family: inherit;
+            font-size: inherit;
+            color: #1f2937;
+            padding: 2px 6px;
+            min-width: 180px;
+            transition: border-color 0.2s;
+        }
+        .inline-field:focus { outline: none; border-bottom-color: #3b82f6; background: #fefce8; }
+        .inline-field::placeholder { color: #9ca3af; font-style: italic; }
+        .inline-field.wide { min-width: 280px; }
+        .inline-field.email { min-width: 220px; }
+
+        /* ===== ALERT / INFO BOXES ===== */
+        .alert {
+            padding: 12px 16px;
+            border-radius: 7px;
+            margin: 12px 0;
+            border-left: 4px solid;
+            font-size: 0.88em;
+        }
+        .alert-info    { background: #eff6ff; border-color: #3b82f6; color: #1e40af; }
+        .alert-warning { background: #fef3c7; border-color: #f59e0b; color: #92400e; }
+        .alert-success { background: #f0fdf4; border-color: #10b981; color: #065f46; }
+        .alert-danger  { background: #fee2e2; border-color: #ef4444; color: #991b1b; }
+        .alert strong { display: inline; }
+
+        /* ===== INFO CARD ===== */
+        .info-card {
+            background: #eff6ff;
+            padding: 14px 16px;
+            border-radius: 8px;
+            border-left: 4px solid #3b82f6;
+            margin: 10px 0;
+            font-size: 0.9em;
+        }
+        .info-card h3 { border: none; padding: 0; margin: 0 0 10px; color: #1e3a8a; }
+        .info-card p { margin: 5px 0; }
+
+        /* ===== INCIDENT TYPE GRID ===== */
+        .incident-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 14px;
+            margin: 12px 0;
+        }
+        .incident-card {
+            padding: 14px 16px;
+            border-radius: 8px;
+            border-left: 4px solid;
+        }
+        .inc-critical { background: #fff1f2; border-color: #ef4444; }
+        .inc-high     { background: #fff7ed; border-color: #f97316; }
+        .inc-medium   { background: #fefce8; border-color: #f59e0b; }
+        .inc-low      { background: #f0fdf4; border-color: #10b981; }
+        .incident-card h4 { margin: 0 0 8px; font-size: 0.92em; }
+        .incident-card .rt-label {
+            font-size: 0.78em; font-weight: 700; color: #6b7280;
+            text-transform: uppercase; letter-spacing: 0.04em;
+            margin-top: 8px; display: block;
+        }
+
+        /* ===== ROLE CARDS ===== */
+        .role-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 14px;
+            margin: 12px 0;
+        }
+        .role-card {
+            background: #f5f3ff;
+            padding: 16px;
+            border-radius: 8px;
+            border-left: 4px solid #8b5cf6;
+        }
+        .role-card h4 {
+            color: #5b21b6; margin: 0 0 10px;
+            font-size: 0.95em; font-weight: 700;
+        }
+
+        /* ===== PHASE TIMELINE ===== */
+        .phase-timeline {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 14px 0;
+        }
+        .phase {
+            flex: 1;
+            min-width: 150px;
+            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+            padding: 16px 14px;
+            border-radius: 8px;
+            text-align: center;
+            border-top: 4px solid #10b981;
+            transition: transform 0.2s;
+        }
+        .phase:hover { transform: translateY(-3px); }
+        .phase-num {
+            background: #10b981;
+            color: white;
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-weight: 700;
+            font-size: 1em;
+        }
+        .phase h4 { color: #065f46; margin: 0 0 8px; font-size: 0.88em; }
+
+        /* ===== ASSET GRID ===== */
+        .assets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 12px;
+            margin: 12px 0;
+        }
+        .asset-card {
+            background: #fff1f2;
+            padding: 14px;
+            border-radius: 8px;
+            border-left: 4px solid #e11d48;
+            font-size: 0.88em;
+        }
+        .asset-card h4 { color: #9f1239; margin: 0 0 8px; font-size: 0.92em; }
+        .asset-card ul { margin: 0; padding-left: 18px; }
+        .asset-card li { margin: 3px 0; color: #374151; }
+
+        /* ===== NETWORK DIAGRAM BOX ===== */
+        .network-box {
+            background: #f8fafc;
+            padding: 16px;
+            border-radius: 8px;
+            border: 2px dashed #cbd5e1;
+            margin: 12px 0;
+            font-size: 0.88em;
+        }
+        .network-box h3 { border: none; padding: 0; }
+        .network-zone {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin: 8px 0;
+            padding: 8px 12px;
+            background: white;
+            border-radius: 6px;
+            border-left: 3px solid #3b82f6;
+        }
+        .zone-label {
+            font-weight: 700;
+            color: #1e3a8a;
+            min-width: 160px;
+            font-size: 0.85em;
+        }
+
+        /* ===== ADD/DELETE BUTTONS ===== */
+        .add-btn {
+            background: #10b981; color: white; border: none;
+            padding: 8px 16px; border-radius: 6px; cursor: pointer;
+            font-size: 0.82em; font-weight: 600; margin: 8px 4px 4px 0;
+            transition: background 0.2s;
+        }
+        .add-btn:hover { background: #059669; }
+        .add-btn.blue { background: #3b82f6; }
+        .add-btn.blue:hover { background: #2563eb; }
+        .add-btn.purple { background: #8b5cf6; }
+        .add-btn.purple:hover { background: #7c3aed; }
+        .del-btn {
+            background: #ef4444; color: white; border: none;
+            padding: 4px 9px; border-radius: 5px; cursor: pointer;
+            font-size: 0.76em; transition: background 0.2s; float: right;
+        }
+        .del-btn:hover { background: #dc2626; }
+
+        /* ===== SCENARIO CARDS ===== */
+        .scenario-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 14px 16px;
+            margin: 10px 0;
+            position: relative;
+        }
+        .scenario-card h4 { color: #1e3a8a; margin: 0 0 6px; font-size: 0.92em; }
+        .scenario-card p { font-size: 0.88em; margin: 4px 0; }
+
+        /* ===== TABLETOP MODAL ===== */
+        .modal {
+            display: none; position: fixed;
+            z-index: 2000; left: 0; top: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.55);
+        }
+        .modal-content {
+            background: white;
+            margin: 3% auto;
+            padding: 28px;
+            border-radius: 10px;
+            width: 92%; max-width: 700px;
+            max-height: 88vh; overflow-y: auto;
+        }
+        .modal-content h2 { color: #1e3a8a; margin: 0 0 16px; font-size: 1.2em; }
+        .close-modal {
+            color: #9ca3af; float: right;
+            font-size: 24px; font-weight: bold; cursor: pointer; line-height: 1;
+        }
+        .close-modal:hover { color: #111; }
+        .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; }
+        .btn-primary   { background: #3b82f6; color: white; border: none; padding: 9px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .btn-secondary { background: #6b7280; color: white; border: none; padding: 9px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .btn-danger-m  { background: #ef4444; color: white; border: none; padding: 9px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .field-group { margin-bottom: 12px; }
+        .field-group label { display: block; font-weight: 600; font-size: 0.86em; margin-bottom: 4px; color: #374151; }
+        .field-group input,
+        .field-group textarea,
+        .field-group select {
+            width: 100%; padding: 8px 12px;
+            border: 1px solid #d1d5db; border-radius: 6px;
+            font-family: inherit; font-size: 0.88em;
+        }
+        .field-group textarea { height: 72px; resize: vertical; }
+        .field-group input:focus,
+        .field-group textarea:focus,
+        .field-group select:focus { outline: 2px solid #3b82f6; border-color: transparent; }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed; bottom: 24px; right: 24px;
+            background: #1e3a8a; color: white;
+            padding: 12px 22px; border-radius: 8px;
+            font-size: 0.88em; z-index: 9999;
+            opacity: 0; transform: translateY(10px);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        .toast.show { opacity: 1; transform: translateY(0); }
+        .toast.success { background: #059669; }
+        .toast.error   { background: #dc2626; }
+
+        /* ===== FOOTER ===== */
+        .irp-footer {
+            background: #f8fafc;
+            padding: 18px 24px;
+            border-top: 1px solid #e5e7eb;
+            text-align: center;
+            color: #6b7280;
+            font-size: 0.84em;
+        }
+
+        /* ===== PRINT ===== */
+        @media print {
+            body { background: white; padding: 0; }
+            .toolbar, .instruction-box, .student-badge,
+            .unsaved-indicator, .add-btn, .del-btn, .section-header-btns { display: none !important; }
+            .container { box-shadow: none; border-radius: 0; }
+            .irp-section.collapsed .section-body { display: block !important; }
+            .editable {
+                border: none !important; background: white !important;
+                color: #1f2937 !important; font-style: normal !important;
+            }
+            .inline-field { border-bottom: none; }
+        }
+
+        @media (max-width: 768px) {
+            .phase-timeline { flex-direction: column; }
+            .modal-content { margin: 5% auto; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== TOOLBAR ===== -->
+<div class="toolbar">
+    <span class="toolbar-title">🛡️ IRP Tool — Student Practice</span>
+    <button class="btn-edit"     id="editToggleBtn" onclick="toggleEditMode()">✏️ Edit Mode</button>
+    <span class="edit-status"    id="editStatus">Edit: OFF</span>
+    <button class="btn-save"     onclick="saveData()">💾 Save</button>
+    <button class="btn-load"     onclick="document.getElementById('fileInput').click()">📂 Load</button>
+    <button class="btn-export"   onclick="exportJSON()">📤 Export JSON</button>
+    <button class="btn-tabletop" onclick="openModal('tabletopModal')">🎯 Tabletop Exercise</button>
+    <button class="btn-print"    onclick="window.print()">🖨️ Print / PDF</button>
+    <button class="btn-reset"    onclick="openModal('resetModal')">🔄 Reset</button>
+    <input type="file" id="fileInput" accept=".json" style="display:none" onchange="loadFromFile(event)">
+</div>
+
+<!-- ===== CONTAINER ===== -->
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="header">
+        <div class="student-badge">STUDENT PRACTICE TOOL</div>
+        <div class="unsaved-indicator" id="unsavedIndicator">● Unsaved Changes</div>
+        <h1>🛡️ Incident Response Plan (IRP)</h1>
+        <p class="subtitle">CMMC 2.0 Level 2 Compliance — Student Practice Exercise</p>
+        <div class="cui-badge">CONTROLLED UNCLASSIFIED INFORMATION (CUI)</div>
+    </div>
+
+    <!-- INSTRUCTION BOX -->
+    <div class="instruction-box">
+        <strong>🎓 Student Instructions</strong>
+        <ul>
+            <li>Click <strong>✏️ Edit Mode</strong> to enable editing of all narrative text blocks — click again to lock. All inline fields are always editable.</li>
+            <li>Work through each of the <strong>10 sections</strong> to build a complete IRP for your assigned case study company. Click any section header to expand/collapse.</li>
+            <li>In <strong>Section 3</strong>, fill in each role card with the assigned personnel, contact info, and responsibilities.</li>
+            <li>In <strong>Sections 4 &amp; 5</strong>, customize incident classification criteria and lifecycle phase descriptions for your organization.</li>
+            <li>Use <strong>🎯 Tabletop Exercise</strong> to add and practice incident scenarios — great for the training section!</li>
+            <li>Use <strong>💾 Save</strong> (Ctrl+S) to store progress, or <strong>📤 Export JSON</strong> to download your work.</li>
+            <li>Use <strong>🖨️ Print / PDF</strong> for your final submission — toolbar and instructions will be hidden.</li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+
+        <!-- ============================================================
+             SECTION 1: EXECUTIVE SUMMARY
+        ============================================================ -->
+        <section class="irp-section" id="sec1">
+            <div class="section-header" onclick="toggleSection('sec1')">
+                <h2 class="section-title">
+                    <span class="section-num">1</span>
+                    Executive Summary
+                </h2>
+                <div class="header-right">
+                    <span class="toggle-icon">▼</span>
+                </div>
+            </div>
+            <div class="section-body">
+
+                <h3>Purpose &amp; Importance</h3>
+                <div class="editable" data-field="exec-purpose"
+                     data-placeholder="Describe the purpose of this Incident Response Plan. Explain how it ensures the organization can effectively respond to cybersecurity incidents while maintaining CUI protection and meeting CMMC 2.0 Level 2 reporting requirements. Reference the types of incidents covered (malware, data breaches, insider threats, supply chain attacks) and how the IRP integrates with existing business continuity plans.">
+                </div>
+
+                <div class="alert alert-info">
+                    <strong>Compliance Framework:</strong> This IRP must be developed based on <strong>NIST SP 800-61 Rev. 3</strong> guidance and address all incident response requirements from <strong>NIST SP 800-171</strong> required for CMMC 2.0 Level 2 certification (IR.L2-3.6.1 through IR.L2-3.6.3).
+                </div>
+
+                <h3>Scope</h3>
+                <div class="editable" data-field="exec-scope"
+                     data-placeholder="Define the scope of this IRP. List all systems, assets, and environments covered. Include specific hardware counts (laptops, servers, printers), cloud services used, and the physical facility location(s). Explicitly reference all CUI assets within scope.">
+                </div>
+
+                <h3>Applicability</h3>
+                <div class="editable" data-field="exec-applicability"
+                     data-placeholder="State who this plan applies to — all employees, contractors, vendors, and third parties who have access to organizational systems or CUI. Note any specific roles with elevated responsibilities under this plan.">
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ============================================================
+             SECTION 2: ORGANIZATION OVERVIEW
+        ============================================================ -->
+        <section class="irp-section collapsed" id="sec2">
+            <div class="section-header" onclick="toggleSection('sec2')">
+                <h2 class="section-title"><span class="section-num">2</span>Organization Overview</h2>
+                <div class="header-right"><span class="toggle-icon">▼</span></div>
+            </div>
+            <div class="section-body">
+
+                <div class="info-card">
+                    <h3>Company Information</h3>
+                    <p><strong>Company:</strong> <input class="inline-field wide" id="orgCompany" placeholder="Organization legal name" oninput="markUnsaved()"></p>
+                    <p><strong>Location:</strong> <input class="inline-field" id="orgLocation" placeholder="City, State" oninput="markUnsaved()"></p>
+                    <p><strong>Employees:</strong> <input class="inline-field" id="orgEmployees" placeholder="Total count" style="width:80px;" oninput="markUnsaved()"></p>
+                    <p><strong>Business:</strong> <input class="inline-field wide" id="orgBusiness" placeholder="Describe primary DoD contract work" oninput="markUnsaved()"></p>
+                    <p><strong>CISO / Security Lead:</strong> <input class="inline-field" id="orgCISO" placeholder="Name, Title" oninput="markUnsaved()"></p>
+                    <p><strong>IRP Review Date:</strong> <input class="inline-field" id="orgReviewDate" type="date" oninput="markUnsaved()"></p>
+                    <p><strong>CMMC Level:</strong> <input class="inline-field" id="orgCMMC" placeholder="e.g., Level 2 – Advanced" oninput="markUnsaved()"></p>
+                </div>
+
+                <h3>CUI &amp; Security Assets in Scope</h3>
+                <div class="assets-grid">
+                    <div class="asset-card">
+                        <h4>CUI Assets</h4>
+                        <div class="editable" data-field="assets-cui"
+                             data-placeholder="List CUI assets:&#10;• CUI-001: [Asset Name]&#10;• CUI-002: [Asset Name]&#10;• Add all assets that process, store, or transmit CUI">
+                        </div>
+                    </div>
+                    <div class="asset-card">
+                        <h4>Security Protection Assets</h4>
+                        <div class="editable" data-field="assets-spa"
+                             data-placeholder="List Security Protection Assets:&#10;• SPA-001: [Firewall]&#10;• SPA-002: [VPN Gateway]&#10;• SPA-004: [Endpoint Protection]&#10;• SPA-005: [SIEM System]">
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Network Segmentation</h3>
+                <div class="network-box">
+                    <div class="network-zone">
+                        <span class="zone-label">CUI Zone:</span>
+                        <input class="inline-field wide" placeholder="Describe systems and access controls in the CUI zone" oninput="markUnsaved()">
+                    </div>
+                    <div class="network-zone">
+                        <span class="zone-label">Management Zone:</span>
+                        <input class="inline-field wide" placeholder="Describe admin and IT operations zone" oninput="markUnsaved()">
+                    </div>
+                    <div class="network-zone">
+                        <span class="zone-label">Guest Network:</span>
+                        <input class="inline-field wide" placeholder="Describe isolation from internal systems" oninput="markUnsaved()">
+                    </div>
+                    <div class="network-zone">
+                        <span class="zone-label">OT / Other Network:</span>
+                        <input class="inline-field wide" placeholder="Describe operational technology or other network zones" oninput="markUnsaved()">
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ============================================================
+             SECTION 3: IR TEAM STRUCTURE
+        ============================================================ -->
+        <section class="irp-section collapsed" id="sec3">
+            <div class="section-header" onclick="toggleSection('sec3')">
+                <h2 class="section-title"><span class="section-num">3</span>Incident Response Team Structure</h2>
+                <div class="header-right"><span class="toggle-icon">▼</span></div>
+            </div>
+            <div class="section-body">
+
+                <p style="font-size:0.88em; color:#6b7280; margin-bottom:12px;">Fill in the contact and responsibility details for each role. Use the button below to add additional roles as needed.</p>
+
+                <div class="role-grid" id="roleGrid">
+
+                    <div class="role-card">
+                        <h4>🔷 Incident Response Manager</h4>
+                        <p><strong>Primary:</strong> <input class="inline-field" placeholder="Name, Title" oninput="markUnsaved()"></p>
+                        <p><strong>Backup:</strong> <input class="inline-field" placeholder="Backup contact" oninput="markUnsaved()"></p>
+                        <p><strong>Email:</strong> <input class="inline-field email" placeholder="email@organization.gov" oninput="markUnsaved()"></p>
+                        <p><strong>Phone:</strong> <input class="inline-field" placeholder="(XXX) XXX-XXXX" style="width:160px;" oninput="markUnsaved()"></p>
+                        <p><strong>Responsibilities:</strong></p>
+                        <div class="editable" data-field="role-irm"
+                             data-placeholder="Overall incident management, coordination with external agencies, executive reporting, DoD DIBNet notification authorization">
+                        </div>
+                    </div>
+
+                    <div class="role-card">
+                        <h4>🔶 Security Analyst</h4>
+                        <p><strong>Primary:</strong> <input class="inline-field" placeholder="Name, Title" oninput="markUnsaved()"></p>
+                        <p><strong>Backup:</strong> <input class="inline-field" placeholder="Backup contact" oninput="markUnsaved()"></p>
+                        <p><strong>Email:</strong> <input class="inline-field email" placeholder="email@organization.gov" oninput="markUnsaved()"></p>
+                        <p><strong>Phone:</strong> <input class="inline-field" placeholder="(XXX) XXX-XXXX" style="width:160px;" oninput="markUnsaved()"></p>
+                        <p><strong>Responsibilities:</strong></p>
+                        <div class="editable" data-field="role-analyst"
+                             data-placeholder="Initial incident detection and triage, in-depth analysis, containment recommendations, forensic evidence collection and chain of custody">
+                        </div>
+                    </div>
+
+                    <div class="role-card">
+                        <h4>🔧 IT Operations Lead</h4>
+                        <p><strong>Primary:</strong> <input class="inline-field" placeholder="Name, Title" oninput="markUnsaved()"></p>
+                        <p><strong>Backup:</strong> <input class="inline-field" placeholder="Backup contact" oninput="markUnsaved()"></p>
+                        <p><strong>Email:</strong> <input class="inline-field email" placeholder="email@organization.gov" oninput="markUnsaved()"></p>
+                        <p><strong>Phone:</strong> <input class="inline-field" placeholder="(XXX) XXX-XXXX" style="width:160px;" oninput="markUnsaved()"></p>
+                        <p><strong>Responsibilities:</strong></p>
+                        <div class="editable" data-field="role-itops"
+                             data-placeholder="System isolation and shutdown procedures, backup restoration, infrastructure recovery, network segmentation enforcement, patch application">
+                        </div>
+                    </div>
+
+                    <div class="role-card">
+                        <h4>📢 Communications Officer</h4>
+                        <p><strong>Primary:</strong> <input class="inline-field" placeholder="Name, Title" oninput="markUnsaved()"></p>
+                        <p><strong>Backup:</strong> <input class="inline-field" placeholder="Backup contact" oninput="markUnsaved()"></p>
+                        <p><strong>Email:</strong> <input class="inline-field email" placeholder="email@organization.gov" oninput="markUnsaved()"></p>
+                        <p><strong>Phone:</strong> <input class="inline-field" placeholder="(XXX) XXX-XXXX" style="width:160px;" oninput="markUnsaved()"></p>
+                        <p><strong>Responsibilities:</strong></p>
+                        <div class="editable" data-field="role-comms"
+                             data-placeholder="Internal staff notifications, external reporting to DoD via DIBNet, stakeholder and leadership updates, coordinating with legal counsel and PR">
+                        </div>
+                    </div>
+
+                </div>
+
+                <button class="add-btn blue" onclick="addRoleCard()">+ Add Team Role</button>
+
+                <div class="alert alert-warning" style="margin-top:14px;">
+                    <strong>24/7 Contact Protocol:</strong> All IR team members must be reachable within <input class="inline-field" placeholder="XX" style="width:40px;" oninput="markUnsaved()"> minutes during business hours and within <input class="inline-field" placeholder="XX" style="width:40px;" oninput="markUnsaved()"> hours during off-hours. Describe your escalation procedure and automated alert mechanism here.
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ============================================================
+             SECTION 4: INCIDENT CLASSIFICATION
+        ============================================================ -->
+        <section class="irp-section collapsed" id="sec4">
+            <div class="section-header" onclick="toggleSection('sec4')">
+                <h2 class="section-title"><span class="section-num">4</span>Incident Classification &amp; Prioritization</h2>
+                <div class="header-right"><span class="toggle-icon">▼</span></div>
+            </div>
+            <div class="section-body">
+
+                <p style="font-size:0.88em; color:#6b7280; margin-bottom:12px;">Define the incident categories and response time targets for your organization. Edit each priority tier with the specific incident types relevant to your case study.</p>
+
+                <div class="incident-grid">
+
+                    <div class="incident-card inc-critical">
+                        <h4>🔴 CRITICAL — Priority 1</h4>
+                        <div class="editable" data-field="inc-critical"
+                             data-placeholder="List P1 incident types:&#10;• CUI data breach or exfiltration&#10;• Ransomware affecting CUI systems&#10;• Supply chain compromise&#10;• Advanced Persistent Threat (APT)&#10;• Nation-state attack indicators">
+                        </div>
+                        <span class="rt-label">Response Time:</span>
+                        <input class="inline-field" placeholder="e.g., Immediate — within 30 min" style="width:100%;" oninput="markUnsaved()">
+                        <span class="rt-label">Reporting:</span>
+                        <input class="inline-field" placeholder="e.g., DIBNet within 72 hours" style="width:100%;" oninput="markUnsaved()">
+                    </div>
+
+                    <div class="incident-card inc-high">
+                        <h4>🟠 HIGH — Priority 2</h4>
+                        <div class="editable" data-field="inc-high"
+                             data-placeholder="List P2 incident types:&#10;• Malware on CUI systems&#10;• Unauthorized access attempts&#10;• Denial of Service attacks&#10;• Insider threat indicators&#10;• Phishing compromising credentials">
+                        </div>
+                        <span class="rt-label">Response Time:</span>
+                        <input class="inline-field" placeholder="e.g., Within 2 hours" style="width:100%;" oninput="markUnsaved()">
+                        <span class="rt-label">Reporting:</span>
+                        <input class="inline-field" placeholder="e.g., Internal escalation required" style="width:100%;" oninput="markUnsaved()">
+                    </div>
+
+                    <div class="incident-card inc-medium">
+                        <h4>🟡 MEDIUM — Priority 3</h4>
+                        <div class="editable" data-field="inc-medium"
+                             data-placeholder="List P3 incident types:&#10;• Policy violations&#10;• Suspicious network activity&#10;• Multiple failed access attempts&#10;• System anomalies&#10;• Lost or stolen non-CUI device">
+                        </div>
+                        <span class="rt-label">Response Time:</span>
+                        <input class="inline-field" placeholder="e.g., Within 8 hours" style="width:100%;" oninput="markUnsaved()">
+                        <span class="rt-label">Reporting:</span>
+                        <input class="inline-field" placeholder="e.g., Standard documentation required" style="width:100%;" oninput="markUnsaved()">
+                    </div>
+
+                    <div class="incident-card inc-low">
+                        <h4>🟢 LOW — Priority 4</h4>
+                        <div class="editable" data-field="inc-low"
+                             data-placeholder="List P4 incident types:&#10;• Minor configuration issues&#10;• Non-CUI system incidents&#10;• Environmental alerts&#10;• Routine security events&#10;• Single failed login attempts">
+                        </div>
+                        <span class="rt-label">Response Time:</span>
+                        <input class="inline-field" placeholder="e.g., Within 24 hours" style="width:100%;" oninput="markUnsaved()">
+                        <span class="rt-label">Reporting:</span>
+                        <input class="inline-field" placeholder="e.g., Log entry only" style="width:100%;" oninput="markUnsaved()">
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ============================================================
+             SECTION 5: INCIDENT RESPONSE LIFECYCLE
+        ============================================================ -->
+        <section class="irp-section collapsed" id="sec5">
+            <div class="section-header" onclick="toggleSection('sec5')">
+                <h2 class="section-title"><span class="section-num">5</span>Incident Response Lifecycle</h2>
+                <div class="header-right"><span class="toggle-icon">▼</span></div>
+            </div>
+            <div class="section-body">
+
+                <p style="font-size:0.88em; color:#6b7280; margin-bottom:12px;">Describe your organization's activities in each phase of the NIST SP 800-61 incident response lifecycle. Click <strong>✏️ Edit Mode</strong> to edit phase descriptions.</p>
+
+                <div class="phase-timeline">
+                    <div class="phase">
+                        <div class="phase-num">1</div>
+                        <h4>Preparation</h4>
+                        <div class="editable" data-field="phase-prep"
+                             data-placeholder="Describe preparation activities: IR team training, tool provisioning, policy development, communication plans, secure out-of-band communication setup.">
+                        </div>
+                    </div>
+                    <div class="phase">
+                        <div class="phase-num">2</div>
+                        <h4>Detection &amp; Analysis</h4>
+                        <div class="editable" data-field="phase-detect"
+                             data-placeholder="Describe detection sources (SIEM, EDR, user reports), analysis procedures, alert triage, CUI involvement determination, and initial documentation.">
+                        </div>
+                    </div>
+                    <div class="phase">
+                        <div class="phase-num">3</div>
+                        <h4>Containment</h4>
+                        <div class="editable" data-field="phase-contain"
+                             data-placeholder="Describe short-term containment (network isolation, account disabling) and long-term containment (patching, hardening) to prevent further spread while preserving evidence.">
+                        </div>
+                    </div>
+                    <div class="phase">
+                        <div class="phase-num">4</div>
+                        <h4>Eradication</h4>
+                        <div class="editable" data-field="phase-eradicate"
+                             data-placeholder="Describe malware removal, vulnerability patching, compromised account remediation, and system hardening steps taken to eliminate the threat.">
+                        </div>
+                    </div>
+                    <div class="phase">
+                        <div class="phase-num">5</div>
+                        <h4>Recovery</h4>
+                        <div class="editable" data-field="phase-recover"
+                             data-placeholder="Describe system restoration from clean backups, validation testing, enhanced monitoring during recovery, and the criteria for returning systems to normal operations.">
+                        </div>
+                    </div>
+                    <div class="phase">
+                        <div class="phase-num">6</div>
+                        <h4>Lessons Learned</h4>
+                        <div class="editable" data-field="phase-lessons"
+                             data-placeholder="Describe the post-incident review process, IRP update procedures, training updates, documentation requirements, and timeline for the lessons learned meeting.">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-success">
+                    <strong>CMMC Integration:</strong> Each phase must maintain CUI protection and include documentation for CMMC assessments. All incident activities must be logged with timestamps, and evidence must be preserved following proper chain-of-custody procedures for potential DoD review.
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ============================================================
+             SECTION 6: DETECTION AND ANALYSIS PROCEDURES
+        ============================================================ -->
+        <section class="irp-section collapsed" id="sec6">
+            <div class="section-header" onclick="toggleSection('sec6')">
+                <h2 class="section-title"><span class="section-num">6</span>Detection and Analysis Procedures</h2>
+                <div class="header-right"><span class="toggle-icon">▼</span></div>
+            </div>
+            <div class="section-body">
+
+                <h3>Detection Sources</h3>
+                <div class="editable" data-field="detection-sources"
+                     data-placeholder="List all detection sources your organization uses and how each contributes to incident detection:&#10;• SIEM System (SPA-005): [Describe log collection and correlation rules]&#10;• Endpoint Protection (SPA-004): [Describe anti-malware and behavioral detection]&#10;• Network Monitoring: [Describe firewall/IDS alerts and traffic analysis]&#10;• User Reports: [Describe the reporting mechanism for employees]&#10;• External Threat Feeds: [Describe threat intelligence subscriptions or partnerships]">
+                </div>
+
+                <h3>Analysis Procedures</h3>
+                <div class="editable" data-field="analysis-procedures"
+                     data-placeholder="List the step-by-step analysis procedures your IR team follows when an alert is triggered:&#10;1. Initial Triage: [Validate alert and determine if CUI is involved]&#10;2. Impact Assessment: [Identify affected systems and data types]&#10;3. Evidence Collection: [Preserve logs, captures, and artifacts]&#10;4. Attribution Analysis: [Determine threat actor and attack vector]&#10;5. Scope Determination: [Map full extent of compromise]">
+                </div>
+
+                <h3>Evidence Handling</h3>
+                <div class="editable" data-field="evidence-handling"
+                     data-placeholder="Describe your evidence handling and chain-of-custody procedures. Include: who is authorized to collect evidence, how evidence is labeled and stored, documentation requirements, and how evidence integrity is maintained for potential law enforcement or DoD review.">
+                </div>
+
+                <div class="alert alert-info">
+                    <strong>CUI Handling Rule:</strong> Any incident involving CUI assets automatically escalates to <strong>Priority 1 or 2</strong> and requires immediate CISO notification within <input class="inline-field" placeholder="XX" style="width:40px;" oninput="markUnsaved()"> minutes, followed by DIBNet reporting within 72 hours.
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ============================================================
+             SECTION 7: CONTAINMENT AND ERADICATION
+        ============================================================ -->
+        <section class="irp-section collapsed" id="sec7">
+            <div class="section-header" onclick="toggleSection('sec7')">
+                <h2 class="section-title"><span class="section-num">7</span>Containment and Eradication Strategies</h2>
+                <div class="header-right"><span class="toggle-icon">▼</span></div>
+            </div>
+            <div class="section-body">
+
+                <h3>Containment Strategies</h3>
+                <h4>Short-term Containment</h4>
+                <div class="editable" data-field="containment-short"
+                     data-placeholder="Describe immediate containment actions (first 0-4 hours):&#10;• Network Isolation: [VLAN/firewall changes to quarantine affected systems]&#10;• Account Disabling: [Active Directory account suspension procedures]&#10;• Service Shutdown: [Which services to stop and in what order]&#10;• Cloud Containment: [Azure/cloud access revocation steps]">
+                </div>
+
+                <h4>Long-term Containment</h4>
+                <div class="editable" data-field="containment-long"
+                     data-placeholder="Describe sustained containment actions (4+ hours):&#10;• Patching affected systems while maintaining isolation&#10;• Deploying enhanced monitoring on adjacent systems&#10;• Reviewing all privileged account activity&#10;• Implementing additional network controls to prevent lateral movement">
+                </div>
+
+                <h3>Eradication Procedures</h3>
+                <div class="editable" data-field="eradication"
+                     data-placeholder="Describe how threats are fully removed from the environment:&#10;• Malware removal tools and procedures&#10;• System reimaging from known-good baselines&#10;• Credential reset scope and process&#10;• Vulnerability patching requirements&#10;• Verification scanning to confirm eradication">
+                </div>
+
+                <h3>Recovery Procedures</h3>
+                <div class="editable" data-field="recovery"
+                     data-placeholder="Describe system restoration procedures:&#10;• Backup validation and restoration process&#10;• Phased return-to-operations criteria&#10;• Enhanced monitoring period and duration&#10;• User access restoration approval process&#10;• Testing procedures before full return to production">
+                </div>
+
+                <h3>Post-Incident Activities</h3>
+                <div class="editable" data-field="post-incident"
+                     data-placeholder="List post-incident activities and timelines:&#10;• Lessons learned meeting (within 1 week of closure)&#10;• IRP update based on identified gaps&#10;• Training material revisions and refresher sessions&#10;• CMMC documentation completion and archival&#10;• Leadership debrief and stakeholder communication">
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ============================================================
+             SECTION 8: EVIDENCE PRESERVATION & FORENSICS
+        ============================================================ -->
+        <section class="irp-section collapsed" id="sec8">
+            <div class="section-header" onclick="toggleSection('sec8')">
+                <h2 class="section-title"><span class="section-num">8</span>Evidence Preservation &amp; Forensics</h2>
+                <div class="header-right"><span class="toggle-icon">▼</span></div>
+            </div>
+            <div class="section-body">
+
+                <h3>Forensic Collection Priorities</h3>
+                <div class="editable" data-field="forensics-collection"
+                     data-placeholder="List forensic evidence collection priorities in order:&#10;1. Volatile data (RAM, active network connections, running processes)&#10;2. System logs from SIEM, endpoints, and network devices&#10;3. Disk images of affected systems&#10;4. Network traffic captures&#10;5. Application and database logs&#10;6. Cloud service audit logs (Azure/AWS)">
+                </div>
+
+                <h3>Chain of Custody Procedures</h3>
+                <div class="editable" data-field="chain-of-custody"
+                     data-placeholder="Describe the chain of custody process:&#10;• Who is authorized to collect and handle digital evidence&#10;• Evidence labeling requirements (case ID, date/time, collector name, hash values)&#10;• Secure storage location and access controls&#10;• Documentation log format and requirements&#10;• Transfer procedures when sharing with law enforcement or DoD">
+                </div>
+
+                <h3>Forensic Tools &amp; Resources</h3>
+                <div class="editable" data-field="forensics-tools"
+                     data-placeholder="List approved forensic tools available to the IR team:&#10;• [Tool name]: [Purpose and location]&#10;• [Disk imaging tool]: [e.g., FTK Imager, dd]&#10;• [Memory analysis]: [e.g., Volatility]&#10;• [Log analysis]: [e.g., SIEM queries, Splunk]&#10;• External forensics vendor: [Company name, contact, retainer status]">
+                </div>
+
+                <div class="alert alert-warning">
+                    <strong>Legal Considerations:</strong> Do not perform forensic analysis on systems without proper authorization. Consult with legal counsel before engaging law enforcement. Ensure all forensic activities comply with CMMC evidence retention requirements and applicable laws.
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ============================================================
+             SECTION 9: COMMUNICATION AND REPORTING
+        ============================================================ -->
+        <section class="irp-section collapsed" id="sec9">
+            <div class="section-header" onclick="toggleSection('sec9')">
+                <h2 class="section-title"><span class="section-num">9</span>Communication and Reporting Protocols</h2>
+                <div class="header-right"><span class="toggle-icon">▼</span></div>
+            </div>
+            <div class="section-body">
+
+                <div class="alert alert-danger">
+                    <strong>🚨 CRITICAL REQUIREMENT:</strong> All incidents involving CUI must be reported to DoD via <strong>DIBNet (https://dibnet.dod.mil)</strong> within <strong>72 hours</strong>. Ensure a DoD-approved medium assurance certificate is available for reporting. Failure to report may result in contract termination.
+                </div>
+
+                <h3>Internal Communication</h3>
+                <div class="editable" data-field="internal-comms"
+                     data-placeholder="Define internal notification procedures by priority level:&#10;• Immediate (P1/P2): CISO and IR Manager within 30 minutes via [method]&#10;• Executive Brief: CEO and senior leadership within 2 hours for P1/P2&#10;• Employee Updates: [Process for notifying affected staff]&#10;• Customer Notification: DoD contracting officers per contract requirements&#10;• Out-of-band communication plan if primary systems are compromised">
+                </div>
+
+                <h3>External Reporting Requirements</h3>
+                <div class="editable" data-field="external-reporting"
+                     data-placeholder="List all external reporting obligations:&#10;• DIBNet: Mandatory for all CUI-related incidents within 72 hours&#10;• Law Enforcement: Contact FBI Cyber Division for suspected criminal activity&#10;• CISA: Report significant incidents per CISA reporting guidelines&#10;• Cyber Insurance: Notify carrier per policy requirements&#10;• Industry Partners: Share threat intelligence as appropriate under ISACs">
+                </div>
+
+                <div class="info-card">
+                    <h3>Emergency Contact Directory</h3>
+                    <p><strong>DIBNet Portal:</strong> <input class="inline-field" value="https://dibnet.dod.mil" style="width:220px;" oninput="markUnsaved()"></p>
+                    <p><strong>DoD Cyber Crime Center (DC3):</strong> <input class="inline-field" placeholder="Submission portal URL" style="width:220px;" oninput="markUnsaved()"></p>
+                    <p><strong>FBI Cyber Division:</strong> <input class="inline-field" placeholder="(XXX) XXX-XXXX" style="width:160px;" oninput="markUnsaved()"></p>
+                    <p><strong>CISA:</strong> <input class="inline-field" placeholder="(XXX) XXX-XXXX" style="width:160px;" oninput="markUnsaved()"></p>
+                    <p><strong>Cyber Insurance Carrier:</strong> <input class="inline-field" placeholder="Company, phone, policy #" style="width:260px;" oninput="markUnsaved()"></p>
+                    <p><strong>Legal Counsel:</strong> <input class="inline-field" placeholder="Firm name, contact number" style="width:260px;" oninput="markUnsaved()"></p>
+                    <p><strong>External Forensics Vendor:</strong> <input class="inline-field" placeholder="Company, contact, retainer #" style="width:260px;" oninput="markUnsaved()"></p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ============================================================
+             SECTION 10: TRAINING AND EXERCISES
+        ============================================================ -->
+        <section class="irp-section collapsed" id="sec10">
+            <div class="section-header" onclick="toggleSection('sec10')">
+                <h2 class="section-title"><span class="section-num">10</span>Training and Exercise Programs</h2>
+                <div class="header-right"><span class="toggle-icon">▼</span></div>
+            </div>
+            <div class="section-body">
+
+                <h3>Training Requirements</h3>
+                <div class="editable" data-field="training-program"
+                     data-placeholder="Define training requirements by role and frequency:&#10;• All Employees: [Frequency, format, content — awareness training]&#10;• IR Team Members: [Quarterly specialized incident response training]&#10;• New Hires: [Onboarding security training within XX days]&#10;• Leadership: [Annual executive briefing on IR capabilities]&#10;• Privileged Users: [Additional training requirements]">
+                </div>
+
+                <h3>Exercise Schedule</h3>
+                <div class="editable" data-field="exercise-schedule"
+                     data-placeholder="Define the annual exercise calendar:&#10;• Tabletop Exercises: [Frequency, who participates, scenarios covered]&#10;• Functional Exercises: [Semi-annual hands-on simulations]&#10;• Full-Scale Exercise: [Annual comprehensive incident simulation]&#10;• Surprise Drills: [Unannounced tests — frequency and format]&#10;• After-Action Reviews: [Documentation and follow-up requirements]">
+                </div>
+
+                <div class="alert alert-success">
+                    <strong>CMMC Requirement (IR.L2-3.6.3):</strong> Regular testing of incident response capabilities through tabletop exercises is <strong>mandatory</strong> for CMMC Level 2 compliance. All exercises must be documented and records maintained for at least 3 years for potential assessment review.
+                </div>
+
+                <h3>Tabletop Exercise Scenarios</h3>
+                <p style="font-size:0.88em; color:#6b7280;">Use the <strong>🎯 Tabletop Exercise</strong> button in the toolbar to launch the interactive scenario panel. Scenarios added there will appear below when saved.</p>
+                <div id="exerciseSummary">
+                    <p style="color:#9ca3af; font-style:italic; font-size:0.88em;">No tabletop scenarios recorded yet — use the Tabletop Exercise button to add scenarios.</p>
+                </div>
+
+            </div>
+        </section>
+
+    </div><!-- /main-content -->
+
+    <!-- FOOTER -->
+    <div class="irp-footer">
+        <p>
+            <strong>Document Classification:</strong> Controlled Unclassified Information (CUI) &nbsp;|&nbsp;
+            <strong>Document Type:</strong> Incident Response Plan (IRP) — CMMC 2.0 Level 2 &nbsp;|&nbsp;
+            <strong>Organization:</strong> <span id="footerOrg">[Organization Name]</span>
+        </p>
+        <p style="margin-top:6px;">
+            <strong>Last Modified:</strong> <span id="lastModified"></span> &nbsp;|&nbsp;
+            This document must be reviewed annually or after any significant security incident.
+        </p>
+    </div>
+
+</div><!-- /container -->
+
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toast"></div>
+
+<!-- ===== TABLETOP EXERCISE MODAL ===== -->
+<div id="tabletopModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal('tabletopModal')">&times;</span>
+        <h2>🎯 Tabletop Exercise Scenarios</h2>
+        <p style="font-size:0.88em; color:#6b7280; margin-bottom:16px;">Add, review, and practice incident scenarios with your team. Each scenario should prompt discussion of detection, response, containment, and reporting actions.</p>
+
+        <div id="exerciseContent">
+            <!-- Pre-loaded starter scenarios -->
+            <div class="scenario-card">
+                <button class="del-btn" onclick="deleteScenario(this)">✕</button>
+                <h4>Scenario 1: CUI Data Breach via Email</h4>
+                <p>A contract coordinator reports that they accidentally sent a file containing CUI to an unauthorized external email address.</p>
+                <p><strong>Discussion Points:</strong> CUI classification procedures, immediate containment steps, DIBNet 72-hour reporting requirement, affected party notification, evidence preservation.</p>
+                <p style="font-size:0.8em; color:#6b7280;">Priority: CRITICAL | NIST Reference: IR.L2-3.6.1</p>
+            </div>
+            <div class="scenario-card">
+                <button class="del-btn" onclick="deleteScenario(this)">✕</button>
+                <h4>Scenario 2: Ransomware Attack on CUI Systems</h4>
+                <p>Multiple workstations in the CUI zone are displaying ransomware messages. The primary data server appears to be affected and encrypted.</p>
+                <p><strong>Discussion Points:</strong> Network isolation procedures, backup integrity validation and restoration, law enforcement notification (FBI), business continuity activation, DoD reporting obligations.</p>
+                <p style="font-size:0.8em; color:#6b7280;">Priority: CRITICAL | NIST Reference: IR.L2-3.6.1, IR.L2-3.6.2</p>
+            </div>
+            <div class="scenario-card">
+                <button class="del-btn" onclick="deleteScenario(this)">✕</button>
+                <h4>Scenario 3: Insider Threat — Terminated Employee</h4>
+                <p>SIEM alerts indicate unusual after-hours access to CUI systems by an employee who was recently terminated but whose accounts were not fully deprovisioned.</p>
+                <p><strong>Discussion Points:</strong> Emergency access revocation, forensic evidence preservation, HR and legal coordination, scope of potential CUI exposure, investigation procedures.</p>
+                <p style="font-size:0.8em; color:#6b7280;">Priority: HIGH | NIST Reference: IR.L2-3.6.1, AC.L2-3.1.1</p>
+            </div>
+        </div>
+
+        <hr style="margin:16px 0; border-color:#e5e7eb;">
+        <h3 style="color:#1e3a8a; font-size:1em; margin-bottom:12px;">Add New Scenario</h3>
+        <div class="field-group">
+            <label>Scenario Title *</label>
+            <input type="text" id="newScenarioTitle" placeholder="e.g., Phishing Attack Compromising Credentials">
+        </div>
+        <div class="field-group">
+            <label>Scenario Description *</label>
+            <textarea id="newScenarioDesc" placeholder="Describe the incident situation the team will respond to during the exercise..."></textarea>
+        </div>
+        <div class="field-group">
+            <label>Discussion Points</label>
+            <textarea id="newScenarioDiscussion" placeholder="What questions should the team answer? What decisions need to be made?"></textarea>
+        </div>
+        <div class="field-group">
+            <label>Priority Level</label>
+            <select id="newScenarioPriority">
+                <option value="CRITICAL">CRITICAL — Priority 1</option>
+                <option value="HIGH">HIGH — Priority 2</option>
+                <option value="MEDIUM">MEDIUM — Priority 3</option>
+                <option value="LOW">LOW — Priority 4</option>
+            </select>
+        </div>
+        <div class="modal-actions">
+            <button class="btn-secondary" onclick="closeModal('tabletopModal')">Close</button>
+            <button class="btn-primary" onclick="addScenario()">+ Add Scenario</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== RESET MODAL ===== -->
+<div id="resetModal" class="modal">
+    <div class="modal-content" style="max-width:420px;">
+        <h2>⚠️ Reset All Data?</h2>
+        <p style="font-size:0.9em; color:#374151; margin:10px 0;">This will clear all entered text, role cards, scenarios, and inline fields. This cannot be undone.</p>
+        <div class="modal-actions">
+            <button class="btn-secondary" onclick="closeModal('resetModal')">Cancel</button>
+            <button class="btn-danger-m" onclick="doReset()">Yes, Reset Everything</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== JAVASCRIPT ===== -->
+<script>
+    // =============================================
+    //  EDIT MODE
+    // =============================================
+    let editMode = false;
+
+    function toggleEditMode() {
+        editMode = !editMode;
+        const btn    = document.getElementById('editToggleBtn');
+        const status = document.getElementById('editStatus');
+
+        document.querySelectorAll('.editable').forEach(el => {
+            el.contentEditable = editMode ? 'true' : 'false';
+            if (editMode) {
+                el.classList.add('edit-active');
+            } else {
+                el.classList.remove('edit-active');
+                if (el.textContent.trim()) el.classList.add('has-content');
+                markUnsaved();
+            }
+        });
+
+        if (editMode) {
+            btn.textContent = '🔒 Lock Editing';
+            btn.classList.add('active');
+            status.textContent = 'Edit: ON';
+            status.classList.add('on');
+        } else {
+            btn.textContent = '✏️ Edit Mode';
+            btn.classList.remove('active');
+            status.textContent = 'Edit: OFF';
+            status.classList.remove('on');
+        }
+    }
+
+    // =============================================
+    //  SECTION ACCORDION
+    // =============================================
+    function toggleSection(id) {
+        document.getElementById(id).classList.toggle('collapsed');
+    }
+
+    // =============================================
+    //  ROLE CARDS
+    // =============================================
+    let roleCount = 4; // 4 pre-built roles
+
+    function addRoleCard() {
+        roleCount++;
+        const grid = document.getElementById('roleGrid');
+        const div  = document.createElement('div');
+        div.className = 'role-card';
+        div.innerHTML = `
+            <h4>
+                <input type="text" placeholder="Role Title (e.g., Legal Counsel)" style="border:none;border-bottom:1px dashed #8b5cf6;background:transparent;font-family:inherit;font-size:inherit;font-weight:700;color:#5b21b6;width:80%;" oninput="markUnsaved()">
+                <button class="del-btn" onclick="this.closest('.role-card').remove(); markUnsaved();" style="float:right;">✕</button>
+            </h4>
+            <p><strong>Primary:</strong> <input class="inline-field" placeholder="Name, Title" oninput="markUnsaved()"></p>
+            <p><strong>Backup:</strong> <input class="inline-field" placeholder="Backup contact" oninput="markUnsaved()"></p>
+            <p><strong>Email:</strong> <input class="inline-field email" placeholder="email@organization.gov" oninput="markUnsaved()"></p>
+            <p><strong>Phone:</strong> <input class="inline-field" placeholder="(XXX) XXX-XXXX" style="width:160px;" oninput="markUnsaved()"></p>
+            <p><strong>Responsibilities:</strong></p>
+            <div class="editable" data-field="role-custom-${roleCount}"
+                 data-placeholder="Describe this role's specific incident response responsibilities..."
+                 ${editMode ? 'contenteditable="true"' : ''}
+                 ${editMode ? 'class="editable edit-active"' : 'class="editable"'}>
+            </div>`;
+        grid.appendChild(div);
+        markUnsaved();
+    }
+
+    // =============================================
+    //  TABLETOP SCENARIOS
+    // =============================================
+    function addScenario() {
+        const title    = document.getElementById('newScenarioTitle').value.trim();
+        const desc     = document.getElementById('newScenarioDesc').value.trim();
+        const discuss  = document.getElementById('newScenarioDiscussion').value.trim();
+        const priority = document.getElementById('newScenarioPriority').value;
+
+        if (!title || !desc) { alert('Scenario Title and Description are required.'); return; }
+
+        const container = document.getElementById('exerciseContent');
+        const card = document.createElement('div');
+        card.className = 'scenario-card';
+        card.innerHTML = `
+            <button class="del-btn" onclick="deleteScenario(this)">✕</button>
+            <h4>${esc(title)}</h4>
+            <p>${esc(desc)}</p>
+            ${discuss ? `<p><strong>Discussion Points:</strong> ${esc(discuss)}</p>` : ''}
+            <p style="font-size:0.8em;color:#6b7280;">Priority: ${esc(priority)}</p>
+        `;
+        container.appendChild(card);
+
+        // Clear form
+        ['newScenarioTitle','newScenarioDesc','newScenarioDiscussion'].forEach(id => {
+            document.getElementById(id).value = '';
+        });
+        document.getElementById('newScenarioPriority').value = 'CRITICAL';
+
+        // Update summary in Section 10
+        updateExerciseSummary();
+        markUnsaved();
+        showToast('Scenario added ✓', 'success');
+    }
+
+    function deleteScenario(btn) {
+        if (!confirm('Delete this scenario?')) return;
+        btn.closest('.scenario-card').remove();
+        updateExerciseSummary();
+        markUnsaved();
+    }
+
+    function updateExerciseSummary() {
+        const count   = document.getElementById('exerciseContent').querySelectorAll('.scenario-card').length;
+        const summary = document.getElementById('exerciseSummary');
+        if (count === 0) {
+            summary.innerHTML = '<p style="color:#9ca3af;font-style:italic;font-size:0.88em;">No tabletop scenarios recorded yet — use the Tabletop Exercise button to add scenarios.</p>';
+        } else {
+            summary.innerHTML = `<p style="font-size:0.88em;color:#065f46;font-weight:600;">✅ ${count} tabletop scenario${count>1?'s':''} have been defined. Launch the 🎯 Tabletop Exercise to view and add scenarios.</p>`;
+        }
+    }
+
+    // =============================================
+    //  UNSAVED / FOOTER
+    // =============================================
+    function markUnsaved() {
+        document.getElementById('unsavedIndicator').style.display = 'block';
+        updateLastModified();
+        // Update footer org name
+        const org = document.getElementById('orgCompany')?.value.trim();
+        if (org) document.getElementById('footerOrg').textContent = org;
+    }
+    function markSaved() {
+        document.getElementById('unsavedIndicator').style.display = 'none';
+    }
+    function updateLastModified() {
+        document.getElementById('lastModified').textContent =
+            new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit' });
+    }
+
+    // =============================================
+    //  SAVE / LOAD
+    // =============================================
+    function collectEditableFields() {
+        const fields = {};
+        document.querySelectorAll('.editable[data-field]').forEach(el => {
+            fields[el.dataset.field] = el.innerHTML;
+        });
+        return fields;
+    }
+
+    function collectInlineInputs() {
+        const inputs = {};
+        // Named inputs
+        ['orgCompany','orgLocation','orgEmployees','orgBusiness','orgCISO','orgReviewDate','orgCMMC'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) inputs[id] = el.value;
+        });
+        return inputs;
+    }
+
+    function buildSaveObject() {
+        return {
+            fields:        collectEditableFields(),
+            namedInputs:   collectInlineInputs(),
+            roleGridHTML:  document.getElementById('roleGrid').innerHTML,
+            scenariosHTML: document.getElementById('exerciseContent').innerHTML
+        };
+    }
+
+    function applyLoadedData(d) {
+        if (d.fields) {
+            document.querySelectorAll('.editable[data-field]').forEach(el => {
+                const val = d.fields[el.dataset.field];
+                if (val !== undefined) {
+                    el.innerHTML = val;
+                    if (el.textContent.trim()) el.classList.add('has-content');
+                }
+            });
+        }
+        if (d.namedInputs) {
+            Object.keys(d.namedInputs).forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = d.namedInputs[id];
+            });
+        }
+        if (d.roleGridHTML) {
+            document.getElementById('roleGrid').innerHTML = d.roleGridHTML;
+        }
+        if (d.scenariosHTML) {
+            document.getElementById('exerciseContent').innerHTML = d.scenariosHTML;
+            updateExerciseSummary();
+        }
+
+        // Update footer
+        const org = document.getElementById('orgCompany')?.value.trim();
+        if (org) document.getElementById('footerOrg').textContent = org;
+        markSaved();
+        updateLastModified();
+    }
+
+    function saveData() {
+        try {
+            localStorage.setItem('cmmc_irp_tool_v1', JSON.stringify(buildSaveObject()));
+            markSaved();
+            showToast('IRP saved ✓', 'success');
+        } catch(e) {
+            showToast('Save failed — try Export JSON.', 'error');
+        }
+    }
+
+    function loadFromFile(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = e => {
+            try {
+                applyLoadedData(JSON.parse(e.target.result));
+                showToast('File loaded ✓', 'success');
+            } catch(err) {
+                showToast('Error: Invalid JSON file.', 'error');
+            }
+        };
+        reader.readAsText(file);
+        event.target.value = '';
+    }
+
+    function exportJSON() {
+        const blob = new Blob([JSON.stringify(buildSaveObject(), null, 2)], { type: 'application/json' });
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+        a.download = 'CMMC_IRP.json'; a.click(); URL.revokeObjectURL(a.href);
+        showToast('JSON exported ✓', 'success');
+    }
+
+    // =============================================
+    //  RESET
+    // =============================================
+    function doReset() {
+        localStorage.removeItem('cmmc_irp_tool_v1');
+        closeModal('resetModal');
+        showToast('Resetting…', 'error');
+        setTimeout(() => location.reload(), 600);
+    }
+
+    // =============================================
+    //  MODAL HELPERS
+    // =============================================
+    function openModal(id)  { document.getElementById(id).style.display = 'block'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    window.onclick = e => {
+        document.querySelectorAll('.modal').forEach(m => {
+            if (e.target === m) m.style.display = 'none';
+        });
+    };
+
+    // =============================================
+    //  UTILITIES
+    // =============================================
+    function esc(s) {
+        return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function showToast(msg, type) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.className = 'toast show ' + (type||'');
+        setTimeout(() => { t.className = 'toast'; }, 3200);
+    }
+
+    // =============================================
+    //  INIT
+    // =============================================
+    document.addEventListener('DOMContentLoaded', () => {
+        updateLastModified();
+        updateExerciseSummary();
+
+        const saved = localStorage.getItem('cmmc_irp_tool_v1');
+        if (saved) {
+            try {
+                applyLoadedData(JSON.parse(saved));
+                showToast('Auto-loaded your last saved session.', 'success');
+            } catch(e) {}
+        }
+    });
+
+    // Ctrl+S
+    document.addEventListener('keydown', e => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); saveData(); }
+    });
+</script>
+</body>
+</html>
