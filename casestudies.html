@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CMMC Training Case Studies | CMMC 2.0 Portal</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(135deg,#0d1b2a 0%,#1b3a5c 100%);min-height:100vh;color:#333;}
+  a{text-decoration:none;color:inherit;}
+  .container{max-width:1200px;margin:0 auto;padding:2rem;}
+
+  .back-nav{margin-bottom:1.5rem;}
+  .back-nav a{color:rgba(255,255,255,.8);font-size:.88rem;font-weight:600;display:inline-flex;align-items:center;gap:.4rem;padding:.4rem .9rem;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:20px;transition:all .2s;}
+  .back-nav a:hover{background:rgba(255,255,255,.2);color:#fff;}
+
+  /* Header */
+  .header{text-align:center;margin-bottom:2rem;padding:2.5rem 2rem;background:rgba(255,255,255,.97);border-radius:18px;box-shadow:0 12px 40px rgba(0,0,0,.25);position:relative;overflow:hidden;}
+  .header::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,#0d1b2a,#1e90ff,#f0a500,#2ecc71,#1e90ff);}
+  .page-label{display:inline-block;background:#e8f0fa;color:#0d1b2a;font-size:.8rem;font-weight:700;padding:.3rem .8rem;border-radius:20px;margin-bottom:.75rem;border:1px solid #b0c8e8;}
+  .header h1{font-size:2.5rem;color:#0d1b2a;margin-bottom:.4rem;font-weight:800;}
+  .header h1 span{color:#1e90ff;}
+  .header .subtitle{color:#555;font-size:1rem;max-width:680px;margin:.5rem auto 1.5rem;}
+  .header-stats{display:flex;justify-content:center;gap:2.5rem;flex-wrap:wrap;margin-top:1.2rem;}
+  .hstat .snum{font-size:2rem;font-weight:800;color:#0d1b2a;}
+  .hstat .slbl{font-size:.75rem;color:#666;text-transform:uppercase;letter-spacing:.06em;}
+
+  /* Purpose box */
+  .purpose-box{display:flex;gap:1.2rem;background:rgba(255,255,255,.97);border-radius:14px;padding:1.5rem;margin-bottom:2rem;box-shadow:0 6px 20px rgba(0,0,0,.12);border-left:5px solid #f0a500;align-items:flex-start;}
+  .picon{font-size:2rem;flex-shrink:0;}
+  .purpose-box h3{font-size:1rem;color:#0d1b2a;margin-bottom:.4rem;font-weight:700;}
+  .purpose-box p{color:#555;font-size:.88rem;line-height:1.65;}
+
+  /* Progress section */
+  .progress-section{background:rgba(255,255,255,.97);border-radius:14px;padding:1.5rem;margin-bottom:2rem;box-shadow:0 6px 20px rgba(0,0,0,.12);}
+  .progress-section h3{font-size:1rem;color:#0d1b2a;margin-bottom:1rem;font-weight:700;}
+  .progress-row{display:flex;align-items:center;gap:1rem;margin-bottom:.6rem;}
+  .prog-label{width:210px;font-size:.83rem;color:#333;flex-shrink:0;}
+  .prog-bar{flex:1;background:#e2e8f0;border-radius:20px;height:10px;}
+  .prog-fill{height:100%;border-radius:20px;}
+  .prog-fill.done{background:#2ecc71;}
+  .prog-badge{font-size:.7rem;font-weight:700;padding:.15rem .5rem;border-radius:8px;flex-shrink:0;}
+  .prog-badge.complete{background:#d1fae5;color:#064e3b;}
+  .prog-badge.planned{background:#fef3c7;color:#7c4a00;}
+
+  /* Section label */
+  .section-label{color:rgba(255,255,255,.8);font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:.9rem;}
+
+  /* Case cards grid */
+  .cases-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1.5rem;margin-bottom:2rem;}
+  .case-card{background:rgba(255,255,255,.97);border-radius:15px;box-shadow:0 8px 25px rgba(0,0,0,.14);overflow:hidden;transition:all .3s;display:flex;flex-direction:column;}
+  .case-card:hover{transform:translateY(-5px);box-shadow:0 18px 45px rgba(0,0,0,.22);}
+  .case-card-top{height:7px;}
+  .case-card-body{padding:1.5rem;flex:1;display:flex;flex-direction:column;}
+  .case-sector{display:inline-flex;align-items:center;gap:.4rem;font-size:.73rem;font-weight:700;padding:.2rem .6rem;border-radius:12px;margin-bottom:.7rem;}
+  .case-org-icon{font-size:2rem;margin-bottom:.5rem;}
+  .case-card-body h3{font-size:1.1rem;font-weight:800;color:#0d1b2a;margin-bottom:.3rem;}
+  .case-card-body .case-desc{font-size:.85rem;color:#555;line-height:1.55;margin-bottom:.8rem;}
+  .case-facts{display:grid;grid-template-columns:1fr 1fr;gap:.3rem .6rem;margin-bottom:.9rem;}
+  .fact{font-size:.77rem;color:#444;}
+  .fact span{font-weight:700;color:#0d1b2a;}
+  .case-tags{display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:1rem;}
+  .ctag{font-size:.7rem;font-weight:700;padding:.15rem .5rem;border-radius:8px;}
+  .case-btn{display:block;text-align:center;background:linear-gradient(135deg,#0d1b2a,#2e4a6b);color:#fff;font-size:.85rem;font-weight:700;padding:.6rem 1rem;border-radius:25px;transition:all .2s;margin-top:auto;box-shadow:0 3px 10px rgba(13,27,42,.25);}
+  .case-btn:hover{background:linear-gradient(135deg,#1e90ff,#2e4a6b);box-shadow:0 5px 15px rgba(30,144,255,.35);}
+  .case-btn.featured{background:linear-gradient(135deg,#1e3a6b,#1e90ff);}
+  .case-btn.featured:hover{background:linear-gradient(135deg,#1e90ff,#2ecc71);}
+
+  /* Footer */
+  .footer{text-align:center;padding:2rem;background:rgba(255,255,255,.08);border-radius:15px;color:rgba(255,255,255,.85);margin-top:2rem;border:1px solid rgba(255,255,255,.12);}
+  .footer p{margin-bottom:.4rem;font-size:.87rem;}
+  .version-badge{display:inline-block;background:rgba(255,255,255,.15);color:#fff;padding:.25rem .8rem;border-radius:20px;font-size:.78rem;font-weight:600;margin-top:.8rem;}
+
+  @media(max-width:640px){
+    .container{padding:1rem;}
+    .cases-grid{grid-template-columns:1fr;}
+    .header h1{font-size:1.8rem;}
+    .header-stats{gap:1.5rem;}
+    .prog-label{width:140px;}
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="back-nav"><a href="index.html">← Back to CMMC Portal Home</a></div>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="page-label">🛡 CMMC 2.0 Training Portal</div>
+    <h1>CMMC Training <span>Case Studies</span></h1>
+    <p class="subtitle">Sector-specific fictional DoD contractors with realistic IT environments, CUI data flows, network diagrams, and CMMC gaps — designed for hands-on Level 2 assessment practice.</p>
+    <div class="header-stats">
+      <div class="hstat"><div class="snum">8</div><div class="slbl">Available Now</div></div>
+      <div class="hstat"><div class="snum">8</div><div class="slbl">DIB Sectors</div></div>
+      <div class="hstat"><div class="snum">14</div><div class="slbl">Domains Covered</div></div>
+      <div class="hstat"><div class="snum">9</div><div class="slbl">Audit Doc Types</div></div>
+    </div>
+  </div>
+
+  <!-- Purpose box -->
+  <div class="purpose-box">
+    <div class="picon">🎓</div>
+    <div>
+      <h3>How to Use These Case Studies</h3>
+      <p>Each case study presents a fully developed fictional DoD contractor in a specific Defense Industrial Base sector. Students receive a complete organizational profile, IT asset inventory, network architecture, CUI data flow diagram, security control gaps, vendor relationships, and a CMMC domain assessment. Exercises ask students to validate compliance posture, map findings to specific NIST SP 800-171 practice IDs, produce one of nine standard audit documents, and work through scenario injects that simulate realistic audit findings. Each case study can be used independently or combined for cross-sector comparison exercises.</p>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-section">
+    <h3>📈 Case Study Development Progress — 8 of 8 Sectors Complete</h3>
+    <div class="progress-row"><div class="prog-label">🏭 Defense Manufacturing</div><div class="prog-bar"><div class="prog-fill done" style="width:100%"></div></div><span class="prog-badge complete">Complete</span></div>
+    <div class="progress-row"><div class="prog-label">💻 IT Services</div><div class="prog-bar"><div class="prog-fill done" style="width:100%"></div></div><span class="prog-badge complete">Complete</span></div>
+    <div class="progress-row"><div class="prog-label">✈ Aerospace</div><div class="prog-bar"><div class="prog-fill done" style="width:100%"></div></div><span class="prog-badge complete">Complete</span></div>
+    <div class="progress-row"><div class="prog-label">🔬 Research Institution</div><div class="prog-bar"><div class="prog-fill done" style="width:100%"></div></div><span class="prog-badge complete">Complete</span></div>
+    <div class="progress-row"><div class="prog-label">📦 Defense Logistics</div><div class="prog-bar"><div class="prog-fill done" style="width:100%"></div></div><span class="prog-badge complete">Complete</span></div>
+    <div class="progress-row"><div class="prog-label">🖥 Embedded Systems</div><div class="prog-bar"><div class="prog-fill done" style="width:100%"></div></div><span class="prog-badge complete">Complete</span></div>
+    <div class="progress-row"><div class="prog-label">📋 Management Consulting</div><div class="prog-bar"><div class="prog-fill done" style="width:100%"></div></div><span class="prog-badge complete">Complete</span></div>
+    <div class="progress-row"><div class="prog-label">🧬 BioDefense Research</div><div class="prog-bar"><div class="prog-fill done" style="width:100%"></div></div><span class="prog-badge complete">Complete</span></div>
+  </div>
+
+  <!-- Cards -->
+  <div class="section-label">Available Now — All 8 Sectors</div>
+  <div class="cases-grid">
+
+    <!-- 1: Meridian -->
+    <div class="case-card">
+      <div class="case-card-top" style="background:linear-gradient(90deg,#0d1b2a,#1e90ff,#f0a500)"></div>
+      <div class="case-card-body">
+        <div class="case-sector" style="background:#e8f0fa;color:#0d1b2a;">🏭 Defense Manufacturing</div>
+        <div class="case-org-icon">🏢</div>
+        <h3>Meridian Precision Defense Systems, Inc.</h3>
+        <p class="case-desc">Mid-size DoD subcontractor manufacturing actuator housing assemblies and providing UAV systems integration support. Holds three active DoD contracts across Army, Air Force, and NAVAIR. Operates two sites in Dayton OH and Huntsville AL.</p>
+        <div class="case-facts">
+          <div class="fact"><span>Employees:</span> 147</div>
+          <div class="fact"><span>Revenue:</span> ~$31M</div>
+          <div class="fact"><span>Contracts:</span> 3 Active</div>
+          <div class="fact"><span>CMMC Gap:</span> 8 Findings</div>
+          <div class="fact"><span>Sites:</span> Dayton OH + Huntsville AL</div>
+          <div class="fact"><span>CAGE Code:</span> 7RK42</div>
+        </div>
+        <div class="case-tags">
+          <span class="ctag" style="background:#dbeafe;color:#1e3a5f">ITAR / EAR</span>
+          <span class="ctag" style="background:#fee2e2;color:#7f1d1d">No VPN MFA</span>
+          <span class="ctag" style="background:#fef3c7;color:#7c4a00">No SCRM</span>
+          <span class="ctag" style="background:#fee2e2;color:#7f1d1d">Stale Accounts</span>
+          <span class="ctag" style="background:#d1fae5;color:#064e3b">9 Audit Documents</span>
+          <span class="ctag" style="background:#e8f0fa;color:#0d1b2a">Edit &amp; Print</span>
+        </div>
+        <a href="casestudyjs1.html" class="case-btn featured">Open Full Interactive Case Study →</a>
+      </div>
+    </div>
+
+    <!-- 2: Atlas -->
+    <div class="case-card">
+      <div class="case-card-top" style="background:linear-gradient(90deg,#1e3a6b,#1e90ff,#17c3ce)"></div>
+      <div class="case-card-body">
+        <div class="case-sector" style="background:#dbeafe;color:#1e3a5f;">💻 IT Services &amp; Cyber</div>
+        <div class="case-org-icon">🖥</div>
+        <h3>Atlas Systems Group, LLC</h3>
+        <p class="case-desc">DoD IT services contractor providing managed help desk, SOC-as-a-service, and enterprise IT support to multiple federal agencies. All CUI processed in Azure Government. 85 employees, Arlington VA.</p>
+        <div class="case-facts">
+          <div class="fact"><span>Employees:</span> 85</div>
+          <div class="fact"><span>Revenue:</span> ~$19M</div>
+          <div class="fact"><span>Contracts:</span> 2 Active</div>
+          <div class="fact"><span>CMMC Gap:</span> 7 Findings</div>
+          <div class="fact"><span>Location:</span> Arlington, VA</div>
+          <div class="fact"><span>Cloud:</span> Azure Gov</div>
+        </div>
+        <div class="case-tags">
+          <span class="ctag" style="background:#fee2e2;color:#7f1d1d">Shared Admin Accounts</span>
+          <span class="ctag" style="background:#fef3c7;color:#7c4a00">Cloud Misconfiguration</span>
+          <span class="ctag" style="background:#fee2e2;color:#7f1d1d">No IR Testing</span>
+          <span class="ctag" style="background:#dbeafe;color:#1e3a5f">SOC / MDR</span>
+          <span class="ctag" style="background:#fef3c7;color:#7c4a00">Software Supply Chain</span>
+        </div>
+        <a href="case-study-atlas.html" class="case-btn">Open Case Study →</a>
+      </div>
+    </div>
+
+    <!-- 3: Keystone -->
+    <div class="case-card">
+      <div class="case-card-top" style="background:linear-gradient(90deg,#7c3a00,#c05621,#f0a500)"></div>
+      <div class="case-card-body">
+        <div class="case-sector" style="background:#fef3c7;color:#7c4a00;">✈ Aerospace &amp; Aviation</div>
+        <div class="case-org-icon">✈</div>
+        <h3>Keystone Aerospace LLC</h3>
+        <p class="case-desc">Precision aerospace component manufacturer producing structural airframe parts and avionics housings for DoD prime contractors. Heavy ITAR exposure. 320 employees across two Kansas facilities.</p>
+        <div class="case-facts">
+          <div class="fact"><span>Employees:</span> 320</div>
+          <div class="fact"><span>Revenue:</span> ~$64M</div>
+          <div class="fact"><span>Contracts:</span> 3 Active</div>
+          <div class="fact"><span>CMMC Gap:</span> 7 Findings</div>
+          <div class="fact"><span>Location:</span> Wichita, KS</div>
+          <div class="fact"><span>CAGE Code:</span> 4MX71</div>
+        </div>
+        <div class="case-tags">
+          <span class="ctag" style="background:#fee2e2;color:#7f1d1d">Legacy ERP w/ CUI</span>
+          <span class="ctag" style="background:#fef3c7;color:#7c4a00">No MFA (Engineering)</span>
+          <span class="ctag" style="background:#fee2e2;color:#7f1d1d">Unencrypted Supplier Email</span>
+          <span class="ctag" style="background:#dbeafe;color:#1e3a5f">ITAR / 22 CFR 121</span>
+          <span class="ctag" style="background:#fef3c7;color:#7c4a00">Media Sanitization Gap</span>
+        </div>
+        <a href="case-study-keystone.html" class="case-btn">Open Case Study →</a>
+      </div>
+    </div>
+
+    <!-- 4: Summit -->
+    <div class="case-card">
+      <div class="case-card-top" style="background:linear-gradient(90deg,#4a148c,#7b1fa2,#ab47bc)"></div>
+      <div class="case-card-body">
+        <div class="case-sector" style="background:#f3e5f5;color:#4a148c;">🔬 Research Institution</div>
+        <div class="case-org-icon">🔬</div>
+        <h3>Summit Research Institute</h3>
+        <p class="case-desc">University-affiliated DoD research laboratory performing DARPA and ONR-funded research on autonomous systems and advanced materials. Handles CUI and export-controlled technical data. 45 researchers plus graduate students.</p>
+        <div class="case-facts">
+          <div class="fact"><span>Researchers:</span> 45 + students</div>
+          <div class="fact"><span>Funding:</span> ~$8.2M/yr</div>
+          <div class="fact"><span>Grants:</span> 3 Active</div>
+          <div class="fact"><span>CMMC Gap:</span> 8 Findings</div>
+          <div class="fact"><span>Location:</span> State College, PA</div>
+          <div class="fact"><span>Oversight:</span> DARPA / ONR</div>
+        </div>
+        <div class="case-tags">
+          <span class="ctag" style="background:#fee2e2;color:#7f1d1d">Student CUI Access</span>
+          <span class="ctag" style="background:#fee2e2;color:#7f1d1d">Foreign National Gap</span>
+          <span class="ctag" style="background:#fef3c7;color:#7c4a00">BYOD on CUI Network</span>
+          <span class="ctag" style="background:#dbeafe;color:#1e3a5f">ITAR / EAR</span>
+          <span class="ctag" style="background:#fef3c7;color:#7c4a00">No Formal SSP</span>
+        </div>
+        <a href="case-study-summit.html" class="case-btn">Open Case Study →</a>
+      </div>
+    </div>
+
+    <!-- 5: Fortis -->
+    <div class="case-card">
+      <div class="case-card-top" style="background:linear-gradient(90deg,#1a5c35,#28a745,#56d07a)"></div>
+      <div class="case-card-body">
+        <div class="case-sector" style="background:#d1fae5;color:#064e3b;">📦 Defense Logistics</div>
+        <div class="case-org-icon">📦</div>
+        <h3>Fortis Defense Logistics, Inc.</h3>
+        <p class="case-desc">Defense supply chain and warehouse management contractor operating logistics support contracts for Army and Marine Corps. Manages controlled inventory tracking and shipment documentation containing CUI. Jacksonville FL headquarters.</p>
+        <div class="case-facts">
+          <div class="fact"><span>Employees:</span> 210</div>
+          <div class="fact"><span>Revenue:</span> ~$38M</div>
+          <div class="fact"><span>Contracts:</span> 2 Active</div>
+          <div class="fact"><span>CMMC Gap:</span> 6 Findings</div>
+          <div class="fact"><span>Location:</span> Jacksonville, FL</div>
+          <div class="fact"><span>CAGE Code:</span> 8FP33</div>
+        </div>
+        <div class="case-tags">
+          <span class="ctag" style="background:#fee2e2;color:#7f1d1d">WMS on Flat Network</span>
+          <span class="ctag" style="background:#fef3c7;color:#7c4a00">No Audit Logs (WMS)</span>
+          <span class="ctag" style="background:#fee2e2;color:#7f1d1d">Contractor Access Unmanaged</span>
+          <span class="ctag" style="background:#dbeafe;color:#1e3a5f">CUI in Shipment Docs</span>
+          <span class="ctag" style="background:#fef3c7;color:#7c4a00">Paper CUI Unprotected</span>
+        </div>
+        <a href="case-study-fortis.html" class="case-btn">Open Case Study →</a>
+      </div>
+    </div>
+
+    <!-- 6: Vector -->
+    <div class="case-card">
+      <div class="case-card-top" style="background:linear-gradient(90deg,#0d4f6c,#0288d1,#26c6da)"></div>
+      <div class="case-card-body">
+        <div class="case-sector" style="background:#e1f5fe;color:#01579b;">🖥 Embedded Systems</div>
+        <div class="case-org-icon">💾</div>
+        <h3>Vector Embedded Systems, Inc.</h3>
+        <p class="case-desc">Embedded software and firmware developer producing safety-critical control code for naval weapons system components. Small but highly technical contractor with CI/CD pipeline, open-source dependencies, and serious CMMC obligations. San Diego CA.</p>
+        <div class="case-facts">
+          <div class="fact"><span>Employees:</span> 60</div>
+          <div class="fact"><span>Revenue:</span> ~$12M</div>
+          <div class="fact"><span>Contracts:</span> 2 Active</div>
+          <div class="fact"><span>CMMC Gap:</span> 7 Findings</div>
+          <div class="fact"><span>Location:</span> San Diego, CA</div>
+          <div class="fact"><span>CAGE Code:</span> 9VE14</div>
+        </div>
+        <div class="case-tags">
+          <span class="ctag" style="background:#fee2e2;color:#7f1d1d">Unsecured Code Repo</span>
+          <span class="ctag" style="background:#fef3c7;color:#7c4a00">No SBOM / SCRM</span>
+          <span class="ctag" style="background:#fee2e2;color:#7f1d1d">Dev Laptops w/ CUI, No MDM</span>
+          <span class="ctag" style="background:#dbeafe;color:#1e3a5f">Firmware / Safety-Critical</span>
+          <span class="ctag" style="background:#fef3c7;color:#7c4a00">CI/CD Pipeline Unsecured</span>
+        </div>
+        <a href="case-study-vector.html" class="case-btn">Open Case Study →</a>
+      </div>
+    </div>
+
+    <!-- 7: Coastal -->
+    <div class="case-card">
+      <div class="case-card-top" style="background:linear-gradient(90deg,#374151,#6b7280,#9ca3af)"></div>
+      <div class="case-card-body">
+        <div class="case-sector" style="background:#f3f4f6;color:#1f2937;">📋 Management Consulting</div>
+        <div class="case-org-icon">💼</div>
+        <h3>Coastal Defense Consulting Group</h3>
+        <p class="case-desc">DoD management consulting firm providing acquisition support, program management, and policy advisory services to OSD and military departments. Primarily a knowledge-work business — CUI lives in documents, email, and SharePoint. McLean VA.</p>
+        <div class="case-facts">
+          <div class="fact"><span>Employees:</span> 38</div>
+          <div class="fact"><span>Revenue:</span> ~$9M</div>
+          <div class="fact"><span>Contracts:</span> 3 Active</div>
+          <div class="fact"><span>CMMC Gap:</span> 7 Findings</div>
+          <div class="fact"><span>Location:</span> McLean, VA</div>
+          <div class="fact"><span>CAGE Code:</span> 5CG82</div>
+        </div>
+        <div class="case-tags">
+          <span class="ctag" style="background:#fee2e2;color:#7f1d1d">CUI in Unencrypted Email</span>
+          <span class="ctag" style="background:#fef3c7;color:#7c4a00">No VPN Enforcement (Home)</span>
+          <span class="ctag" style="background:#fee2e2;color:#7f1d1d">DMS Not in SSP Scope</span>
+          <span class="ctag" style="background:#dbeafe;color:#1e3a5f">High Turnover Staff</span>
+          <span class="ctag" style="background:#fef3c7;color:#7c4a00">Slow Offboarding</span>
+        </div>
+        <a href="case-study-coastal.html" class="case-btn">Open Case Study →</a>
+      </div>
+    </div>
+
+    <!-- 8: Apex -->
+    <div class="case-card">
+      <div class="case-card-top" style="background:linear-gradient(90deg,#7f1d1d,#b91c1c,#ef4444)"></div>
+      <div class="case-card-body">
+        <div class="case-sector" style="background:#fee2e2;color:#7f1d1d;">🧬 BioDefense Research</div>
+        <div class="case-org-icon">🧬</div>
+        <h3>Apex BioDefense Laboratories, Inc.</h3>
+        <p class="case-desc">Biodefense research contractor performing BARDA and DoD-funded medical countermeasure development. Operates BSL-2 and BSL-3 laboratory facilities with separate IT and OT environments. Handles CUI, export-controlled biological research, and personnel data. Frederick MD.</p>
+        <div class="case-facts">
+          <div class="fact"><span>Employees:</span> 95</div>
+          <div class="fact"><span>Revenue:</span> ~$22M</div>
+          <div class="fact"><span>Contracts:</span> 2 Active</div>
+          <div class="fact"><span>CMMC Gap:</span> 8 Findings</div>
+          <div class="fact"><span>Location:</span> Frederick, MD</div>
+          <div class="fact"><span>CAGE Code:</span> 6AB95</div>
+        </div>
+        <div class="case-tags">
+          <span class="ctag" style="background:#fee2e2;color:#7f1d1d">CUI on Open Network</span>
+          <span class="ctag" style="background:#fef3c7;color:#7c4a00">Intl. Collaborators w/ CUI</span>
+          <span class="ctag" style="background:#fee2e2;color:#7f1d1d">BYOD Researchers</span>
+          <span class="ctag" style="background:#dbeafe;color:#1e3a5f">BSL-3 / EAR</span>
+          <span class="ctag" style="background:#fef3c7;color:#7c4a00">No CUI Marking Process</span>
+        </div>
+        <a href="case-study-apex.html" class="case-btn">Open Case Study →</a>
+      </div>
+    </div>
+
+  </div><!-- /cases-grid -->
+
+  <div class="footer">
+    <p><strong>CMMC 2.0 Training Portal — Case Study Library</strong></p>
+    <p>CMMC Level 2 | NIST SP 800-171 Rev 2 | Defense Industrial Base Training Scenarios</p>
+    <p style="margin-top:.5rem;font-size:.8rem;opacity:.7">All case study organizations, personnel, contract numbers, and data are entirely fictional and created for educational use only. Any resemblance to real organizations is coincidental.</p>
+    <span class="version-badge">🏫 Case Study Library | April 2026</span>
+  </div>
+
+</div>
+</body>
+</html>
