@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -36,11 +35,50 @@
   /* ── Section label ── */
   .section-label{color:rgba(255,255,255,.8);font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:.8rem;}
 
-  /* ── Domain chips ── */
+  /* ── Domain buttons ── */
   .domains-strip{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:.65rem;margin-bottom:2.5rem;}
-  .domain-chip{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:.65rem .9rem;color:#fff;display:flex;align-items:center;gap:.5rem;transition:all .2s;font-size:.83rem;font-weight:600;cursor:default;}
-  .domain-chip:hover{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.38);transform:translateY(-2px);}
-  .chip-abbr{background:rgba(255,255,255,.18);padding:.1rem .4rem;border-radius:5px;font-size:.7rem;letter-spacing:.4px;}
+  .domain-btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);border-radius:10px;padding:.65rem .9rem;color:#fff;display:flex;align-items:center;gap:.5rem;transition:all .2s;font-size:.83rem;font-weight:600;cursor:pointer;width:100%;text-align:left;}
+  .domain-btn:hover{background:rgba(255,255,255,.22);border-color:#1e90ff;transform:translateY(-2px);box-shadow:0 4px 14px rgba(30,144,255,.3);}
+  .chip-abbr{background:rgba(255,255,255,.18);padding:.1rem .4rem;border-radius:5px;font-size:.7rem;letter-spacing:.4px;flex-shrink:0;}
+  .domain-btn .chip-arrow{margin-left:auto;font-size:.7rem;opacity:.6;}
+
+  /* ── Domain Modal ── */
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:2000;align-items:center;justify-content:center;padding:1rem;}
+  .modal-overlay.show{display:flex;}
+  .modal-box{background:#fff;border-radius:18px;max-width:780px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,0,.4);animation:modalIn .2s ease;}
+  @keyframes modalIn{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+  .modal-header{padding:1.5rem 1.75rem 1rem;border-bottom:2px solid #e2e8f0;position:sticky;top:0;background:#fff;border-radius:18px 18px 0 0;z-index:1;}
+  .modal-header-top{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;}
+  .modal-abbr-badge{font-size:1.8rem;font-weight:900;color:#fff;background:linear-gradient(135deg,#0d1b2a,#1e90ff);width:56px;height:56px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;letter-spacing:-.5px;}
+  .modal-title-block{flex:1;}
+  .modal-title-block h2{font-size:1.3rem;font-weight:800;color:#0d1b2a;margin-bottom:.2rem;}
+  .modal-title-block p{font-size:.82rem;color:#64748b;}
+  .modal-close{background:none;border:none;font-size:1.4rem;color:#94a3b8;cursor:pointer;padding:.25rem;line-height:1;transition:color .15s;flex-shrink:0;}
+  .modal-close:hover{color:#0d1b2a;}
+  .modal-badges{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.75rem;}
+  .mbadge{font-size:.72rem;font-weight:700;padding:.22rem .65rem;border-radius:20px;}
+  .mbadge-l1{background:#dbeafe;color:#1e3a5f;border:1px solid #93c5fd;}
+  .mbadge-l2{background:#fef3c7;color:#7c4a00;border:1px solid #fcd34d;}
+  .mbadge-l3{background:#fee2e2;color:#7f1d1d;border:1px solid #fca5a5;}
+  .modal-body{padding:1.25rem 1.75rem 1.75rem;}
+  .modal-section{margin-bottom:1.25rem;}
+  .modal-section h3{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#64748b;margin-bottom:.6rem;padding-bottom:.35rem;border-bottom:1px solid #e2e8f0;}
+  .modal-section p{font-size:.9rem;color:#334155;line-height:1.65;}
+  .controls-grid{display:grid;gap:.4rem;}
+  .ctrl-row{display:grid;grid-template-columns:110px 1fr auto;gap:.5rem .75rem;align-items:start;padding:.5rem .65rem;border-radius:7px;background:#f8fafc;border:1px solid #e2e8f0;font-size:.83rem;}
+  .ctrl-row:nth-child(even){background:#f1f5f9;}
+  .ctrl-id{font-family:'Courier New',monospace;font-weight:700;color:#0d1b2a;font-size:.8rem;}
+  .ctrl-desc{color:#334155;line-height:1.45;}
+  .ctrl-level{display:flex;gap:.3rem;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end;}
+  .lv{font-size:.62rem;font-weight:800;padding:.1rem .35rem;border-radius:4px;}
+  .lv1{background:#dbeafe;color:#1e3a5f;}
+  .lv2{background:#fef3c7;color:#7c4a00;}
+  .lv3{background:#fee2e2;color:#7f1d1d;}
+  @media(max-width:600px){
+    .ctrl-row{grid-template-columns:1fr;gap:.25rem;}
+    .ctrl-level{justify-content:flex-start;}
+    .modal-box{border-radius:12px;}
+  }
 
   /* ── Nav cards ── */
   .nav-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:1.4rem;margin-bottom:2rem;}
@@ -137,20 +175,47 @@
   <!-- Domain Quick Nav -->
   <div class="section-label">CMMC 2.0 Level 2 — 14 Domains</div>
   <div class="domains-strip">
-    <div class="domain-chip"><span class="chip-abbr">AC</span>🔑 Access Control</div>
-    <div class="domain-chip"><span class="chip-abbr">AT</span>📚 Awareness &amp; Training</div>
-    <div class="domain-chip"><span class="chip-abbr">AU</span>📊 Audit &amp; Accountability</div>
-    <div class="domain-chip"><span class="chip-abbr">CA</span>🔍 Security Assessment</div>
-    <div class="domain-chip"><span class="chip-abbr">CM</span>⚙ Config Management</div>
-    <div class="domain-chip"><span class="chip-abbr">IA</span>🪪 Identification &amp; Auth</div>
-    <div class="domain-chip"><span class="chip-abbr">IR</span>🚨 Incident Response</div>
-    <div class="domain-chip"><span class="chip-abbr">MA</span>🔧 Maintenance</div>
-    <div class="domain-chip"><span class="chip-abbr">MP</span>💾 Media Protection</div>
-    <div class="domain-chip"><span class="chip-abbr">PE</span>🏛 Physical Protection</div>
-    <div class="domain-chip"><span class="chip-abbr">PS</span>👤 Personnel Security</div>
-    <div class="domain-chip"><span class="chip-abbr">RA</span>⚖ Risk Assessment</div>
-    <div class="domain-chip"><span class="chip-abbr">SC</span>🌐 System &amp; Comms Prot.</div>
-    <div class="domain-chip"><span class="chip-abbr">SI</span>🛡 System &amp; Info Integrity</div>
+    <button class="domain-btn" onclick="openDomain('AC')"><span class="chip-abbr">AC</span>🔑 Access Control<span class="chip-arrow">›</span></button>
+    <button class="domain-btn" onclick="openDomain('AT')"><span class="chip-abbr">AT</span>📚 Awareness &amp; Training<span class="chip-arrow">›</span></button>
+    <button class="domain-btn" onclick="openDomain('AU')"><span class="chip-abbr">AU</span>📊 Audit &amp; Accountability<span class="chip-arrow">›</span></button>
+    <button class="domain-btn" onclick="openDomain('CA')"><span class="chip-abbr">CA</span>🔍 Security Assessment<span class="chip-arrow">›</span></button>
+    <button class="domain-btn" onclick="openDomain('CM')"><span class="chip-abbr">CM</span>⚙ Config Management<span class="chip-arrow">›</span></button>
+    <button class="domain-btn" onclick="openDomain('IA')"><span class="chip-abbr">IA</span>🪪 Identification &amp; Auth<span class="chip-arrow">›</span></button>
+    <button class="domain-btn" onclick="openDomain('IR')"><span class="chip-abbr">IR</span>🚨 Incident Response<span class="chip-arrow">›</span></button>
+    <button class="domain-btn" onclick="openDomain('MA')"><span class="chip-abbr">MA</span>🔧 Maintenance<span class="chip-arrow">›</span></button>
+    <button class="domain-btn" onclick="openDomain('MP')"><span class="chip-abbr">MP</span>💾 Media Protection<span class="chip-arrow">›</span></button>
+    <button class="domain-btn" onclick="openDomain('PE')"><span class="chip-abbr">PE</span>🏛 Physical Protection<span class="chip-arrow">›</span></button>
+    <button class="domain-btn" onclick="openDomain('PS')"><span class="chip-abbr">PS</span>👤 Personnel Security<span class="chip-arrow">›</span></button>
+    <button class="domain-btn" onclick="openDomain('RA')"><span class="chip-abbr">RA</span>⚖ Risk Assessment<span class="chip-arrow">›</span></button>
+    <button class="domain-btn" onclick="openDomain('SC')"><span class="chip-abbr">SC</span>🌐 System &amp; Comms Prot.<span class="chip-arrow">›</span></button>
+    <button class="domain-btn" onclick="openDomain('SI')"><span class="chip-abbr">SI</span>🛡 System &amp; Info Integrity<span class="chip-arrow">›</span></button>
+  </div>
+
+  <!-- Domain Detail Modal -->
+  <div id="domain-modal" class="modal-overlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-header-top">
+          <div class="modal-abbr-badge" id="m-abbr">AC</div>
+          <div class="modal-title-block">
+            <h2 id="m-name">Access Control</h2>
+            <p id="m-nist">NIST SP 800-171 Rev 2 | 3.1.x</p>
+          </div>
+          <button class="modal-close" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-badges" id="m-badges"></div>
+      </div>
+      <div class="modal-body">
+        <div class="modal-section">
+          <h3>Domain Purpose</h3>
+          <p id="m-purpose"></p>
+        </div>
+        <div class="modal-section">
+          <h3>Practices &amp; Controls</h3>
+          <div class="controls-grid" id="m-controls"></div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Nav Cards -->
@@ -263,5 +328,205 @@
   </div>
 
 </div>
+
+<script>
+const DOMAINS = {
+  AC:{abbr:'AC',icon:'🔑',name:'Access Control',nist:'NIST SP 800-171 Rev 2 | 3.1.x',
+    purpose:'Governs who can access organizational systems, what they can do, and under what conditions. Requires limiting system access to authorized users and processes, enforcing least privilege, and controlling remote, wireless, and mobile access to protect CUI from unauthorized disclosure.',
+    controls:[
+      {id:'AC.L1-3.1.1',desc:'Limit system access to authorized users, processes acting on behalf of authorized users, and devices (including other systems).',lv:['L1']},
+      {id:'AC.L1-3.1.2',desc:'Limit system access to the types of transactions and functions that authorized users are permitted to execute.',lv:['L1']},
+      {id:'AC.L1-3.1.20',desc:'Verify and control/limit connections to external systems.',lv:['L1']},
+      {id:'AC.L1-3.1.22',desc:'Control CUI posted or processed on publicly accessible systems.',lv:['L1']},
+      {id:'AC.L2-3.1.3',desc:'Control the flow of CUI in accordance with approved authorizations.',lv:['L2']},
+      {id:'AC.L2-3.1.4',desc:'Separate the duties of individuals to reduce the risk of malevolent activity without collusion.',lv:['L2']},
+      {id:'AC.L2-3.1.5',desc:'Employ the principle of least privilege, including for specific security functions and privileged accounts.',lv:['L2']},
+      {id:'AC.L2-3.1.6',desc:'Use non-privileged accounts or roles when accessing non-security functions.',lv:['L2']},
+      {id:'AC.L2-3.1.7',desc:'Prevent non-privileged users from executing privileged functions and capture the execution of such functions in audit logs.',lv:['L2']},
+      {id:'AC.L2-3.1.8',desc:'Limit unsuccessful logon attempts.',lv:['L2']},
+      {id:'AC.L2-3.1.9',desc:'Provide privacy and security notices consistent with CUI rules.',lv:['L2']},
+      {id:'AC.L2-3.1.10',desc:'Use session lock with pattern-hiding displays after a period of inactivity.',lv:['L2']},
+      {id:'AC.L2-3.1.11',desc:'Terminate (automatically) a user session after a defined condition.',lv:['L2']},
+      {id:'AC.L2-3.1.12',desc:'Monitor and control remote access sessions.',lv:['L2']},
+      {id:'AC.L2-3.1.13',desc:'Employ cryptographic mechanisms to protect the confidentiality of remote access sessions.',lv:['L2']},
+      {id:'AC.L2-3.1.14',desc:'Route remote access via managed access control points.',lv:['L2']},
+      {id:'AC.L2-3.1.15',desc:'Authorize remote execution of privileged commands and access to security-relevant information via remote access only for documented operational needs.',lv:['L2']},
+      {id:'AC.L2-3.1.16',desc:'Authorize wireless access prior to allowing such connections.',lv:['L2']},
+      {id:'AC.L2-3.1.17',desc:'Protect wireless access using authentication and encryption.',lv:['L2']},
+      {id:'AC.L2-3.1.18',desc:'Control connection of mobile devices.',lv:['L2']},
+      {id:'AC.L2-3.1.19',desc:'Encrypt CUI on mobile devices and mobile computing platforms.',lv:['L2']},
+      {id:'AC.L2-3.1.21',desc:'Limit use of portable storage devices on external systems.',lv:['L2']},
+    ]},
+  AT:{abbr:'AT',icon:'📚',name:'Awareness & Training',nist:'NIST SP 800-171 Rev 2 | 3.2.x',
+    purpose:'Ensures all personnel with access to organizational systems understand security risks, their individual responsibilities, and how to recognize and report threats including social engineering, phishing, and insider threats.',
+    controls:[
+      {id:'AT.L2-3.2.1',desc:'Ensure that managers, systems administrators, and users of organizational systems are made aware of the security risks associated with their activities.',lv:['L2']},
+      {id:'AT.L2-3.2.2',desc:'Ensure that personnel are trained to carry out their assigned information security-related duties and responsibilities.',lv:['L2']},
+      {id:'AT.L2-3.2.3',desc:'Provide security awareness training on recognizing and reporting potential threats, including social engineering attacks.',lv:['L2']},
+    ]},
+  AU:{abbr:'AU',icon:'📊',name:'Audit & Accountability',nist:'NIST SP 800-171 Rev 2 | 3.3.x',
+    purpose:'Requires creating, protecting, and retaining system audit logs sufficient to enable monitoring, analysis, investigation, and reporting of unlawful or unauthorized system activity, and ensuring accountability for individual user actions.',
+    controls:[
+      {id:'AU.L2-3.3.1',desc:'Create and retain system audit logs and records to the extent needed to enable monitoring, analysis, investigation, and reporting of unlawful or unauthorized system activity.',lv:['L2']},
+      {id:'AU.L2-3.3.2',desc:'Ensure that the actions of individual system users can be traced to those users so they can be held accountable for their actions.',lv:['L2']},
+      {id:'AU.L2-3.3.3',desc:'Review and update logged events.',lv:['L2']},
+      {id:'AU.L2-3.3.4',desc:'Alert in the event of an audit logging process failure.',lv:['L2']},
+      {id:'AU.L2-3.3.5',desc:'Correlate audit record review, analysis, and reporting processes for investigation and response to indications of unlawful, unauthorized, suspicious, or unusual activity.',lv:['L2']},
+      {id:'AU.L2-3.3.6',desc:'Provide audit record reduction and report generation to support on-demand analysis and reporting.',lv:['L2']},
+      {id:'AU.L2-3.3.7',desc:'Provide a system capability that compares and synchronizes internal system clocks with an authoritative source.',lv:['L2']},
+      {id:'AU.L2-3.3.8',desc:'Protect audit information and audit tools from unauthorized access, modification, and deletion.',lv:['L2']},
+      {id:'AU.L2-3.3.9',desc:'Limit management of audit logging to a subset of privileged users.',lv:['L2']},
+    ]},
+  CA:{abbr:'CA',icon:'🔍',name:'Security Assessment',nist:'NIST SP 800-171 Rev 2 | 3.12.x',
+    purpose:'Requires periodically assessing security controls to determine effectiveness, developing and implementing plans of action to correct deficiencies, monitoring security on an ongoing basis, and maintaining current system security plans.',
+    controls:[
+      {id:'CA.L2-3.12.1',desc:'Periodically assess the security controls in organizational systems to determine if they are effective in their application.',lv:['L2']},
+      {id:'CA.L2-3.12.2',desc:'Develop and implement plans of action (POA&M) designed to correct deficiencies and reduce or eliminate vulnerabilities.',lv:['L2']},
+      {id:'CA.L2-3.12.3',desc:'Monitor security controls on an ongoing basis to ensure the continued effectiveness of the controls.',lv:['L2']},
+      {id:'CA.L2-3.12.4',desc:'Develop, document, and periodically update system security plans that describe system boundaries, operating environments, and security requirements.',lv:['L2']},
+    ]},
+  CM:{abbr:'CM',icon:'⚙',name:'Configuration Management',nist:'NIST SP 800-171 Rev 2 | 3.4.x',
+    purpose:'Establishes and enforces baseline configurations, tracks changes, applies least-functionality principles, and controls software installations to reduce the attack surface and maintain a secure, known-good system state.',
+    controls:[
+      {id:'CM.L2-3.4.1',desc:'Establish and maintain baseline configurations and inventories of organizational systems (including hardware, software, firmware, and documentation) throughout the respective system development life cycles.',lv:['L2']},
+      {id:'CM.L2-3.4.2',desc:'Establish and enforce security configuration settings for information technology products employed in organizational systems.',lv:['L2']},
+      {id:'CM.L2-3.4.3',desc:'Track, review, approve, and log changes to organizational systems.',lv:['L2']},
+      {id:'CM.L2-3.4.4',desc:'Analyze the security impact of changes prior to implementation.',lv:['L2']},
+      {id:'CM.L2-3.4.5',desc:'Define, document, approve, and enforce physical and logical access restrictions associated with changes to organizational systems.',lv:['L2']},
+      {id:'CM.L2-3.4.6',desc:'Employ the principle of least functionality by configuring organizational systems to provide only essential capabilities.',lv:['L2']},
+      {id:'CM.L2-3.4.7',desc:'Restrict, disable, or prevent the use of nonessential programs, functions, ports, protocols, and services.',lv:['L2']},
+      {id:'CM.L2-3.4.8',desc:'Apply deny-by-exception (blacklisting) policy to prevent the use of unauthorized software or deny-all, permit-by-exception (whitelisting) policy.',lv:['L2']},
+      {id:'CM.L2-3.4.9',desc:'Control and monitor user-installed software.',lv:['L2']},
+    ]},
+  IA:{abbr:'IA',icon:'🪪',name:'Identification & Authentication',nist:'NIST SP 800-171 Rev 2 | 3.5.x',
+    purpose:'Ensures every user, process, and device is uniquely identified and authenticated before accessing organizational systems. Requires multi-factor authentication, strong password policies, and cryptographic protection of credentials.',
+    controls:[
+      {id:'IA.L1-3.5.1',desc:'Identify information system users, processes acting on behalf of users, or devices.',lv:['L1']},
+      {id:'IA.L1-3.5.2',desc:'Authenticate (or verify) the identities of those users, processes, or devices, as a prerequisite to allowing access to organizational systems.',lv:['L1']},
+      {id:'IA.L2-3.5.3',desc:'Use multifactor authentication for local and network access to privileged accounts and for network access to non-privileged accounts.',lv:['L2']},
+      {id:'IA.L2-3.5.4',desc:'Employ replay-resistant authentication mechanisms for network access to privileged and non-privileged accounts.',lv:['L2']},
+      {id:'IA.L2-3.5.5',desc:'Employ identifier management procedures — do not reuse identifiers or reuse identifiers only after a defined period.',lv:['L2']},
+      {id:'IA.L2-3.5.6',desc:'Employ authenticator management procedures including protecting authenticators commensurate with the security category of the information.',lv:['L2']},
+      {id:'IA.L2-3.5.7',desc:'Enforce a minimum password complexity and change of characters when new passwords are created.',lv:['L2']},
+      {id:'IA.L2-3.5.8',desc:'Prohibit password reuse for a specified number of generations.',lv:['L2']},
+      {id:'IA.L2-3.5.9',desc:'Allow temporary password use for system logons with an immediate change to a permanent password.',lv:['L2']},
+      {id:'IA.L2-3.5.10',desc:'Store and transmit only cryptographically protected passwords.',lv:['L2']},
+      {id:'IA.L2-3.5.11',desc:'Obscure feedback of authentication information.',lv:['L2']},
+    ]},
+  IR:{abbr:'IR',icon:'🚨',name:'Incident Response',nist:'NIST SP 800-171 Rev 2 | 3.6.x',
+    purpose:'Establishes an operational incident-handling capability covering preparation, detection, analysis, containment, recovery, and user response activities, and requires tracking, documenting, and testing the incident response capability.',
+    controls:[
+      {id:'IR.L2-3.6.1',desc:'Establish an operational incident-handling capability for organizational systems that includes preparation, detection, analysis, containment, recovery, and user response activities.',lv:['L2']},
+      {id:'IR.L2-3.6.2',desc:'Track, document, and report incidents to appropriate officials and/or authorities both internal and external to the organization.',lv:['L2']},
+      {id:'IR.L2-3.6.3',desc:'Test the organizational incident response capability.',lv:['L2']},
+    ]},
+  MA:{abbr:'MA',icon:'🔧',name:'Maintenance',nist:'NIST SP 800-171 Rev 2 | 3.7.x',
+    purpose:'Controls system maintenance activities to ensure they are performed in a controlled, authorized manner. Addresses tools used for maintenance, sanitization of removed equipment, diagnostic programs, remote maintenance authentication, and supervision of external personnel.',
+    controls:[
+      {id:'MA.L2-3.7.1',desc:'Perform maintenance on organizational systems.',lv:['L2']},
+      {id:'MA.L2-3.7.2',desc:'Provide controls on the tools, techniques, mechanisms, and personnel that perform system maintenance.',lv:['L2']},
+      {id:'MA.L2-3.7.3',desc:'Ensure equipment removed for off-site maintenance is sanitized of any CUI.',lv:['L2']},
+      {id:'MA.L2-3.7.4',desc:'Check media containing diagnostic and test programs for malicious code before using in organizational systems.',lv:['L2']},
+      {id:'MA.L2-3.7.5',desc:'Require multifactor authentication to establish remote maintenance sessions via external network connections.',lv:['L2']},
+      {id:'MA.L2-3.7.6',desc:'Supervise the maintenance activities of maintenance personnel without required access authorization.',lv:['L2']},
+    ]},
+  MP:{abbr:'MP',icon:'💾',name:'Media Protection',nist:'NIST SP 800-171 Rev 2 | 3.8.x',
+    purpose:'Protects system media containing CUI — both digital and non-digital — through access controls, marking, storage, transport encryption, sanitization, and disposal procedures. Limits use of removable media and controls backup media.',
+    controls:[
+      {id:'MP.L1-3.8.3',desc:'Sanitize or destroy information system media before disposal or reuse.',lv:['L1']},
+      {id:'MP.L2-3.8.1',desc:'Protect (i.e., physically control and securely store) system media containing CUI, both paper and digital.',lv:['L2']},
+      {id:'MP.L2-3.8.2',desc:'Limit access to CUI on system media to authorized users.',lv:['L2']},
+      {id:'MP.L2-3.8.4',desc:'Mark media with necessary CUI markings and distribution limitations.',lv:['L2']},
+      {id:'MP.L2-3.8.5',desc:'Control access to media containing CUI and maintain accountability for media during transport.',lv:['L2']},
+      {id:'MP.L2-3.8.6',desc:'Implement cryptographic mechanisms to protect CUI during transport unless otherwise protected by alternative physical safeguards.',lv:['L2']},
+      {id:'MP.L2-3.8.7',desc:'Control the use of removable media on system components.',lv:['L2']},
+      {id:'MP.L2-3.8.8',desc:'Prohibit the use of portable storage devices when such devices have no identifiable owner.',lv:['L2']},
+      {id:'MP.L2-3.8.9',desc:'Protect the confidentiality of backup CUI at storage locations.',lv:['L2']},
+    ]},
+  PE:{abbr:'PE',icon:'🏛',name:'Physical Protection',nist:'NIST SP 800-171 Rev 2 | 3.10.x',
+    purpose:'Limits physical access to organizational systems, equipment, and operating environments to authorized individuals. Requires visitor escort, physical access logging, management of physical access devices, and safeguarding CUI at alternate work sites.',
+    controls:[
+      {id:'PE.L1-3.10.1',desc:'Limit physical access to organizational systems, equipment, and the respective operating environments to authorized individuals.',lv:['L1']},
+      {id:'PE.L1-3.10.3',desc:'Escort visitors and monitor visitor activity.',lv:['L1']},
+      {id:'PE.L1-3.10.4',desc:'Maintain audit logs of physical access.',lv:['L1']},
+      {id:'PE.L1-3.10.5',desc:'Control and manage physical access devices.',lv:['L1']},
+      {id:'PE.L2-3.10.2',desc:'Protect and monitor the physical facility and support infrastructure for organizational systems.',lv:['L2']},
+      {id:'PE.L2-3.10.6',desc:'Enforce safeguarding measures for CUI at alternate work sites.',lv:['L2']},
+    ]},
+  PS:{abbr:'PS',icon:'👤',name:'Personnel Security',nist:'NIST SP 800-171 Rev 2 | 3.9.x',
+    purpose:'Ensures individuals occupying positions of responsibility are trustworthy and meet security criteria. Requires screening prior to access and protecting CUI during and after personnel actions such as terminations and transfers.',
+    controls:[
+      {id:'PS.L2-3.9.1',desc:'Screen individuals prior to authorizing access to organizational systems containing CUI.',lv:['L2']},
+      {id:'PS.L2-3.9.2',desc:'Ensure that CUI is protected during and after personnel actions such as terminations and transfers.',lv:['L2']},
+    ]},
+  RA:{abbr:'RA',icon:'⚖',name:'Risk Assessment',nist:'NIST SP 800-171 Rev 2 | 3.11.x',
+    purpose:'Requires periodically assessing risk to organizational operations, assets, and individuals; scanning for vulnerabilities in systems and applications; and remediating vulnerabilities in accordance with risk assessments.',
+    controls:[
+      {id:'RA.L2-3.11.1',desc:'Periodically assess the risk to organizational operations (including mission, functions, image, or reputation), organizational assets, and individuals, resulting from the operation of organizational systems and the associated processing, storage, or transmission of CUI.',lv:['L2']},
+      {id:'RA.L2-3.11.2',desc:'Scan for vulnerabilities in organizational systems and applications periodically and when new vulnerabilities affecting those systems and applications are identified.',lv:['L2']},
+      {id:'RA.L2-3.11.3',desc:'Remediate vulnerabilities in accordance with risk assessments.',lv:['L2']},
+    ]},
+  SC:{abbr:'SC',icon:'🌐',name:'System & Communications Protection',nist:'NIST SP 800-171 Rev 2 | 3.13.x',
+    purpose:'Monitors, controls, and protects communications at system boundaries and within the system. Addresses network architecture, encryption in transit and at rest, denial-by-default network policies, split tunneling, mobile code, VoIP, and FIPS-validated cryptography.',
+    controls:[
+      {id:'SC.L1-3.13.1',desc:'Monitor, control, and protect communications (i.e., information transmitted or received) at the external boundaries and key internal boundaries of organizational systems.',lv:['L1']},
+      {id:'SC.L1-3.13.5',desc:'Implement subnetworks for publicly accessible system components that are physically or logically separated from internal networks.',lv:['L1']},
+      {id:'SC.L2-3.13.2',desc:'Employ architectural designs, software development techniques, and systems engineering principles that promote effective information security.',lv:['L2']},
+      {id:'SC.L2-3.13.3',desc:'Separate user functionality from system management functionality.',lv:['L2']},
+      {id:'SC.L2-3.13.4',desc:'Prevent unauthorized and unintended information transfer via shared system resources.',lv:['L2']},
+      {id:'SC.L2-3.13.6',desc:'Deny network communications traffic by default and allow network communications traffic by exception (i.e., deny all, permit by exception).',lv:['L2']},
+      {id:'SC.L2-3.13.7',desc:'Prevent remote devices from simultaneously using non-remote connections with the system and local resources (i.e., split tunneling).',lv:['L2']},
+      {id:'SC.L2-3.13.8',desc:'Implement cryptographic mechanisms to prevent unauthorized disclosure of CUI during transmission unless otherwise protected by alternative physical safeguards.',lv:['L2']},
+      {id:'SC.L2-3.13.9',desc:'Terminate network connections associated with communications sessions at the end of sessions or after a defined period of inactivity.',lv:['L2']},
+      {id:'SC.L2-3.13.10',desc:'Establish and manage cryptographic keys for cryptography employed in organizational systems.',lv:['L2']},
+      {id:'SC.L2-3.13.11',desc:'Employ FIPS-validated cryptography when used to protect the confidentiality of CUI.',lv:['L2']},
+      {id:'SC.L2-3.13.12',desc:'Prohibit remote activation of collaborative computing devices and provide indication of use to present and physically local users.',lv:['L2']},
+      {id:'SC.L2-3.13.13',desc:'Control and monitor the use of mobile code.',lv:['L2']},
+      {id:'SC.L2-3.13.14',desc:'Control and monitor the use of VoIP technologies.',lv:['L2']},
+      {id:'SC.L2-3.13.15',desc:'Protect the authenticity of communications sessions.',lv:['L2']},
+      {id:'SC.L2-3.13.16',desc:'Protect CUI at rest.',lv:['L2']},
+    ]},
+  SI:{abbr:'SI',icon:'🛡',name:'System & Information Integrity',nist:'NIST SP 800-171 Rev 2 | 3.14.x',
+    purpose:'Identifies and corrects system flaws, provides malicious code protection, monitors security alerts, and detects attacks and unauthorized use. Requires timely patching, anti-malware deployment, and continuous monitoring of organizational systems.',
+    controls:[
+      {id:'SI.L1-3.14.1',desc:'Identify, report, and correct information and information system flaws in a timely manner.',lv:['L1']},
+      {id:'SI.L1-3.14.2',desc:'Provide protection from malicious code at appropriate locations within organizational information systems.',lv:['L1']},
+      {id:'SI.L1-3.14.4',desc:'Update malicious code protection mechanisms when new releases are available.',lv:['L1']},
+      {id:'SI.L1-3.14.5',desc:'Perform periodic scans of the information system and real-time scans of files from external sources as files are downloaded, opened, or executed.',lv:['L1']},
+      {id:'SI.L2-3.14.3',desc:'Monitor system security alerts and advisories and take appropriate actions in response.',lv:['L2']},
+      {id:'SI.L2-3.14.6',desc:'Monitor organizational systems, including inbound and outbound communications traffic, to detect attacks and indicators of potential attacks.',lv:['L2']},
+      {id:'SI.L2-3.14.7',desc:'Identify unauthorized use of organizational systems.',lv:['L2']},
+    ]},
+};
+
+function openDomain(id){
+  const d=DOMAINS[id];
+  if(!d)return;
+  document.getElementById('m-abbr').textContent=d.abbr;
+  document.getElementById('m-name').textContent=d.icon+' '+d.name;
+  document.getElementById('m-nist').textContent=d.nist;
+  // count levels
+  const l1=d.controls.filter(c=>c.lv.includes('L1')).length;
+  const l2=d.controls.filter(c=>c.lv.includes('L2')).length;
+  const badges=document.getElementById('m-badges');
+  badges.innerHTML=`<span class="mbadge mbadge-l1">L1: ${l1} practice${l1!==1?'s':''}</span><span class="mbadge mbadge-l2">L2: ${l2} practice${l2!==1?'s':''}</span><span class="mbadge" style="background:#e8f0fa;color:#0d1b2a;border:1px solid #b0c8e8;">${d.controls.length} Total</span>`;
+  document.getElementById('m-purpose').textContent=d.purpose;
+  const grid=document.getElementById('m-controls');
+  grid.innerHTML=d.controls.map(c=>`
+    <div class="ctrl-row">
+      <span class="ctrl-id">${c.id}</span>
+      <span class="ctrl-desc">${c.desc}</span>
+      <span class="ctrl-level">${c.lv.map(l=>`<span class="lv lv${l.toLowerCase()}">${l}</span>`).join('')}</span>
+    </div>`).join('');
+  const modal=document.getElementById('domain-modal');
+  modal.classList.add('show');
+  document.body.style.overflow='hidden';
+}
+function closeModal(){
+  document.getElementById('domain-modal').classList.remove('show');
+  document.body.style.overflow='';
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+</script>
 </body>
 </html>
