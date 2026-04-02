@@ -1,0 +1,1710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMMC 2.0 System Security Plan (SSP) – Student Practice Tool</title>
+    <style>
+        /* ===== BASE ===== */
+        *, *::before, *::after { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f4f8;
+            color: #1f2937;
+        }
+
+        /* ===== TOOLBAR ===== */
+        .toolbar {
+            max-width: 1200px;
+            margin: 0 auto 16px auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            background: #1e3a8a;
+            padding: 12px 20px;
+            border-radius: 10px;
+        }
+        .toolbar-title {
+            color: #93c5fd;
+            font-weight: 700;
+            font-size: 0.85em;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-right: auto;
+        }
+        .toolbar button {
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.85em;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: filter 0.2s;
+            white-space: nowrap;
+        }
+        .toolbar button:hover { filter: brightness(1.12); }
+        .btn-nav     { background: #475569; color: white; }
+        .btn-edit    { background: #10b981; color: white; }
+        .btn-edit.active { background: #059669; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3); }
+        .btn-save    { background: #f59e0b; color: #1f2937; }
+        .btn-load    { background: #6366f1; color: white; }
+        .btn-export  { background: #0ea5e9; color: white; }
+        .btn-print   { background: #64748b; color: white; }
+        .btn-reset   { background: #ef4444; color: white; }
+        .edit-status {
+            font-size: 0.82em; font-weight: 700;
+            padding: 5px 12px; border-radius: 20px;
+            background: #374151; color: #9ca3af;
+        }
+        .edit-status.on { background: #065f46; color: #6ee7b7; }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            position: fixed;
+            left: -310px; top: 0;
+            width: 300px; height: 100vh;
+            background: #1e3a8a;
+            color: white;
+            padding: 28px 16px;
+            transition: left 0.3s ease;
+            z-index: 2000;
+            overflow-y: auto;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.3);
+        }
+        .sidebar.open { left: 0; }
+        .sidebar h3 { color: #bfdbfe; margin-bottom: 16px; font-size: 1em; text-transform: uppercase; letter-spacing: 0.06em; }
+        .sidebar ul { list-style: none; padding: 0; margin: 0; }
+        .sidebar li { margin-bottom: 4px; }
+        .sidebar a {
+            color: #93c5fd; text-decoration: none;
+            padding: 8px 12px; display: block;
+            border-radius: 6px; font-size: 0.88em;
+            transition: background 0.2s;
+        }
+        .sidebar a:hover { background: #1d4ed8; color: white; }
+        .sidebar-close {
+            position: absolute; top: 12px; right: 14px;
+            background: none; border: none; color: #93c5fd;
+            font-size: 1.4em; cursor: pointer;
+        }
+        .overlay {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1999; display: none;
+        }
+        .overlay.show { display: block; }
+
+        /* ===== CONTAINER ===== */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+            overflow: hidden;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+        .header h1 { margin: 0; font-size: 2em; font-weight: 700; }
+        .header p  { margin: 8px 0 0; font-size: 1em; opacity: 0.9; }
+        .student-badge {
+            position: absolute; top: 14px; right: 14px;
+            background: #fbbf24; color: #1f2937;
+            padding: 6px 14px; border-radius: 20px;
+            font-weight: 700; font-size: 0.8em;
+        }
+        .unsaved-indicator {
+            position: absolute; top: 14px; left: 14px;
+            background: #ef4444; color: white;
+            padding: 6px 14px; border-radius: 20px;
+            font-weight: 700; font-size: 0.8em; display: none;
+        }
+
+        /* ===== INSTRUCTION BOX ===== */
+        .instruction-box {
+            background: #eff6ff;
+            border: 2px dashed #3b82f6;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 24px 24px 0;
+            font-size: 0.9em;
+            color: #1e40af;
+        }
+        .instruction-box strong { display: block; margin-bottom: 6px; font-size: 1em; }
+        .instruction-box ul { margin: 6px 0 0; padding-left: 20px; }
+        .instruction-box li { margin: 3px 0; }
+
+        /* ===== SECTIONS ===== */
+        .section {
+            padding: 28px 30px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .section:last-child { border-bottom: none; }
+
+        .section h2 {
+            color: #1e3a8a;
+            font-size: 1.4em;
+            margin-bottom: 18px;
+            border-left: 4px solid #3b82f6;
+            padding-left: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .section h3 {
+            color: #1e40af;
+            font-size: 1.05em;
+            margin: 20px 0 10px;
+        }
+        .section h4 { color: #374151; font-size: 0.95em; margin: 12px 0 6px; }
+
+        /* ===== EDITABLE FIELDS ===== */
+        .editable {
+            border: 2px dashed #d1d5db;
+            padding: 10px 14px;
+            border-radius: 6px;
+            min-height: 38px;
+            transition: border-color 0.2s, background 0.2s;
+            color: #9ca3af;
+            font-style: italic;
+        }
+        .editable.edit-active {
+            border-color: #3b82f6;
+            background: #fefce8;
+            color: #1f2937;
+            font-style: normal;
+            outline: none;
+        }
+        .editable.has-content {
+            color: #1f2937;
+            font-style: normal;
+            border-color: #e5e7eb;
+        }
+        .editable:focus { outline: none; }
+
+        /* placeholder text shown when empty and not in edit mode */
+        .editable[data-placeholder]:empty::before {
+            content: attr(data-placeholder);
+            color: #9ca3af;
+            font-style: italic;
+            pointer-events: none;
+        }
+
+        /* ===== TABLES ===== */
+        .table-container { overflow-x: auto; margin: 14px 0; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            border-radius: 8px;
+            overflow: hidden;
+            font-size: 0.88em;
+        }
+        th {
+            background: #1e40af;
+            color: white;
+            padding: 11px 10px;
+            text-align: left;
+            font-weight: 600;
+        }
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #e5e7eb;
+            vertical-align: top;
+        }
+        tr:nth-child(even) td { background: #f9fafb; }
+        tr:hover td { background: #f0f4f8; }
+        td.editable {
+            border: none;
+            border-radius: 0;
+            min-height: auto;
+            padding: 10px;
+        }
+        td.editable.edit-active { background: #fefce8; }
+
+        /* empty table row */
+        .empty-row td {
+            text-align: center; color: #9ca3af;
+            font-style: italic; padding: 20px;
+        }
+
+        /* ===== STATUS BADGES ===== */
+        .status-badge {
+            padding: 3px 10px; border-radius: 20px;
+            font-size: 0.8em; font-weight: 700;
+        }
+        .status-compliant     { background: #d1fae5; color: #065f46; }
+        .status-partial       { background: #fef3c7; color: #92400e; }
+        .status-non-compliant { background: #fee2e2; color: #991b1b; }
+        .status-planned       { background: #e0e7ff; color: #3730a3; }
+        .status-in-progress   { background: #fff7ed; color: #9a3412; }
+
+        /* ===== CONTROL DETAIL BLOCKS ===== */
+        .control-detail {
+            background: #f8fafc;
+            padding: 14px 16px;
+            border-radius: 6px;
+            margin: 10px 0;
+            border-left: 4px solid #3b82f6;
+        }
+        .control-detail h4 { color: #1e40af; margin: 0 0 8px; font-size: 0.92em; }
+
+        /* ===== ASSET GRID ===== */
+        .asset-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 14px;
+            margin: 14px 0;
+        }
+        .asset-card {
+            background: #f8fafc;
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+        .asset-card h4 { color: #1e40af; margin: 0 0 8px; font-size: 0.95em; }
+        .asset-card ul { margin: 0; padding-left: 18px; }
+        .asset-card li { margin: 4px 0; font-size: 0.88em; color: #374151; }
+
+        /* ===== BUTTONS IN SECTIONS ===== */
+        .add-btn {
+            background: #3b82f6; color: white; border: none;
+            padding: 8px 16px; border-radius: 6px; cursor: pointer;
+            font-size: 0.82em; font-weight: 600; margin: 4px 4px 4px 0;
+            transition: background 0.2s;
+        }
+        .add-btn:hover { background: #2563eb; }
+        .add-btn.green { background: #10b981; }
+        .add-btn.green:hover { background: #059669; }
+
+        .delete-btn {
+            background: #ef4444; color: white; border: none;
+            padding: 4px 8px; border-radius: 4px; cursor: pointer;
+            font-size: 0.78em; transition: background 0.2s;
+        }
+        .delete-btn:hover { background: #dc2626; }
+
+        /* ===== DOCUMENT CONTROL TABLE ===== */
+        .doc-table th {
+            background: #1e40af; color: white; width: 220px;
+        }
+
+        /* ===== MODALS ===== */
+        .modal {
+            display: none; position: fixed;
+            z-index: 3000; left: 0; top: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.55);
+        }
+        .modal-content {
+            background: white;
+            margin: 4% auto;
+            padding: 28px;
+            border-radius: 10px;
+            width: 90%; max-width: 520px;
+            max-height: 88vh; overflow-y: auto;
+        }
+        .modal-content h2 { color: #1e3a8a; margin: 0 0 18px; font-size: 1.2em; }
+        .close-modal {
+            color: #9ca3af; float: right;
+            font-size: 24px; font-weight: bold; cursor: pointer; line-height: 1;
+        }
+        .close-modal:hover { color: #111; }
+        .form-group { margin-bottom: 13px; }
+        .form-group label { display: block; margin-bottom: 4px; font-weight: 600; color: #374151; font-size: 0.88em; }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%; padding: 8px 12px;
+            border: 1px solid #d1d5db; border-radius: 6px;
+            font-size: 0.88em; font-family: inherit;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus { outline: 2px solid #3b82f6; border-color: transparent; }
+        .form-group textarea { height: 68px; resize: vertical; }
+        .form-hint { font-size: 0.76em; color: #6b7280; margin-top: 3px; }
+        .form-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 18px; }
+        .btn-primary   { background: #3b82f6; color: white; border: none; padding: 9px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .btn-secondary { background: #6b7280; color: white; border: none; padding: 9px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .btn-primary:hover   { background: #2563eb; }
+        .btn-secondary:hover { background: #4b5563; }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed; bottom: 24px; right: 24px;
+            background: #1e3a8a; color: white;
+            padding: 12px 22px; border-radius: 8px;
+            font-size: 0.9em; z-index: 9999;
+            opacity: 0; transform: translateY(10px);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        .toast.show { opacity: 1; transform: translateY(0); }
+        .toast.success { background: #059669; }
+        .toast.error   { background: #dc2626; }
+
+        /* ===== PRINT ===== */
+        @media print {
+            body { background: white; padding: 0; }
+            .toolbar, .sidebar, .overlay, .instruction-box,
+            .student-badge, .unsaved-indicator,
+            .add-btn, .delete-btn, .close-modal,
+            #exportMenu { display: none !important; }
+            .container { box-shadow: none; border-radius: 0; }
+            .editable {
+                border: none; background: white !important;
+                color: #1f2937 !important; font-style: normal !important;
+            }
+            .section { page-break-inside: avoid; }
+            table { box-shadow: none; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== SIDEBAR ===== -->
+<div class="overlay" id="overlay"></div>
+<div class="sidebar" id="sidebar">
+    <button class="sidebar-close" onclick="closeSidebar()">✕</button>
+    <h3>📋 Navigation</h3>
+    <ul>
+        <li><a href="#section-1" onclick="closeSidebar()">1. Document Control</a></li>
+        <li><a href="#section-2" onclick="closeSidebar()">2. System Description</a></li>
+        <li><a href="#section-3" onclick="closeSidebar()">3. System Boundaries</a></li>
+        <li><a href="#section-4" onclick="closeSidebar()">4. Environment of Operation</a></li>
+        <li><a href="#section-5" onclick="closeSidebar()">5. Roles &amp; Responsibilities</a></li>
+        <li><a href="#section-6" onclick="closeSidebar()">6. Security Controls</a></li>
+        <li><a href="#section-7" onclick="closeSidebar()">7. Asset Inventory</a></li>
+        <li><a href="#section-8" onclick="closeSidebar()">8. Network Architecture</a></li>
+        <li><a href="#section-9" onclick="closeSidebar()">9. Risk Assessment</a></li>
+        <li><a href="#section-10" onclick="closeSidebar()">10. POA&amp;M</a></li>
+    </ul>
+</div>
+
+<!-- ===== TOOLBAR ===== -->
+<div class="toolbar">
+    <span class="toolbar-title">📄 SSP Tool — Student Practice</span>
+    <button class="btn-nav"  onclick="toggleSidebar()">📋 Navigate</button>
+    <button class="btn-edit" id="editToggleBtn" onclick="toggleEditMode()">✏️ Edit Mode</button>
+    <span class="edit-status" id="editStatus">Edit: OFF</span>
+    <button class="btn-save"   onclick="saveSSP()">💾 Save</button>
+    <button class="btn-load"   onclick="document.getElementById('fileInput').click()">📂 Load</button>
+    <button class="btn-export" onclick="exportJSON()">📤 Export JSON</button>
+    <button class="btn-print"  onclick="window.print()">🖨️ Print / PDF</button>
+    <button class="btn-reset"  onclick="confirmReset()">🔄 Reset</button>
+    <input type="file" id="fileInput" accept=".json" style="display:none" onchange="loadFromFile(event)">
+</div>
+
+<!-- ===== MAIN CONTAINER ===== -->
+<div class="container" id="mainContainer">
+
+    <!-- HEADER -->
+    <div class="header">
+        <div class="student-badge">STUDENT PRACTICE TOOL</div>
+        <div class="unsaved-indicator" id="unsavedIndicator">● Unsaved Changes</div>
+        <h1>System Security Plan (SSP)</h1>
+        <p>CMMC 2.0 Level 2 Compliance — Student Practice Exercise</p>
+        <p id="header-org" style="margin-top:6px; font-size:0.9em; opacity:0.8;">[Organization name will appear here after entering in Section 2]</p>
+    </div>
+
+    <!-- INSTRUCTION BOX -->
+    <div class="instruction-box">
+        <strong>🎓 Student Instructions</strong>
+        <ul>
+            <li>Click <strong>✏️ Edit Mode</strong> to enable editing of all text fields — click again to lock them.</li>
+            <li>Work through each section (1–10) to build a complete SSP for your assigned case study company.</li>
+            <li>Use the <strong>+ Add Row</strong> buttons to populate tables with roles, assets, controls, risks, and POA&amp;M items.</li>
+            <li>Use <strong>💾 Save</strong> to store progress in your browser, or <strong>📤 Export JSON</strong> to download a file.</li>
+            <li>Use <strong>🖨️ Print / PDF</strong> to generate your final submission — toolbar and instructions will be hidden.</li>
+            <li><em>Tip: Ctrl+S saves at any time.</em></li>
+        </ul>
+    </div>
+
+    <!-- ============================================================
+         SECTION 1: DOCUMENT CONTROL
+    ============================================================ -->
+    <div class="section" id="section-1">
+        <h2>1. Document Control &amp; Metadata</h2>
+
+        <div class="table-container">
+            <table class="doc-table" id="docMetaTable">
+                <tbody>
+                    <tr><th>Document Title</th>
+                        <td class="editable" data-field="docTitle" data-placeholder="System Security Plan — [Organization Name]"></td></tr>
+                    <tr><th>Document Version</th>
+                        <td class="editable" data-field="docVersion" data-placeholder="e.g., 1.0"></td></tr>
+                    <tr><th>Classification</th>
+                        <td class="editable" data-field="docClass" data-placeholder="e.g., Controlled Unclassified Information (CUI)"></td></tr>
+                    <tr><th>Prepared By</th>
+                        <td class="editable" data-field="docPreparedBy" data-placeholder="Name, Title (e.g., Chief Information Security Officer)"></td></tr>
+                    <tr><th>Review Date</th>
+                        <td class="editable" data-field="docReviewDate" data-placeholder="MM/DD/YYYY"></td></tr>
+                    <tr><th>Next Review Date</th>
+                        <td class="editable" data-field="docNextReview" data-placeholder="MM/DD/YYYY"></td></tr>
+                    <tr><th>Approval Authority</th>
+                        <td class="editable" data-field="docApproval" data-placeholder="e.g., Chief Executive Officer"></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>Document Purpose</h3>
+        <div class="editable" data-field="docPurpose"
+             data-placeholder="Describe the purpose of this SSP. Explain what the document covers, what regulatory framework it supports (CMMC 2.0 Level 2 / NIST SP 800-171 Rev 2), and how it will be used during certification assessment. Note that the SSP is a living document requiring annual review.">
+        </div>
+    </div>
+
+    <!-- ============================================================
+         SECTION 2: SYSTEM DESCRIPTION
+    ============================================================ -->
+    <div class="section" id="section-2">
+        <h2>2. System Description &amp; Overview</h2>
+
+        <h3>Organization Overview</h3>
+        <div class="editable" data-field="orgOverview"
+             data-placeholder="Enter organization details:&#10;Company Name: [Name]&#10;Location: [City, State]&#10;Business Type: [e.g., Small defense contractor]&#10;Employee Count: [#]&#10;Primary Mission: [Describe DoD contract work]&#10;Facility Description: [Physical / cloud environment]">
+        </div>
+
+        <h3>System Purpose and Function</h3>
+        <div class="editable" data-field="systemPurpose"
+             data-placeholder="Describe what the information system does. List the major functions it supports, e.g.:&#10;• Contract management and coordination&#10;• CUI data processing and storage&#10;• Supply chain management&#10;• Communication with DoD stakeholders">
+        </div>
+
+        <h3>System Classification</h3>
+        <div class="editable" data-field="systemClass"
+             data-placeholder="CMMC Level Required: [Level 1 / 2 / 3]&#10;Data Types Processed:&#10;• Controlled Unclassified Information (CUI)&#10;• Federal Contract Information (FCI)&#10;• [Other data types handled]">
+        </div>
+    </div>
+
+    <!-- ============================================================
+         SECTION 3: SYSTEM BOUNDARIES
+    ============================================================ -->
+    <div class="section" id="section-3">
+        <h2>3. System Boundaries &amp; Assessment Scope</h2>
+
+        <h3>CMMC Assessment Scope Definition</h3>
+        <div class="editable" data-field="scopeDefinition"
+             data-placeholder="Define the CMMC assessment scope. Describe the overall boundary of systems, networks, and facilities included. Reference the types of data (CUI, FCI) and the physical locations or cloud environments in scope.">
+        </div>
+
+        <h3>In-Scope Systems</h3>
+        <div class="asset-grid" id="inScopeGrid">
+            <div class="asset-card">
+                <h4>CUI Processing Systems</h4>
+                <ul class="editable" data-field="inScopeCUI"
+                    data-placeholder="List CUI asset IDs and names (e.g., CUI-001 Primary Data Server)"></ul>
+            </div>
+            <div class="asset-card">
+                <h4>Security Protection Assets</h4>
+                <ul class="editable" data-field="inScopeSPA"
+                    data-placeholder="List SPA asset IDs and names (e.g., SPA-001 Enterprise Firewall)"></ul>
+            </div>
+            <div class="asset-card">
+                <h4>Network Infrastructure</h4>
+                <ul class="editable" data-field="inScopeNet"
+                    data-placeholder="List network infrastructure components in scope (e.g., Core switches, WAPs, AD domain controllers)"></ul>
+            </div>
+        </div>
+
+        <h3>Out-of-Scope Systems</h3>
+        <div class="editable" data-field="outOfScope"
+             data-placeholder="List systems explicitly excluded from the CMMC assessment scope, with OOS asset IDs and a brief justification for why each is excluded (e.g., does not process, store, or transmit CUI):&#10;• OOS-001 [Asset name] — [Reason]&#10;• OOS-002 ...">
+        </div>
+    </div>
+
+    <!-- ============================================================
+         SECTION 4: ENVIRONMENT OF OPERATION
+    ============================================================ -->
+    <div class="section" id="section-4">
+        <h2>4. Environment of Operation</h2>
+
+        <h3>Physical Environment</h3>
+        <div class="editable" data-field="physEnv"
+             data-placeholder="Primary Facility: [City, State location]&#10;Facility Type: [e.g., Office complex and warehouse]&#10;Physical Security: [Access controls implemented, e.g., badge access]&#10;Environmental Controls: [HVAC, fire suppression, etc.]">
+        </div>
+
+        <h3>Technical Environment</h3>
+        <div class="editable" data-field="techEnv"
+             data-placeholder="Network Architecture: [Describe segmentation approach]&#10;Cloud Services: [Cloud providers and services used]&#10;Operating Systems: [Primary OS environment]&#10;Encryption Standards: [e.g., FIPS 140-2 validated encryption]">
+        </div>
+
+        <h3>Operational Environment</h3>
+        <div class="editable" data-field="opEnv"
+             data-placeholder="Business Hours: [Days, hours, time zone]&#10;Remote Access: [Method and controls, e.g., VPN with MFA]&#10;Maintenance Windows: [Schedule]&#10;Backup Schedule: [Frequency and storage method]">
+        </div>
+    </div>
+
+    <!-- ============================================================
+         SECTION 5: ROLES & RESPONSIBILITIES
+    ============================================================ -->
+    <div class="section" id="section-5">
+        <h2>5. Roles &amp; Responsibilities</h2>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Role</th>
+                        <th>Personnel / Title</th>
+                        <th>Responsibilities</th>
+                        <th>Contact</th>
+                        <th style="width:80px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="rolesTable">
+                    <tr class="empty-row"><td colspan="5">No roles added yet — click "Add Role" below to begin.</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <button class="add-btn" onclick="addRole()">+ Add Role</button>
+    </div>
+
+    <!-- ============================================================
+         SECTION 6: SECURITY CONTROLS
+    ============================================================ -->
+    <div class="section" id="section-6">
+        <h2>6. Security Controls Implementation</h2>
+
+        <h3>NIST SP 800-171 Controls Summary</h3>
+        <div class="editable" data-field="controlsIntro"
+             data-placeholder="Describe how your organization implements the NIST SP 800-171 Rev 2 security controls. State the number of controls (110 for Level 2), reference the 14 control families, and summarize the overall compliance posture.">
+        </div>
+
+        <div class="table-container">
+            <table id="controlsTable">
+                <thead>
+                    <tr>
+                        <th>Control Family</th>
+                        <th>Control Count</th>
+                        <th>Implementation Status</th>
+                        <th>Compliance Score</th>
+                        <th style="width:80px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="controlsTableBody">
+                    <tr class="empty-row"><td colspan="5">No control families added yet — click "Add Control Family" below.</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <button class="add-btn" onclick="addControlFamily()">+ Add Control Family</button>
+
+        <h3>Key Control Implementation Details</h3>
+        <div id="controlDetailsSection">
+            <p style="color:#9ca3af; font-style:italic; font-size:0.9em;">Click "Add Control Detail" to document specific control implementations.</p>
+        </div>
+        <button class="add-btn green" onclick="addControlDetail()">+ Add Control Detail</button>
+    </div>
+
+    <!-- ============================================================
+         SECTION 7: ASSET INVENTORY
+    ============================================================ -->
+    <div class="section" id="section-7">
+        <h2>7. Asset Inventory &amp; Categorization</h2>
+
+        <h3>Asset Inventory Table</h3>
+        <p style="font-size:0.88em; color:#6b7280; margin-bottom:8px;">List all in-scope assets. Use asset categories: CUI, SPA, CRMA, SA, or OOS.</p>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Asset ID</th>
+                        <th>Asset Name</th>
+                        <th>Type</th>
+                        <th>Location</th>
+                        <th>Owner</th>
+                        <th>Classification</th>
+                        <th style="width:80px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="assetTable">
+                    <tr class="empty-row"><td colspan="7">No assets added yet — click "Add Asset" below.</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <button class="add-btn" onclick="addAssetRow()">+ Add Asset</button>
+    </div>
+
+    <!-- ============================================================
+         SECTION 8: NETWORK ARCHITECTURE
+    ============================================================ -->
+    <div class="section" id="section-8">
+        <h2>8. Network Architecture</h2>
+
+        <h3>Network Diagram Description</h3>
+        <div class="editable" data-field="networkDiagram"
+             data-placeholder="Describe the network architecture in text (attach or reference a diagram separately). Cover network zones, VLANs, segmentation boundaries, ingress/egress points, and how CUI zones are isolated from other segments.">
+        </div>
+
+        <h3>Network Components</h3>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Purpose</th>
+                        <th>Security Controls</th>
+                        <th>Network Location / VLAN</th>
+                        <th style="width:80px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="networkTable">
+                    <tr class="empty-row"><td colspan="5">No network components added yet — click "Add Component" below.</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <button class="add-btn" onclick="addNetworkComponent()">+ Add Network Component</button>
+    </div>
+
+    <!-- ============================================================
+         SECTION 9: RISK ASSESSMENT
+    ============================================================ -->
+    <div class="section" id="section-9">
+        <h2>9. Risk Assessment &amp; Management</h2>
+
+        <h3>Risk Assessment Summary</h3>
+        <div class="editable" data-field="riskSummary"
+             data-placeholder="Describe your risk assessment methodology and frequency (e.g., annual assessments following NIST SP 800-30). Summarize the overall risk posture, threat sources considered, and how risks are prioritized for remediation.">
+        </div>
+
+        <h3>Identified Risks and Mitigations</h3>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Risk ID</th>
+                        <th>Risk Description</th>
+                        <th>Likelihood</th>
+                        <th>Impact</th>
+                        <th>Risk Level</th>
+                        <th>Mitigation Strategy</th>
+                        <th style="width:80px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="riskTable">
+                    <tr class="empty-row"><td colspan="7">No risks added yet — click "Add Risk" below.</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <button class="add-btn" onclick="addRisk()">+ Add Risk</button>
+    </div>
+
+    <!-- ============================================================
+         SECTION 10: POA&M
+    ============================================================ -->
+    <div class="section" id="section-10">
+        <h2>10. Plan of Action &amp; Milestones (POA&amp;M)</h2>
+
+        <h3>POA&amp;M Overview</h3>
+        <div class="editable" data-field="poamOverview"
+             data-placeholder="Describe the purpose of the POA&amp;M. Note that identified gaps and weaknesses must be documented and remediated within 180 days under CMMC Level 2 requirements. Explain how the organization tracks and manages open items.">
+        </div>
+
+        <h3>Current POA&amp;M Items</h3>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>POA&amp;M ID</th>
+                        <th>Control ID</th>
+                        <th>Weakness / Gap</th>
+                        <th>Planned Action</th>
+                        <th>Responsible Party</th>
+                        <th>Target Date</th>
+                        <th>Status</th>
+                        <th style="width:80px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="poamTable">
+                    <tr class="empty-row"><td colspan="8">No POA&amp;M items added yet — click "Add POA&amp;M Item" below.</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <button class="add-btn" onclick="addPOAM()">+ Add POA&amp;M Item</button>
+
+        <h3>Continuous Monitoring Program</h3>
+        <div class="editable" data-field="continuousMonitoring"
+             data-placeholder="Describe the continuous monitoring program. Include:&#10;• Frequency of vulnerability assessments&#10;• Access review schedule&#10;• Security control assessment cadence&#10;• Real-time monitoring tools (e.g., SIEM)&#10;• SSP review and update schedule">
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div style="background:#f8fafc; padding:20px 30px; border-top:1px solid #e5e7eb; text-align:center; color:#6b7280; font-size:0.85em;">
+        <p>
+            <strong>Document Classification:</strong>
+            <span id="footer-class">Controlled Unclassified Information (CUI)</span>
+            &nbsp;|&nbsp;
+            <strong>Date Generated:</strong> <span id="footer-date"></span>
+        </p>
+        <p style="font-style:italic; margin-top:6px;">This document contains sensitive information and should be handled in accordance with CMMC and NIST SP 800-171 requirements.</p>
+    </div>
+
+</div><!-- /container -->
+
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toast"></div>
+
+<!-- ===== MODALS ===== -->
+
+<!-- Add Role Modal -->
+<div id="roleModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal('roleModal')">&times;</span>
+        <h2>Add / Edit Role</h2>
+        <input type="hidden" id="roleEditIndex" value="-1">
+        <div class="form-group">
+            <label>Role Title: *</label>
+            <input type="text" id="roleTitle" placeholder="e.g., System Owner, ISSO, System Administrator">
+        </div>
+        <div class="form-group">
+            <label>Personnel / Title:</label>
+            <input type="text" id="rolePersonnel" placeholder="e.g., Chief Executive Officer">
+        </div>
+        <div class="form-group">
+            <label>Responsibilities:</label>
+            <textarea id="roleResponsibilities" placeholder="Describe key security responsibilities for this role..."></textarea>
+        </div>
+        <div class="form-group">
+            <label>Contact (Email or Phone):</label>
+            <input type="text" id="roleContact" placeholder="e.g., ciso@company.gov">
+        </div>
+        <div class="form-actions">
+            <button class="btn-secondary" onclick="closeModal('roleModal')">Cancel</button>
+            <button class="btn-primary" onclick="saveRole()">Save Role</button>
+        </div>
+    </div>
+</div>
+
+<!-- Add Asset Modal -->
+<div id="assetModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal('assetModal')">&times;</span>
+        <h2>Add / Edit Asset</h2>
+        <input type="hidden" id="assetEditIndex" value="-1">
+        <div class="form-group">
+            <label>Asset ID: *</label>
+            <input type="text" id="assetId" placeholder="e.g., CUI-001, SPA-003, OOS-002">
+            <p class="form-hint">Use format: CUI-###, SPA-###, CRMA-###, SA-###, OOS-###</p>
+        </div>
+        <div class="form-group">
+            <label>Asset Name: *</label>
+            <input type="text" id="assetName" placeholder="Descriptive name of the asset">
+        </div>
+        <div class="form-group">
+            <label>Type:</label>
+            <input type="text" id="assetType" placeholder="e.g., Physical Server, Cloud Service, Desktop">
+        </div>
+        <div class="form-group">
+            <label>Location:</label>
+            <input type="text" id="assetLocation" placeholder="e.g., Data Center, Microsoft Azure, HQ Office">
+        </div>
+        <div class="form-group">
+            <label>Owner / Department:</label>
+            <input type="text" id="assetOwner" placeholder="e.g., IT Operations, CISO, Contract Operations">
+        </div>
+        <div class="form-group">
+            <label>Classification / Category:</label>
+            <select id="assetClassification">
+                <option value="">— Select —</option>
+                <option>CUI</option>
+                <option>SPA</option>
+                <option>CRMA</option>
+                <option>SA</option>
+                <option>OOS</option>
+            </select>
+        </div>
+        <div class="form-actions">
+            <button class="btn-secondary" onclick="closeModal('assetModal')">Cancel</button>
+            <button class="btn-primary" onclick="saveAssetRow()">Save Asset</button>
+        </div>
+    </div>
+</div>
+
+<!-- Add Control Family Modal -->
+<div id="controlFamilyModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal('controlFamilyModal')">&times;</span>
+        <h2>Add / Edit Control Family</h2>
+        <input type="hidden" id="cfEditIndex" value="-1">
+        <div class="form-group">
+            <label>Control Family: *</label>
+            <input type="text" id="cfName" placeholder="e.g., Access Control (AC)">
+        </div>
+        <div class="form-group">
+            <label>Number of Controls:</label>
+            <input type="number" id="cfCount" placeholder="e.g., 22" min="0">
+        </div>
+        <div class="form-group">
+            <label>Implementation Status:</label>
+            <select id="cfStatus">
+                <option value="">— Select —</option>
+                <option value="compliant">Fully Implemented</option>
+                <option value="partial">Partially Implemented</option>
+                <option value="non-compliant">Not Implemented</option>
+                <option value="planned">Planned</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Compliance Score:</label>
+            <input type="text" id="cfScore" placeholder="e.g., 100%, 75%, 0%">
+        </div>
+        <div class="form-actions">
+            <button class="btn-secondary" onclick="closeModal('controlFamilyModal')">Cancel</button>
+            <button class="btn-primary" onclick="saveControlFamily()">Save</button>
+        </div>
+    </div>
+</div>
+
+<!-- Add Network Component Modal -->
+<div id="networkModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal('networkModal')">&times;</span>
+        <h2>Add / Edit Network Component</h2>
+        <input type="hidden" id="netEditIndex" value="-1">
+        <div class="form-group">
+            <label>Component Name: *</label>
+            <input type="text" id="netComponent" placeholder="e.g., Enterprise Firewall, Core Switch, VPN Gateway">
+        </div>
+        <div class="form-group">
+            <label>Purpose:</label>
+            <input type="text" id="netPurpose" placeholder="e.g., Perimeter protection, Network distribution">
+        </div>
+        <div class="form-group">
+            <label>Security Controls Applied:</label>
+            <input type="text" id="netControls" placeholder="e.g., Stateful inspection, IPS, ACLs">
+        </div>
+        <div class="form-group">
+            <label>Network Location / VLAN:</label>
+            <input type="text" id="netLocation" placeholder="e.g., DMZ, CUI VLAN 10, Management VLAN">
+        </div>
+        <div class="form-actions">
+            <button class="btn-secondary" onclick="closeModal('networkModal')">Cancel</button>
+            <button class="btn-primary" onclick="saveNetworkComponent()">Save</button>
+        </div>
+    </div>
+</div>
+
+<!-- Add Risk Modal -->
+<div id="riskModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal('riskModal')">&times;</span>
+        <h2>Add / Edit Risk</h2>
+        <input type="hidden" id="riskEditIndex" value="-1">
+        <div class="form-group">
+            <label>Risk ID: *</label>
+            <input type="text" id="riskId" placeholder="e.g., RISK-001">
+        </div>
+        <div class="form-group">
+            <label>Risk Description:</label>
+            <textarea id="riskDesc" placeholder="Describe the threat or vulnerability..."></textarea>
+        </div>
+        <div class="form-group">
+            <label>Likelihood:</label>
+            <select id="riskLikelihood">
+                <option value="">— Select —</option>
+                <option>Low</option><option>Medium</option><option>High</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Impact:</label>
+            <select id="riskImpact">
+                <option value="">— Select —</option>
+                <option>Low</option><option>Medium</option><option>High</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Overall Risk Level:</label>
+            <select id="riskLevel">
+                <option value="">— Select —</option>
+                <option>Low</option><option>Medium</option><option>High</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Mitigation Strategy:</label>
+            <textarea id="riskMitigation" placeholder="Describe controls and actions to reduce this risk..."></textarea>
+        </div>
+        <div class="form-actions">
+            <button class="btn-secondary" onclick="closeModal('riskModal')">Cancel</button>
+            <button class="btn-primary" onclick="saveRisk()">Save Risk</button>
+        </div>
+    </div>
+</div>
+
+<!-- Add POA&M Modal -->
+<div id="poamModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal('poamModal')">&times;</span>
+        <h2>Add / Edit POA&amp;M Item</h2>
+        <input type="hidden" id="poamEditIndex" value="-1">
+        <div class="form-group">
+            <label>POA&amp;M ID: *</label>
+            <input type="text" id="poamId" placeholder="e.g., POA-001">
+        </div>
+        <div class="form-group">
+            <label>Control ID:</label>
+            <input type="text" id="poamControl" placeholder="e.g., AC.L2-3.1.1, CM.L2-3.4.8">
+        </div>
+        <div class="form-group">
+            <label>Weakness / Gap Description:</label>
+            <textarea id="poamWeakness" placeholder="Describe the specific security gap or weakness identified..."></textarea>
+        </div>
+        <div class="form-group">
+            <label>Planned Remediation Action:</label>
+            <textarea id="poamAction" placeholder="Describe the specific actions to remediate the weakness..."></textarea>
+        </div>
+        <div class="form-group">
+            <label>Responsible Party:</label>
+            <input type="text" id="poamResponsible" placeholder="e.g., IT Operations Team, CISO">
+        </div>
+        <div class="form-group">
+            <label>Target Completion Date:</label>
+            <input type="date" id="poamDate">
+        </div>
+        <div class="form-group">
+            <label>Current Status:</label>
+            <select id="poamStatus">
+                <option value="">— Select —</option>
+                <option>Open</option>
+                <option>In Progress</option>
+                <option>Completed</option>
+                <option>Delayed</option>
+            </select>
+        </div>
+        <div class="form-actions">
+            <button class="btn-secondary" onclick="closeModal('poamModal')">Cancel</button>
+            <button class="btn-primary" onclick="savePOAM()">Save POA&amp;M Item</button>
+        </div>
+    </div>
+</div>
+
+<!-- Add Control Detail Modal -->
+<div id="controlDetailModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal('controlDetailModal')">&times;</span>
+        <h2>Add Control Implementation Detail</h2>
+        <div class="form-group">
+            <label>Control ID &amp; Title: *</label>
+            <input type="text" id="cdControlId" placeholder="e.g., AC.L2-3.1.1 - Access Control Policy">
+        </div>
+        <div class="form-group">
+            <label>Implementation Description:</label>
+            <textarea id="cdImplementation" style="height:90px;" placeholder="Describe how this specific control is implemented in your organization..."></textarea>
+        </div>
+        <div class="form-group">
+            <label>Evidence / Supporting Documents:</label>
+            <textarea id="cdEvidence" placeholder="List policy documents, configuration baselines, logs, or other evidence that demonstrates implementation..."></textarea>
+        </div>
+        <div class="form-actions">
+            <button class="btn-secondary" onclick="closeModal('controlDetailModal')">Cancel</button>
+            <button class="btn-primary" onclick="saveControlDetail()">Save Detail</button>
+        </div>
+    </div>
+</div>
+
+<!-- Reset Confirmation Modal -->
+<div id="resetModal" class="modal">
+    <div class="modal-content" style="max-width:420px;">
+        <h2>⚠️ Reset All Data?</h2>
+        <p>This will clear all text fields, tables, and data you have entered. This cannot be undone.</p>
+        <div class="form-actions">
+            <button class="btn-secondary" onclick="closeModal('resetModal')">Cancel</button>
+            <button class="btn-primary" style="background:#ef4444;" onclick="doReset()">Yes, Reset</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== JAVASCRIPT ===== -->
+<script>
+    // =============================================
+    //  STATE
+    // =============================================
+    let editMode = false;
+
+    // Table data stores
+    let data = {
+        roles: [],
+        assets: [],
+        controlFamilies: [],
+        controlDetails: [],
+        networkComponents: [],
+        risks: [],
+        poams: []
+    };
+
+    // =============================================
+    //  INIT
+    // =============================================
+    document.addEventListener('DOMContentLoaded', () => {
+        setFooterDate();
+        // overlay click closes sidebar
+        document.getElementById('overlay').addEventListener('click', closeSidebar);
+
+        // auto-load from localStorage
+        const saved = localStorage.getItem('cmmc_ssp_tool_v1');
+        if (saved) {
+            try {
+                applyLoadedData(JSON.parse(saved));
+                showToast('Auto-loaded your last saved session.', 'success');
+            } catch(e) {}
+        }
+    });
+
+    function setFooterDate() {
+        document.getElementById('footer-date').textContent =
+            new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+    }
+
+    // =============================================
+    //  EDIT MODE
+    // =============================================
+    function toggleEditMode() {
+        editMode = !editMode;
+        const btn = document.getElementById('editToggleBtn');
+        const status = document.getElementById('editStatus');
+        const allEditables = document.querySelectorAll('.editable');
+
+        allEditables.forEach(el => {
+            el.contentEditable = editMode ? 'true' : 'false';
+            if (editMode) {
+                el.classList.add('edit-active');
+                el.classList.remove('has-content');
+            } else {
+                el.classList.remove('edit-active');
+                if (el.textContent.trim()) el.classList.add('has-content');
+                markUnsaved();
+            }
+        });
+
+        if (editMode) {
+            btn.textContent = '🔒 Lock Editing';
+            btn.classList.add('active');
+            status.textContent = 'Edit: ON';
+            status.classList.add('on');
+        } else {
+            btn.textContent = '✏️ Edit Mode';
+            btn.classList.remove('active');
+            status.textContent = 'Edit: OFF';
+            status.classList.remove('on');
+        }
+    }
+
+    // =============================================
+    //  UNSAVED INDICATOR
+    // =============================================
+    function markUnsaved() {
+        document.getElementById('unsavedIndicator').style.display = 'block';
+        // update header org from section 2 org overview
+        const orgEl = document.querySelector('[data-field="orgOverview"]');
+        if (orgEl) {
+            const txt = orgEl.textContent.trim().split('\n')[0];
+            if (txt && txt !== orgEl.getAttribute('data-placeholder')?.split('\n')[0]) {
+                document.getElementById('header-org').textContent = txt;
+            }
+        }
+    }
+    function markSaved() {
+        document.getElementById('unsavedIndicator').style.display = 'none';
+    }
+
+    // =============================================
+    //  SIDEBAR
+    // =============================================
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('open');
+        document.getElementById('overlay').classList.toggle('show');
+    }
+    function closeSidebar() {
+        document.getElementById('sidebar').classList.remove('open');
+        document.getElementById('overlay').classList.remove('show');
+    }
+
+    // =============================================
+    //  COLLECT EDITABLE FIELDS
+    // =============================================
+    function collectEditableFields() {
+        const fields = {};
+        document.querySelectorAll('.editable[data-field]').forEach(el => {
+            fields[el.dataset.field] = el.innerHTML;
+        });
+        return fields;
+    }
+
+    function applyEditableFields(fields) {
+        if (!fields) return;
+        document.querySelectorAll('.editable[data-field]').forEach(el => {
+            const val = fields[el.dataset.field];
+            if (val !== undefined) {
+                el.innerHTML = val;
+                if (el.textContent.trim()) el.classList.add('has-content');
+            }
+        });
+    }
+
+    // =============================================
+    //  BUILD SAVE OBJECT
+    // =============================================
+    function buildSaveObject() {
+        return {
+            fields: collectEditableFields(),
+            docTable: collectDocTable(),
+            data
+        };
+    }
+
+    function collectDocTable() {
+        const rows = {};
+        document.querySelectorAll('#docMetaTable td.editable').forEach(td => {
+            rows[td.dataset.field] = td.textContent.trim();
+        });
+        return rows;
+    }
+    function applyDocTable(rows) {
+        if (!rows) return;
+        document.querySelectorAll('#docMetaTable td.editable').forEach(td => {
+            const val = rows[td.dataset.field];
+            if (val) {
+                td.textContent = val;
+                td.classList.add('has-content');
+            }
+        });
+    }
+
+    function applyLoadedData(d) {
+        if (d.fields) applyEditableFields(d.fields);
+        if (d.docTable) applyDocTable(d.docTable);
+        if (d.data) {
+            data = d.data;
+            renderRoles();
+            renderAssets();
+            renderControlFamilies();
+            renderControlDetails();
+            renderNetworkComponents();
+            renderRisks();
+            renderPOAMs();
+        }
+        markSaved();
+    }
+
+    // =============================================
+    //  SAVE / LOAD
+    // =============================================
+    function saveSSP() {
+        try {
+            localStorage.setItem('cmmc_ssp_tool_v1', JSON.stringify(buildSaveObject()));
+            markSaved();
+            showToast('SSP saved to browser ✓', 'success');
+        } catch(e) {
+            showToast('Save failed — try Export JSON instead.', 'error');
+        }
+    }
+
+    function exportJSON() {
+        const blob = new Blob([JSON.stringify(buildSaveObject(), null, 2)], { type: 'application/json' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'CMMC_SSP.json';
+        a.click();
+        URL.revokeObjectURL(a.href);
+        showToast('JSON exported ✓', 'success');
+    }
+
+    function loadFromFile(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = e => {
+            try {
+                applyLoadedData(JSON.parse(e.target.result));
+                showToast('File loaded ✓', 'success');
+            } catch(err) {
+                showToast('Error: Invalid JSON file.', 'error');
+            }
+        };
+        reader.readAsText(file);
+        event.target.value = '';
+    }
+
+    // =============================================
+    //  RESET
+    // =============================================
+    function confirmReset() { openModal('resetModal'); }
+    function doReset() {
+        data = { roles:[], assets:[], controlFamilies:[], controlDetails:[], networkComponents:[], risks:[], poams:[] };
+        document.querySelectorAll('.editable[data-field]').forEach(el => {
+            el.innerHTML = '';
+            el.classList.remove('has-content');
+        });
+        document.querySelectorAll('#docMetaTable td.editable').forEach(td => {
+            td.textContent = '';
+            td.classList.remove('has-content');
+        });
+        renderRoles(); renderAssets(); renderControlFamilies(); renderControlDetails();
+        renderNetworkComponents(); renderRisks(); renderPOAMs();
+        localStorage.removeItem('cmmc_ssp_tool_v1');
+        closeModal('resetModal');
+        markSaved();
+        showToast('All data reset.', 'error');
+    }
+
+    // =============================================
+    //  MODAL HELPERS
+    // =============================================
+    function openModal(id) { document.getElementById(id).style.display = 'block'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    window.onclick = e => {
+        document.querySelectorAll('.modal').forEach(m => {
+            if (e.target === m) m.style.display = 'none';
+        });
+    };
+
+    function esc(s) {
+        return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    // =============================================
+    //  ROLES (Section 5)
+    // =============================================
+    function addRole() {
+        document.getElementById('roleEditIndex').value = '-1';
+        ['roleTitle','rolePersonnel','roleContact'].forEach(id => document.getElementById(id).value = '');
+        document.getElementById('roleResponsibilities').value = '';
+        openModal('roleModal');
+    }
+    function editRole(i) {
+        const r = data.roles[i];
+        document.getElementById('roleEditIndex').value = i;
+        document.getElementById('roleTitle').value = r.title||'';
+        document.getElementById('rolePersonnel').value = r.personnel||'';
+        document.getElementById('roleResponsibilities').value = r.responsibilities||'';
+        document.getElementById('roleContact').value = r.contact||'';
+        openModal('roleModal');
+    }
+    function saveRole() {
+        const title = document.getElementById('roleTitle').value.trim();
+        if (!title) { alert('Role title is required.'); return; }
+        const role = {
+            title,
+            personnel: document.getElementById('rolePersonnel').value.trim(),
+            responsibilities: document.getElementById('roleResponsibilities').value.trim(),
+            contact: document.getElementById('roleContact').value.trim()
+        };
+        const idx = parseInt(document.getElementById('roleEditIndex').value);
+        if (idx === -1) data.roles.push(role); else data.roles[idx] = role;
+        renderRoles(); closeModal('roleModal'); markUnsaved();
+        showToast('Role saved ✓', 'success');
+    }
+    function deleteRole(i) {
+        if (!confirm('Delete this role?')) return;
+        data.roles.splice(i,1); renderRoles(); markUnsaved();
+    }
+    function renderRoles() {
+        const tb = document.getElementById('rolesTable');
+        if (!data.roles.length) {
+            tb.innerHTML = '<tr class="empty-row"><td colspan="5">No roles added yet — click "Add Role" above.</td></tr>';
+            return;
+        }
+        tb.innerHTML = data.roles.map((r,i) => `
+            <tr>
+                <td>${esc(r.title)}</td>
+                <td>${esc(r.personnel)}</td>
+                <td>${esc(r.responsibilities)}</td>
+                <td>${esc(r.contact)}</td>
+                <td>
+                    <button class="add-btn" style="padding:4px 8px;font-size:0.78em;margin:0 2px 0 0;" onclick="editRole(${i})">Edit</button>
+                    <button class="delete-btn" onclick="deleteRole(${i})">Del</button>
+                </td>
+            </tr>`).join('');
+    }
+
+    // =============================================
+    //  ASSETS (Section 7)
+    // =============================================
+    function addAssetRow() {
+        document.getElementById('assetEditIndex').value = '-1';
+        ['assetId','assetName','assetType','assetLocation','assetOwner'].forEach(id => document.getElementById(id).value = '');
+        document.getElementById('assetClassification').value = '';
+        openModal('assetModal');
+    }
+    function editAssetRow(i) {
+        const a = data.assets[i];
+        document.getElementById('assetEditIndex').value = i;
+        document.getElementById('assetId').value = a.id||'';
+        document.getElementById('assetName').value = a.name||'';
+        document.getElementById('assetType').value = a.type||'';
+        document.getElementById('assetLocation').value = a.location||'';
+        document.getElementById('assetOwner').value = a.owner||'';
+        document.getElementById('assetClassification').value = a.classification||'';
+        openModal('assetModal');
+    }
+    function saveAssetRow() {
+        const id = document.getElementById('assetId').value.trim();
+        const name = document.getElementById('assetName').value.trim();
+        if (!id || !name) { alert('Asset ID and Name are required.'); return; }
+        const asset = {
+            id, name,
+            type: document.getElementById('assetType').value.trim(),
+            location: document.getElementById('assetLocation').value.trim(),
+            owner: document.getElementById('assetOwner').value.trim(),
+            classification: document.getElementById('assetClassification').value
+        };
+        const idx = parseInt(document.getElementById('assetEditIndex').value);
+        if (idx === -1) data.assets.push(asset); else data.assets[idx] = asset;
+        renderAssets(); closeModal('assetModal'); markUnsaved();
+        showToast('Asset saved ✓', 'success');
+    }
+    function deleteAssetRow(i) {
+        if (!confirm('Delete this asset?')) return;
+        data.assets.splice(i,1); renderAssets(); markUnsaved();
+    }
+    function renderAssets() {
+        const tb = document.getElementById('assetTable');
+        if (!data.assets.length) {
+            tb.innerHTML = '<tr class="empty-row"><td colspan="7">No assets added yet.</td></tr>';
+            return;
+        }
+        tb.innerHTML = data.assets.map((a,i) => `
+            <tr>
+                <td>${esc(a.id)}</td>
+                <td>${esc(a.name)}</td>
+                <td>${esc(a.type)}</td>
+                <td>${esc(a.location)}</td>
+                <td>${esc(a.owner)}</td>
+                <td><span class="status-badge ${a.classification === 'OOS' ? 'status-partial' : 'status-compliant'}">${esc(a.classification)}</span></td>
+                <td>
+                    <button class="add-btn" style="padding:4px 8px;font-size:0.78em;margin:0 2px 0 0;" onclick="editAssetRow(${i})">Edit</button>
+                    <button class="delete-btn" onclick="deleteAssetRow(${i})">Del</button>
+                </td>
+            </tr>`).join('');
+    }
+
+    // =============================================
+    //  CONTROL FAMILIES (Section 6)
+    // =============================================
+    function addControlFamily() {
+        document.getElementById('cfEditIndex').value = '-1';
+        ['cfName','cfCount','cfScore'].forEach(id => document.getElementById(id).value = '');
+        document.getElementById('cfStatus').value = '';
+        openModal('controlFamilyModal');
+    }
+    function editControlFamily(i) {
+        const cf = data.controlFamilies[i];
+        document.getElementById('cfEditIndex').value = i;
+        document.getElementById('cfName').value = cf.name||'';
+        document.getElementById('cfCount').value = cf.count||'';
+        document.getElementById('cfStatus').value = cf.status||'';
+        document.getElementById('cfScore').value = cf.score||'';
+        openModal('controlFamilyModal');
+    }
+    function saveControlFamily() {
+        const name = document.getElementById('cfName').value.trim();
+        if (!name) { alert('Control Family name is required.'); return; }
+        const cf = {
+            name,
+            count: document.getElementById('cfCount').value.trim(),
+            status: document.getElementById('cfStatus').value,
+            score: document.getElementById('cfScore').value.trim()
+        };
+        const idx = parseInt(document.getElementById('cfEditIndex').value);
+        if (idx === -1) data.controlFamilies.push(cf); else data.controlFamilies[idx] = cf;
+        renderControlFamilies(); closeModal('controlFamilyModal'); markUnsaved();
+        showToast('Control family saved ✓', 'success');
+    }
+    function deleteControlFamily(i) {
+        if (!confirm('Delete this row?')) return;
+        data.controlFamilies.splice(i,1); renderControlFamilies(); markUnsaved();
+    }
+
+    const statusBadgeMap = {
+        compliant: 'status-compliant',
+        partial: 'status-partial',
+        'non-compliant': 'status-non-compliant',
+        planned: 'status-planned',
+        '': 'status-partial'
+    };
+    const statusLabelMap = {
+        compliant: 'Fully Implemented',
+        partial: 'Partially Implemented',
+        'non-compliant': 'Not Implemented',
+        planned: 'Planned',
+        '': '—'
+    };
+
+    function renderControlFamilies() {
+        const tb = document.getElementById('controlsTableBody');
+        if (!data.controlFamilies.length) {
+            tb.innerHTML = '<tr class="empty-row"><td colspan="5">No control families added yet.</td></tr>';
+            return;
+        }
+        tb.innerHTML = data.controlFamilies.map((cf,i) => `
+            <tr>
+                <td>${esc(cf.name)}</td>
+                <td>${esc(cf.count)}</td>
+                <td><span class="status-badge ${statusBadgeMap[cf.status]||'status-partial'}">${statusLabelMap[cf.status]||cf.status}</span></td>
+                <td>${esc(cf.score)}</td>
+                <td>
+                    <button class="add-btn" style="padding:4px 8px;font-size:0.78em;margin:0 2px 0 0;" onclick="editControlFamily(${i})">Edit</button>
+                    <button class="delete-btn" onclick="deleteControlFamily(${i})">Del</button>
+                </td>
+            </tr>`).join('');
+    }
+
+    // =============================================
+    //  CONTROL DETAILS (Section 6)
+    // =============================================
+    function addControlDetail() {
+        ['cdControlId','cdImplementation','cdEvidence'].forEach(id => document.getElementById(id).value = '');
+        openModal('controlDetailModal');
+    }
+    function saveControlDetail() {
+        const id = document.getElementById('cdControlId').value.trim();
+        if (!id) { alert('Control ID is required.'); return; }
+        data.controlDetails.push({
+            controlId: id,
+            implementation: document.getElementById('cdImplementation').value.trim(),
+            evidence: document.getElementById('cdEvidence').value.trim()
+        });
+        renderControlDetails(); closeModal('controlDetailModal'); markUnsaved();
+        showToast('Control detail saved ✓', 'success');
+    }
+    function deleteControlDetail(i) {
+        if (!confirm('Delete this control detail?')) return;
+        data.controlDetails.splice(i,1); renderControlDetails(); markUnsaved();
+    }
+    function renderControlDetails() {
+        const sec = document.getElementById('controlDetailsSection');
+        if (!data.controlDetails.length) {
+            sec.innerHTML = '<p style="color:#9ca3af;font-style:italic;font-size:0.9em;">Click "Add Control Detail" to document specific control implementations.</p>';
+            return;
+        }
+        sec.innerHTML = data.controlDetails.map((cd,i) => `
+            <div class="control-detail">
+                <h4>${esc(cd.controlId)}
+                    <button class="delete-btn" style="float:right;" onclick="deleteControlDetail(${i})">Delete</button>
+                </h4>
+                <p><strong>Implementation:</strong> ${esc(cd.implementation)||'<em style="color:#9ca3af">Not entered</em>'}</p>
+                <p><strong>Evidence:</strong> ${esc(cd.evidence)||'<em style="color:#9ca3af">Not entered</em>'}</p>
+            </div>`).join('');
+    }
+
+    // =============================================
+    //  NETWORK COMPONENTS (Section 8)
+    // =============================================
+    function addNetworkComponent() {
+        document.getElementById('netEditIndex').value = '-1';
+        ['netComponent','netPurpose','netControls','netLocation'].forEach(id => document.getElementById(id).value = '');
+        openModal('networkModal');
+    }
+    function editNetworkComponent(i) {
+        const n = data.networkComponents[i];
+        document.getElementById('netEditIndex').value = i;
+        document.getElementById('netComponent').value = n.component||'';
+        document.getElementById('netPurpose').value = n.purpose||'';
+        document.getElementById('netControls').value = n.controls||'';
+        document.getElementById('netLocation').value = n.location||'';
+        openModal('networkModal');
+    }
+    function saveNetworkComponent() {
+        const comp = document.getElementById('netComponent').value.trim();
+        if (!comp) { alert('Component name is required.'); return; }
+        const nc = {
+            component: comp,
+            purpose: document.getElementById('netPurpose').value.trim(),
+            controls: document.getElementById('netControls').value.trim(),
+            location: document.getElementById('netLocation').value.trim()
+        };
+        const idx = parseInt(document.getElementById('netEditIndex').value);
+        if (idx === -1) data.networkComponents.push(nc); else data.networkComponents[idx] = nc;
+        renderNetworkComponents(); closeModal('networkModal'); markUnsaved();
+        showToast('Network component saved ✓', 'success');
+    }
+    function deleteNetworkComponent(i) {
+        if (!confirm('Delete this component?')) return;
+        data.networkComponents.splice(i,1); renderNetworkComponents(); markUnsaved();
+    }
+    function renderNetworkComponents() {
+        const tb = document.getElementById('networkTable');
+        if (!data.networkComponents.length) {
+            tb.innerHTML = '<tr class="empty-row"><td colspan="5">No network components added yet.</td></tr>';
+            return;
+        }
+        tb.innerHTML = data.networkComponents.map((n,i) => `
+            <tr>
+                <td>${esc(n.component)}</td>
+                <td>${esc(n.purpose)}</td>
+                <td>${esc(n.controls)}</td>
+                <td>${esc(n.location)}</td>
+                <td>
+                    <button class="add-btn" style="padding:4px 8px;font-size:0.78em;margin:0 2px 0 0;" onclick="editNetworkComponent(${i})">Edit</button>
+                    <button class="delete-btn" onclick="deleteNetworkComponent(${i})">Del</button>
+                </td>
+            </tr>`).join('');
+    }
+
+    // =============================================
+    //  RISKS (Section 9)
+    // =============================================
+    function addRisk() {
+        document.getElementById('riskEditIndex').value = '-1';
+        ['riskId','riskDesc','riskMitigation'].forEach(id => document.getElementById(id).value = '');
+        ['riskLikelihood','riskImpact','riskLevel'].forEach(id => document.getElementById(id).value = '');
+        // auto-suggest next ID
+        document.getElementById('riskId').value = 'RISK-' + String(data.risks.length+1).padStart(3,'0');
+        openModal('riskModal');
+    }
+    function editRisk(i) {
+        const r = data.risks[i];
+        document.getElementById('riskEditIndex').value = i;
+        document.getElementById('riskId').value = r.id||'';
+        document.getElementById('riskDesc').value = r.desc||'';
+        document.getElementById('riskLikelihood').value = r.likelihood||'';
+        document.getElementById('riskImpact').value = r.impact||'';
+        document.getElementById('riskLevel').value = r.level||'';
+        document.getElementById('riskMitigation').value = r.mitigation||'';
+        openModal('riskModal');
+    }
+    function saveRisk() {
+        const id = document.getElementById('riskId').value.trim();
+        if (!id) { alert('Risk ID is required.'); return; }
+        const risk = {
+            id, desc: document.getElementById('riskDesc').value.trim(),
+            likelihood: document.getElementById('riskLikelihood').value,
+            impact: document.getElementById('riskImpact').value,
+            level: document.getElementById('riskLevel').value,
+            mitigation: document.getElementById('riskMitigation').value.trim()
+        };
+        const idx = parseInt(document.getElementById('riskEditIndex').value);
+        if (idx === -1) data.risks.push(risk); else data.risks[idx] = risk;
+        renderRisks(); closeModal('riskModal'); markUnsaved();
+        showToast('Risk saved ✓', 'success');
+    }
+    function deleteRisk(i) {
+        if (!confirm('Delete this risk?')) return;
+        data.risks.splice(i,1); renderRisks(); markUnsaved();
+    }
+    const riskLevelClass = { Low:'status-compliant', Medium:'status-partial', High:'status-non-compliant' };
+    function renderRisks() {
+        const tb = document.getElementById('riskTable');
+        if (!data.risks.length) {
+            tb.innerHTML = '<tr class="empty-row"><td colspan="7">No risks added yet.</td></tr>';
+            return;
+        }
+        tb.innerHTML = data.risks.map((r,i) => `
+            <tr>
+                <td>${esc(r.id)}</td>
+                <td>${esc(r.desc)}</td>
+                <td><span class="status-badge ${riskLevelClass[r.likelihood]||'status-partial'}">${esc(r.likelihood)||'—'}</span></td>
+                <td><span class="status-badge ${riskLevelClass[r.impact]||'status-partial'}">${esc(r.impact)||'—'}</span></td>
+                <td><span class="status-badge ${riskLevelClass[r.level]||'status-partial'}">${esc(r.level)||'—'}</span></td>
+                <td>${esc(r.mitigation)}</td>
+                <td>
+                    <button class="add-btn" style="padding:4px 8px;font-size:0.78em;margin:0 2px 0 0;" onclick="editRisk(${i})">Edit</button>
+                    <button class="delete-btn" onclick="deleteRisk(${i})">Del</button>
+                </td>
+            </tr>`).join('');
+    }
+
+    // =============================================
+    //  POA&M (Section 10)
+    // =============================================
+    function addPOAM() {
+        document.getElementById('poamEditIndex').value = '-1';
+        ['poamId','poamControl','poamWeakness','poamAction','poamResponsible','poamDate'].forEach(id => document.getElementById(id).value = '');
+        document.getElementById('poamStatus').value = '';
+        document.getElementById('poamId').value = 'POA-' + String(data.poams.length+1).padStart(3,'0');
+        openModal('poamModal');
+    }
+    function editPOAM(i) {
+        const p = data.poams[i];
+        document.getElementById('poamEditIndex').value = i;
+        document.getElementById('poamId').value = p.id||'';
+        document.getElementById('poamControl').value = p.control||'';
+        document.getElementById('poamWeakness').value = p.weakness||'';
+        document.getElementById('poamAction').value = p.action||'';
+        document.getElementById('poamResponsible').value = p.responsible||'';
+        document.getElementById('poamDate').value = p.date||'';
+        document.getElementById('poamStatus').value = p.status||'';
+        openModal('poamModal');
+    }
+    function savePOAM() {
+        const id = document.getElementById('poamId').value.trim();
+        if (!id) { alert('POA&M ID is required.'); return; }
+        const poam = {
+            id, control: document.getElementById('poamControl').value.trim(),
+            weakness: document.getElementById('poamWeakness').value.trim(),
+            action: document.getElementById('poamAction').value.trim(),
+            responsible: document.getElementById('poamResponsible').value.trim(),
+            date: document.getElementById('poamDate').value,
+            status: document.getElementById('poamStatus').value
+        };
+        const idx = parseInt(document.getElementById('poamEditIndex').value);
+        if (idx === -1) data.poams.push(poam); else data.poams[idx] = poam;
+        renderPOAMs(); closeModal('poamModal'); markUnsaved();
+        showToast('POA&M item saved ✓', 'success');
+    }
+    function deletePOAM(i) {
+        if (!confirm('Delete this POA&M item?')) return;
+        data.poams.splice(i,1); renderPOAMs(); markUnsaved();
+    }
+    const poamStatusClass = {
+        'Open': 'status-non-compliant',
+        'In Progress': 'status-partial',
+        'Completed': 'status-compliant',
+        'Delayed': 'status-non-compliant'
+    };
+    function renderPOAMs() {
+        const tb = document.getElementById('poamTable');
+        if (!data.poams.length) {
+            tb.innerHTML = '<tr class="empty-row"><td colspan="8">No POA&amp;M items added yet.</td></tr>';
+            return;
+        }
+        tb.innerHTML = data.poams.map((p,i) => `
+            <tr>
+                <td>${esc(p.id)}</td>
+                <td>${esc(p.control)}</td>
+                <td>${esc(p.weakness)}</td>
+                <td>${esc(p.action)}</td>
+                <td>${esc(p.responsible)}</td>
+                <td>${esc(p.date)}</td>
+                <td><span class="status-badge ${poamStatusClass[p.status]||'status-partial'}">${esc(p.status)||'—'}</span></td>
+                <td>
+                    <button class="add-btn" style="padding:4px 8px;font-size:0.78em;margin:0 2px 0 0;" onclick="editPOAM(${i})">Edit</button>
+                    <button class="delete-btn" onclick="deletePOAM(${i})">Del</button>
+                </td>
+            </tr>`).join('');
+    }
+
+    // =============================================
+    //  TOAST
+    // =============================================
+    function showToast(msg, type) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.className = 'toast show ' + (type||'');
+        setTimeout(() => { t.className = 'toast'; }, 3200);
+    }
+
+    // =============================================
+    //  KEYBOARD SHORTCUT
+    // =============================================
+    document.addEventListener('keydown', e => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); saveSSP(); }
+    });
+</script>
+</body>
+</html>
