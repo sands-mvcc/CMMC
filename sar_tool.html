@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMMC Level 2 System Assessment Report (SAR) – Student Practice Tool</title>
+    <style>
+        /* ===== BASE ===== */
+        *, *::before, *::after { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f4f8;
+            color: #1f2937;
+        }
+
+        /* ===== TOOLBAR ===== */
+        .toolbar {
+            max-width: 1200px;
+            margin: 0 auto 16px auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            background: #1e3a8a;
+            padding: 12px 20px;
+            border-radius: 10px;
+        }
+        .toolbar-title {
+            color: #93c5fd;
+            font-weight: 700;
+            font-size: 0.85em;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-right: auto;
+        }
+        .toolbar button {
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.85em;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: filter 0.2s;
+            white-space: nowrap;
+        }
+        .toolbar button:hover { filter: brightness(1.12); }
+        .btn-edit   { background: #10b981; color: white; }
+        .btn-edit.active { background: #059669; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3); }
+        .btn-save   { background: #f59e0b; color: #1f2937; }
+        .btn-load   { background: #6366f1; color: white; }
+        .btn-export { background: #0ea5e9; color: white; }
+        .btn-print  { background: #64748b; color: white; }
+        .btn-reset  { background: #ef4444; color: white; }
+        .edit-status {
+            font-size: 0.82em; font-weight: 700;
+            padding: 5px 12px; border-radius: 20px;
+            background: #374151; color: #9ca3af;
+            white-space: nowrap;
+        }
+        .edit-status.on { background: #065f46; color: #6ee7b7; }
+
+        /* ===== CONTAINER ===== */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+            overflow: hidden;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+        .header h1 { margin: 0; font-size: 2em; font-weight: 700; }
+        .header .subtitle { margin: 8px 0 0; font-size: 1em; opacity: 0.9; }
+        .student-badge {
+            position: absolute; top: 14px; right: 14px;
+            background: #fbbf24; color: #1f2937;
+            padding: 6px 14px; border-radius: 20px;
+            font-weight: 700; font-size: 0.8em;
+        }
+        .unsaved-indicator {
+            position: absolute; top: 14px; left: 14px;
+            background: #ef4444; color: white;
+            padding: 6px 14px; border-radius: 20px;
+            font-weight: 700; font-size: 0.8em; display: none;
+        }
+
+        /* ===== INSTRUCTION BOX ===== */
+        .instruction-box {
+            background: #eff6ff;
+            border: 2px dashed #3b82f6;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 20px;
+            font-size: 0.88em;
+            color: #1e40af;
+        }
+        .instruction-box strong { display: block; margin-bottom: 6px; font-size: 1em; }
+        .instruction-box ul { margin: 6px 0 0; padding-left: 20px; }
+        .instruction-box li { margin: 3px 0; }
+
+        /* ===== ACCORDION SECTIONS ===== */
+        .sar-content { border-top: 1px solid #e5e7eb; }
+
+        .section { border-bottom: 2px solid #e5e7eb; position: relative; }
+        .section:last-child { border-bottom: none; }
+
+        .section-header {
+            background: linear-gradient(135deg, #1e3a8a, #1e40af);
+            color: white;
+            padding: 18px 24px;
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s;
+        }
+        .section-header:hover { background: linear-gradient(135deg, #1e40af, #2563eb); }
+        .section-header h2 {
+            font-size: 1.15em;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin: 0;
+        }
+        .section-number {
+            background: rgba(255,255,255,0.2);
+            padding: 6px 11px;
+            border-radius: 50%;
+            font-weight: 700;
+            min-width: 36px;
+            text-align: center;
+            font-size: 0.9em;
+        }
+        .toggle-icon {
+            font-size: 1.2em;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+        }
+        .section.collapsed .toggle-icon { transform: rotate(-90deg); }
+        .section.collapsed .section-content { display: none; }
+
+        .section-content {
+            padding: 28px 30px;
+            background: #fafbfc;
+        }
+        .section-content h3 {
+            color: #1e3a8a;
+            font-size: 1.05em;
+            margin: 20px 0 10px;
+            border-left: 3px solid #3b82f6;
+            padding-left: 10px;
+        }
+        .section-content h3:first-child { margin-top: 0; }
+        .section-content h4 {
+            color: #1e40af;
+            font-size: 0.95em;
+            margin: 14px 0 6px;
+        }
+        .section-content p { margin: 8px 0; font-size: 0.9em; }
+        .section-content ul, .section-content ol {
+            padding-left: 22px;
+            margin: 8px 0;
+            font-size: 0.9em;
+        }
+        .section-content li { margin: 4px 0; }
+
+        /* ===== EDITABLE BLOCKS ===== */
+        .editable {
+            border: 2px dashed #d1d5db;
+            padding: 14px 16px;
+            border-radius: 8px;
+            min-height: 60px;
+            transition: border-color 0.2s, background 0.2s;
+            color: #9ca3af;
+            font-style: italic;
+            position: relative;
+        }
+        .editable.has-content {
+            color: #1f2937;
+            font-style: normal;
+            border-color: #e5e7eb;
+        }
+        .editable.edit-active {
+            border-color: #3b82f6;
+            background: #fefce8;
+            color: #1f2937;
+            font-style: normal;
+            outline: none;
+        }
+        .editable[data-placeholder]:empty::before {
+            content: attr(data-placeholder);
+            color: #9ca3af;
+            font-style: italic;
+            pointer-events: none;
+            display: block;
+        }
+        .editable:focus { outline: none; }
+
+        /* ===== FINDING ITEMS ===== */
+        .finding-item {
+            background: white;
+            margin: 14px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            overflow: hidden;
+            border-left: 5px solid #3b82f6;
+        }
+        .finding-item.status-met      { border-left-color: #10b981; }
+        .finding-item.status-not-met  { border-left-color: #ef4444; }
+        .finding-item.status-conditional { border-left-color: #f59e0b; }
+
+        .finding-header {
+            background: #f8fafc;
+            padding: 13px 18px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .finding-id { font-weight: 700; color: #1e3a8a; font-size: 0.95em; flex: 1; }
+        .finding-controls { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
+
+        .finding-content {
+            padding: 16px 18px;
+        }
+        .finding-content .field-row {
+            margin: 8px 0;
+            font-size: 0.88em;
+        }
+        .finding-content .field-label {
+            font-weight: 700;
+            color: #374151;
+        }
+        .finding-field {
+            display: inline;
+            border: none;
+            border-bottom: 1px dashed #d1d5db;
+            background: transparent;
+            font-family: inherit;
+            font-size: inherit;
+            color: #1f2937;
+            padding: 1px 4px;
+            min-width: 200px;
+            transition: border-color 0.2s;
+        }
+        .finding-field:focus { outline: none; border-bottom-color: #3b82f6; background: #fefce8; }
+        .finding-field::placeholder { color: #9ca3af; font-style: italic; }
+        .finding-field.wide { width: 90%; display: block; margin-top: 4px; }
+        .finding-textarea {
+            width: 100%;
+            margin-top: 4px;
+            padding: 6px 10px;
+            border: 1px dashed #d1d5db;
+            border-radius: 5px;
+            background: transparent;
+            font-family: inherit;
+            font-size: 0.9em;
+            resize: vertical;
+            min-height: 52px;
+            color: #1f2937;
+            transition: border-color 0.2s, background 0.2s;
+        }
+        .finding-textarea:focus { outline: none; border-color: #3b82f6; background: #fefce8; }
+        .finding-textarea::placeholder { color: #9ca3af; font-style: italic; }
+
+        /* ===== STATUS BADGES ===== */
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.78em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .s-met          { background: #d1fae5; color: #065f46; }
+        .s-not-met      { background: #fee2e2; color: #991b1b; }
+        .s-conditional  { background: #fef3c7; color: #92400e; }
+
+        .risk-badge {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.78em;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .r-high   { background: #fee2e2; color: #991b1b; }
+        .r-medium { background: #fef3c7; color: #92400e; }
+        .r-low    { background: #d1fae5; color: #065f46; }
+
+        /* ===== SCORE DISPLAY ===== */
+        .score-display {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 18px 0;
+            box-shadow: 0 4px 12px rgba(30,58,138,0.3);
+        }
+        .score-display h3 { font-size: 1.6em; margin: 0 0 6px; }
+        .score-display p  { margin: 0; opacity: 0.9; font-size: 0.9em; }
+
+        .score-input-row {
+            display: flex; gap: 12px; flex-wrap: wrap;
+            align-items: center; justify-content: center;
+            margin-top: 10px;
+        }
+        .score-field {
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.4);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.88em;
+            font-family: inherit;
+            text-align: center;
+            width: 140px;
+        }
+        .score-field::placeholder { color: rgba(255,255,255,0.6); }
+        .score-field:focus { outline: none; border-color: white; background: rgba(255,255,255,0.25); }
+
+        /* ===== TABLES ===== */
+        .table-container { overflow-x: auto; margin: 14px 0; }
+        .assessment-table {
+            width: 100%;
+            border-collapse: collapse;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border-radius: 8px;
+            overflow: hidden;
+            font-size: 0.88em;
+        }
+        .assessment-table th {
+            background: #1e40af;
+            color: white;
+            padding: 12px 14px;
+            text-align: left;
+            font-weight: 600;
+        }
+        .assessment-table td {
+            padding: 11px 14px;
+            border-bottom: 1px solid #e5e7eb;
+            background: white;
+            vertical-align: middle;
+        }
+        .assessment-table tr:nth-child(even) td { background: #f9fafb; }
+        .assessment-table tr:hover td { background: #eff6ff; }
+        .assessment-table td input,
+        .assessment-table td select {
+            width: 100%;
+            border: none;
+            border-bottom: 1px dashed #d1d5db;
+            background: transparent;
+            font-family: inherit;
+            font-size: inherit;
+            color: #1f2937;
+            padding: 2px 4px;
+        }
+        .assessment-table td input:focus,
+        .assessment-table td select:focus { outline: none; border-bottom-color: #3b82f6; background: #fefce8; }
+        .assessment-table td input::placeholder { color: #9ca3af; font-style: italic; }
+        .empty-row td { text-align: center; color: #9ca3af; font-style: italic; padding: 20px; }
+
+        /* ===== BUTTONS IN SECTIONS ===== */
+        .add-finding-btn {
+            background: #10b981;
+            color: white;
+            border: 2px dashed #059669;
+            padding: 13px;
+            width: 100%;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.92em;
+            font-weight: 600;
+            margin: 14px 0;
+            transition: all 0.2s;
+        }
+        .add-finding-btn:hover { background: #059669; transform: translateY(-1px); }
+
+        .add-row-btn {
+            background: #3b82f6; color: white; border: none;
+            padding: 7px 14px; border-radius: 6px; cursor: pointer;
+            font-size: 0.82em; font-weight: 600; margin: 8px 0 4px;
+            transition: background 0.2s;
+        }
+        .add-row-btn:hover { background: #2563eb; }
+
+        .del-row-btn {
+            background: #ef4444; color: white; border: none;
+            padding: 4px 8px; border-radius: 4px; cursor: pointer;
+            font-size: 0.76em; transition: background 0.2s;
+        }
+        .del-row-btn:hover { background: #dc2626; }
+
+        .del-finding-btn {
+            background: #ef4444; color: white; border: none;
+            padding: 5px 10px; border-radius: 5px; cursor: pointer;
+            font-size: 0.78em; transition: background 0.2s;
+        }
+        .del-finding-btn:hover { background: #dc2626; }
+
+        /* ===== STATUS SELECT IN FINDING ===== */
+        .status-select {
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 20px;
+            font-size: 0.78em;
+            font-weight: 700;
+            padding: 4px 10px;
+            cursor: pointer;
+            background: white;
+        }
+
+        /* ===== INLINE FORM FIELDS ===== */
+        .inline-field {
+            border: none;
+            border-bottom: 1px dashed #d1d5db;
+            background: transparent;
+            font-family: inherit;
+            font-size: inherit;
+            color: #1f2937;
+            padding: 2px 6px;
+            min-width: 180px;
+            transition: border-color 0.2s;
+        }
+        .inline-field:focus { outline: none; border-bottom-color: #3b82f6; background: #fefce8; }
+        .inline-field::placeholder { color: #9ca3af; font-style: italic; }
+
+        /* ===== MODALS ===== */
+        .modal {
+            display: none; position: fixed;
+            z-index: 2000; left: 0; top: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.55);
+        }
+        .modal-content {
+            background: white; margin: 5% auto;
+            padding: 28px; border-radius: 10px;
+            width: 90%; max-width: 460px;
+        }
+        .modal-content h2 { color: #1e3a8a; margin: 0 0 14px; font-size: 1.1em; }
+        .close-modal { color: #9ca3af; float: right; font-size: 22px; font-weight: bold; cursor: pointer; line-height: 1; }
+        .close-modal:hover { color: #111; }
+        .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; }
+        .btn-primary   { background: #3b82f6; color: white; border: none; padding: 9px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .btn-secondary { background: #6b7280; color: white; border: none; padding: 9px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .btn-danger-m  { background: #ef4444; color: white; border: none; padding: 9px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed; bottom: 24px; right: 24px;
+            background: #1e3a8a; color: white;
+            padding: 12px 22px; border-radius: 8px;
+            font-size: 0.88em; z-index: 9999;
+            opacity: 0; transform: translateY(10px);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        .toast.show { opacity: 1; transform: translateY(0); }
+        .toast.success { background: #059669; }
+        .toast.error   { background: #dc2626; }
+
+        /* ===== FOOTER ===== */
+        .sar-footer {
+            background: #f8fafc;
+            padding: 18px 30px;
+            border-top: 1px solid #e5e7eb;
+            text-align: center;
+            color: #6b7280;
+            font-size: 0.84em;
+        }
+
+        /* ===== PRINT ===== */
+        @media print {
+            body { background: white; padding: 0; }
+            .toolbar, .instruction-box, .student-badge,
+            .unsaved-indicator, .add-finding-btn, .add-row-btn,
+            .del-row-btn, .del-finding-btn { display: none !important; }
+            .container { box-shadow: none; border-radius: 0; }
+            .section.collapsed .section-content { display: block !important; }
+            .editable {
+                border: none !important; background: white !important;
+                color: #1f2937 !important; font-style: normal !important;
+                padding: 0 !important;
+            }
+            .section-header { background: #1e3a8a !important; }
+            .finding-field, .finding-textarea,
+            .inline-field, .assessment-table td input,
+            .assessment-table td select { border-bottom: none; background: white; }
+        }
+
+        @media (max-width: 768px) {
+            .section-content { padding: 18px 16px; }
+            .finding-header { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== TOOLBAR ===== -->
+<div class="toolbar">
+    <span class="toolbar-title">📋 SAR Tool — Student Practice</span>
+    <button class="btn-edit" id="editToggleBtn" onclick="toggleEditMode()">✏️ Edit Mode</button>
+    <span class="edit-status" id="editStatus">Edit: OFF</span>
+    <button class="btn-save"   onclick="saveReport()">💾 Save</button>
+    <button class="btn-load"   onclick="document.getElementById('fileInput').click()">📂 Load</button>
+    <button class="btn-export" onclick="exportJSON()">📤 Export JSON</button>
+    <button class="btn-print"  onclick="window.print()">🖨️ Print / PDF</button>
+    <button class="btn-reset"  onclick="openModal('resetModal')">🔄 Reset</button>
+    <input type="file" id="fileInput" accept=".json" style="display:none" onchange="loadFromFile(event)">
+</div>
+
+<!-- ===== CONTAINER ===== -->
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="header">
+        <div class="student-badge">STUDENT PRACTICE TOOL</div>
+        <div class="unsaved-indicator" id="unsavedIndicator">● Unsaved Changes</div>
+        <h1>CMMC Level 2 System Assessment Report (SAR)</h1>
+        <div class="subtitle">CMMC 2.0 Assessment Documentation — Student Practice Exercise</div>
+    </div>
+
+    <!-- INSTRUCTION BOX -->
+    <div class="instruction-box">
+        <strong>🎓 Student Instructions</strong>
+        <ul>
+            <li>Click <strong>✏️ Edit Mode</strong> to unlock all narrative text blocks — click again to lock them. All inline fields (tables, findings) are always editable.</li>
+            <li>Work through each of the 8 sections to build a complete SAR for your assigned case study company.</li>
+            <li>In <strong>Section 4</strong>, click <strong>"+ Add Finding"</strong> for each control you assessed. Set its status (MET / NOT MET / CONDITIONAL) and complete all fields.</li>
+            <li>Tables in Sections 3, 5, 6 have <strong>+ Add Row</strong> buttons — click to expand them.</li>
+            <li>Use <strong>💾 Save</strong> (Ctrl+S) to preserve work in your browser, or <strong>📤 Export JSON</strong> to download a file.</li>
+            <li>Click any <strong>section header bar</strong> to expand or collapse that section.</li>
+            <li>Use <strong>🖨️ Print / PDF</strong> to generate your final submission — all tool controls will be hidden.</li>
+        </ul>
+    </div>
+
+    <div class="sar-content">
+
+        <!-- ============================================================
+             SECTION 1: EXECUTIVE SUMMARY
+        ============================================================ -->
+        <div class="section" id="sec1">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h2><span class="section-number">1</span>Executive Summary</h2>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="section-content">
+
+                <h3>Assessment Overview</h3>
+                <div class="editable" data-field="execOverview"
+                     data-placeholder="Describe the purpose of this SAR. Identify the organization being assessed, the CMMC level targeted, the certifying C3PAO, and the regulatory framework used (NIST SP 800-171 Rev 2 / CMMC 2.0).">
+                </div>
+
+                <h3>Organization Information</h3>
+                <div style="background:white; border:1px solid #e2e8f0; border-radius:8px; padding:16px; margin:10px 0; font-size:0.9em;">
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                        <p><strong>Organization:</strong> <input class="inline-field" id="orgName" placeholder="[Organization Name]" oninput="markUnsaved()"></p>
+                        <p><strong>Location:</strong> <input class="inline-field" id="orgLocation" placeholder="City, State" oninput="markUnsaved()"></p>
+                        <p><strong>Employees:</strong> <input class="inline-field" id="orgEmployees" placeholder="Number" style="width:80px;" oninput="markUnsaved()"></p>
+                        <p><strong>Business Type:</strong> <input class="inline-field" id="orgBusiness" placeholder="Describe DoD work" style="width:260px;" oninput="markUnsaved()"></p>
+                        <p><strong>Assessment Level:</strong> <input class="inline-field" id="assessLevel" placeholder="CMMC Level 2" style="width:130px;" oninput="markUnsaved()"></p>
+                        <p><strong>Assessment Date(s):</strong> <input class="inline-field" id="assessDate" placeholder="MM/DD/YYYY – MM/DD/YYYY" oninput="markUnsaved()"></p>
+                    </div>
+                </div>
+
+                <h3>Overall Score</h3>
+                <div class="score-display">
+                    <div class="score-input-row">
+                        <div>
+                            <div style="font-size:0.78em; opacity:0.8; margin-bottom:4px;">Controls Met</div>
+                            <input class="score-field" id="scoresMet" type="number" min="0" max="110" placeholder="0" oninput="updateScore(); markUnsaved()">
+                        </div>
+                        <div style="font-size:1.5em; font-weight:300;">/</div>
+                        <div>
+                            <div style="font-size:0.78em; opacity:0.8; margin-bottom:4px;">Total Controls</div>
+                            <input class="score-field" id="scoresTotal" type="number" value="110" min="1" max="110" oninput="updateScore(); markUnsaved()">
+                        </div>
+                        <div>
+                            <div style="font-size:0.78em; opacity:0.8; margin-bottom:4px;">Score %</div>
+                            <input class="score-field" id="scorePct" placeholder="—%" style="width:70px;" readonly>
+                        </div>
+                    </div>
+                    <h3 id="scoreHeading" style="margin:14px 0 4px; font-size:1.4em;">[Enter scores above]</h3>
+                    <p id="scoreSub" style="font-size:0.9em; opacity:0.9;">Certification status will appear here</p>
+                </div>
+
+                <h3>Key Findings Summary</h3>
+                <div class="editable" data-field="keyFindings"
+                     data-placeholder="Summarize the key findings from the assessment. State the number of controls assessed, the number met, the number with gaps, and the number requiring POA&M remediation. Note the overall compliance posture and any significant strengths or weaknesses observed.">
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ============================================================
+             SECTION 2: ASSESSMENT METHODOLOGY
+        ============================================================ -->
+        <div class="section collapsed" id="sec2">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h2><span class="section-number">2</span>Assessment Methodology &amp; Scope</h2>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="section-content">
+
+                <h3>Assessment Approach</h3>
+                <div class="editable" data-field="methodology"
+                     data-placeholder="Describe the assessment methodology used. Reference the CMMC Assessment Process (CAP). List the evaluation methods employed:&#10;• Document Review: SSP, policies, procedures, technical documentation&#10;• Interviews: Key personnel responsible for security control implementation&#10;• System Testing: Technical validation of controls and configurations&#10;• Physical Inspection: On-site evaluation of physical security">
+                </div>
+
+                <h3>Assessment Scope</h3>
+                <div class="editable" data-field="scope"
+                     data-placeholder="Define the assessment scope. List all systems and assets that process, store, or transmit CUI that were included. Include CUI assets (CUI-###), Security Protection Assets (SPA-###), network infrastructure, and cloud services evaluated.">
+                </div>
+
+                <h3>Assessment Limitations</h3>
+                <div class="editable" data-field="limitations"
+                     data-placeholder="Describe any limitations, constraints, or exclusions from the assessment scope. Note any systems that were out of scope and the justification for exclusion.">
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ============================================================
+             SECTION 3: ASSESSMENT TEAM
+        ============================================================ -->
+        <div class="section collapsed" id="sec3">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h2><span class="section-number">3</span>Assessment Team Credentials</h2>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="section-content">
+
+                <h3>C3PAO Information</h3>
+                <div style="background:white; border:1px solid #e2e8f0; border-radius:8px; padding:14px; font-size:0.9em;">
+                    <p><strong>Assessment Organization:</strong> <input class="inline-field" id="c3paoName" placeholder="C3PAO Organization Name" style="width:280px;" oninput="markUnsaved()"></p>
+                    <p><strong>C3PAO Authorization Number:</strong> <input class="inline-field" id="c3paoAuth" placeholder="e.g., C3PAO-2025-001" oninput="markUnsaved()"></p>
+                    <p><strong>ISO 17020 Certification:</strong> <input class="inline-field" id="c3paoISO" placeholder="Valid through [date]" style="width:200px;" oninput="markUnsaved()"></p>
+                </div>
+
+                <h3>Assessment Team Members</h3>
+                <div class="table-container">
+                    <table class="assessment-table" id="teamTable">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Certification #</th>
+                                <th>Experience</th>
+                                <th style="width:60px;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="teamTableBody">
+                            <tr class="empty-row"><td colspan="5">No team members added — click "Add Team Member" below.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button class="add-row-btn" onclick="addTeamMember()">+ Add Team Member</button>
+
+            </div>
+        </div>
+
+        <!-- ============================================================
+             SECTION 4: DETAILED FINDINGS
+        ============================================================ -->
+        <div class="section collapsed" id="sec4">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h2><span class="section-number">4</span>Detailed Security Control Findings</h2>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="section-content">
+
+                <h3>Control Assessment Results</h3>
+                <p style="font-size:0.88em; color:#6b7280; margin-bottom:14px;">Add one finding card per control assessed. Set its status, then complete all fields. Use the control family prefix format: <strong>AC.L2-3.1.1</strong>, <strong>AU.L2-3.3.1</strong>, etc.</p>
+
+                <div id="findingsContainer">
+                    <p style="color:#9ca3af; font-style:italic; font-size:0.9em; padding:10px 0;">No findings added yet — click the button below to add your first control finding.</p>
+                </div>
+
+                <button class="add-finding-btn" onclick="addFinding()">➕ Add New Finding</button>
+
+            </div>
+        </div>
+
+        <!-- ============================================================
+             SECTION 5: RISK ASSESSMENT
+        ============================================================ -->
+        <div class="section collapsed" id="sec5">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h2><span class="section-number">5</span>Risk Assessment &amp; Impact Analysis</h2>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="section-content">
+
+                <h3>Risk Summary</h3>
+                <div class="table-container">
+                    <table class="assessment-table" id="riskTable">
+                        <thead>
+                            <tr>
+                                <th>Risk Category</th>
+                                <th>Risk Level</th>
+                                <th>Count</th>
+                                <th>Potential Impact</th>
+                                <th style="width:60px;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="riskTableBody">
+                            <tr class="empty-row"><td colspan="5">No risk categories added — click "Add Risk Category" below.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button class="add-row-btn" onclick="addRiskRow()">+ Add Risk Category</button>
+
+                <h3>Overall Risk Determination</h3>
+                <div class="editable" data-field="overallRisk"
+                     data-placeholder="State the overall residual risk determination (e.g., LOW / MODERATE / HIGH). Explain what the organization has done well and what the remaining risk drivers are. Reference the identified gaps and their potential impact on CUI protection.">
+                </div>
+
+                <h3>Risk Mitigation Recommendations</h3>
+                <div class="editable" data-field="riskMitigation"
+                     data-placeholder="List specific risk mitigation recommendations for each identified risk area. Tie each recommendation to the corresponding control gap(s) and the remediation timeline.">
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ============================================================
+             SECTION 6: POA&M
+        ============================================================ -->
+        <div class="section collapsed" id="sec6">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h2><span class="section-number">6</span>Plan of Action &amp; Milestones (POA&amp;M)</h2>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="section-content">
+
+                <h3>Required Remediation Items</h3>
+                <div class="editable" data-field="poamIntro"
+                     data-placeholder="State how many controls require remediation and the timeframe allowed (e.g., within 180 days). Reference the CMMC policy that governs POA&M items and the consequence of non-completion.">
+                </div>
+
+                <div class="table-container">
+                    <table class="assessment-table" id="poamTable">
+                        <thead>
+                            <tr>
+                                <th>Control ID</th>
+                                <th>Control Name</th>
+                                <th>Priority</th>
+                                <th>Target Date</th>
+                                <th>Responsible Party</th>
+                                <th style="width:60px;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="poamTableBody">
+                            <tr class="empty-row"><td colspan="6">No POA&amp;M items — click "Add POA&amp;M Item" below.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button class="add-row-btn" onclick="addPOAMRow()">+ Add POA&amp;M Item</button>
+
+                <h3>POA&amp;M Closeout Requirements</h3>
+                <div class="editable" data-field="poamCloseout"
+                     data-placeholder="List the closeout requirements for POA&M items:&#10;• Deadline for completion (180-day rule)&#10;• C3PAO closeout assessment requirements&#10;• Evidence packages required per control&#10;• Final assessment report conditions">
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ============================================================
+             SECTION 7: RECOMMENDATIONS
+        ============================================================ -->
+        <div class="section collapsed" id="sec7">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h2><span class="section-number">7</span>Recommendations for Improvement</h2>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="section-content">
+
+                <h3>Strategic Recommendations</h3>
+                <div class="editable" data-field="strategicRecs"
+                     data-placeholder="List strategic-level recommendations for improving the organization's overall CMMC compliance posture. Number each recommendation and include a brief justification. Examples:&#10;1. Enhance Security Monitoring: [Detail]&#10;2. Automate Compliance: [Detail]&#10;3. Strengthen Incident Response: [Detail]">
+                </div>
+
+                <h3>Technical Improvements</h3>
+                <div class="editable" data-field="techImprovements"
+                     data-placeholder="List specific technical improvements recommended. Focus on tools, configurations, and infrastructure enhancements that would address identified gaps (e.g., PAM solution, EDR enhancements, network segmentation monitoring, DLP deployment).">
+                </div>
+
+                <h3>Process Improvements</h3>
+                <div class="editable" data-field="processImprovements"
+                     data-placeholder="List process and procedural improvements recommended. Include change management, vulnerability assessment schedules, metrics dashboards, business continuity testing, and other operational improvements.">
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ============================================================
+             SECTION 8: CERTIFICATION DECISION
+        ============================================================ -->
+        <div class="section collapsed" id="sec8">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h2><span class="section-number">8</span>Certification Decision</h2>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="section-content">
+
+                <h3>Assessment Conclusion</h3>
+                <div class="editable" data-field="conclusion"
+                     data-placeholder="Summarize the overall conclusion of the assessment. State the assessment dates, the organization assessed, and the overall compliance determination. Reference the number of controls met, the gap count, and the conditional status if applicable.">
+                </div>
+
+                <h3>Certification Determination</h3>
+                <div class="score-display" style="background: linear-gradient(135deg, #1e3a8a, #1e40af);">
+                    <input class="score-field" id="certDecision" placeholder="e.g., CONDITIONAL LEVEL 2 CERTIFICATE ISSUED"
+                           style="width:90%; font-size:1.1em; font-weight:700; text-align:center; margin-bottom:8px;"
+                           oninput="markUnsaved()">
+                    <br>
+                    <input class="score-field" id="certCondition" placeholder="e.g., Valid subject to POA&M closeout by [date]"
+                           style="width:80%; font-size:0.88em;" oninput="markUnsaved()">
+                </div>
+
+                <h3>Certification Details</h3>
+                <div style="background:white; border:1px solid #e2e8f0; border-radius:8px; padding:16px; font-size:0.9em;">
+                    <p><strong>Certificate Number:</strong> <input class="inline-field" id="certNum" placeholder="e.g., CMMC-L2-YYYY-ORG-001" style="width:260px;" oninput="markUnsaved()"></p>
+                    <p><strong>Issue Date:</strong> <input class="inline-field" id="certIssue" placeholder="MM/DD/YYYY" oninput="markUnsaved()"></p>
+                    <p><strong>Expiration Date:</strong> <input class="inline-field" id="certExpiry" placeholder="MM/DD/YYYY (3 years)" oninput="markUnsaved()"></p>
+                    <p><strong>Annual Reaffirmation Required:</strong> <input class="inline-field" id="certReaffirm" placeholder="Year 1 and Year 2 dates" style="width:280px;" oninput="markUnsaved()"></p>
+                    <p><strong>Re-assessment Required:</strong> <input class="inline-field" id="certReassess" placeholder="MM/DD/YYYY (3-year cycle)" oninput="markUnsaved()"></p>
+                </div>
+
+                <h3>Conditions for Final Certification</h3>
+                <div class="editable" data-field="certConditions"
+                     data-placeholder="List the specific conditions that must be met for this conditional certification to become final:&#10;1. Complete all POA&M items within 180 days&#10;2. Engage C3PAO for POA&M closeout assessment&#10;3. Demonstrate full implementation of all 110 NIST SP 800-171 controls&#10;4. Submit evidence packages for all remediated controls">
+                </div>
+
+                <h3>Assessor Signature</h3>
+                <div style="background:white; border:1px solid #e2e8f0; border-radius:8px; padding:16px; font-size:0.9em;">
+                    <p><strong>Lead Certified CMMC Assessor:</strong> <input class="inline-field" id="sigAssessor" placeholder="Full name, Certification #" style="width:280px;" oninput="markUnsaved()"></p>
+                    <p><strong>Date:</strong> <input class="inline-field" id="sigDate" placeholder="MM/DD/YYYY" oninput="markUnsaved()"></p>
+                    <p><strong>C3PAO Organization:</strong> <input class="inline-field" id="sigC3PAO" placeholder="Organization name" style="width:250px;" oninput="markUnsaved()"></p>
+                </div>
+
+            </div>
+        </div>
+
+    </div><!-- /sar-content -->
+
+    <!-- FOOTER -->
+    <div class="sar-footer">
+        <p>
+            <strong>Document Classification:</strong> Controlled Unclassified Information (CUI) &nbsp;|&nbsp;
+            <strong>Report Type:</strong> CMMC Level 2 System Assessment Report (SAR) &nbsp;|&nbsp;
+            <strong>Generated:</strong> <span id="footerDate"></span>
+        </p>
+        <p style="margin-top:6px; font-style:italic;">This document contains sensitive information and should be handled in accordance with CMMC and NIST SP 800-171 requirements.</p>
+    </div>
+
+</div><!-- /container -->
+
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toast"></div>
+
+<!-- ===== RESET MODAL ===== -->
+<div id="resetModal" class="modal">
+    <div class="modal-content" style="max-width:420px;">
+        <h2>⚠️ Reset All Data?</h2>
+        <p style="font-size:0.9em; color:#374151;">This will clear all text, findings, and table data you have entered. This cannot be undone.</p>
+        <div class="modal-actions">
+            <button class="btn-secondary" onclick="closeModal('resetModal')">Cancel</button>
+            <button class="btn-danger-m" onclick="doReset()">Yes, Reset Everything</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== JAVASCRIPT ===== -->
+<script>
+    // =============================================
+    //  EDIT MODE
+    // =============================================
+    let editMode = false;
+
+    function toggleEditMode() {
+        editMode = !editMode;
+        const btn    = document.getElementById('editToggleBtn');
+        const status = document.getElementById('editStatus');
+
+        document.querySelectorAll('.editable').forEach(el => {
+            el.contentEditable = editMode ? 'true' : 'false';
+            if (editMode) {
+                el.classList.add('edit-active');
+            } else {
+                el.classList.remove('edit-active');
+                if (el.textContent.trim()) el.classList.add('has-content');
+                markUnsaved();
+            }
+        });
+
+        if (editMode) {
+            btn.textContent = '🔒 Lock Editing';
+            btn.classList.add('active');
+            status.textContent = 'Edit: ON';
+            status.classList.add('on');
+        } else {
+            btn.textContent = '✏️ Edit Mode';
+            btn.classList.remove('active');
+            status.textContent = 'Edit: OFF';
+            status.classList.remove('on');
+        }
+    }
+
+    // =============================================
+    //  SECTION ACCORDION
+    // =============================================
+    function toggleSection(header) {
+        header.parentElement.classList.toggle('collapsed');
+    }
+
+    // =============================================
+    //  SCORE CALCULATOR
+    // =============================================
+    function updateScore() {
+        const met   = parseInt(document.getElementById('scoresMet').value) || 0;
+        const total = parseInt(document.getElementById('scoresTotal').value) || 110;
+        const pct   = total > 0 ? Math.round(met / total * 100) : 0;
+
+        document.getElementById('scorePct').value = pct + '%';
+
+        let heading, sub;
+        if (met === 0) {
+            heading = '[Enter scores above]';
+            sub = 'Certification status will appear here';
+        } else if (pct === 100) {
+            heading = `Overall Score: ${met}/${total} (${pct}%)`;
+            sub = '✅ Full Certification Achieved';
+        } else if (pct >= 80) {
+            heading = `Overall Score: ${met}/${total} (${pct}%)`;
+            sub = '⚠️ Conditional Certification — POA&M Required';
+        } else {
+            heading = `Overall Score: ${met}/${total} (${pct}%)`;
+            sub = '❌ Certification Not Yet Achieved — Significant Gaps Remain';
+        }
+        document.getElementById('scoreHeading').textContent = heading;
+        document.getElementById('scoreSub').textContent = sub;
+    }
+
+    // =============================================
+    //  FINDINGS
+    // =============================================
+    let findingCount = 0;
+
+    function addFinding() {
+        findingCount++;
+        const container = document.getElementById('findingsContainer');
+
+        // Remove placeholder text if present
+        const placeholder = container.querySelector('p');
+        if (placeholder) placeholder.remove();
+
+        const div = document.createElement('div');
+        div.className = 'finding-item';
+        div.dataset.index = findingCount;
+
+        div.innerHTML = `
+            <div class="finding-header">
+                <input class="finding-field" style="font-weight:700; color:#1e3a8a; font-size:0.95em; min-width:260px; flex:1;"
+                       placeholder="Control ID — e.g., AC.L2-3.1.1 - Account Management"
+                       oninput="markUnsaved()">
+                <div class="finding-controls">
+                    <select class="status-select" onchange="updateFindingStyle(this); markUnsaved()">
+                        <option value="">— Status —</option>
+                        <option value="met">MET</option>
+                        <option value="not-met">NOT MET</option>
+                        <option value="conditional">CONDITIONAL</option>
+                    </select>
+                    <button class="del-finding-btn" onclick="deleteFinding(this)">🗑 Delete</button>
+                </div>
+            </div>
+            <div class="finding-content">
+                <div class="field-row">
+                    <span class="field-label">Control Description:</span>
+                    <textarea class="finding-textarea" placeholder="Describe the specific NIST SP 800-171 control requirement being assessed..." oninput="markUnsaved()"></textarea>
+                </div>
+                <div class="field-row">
+                    <span class="field-label">Implementation Status:</span>
+                    <textarea class="finding-textarea" placeholder="Describe how the organization has implemented (or not implemented) this control..." oninput="markUnsaved()"></textarea>
+                </div>
+                <div class="field-row">
+                    <span class="field-label">Evidence Reviewed:</span>
+                    <textarea class="finding-textarea" style="min-height:44px;" placeholder="List documents, configurations, logs, or interviews reviewed as evidence..." oninput="markUnsaved()"></textarea>
+                </div>
+                <div class="field-row">
+                    <span class="field-label">Assessment Method:</span>
+                    <input class="finding-field wide" placeholder="e.g., Document review, system inspection, staff interviews, technical testing" oninput="markUnsaved()">
+                </div>
+                <div class="field-row" id="gapRow-${findingCount}" style="display:none;">
+                    <span class="field-label">Gap / Weakness Identified:</span>
+                    <textarea class="finding-textarea" placeholder="Describe the specific gap or weakness found..." oninput="markUnsaved()"></textarea>
+                </div>
+                <div class="field-row" id="remRow-${findingCount}" style="display:none;">
+                    <span class="field-label">Remediation Required:</span>
+                    <textarea class="finding-textarea" style="min-height:44px;" placeholder="Describe the required remediation action and timeline..." oninput="markUnsaved()"></textarea>
+                </div>
+            </div>
+        `;
+
+        container.appendChild(div);
+        markUnsaved();
+    }
+
+    function updateFindingStyle(select) {
+        const item  = select.closest('.finding-item');
+        const idx   = item.dataset.index;
+        const value = select.value;
+
+        item.className = 'finding-item' + (value ? ' status-' + value : '');
+
+        // Show/hide gap fields for non-met controls
+        const showGap = (value === 'not-met' || value === 'conditional');
+        const gapRow  = document.getElementById('gapRow-' + idx);
+        const remRow  = document.getElementById('remRow-' + idx);
+        if (gapRow) gapRow.style.display = showGap ? 'block' : 'none';
+        if (remRow) remRow.style.display = showGap ? 'block' : 'none';
+    }
+
+    function deleteFinding(btn) {
+        if (!confirm('Delete this finding?')) return;
+        const item = btn.closest('.finding-item');
+        item.remove();
+
+        // Restore placeholder if no findings left
+        const container = document.getElementById('findingsContainer');
+        if (!container.querySelector('.finding-item')) {
+            container.innerHTML = '<p style="color:#9ca3af;font-style:italic;font-size:0.9em;padding:10px 0;">No findings added yet — click the button below to add your first control finding.</p>';
+        }
+        markUnsaved();
+    }
+
+    // =============================================
+    //  TEAM TABLE (Section 3)
+    // =============================================
+    function addTeamMember() {
+        const tbody = document.getElementById('teamTableBody');
+        removeEmptyRow(tbody);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td><input type="text" placeholder="Full name" oninput="markUnsaved()"></td>
+            <td><input type="text" placeholder="e.g., Lead CCA, CCP, CMMCA" oninput="markUnsaved()"></td>
+            <td><input type="text" placeholder="e.g., CCA-2024-156" oninput="markUnsaved()"></td>
+            <td><input type="text" placeholder="e.g., 8 years cybersecurity" oninput="markUnsaved()"></td>
+            <td><button class="del-row-btn" onclick="delRow(this)">Del</button></td>
+        `;
+        tbody.appendChild(tr);
+        markUnsaved();
+    }
+
+    // =============================================
+    //  RISK TABLE (Section 5)
+    // =============================================
+    function addRiskRow() {
+        const tbody = document.getElementById('riskTableBody');
+        removeEmptyRow(tbody);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td><input type="text" placeholder="e.g., Access Control Gaps" oninput="markUnsaved()"></td>
+            <td>
+                <select onchange="updateRiskCell(this); markUnsaved()">
+                    <option value="">— Level —</option>
+                    <option value="high">High</option>
+                    <option value="medium">Medium</option>
+                    <option value="low">Low</option>
+                </select>
+            </td>
+            <td><input type="number" min="0" placeholder="0" style="width:50px;" oninput="markUnsaved()"></td>
+            <td><input type="text" placeholder="Describe potential impact on CUI" oninput="markUnsaved()"></td>
+            <td><button class="del-row-btn" onclick="delRow(this)">Del</button></td>
+        `;
+        tbody.appendChild(tr);
+        markUnsaved();
+    }
+
+    function updateRiskCell(select) {
+        const badgeMap = { high:'r-high', medium:'r-medium', low:'r-low' };
+        const labelMap = { high:'High', medium:'Medium', low:'Low' };
+        const td = select.parentElement;
+        if (select.value) {
+            td.innerHTML = `<span class="risk-badge ${badgeMap[select.value]}">${labelMap[select.value]}</span>
+                <select style="display:none;" onchange="updateRiskCell(this); markUnsaved()">${select.innerHTML}</select>`;
+            td.onclick = () => { td.querySelector('select').style.display=''; td.querySelector('.risk-badge').style.display='none'; };
+        }
+    }
+
+    // =============================================
+    //  POAM TABLE (Section 6)
+    // =============================================
+    function addPOAMRow() {
+        const tbody = document.getElementById('poamTableBody');
+        removeEmptyRow(tbody);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td><input type="text" placeholder="e.g., AU.L2-3.3.1" oninput="markUnsaved()"></td>
+            <td><input type="text" placeholder="Control Name" oninput="markUnsaved()"></td>
+            <td>
+                <select onchange="updatePriorityCell(this); markUnsaved()">
+                    <option value="">— Priority —</option>
+                    <option value="critical">Critical</option>
+                    <option value="high">High</option>
+                    <option value="medium">Medium</option>
+                    <option value="low">Low</option>
+                </select>
+            </td>
+            <td><input type="date" oninput="markUnsaved()"></td>
+            <td><input type="text" placeholder="e.g., CISO, IT Operations" oninput="markUnsaved()"></td>
+            <td><button class="del-row-btn" onclick="delRow(this)">Del</button></td>
+        `;
+        tbody.appendChild(tr);
+        markUnsaved();
+    }
+
+    function updatePriorityCell(select) {
+        const badgeMap = {
+            critical:'background:#dc2626;color:white;',
+            high:'background:#f97316;color:white;',
+            medium:'background:#f59e0b;color:#1f2937;',
+            low:'background:#10b981;color:white;'
+        };
+        if (select.value) {
+            const td = select.parentElement;
+            const label = select.options[select.selectedIndex].text;
+            td.innerHTML = `<span style="padding:3px 8px;border-radius:12px;font-size:0.78em;font-weight:700;${badgeMap[select.value]}">${label}</span>`;
+        }
+    }
+
+    // =============================================
+    //  TABLE UTILITIES
+    // =============================================
+    function removeEmptyRow(tbody) {
+        const emptyRow = tbody.querySelector('.empty-row');
+        if (emptyRow) emptyRow.remove();
+    }
+
+    function delRow(btn) {
+        if (!confirm('Delete this row?')) return;
+        const tr = btn.closest('tr');
+        const tbody = tr.parentElement;
+        tr.remove();
+        if (!tbody.querySelector('tr:not(.empty-row)')) {
+            // restore empty message
+            const cols = tbody.closest('table').querySelectorAll('th').length;
+            tbody.innerHTML = `<tr class="empty-row"><td colspan="${cols}">No items — use the Add button below.</td></tr>`;
+        }
+        markUnsaved();
+    }
+
+    // =============================================
+    //  UNSAVED
+    // =============================================
+    function markUnsaved() {
+        document.getElementById('unsavedIndicator').style.display = 'block';
+    }
+    function markSaved() {
+        document.getElementById('unsavedIndicator').style.display = 'none';
+    }
+
+    // =============================================
+    //  SAVE / LOAD
+    // =============================================
+    function collectEditableFields() {
+        const fields = {};
+        document.querySelectorAll('.editable[data-field]').forEach(el => {
+            fields[el.dataset.field] = el.innerHTML;
+        });
+        return fields;
+    }
+
+    function collectSimpleInputs() {
+        const inputs = {};
+        ['orgName','orgLocation','orgEmployees','orgBusiness','assessLevel','assessDate',
+         'scoresMet','scoresTotal','c3paoName','c3paoAuth','c3paoISO',
+         'certDecision','certCondition','certNum','certIssue','certExpiry',
+         'certReaffirm','certReassess','sigAssessor','sigDate','sigC3PAO'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) inputs[id] = el.value;
+        });
+        return inputs;
+    }
+
+    function collectFindingsHTML() {
+        return document.getElementById('findingsContainer').innerHTML;
+    }
+
+    function collectTableHTML(bodyId) {
+        return document.getElementById(bodyId).innerHTML;
+    }
+
+    function buildSaveObject() {
+        return {
+            fields:    collectEditableFields(),
+            inputs:    collectSimpleInputs(),
+            findings:  collectFindingsHTML(),
+            teamTable: collectTableHTML('teamTableBody'),
+            riskTable: collectTableHTML('riskTableBody'),
+            poamTable: collectTableHTML('poamTableBody')
+        };
+    }
+
+    function applyLoadedData(d) {
+        // Editable prose fields
+        if (d.fields) {
+            document.querySelectorAll('.editable[data-field]').forEach(el => {
+                const val = d.fields[el.dataset.field];
+                if (val !== undefined) {
+                    el.innerHTML = val;
+                    if (el.textContent.trim()) el.classList.add('has-content');
+                }
+            });
+        }
+        // Simple inputs
+        if (d.inputs) {
+            Object.keys(d.inputs).forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = d.inputs[id];
+            });
+            updateScore();
+        }
+        // Findings HTML
+        if (d.findings !== undefined) {
+            document.getElementById('findingsContainer').innerHTML = d.findings;
+        }
+        // Tables
+        if (d.teamTable) document.getElementById('teamTableBody').innerHTML = d.teamTable;
+        if (d.riskTable) document.getElementById('riskTableBody').innerHTML = d.riskTable;
+        if (d.poamTable) document.getElementById('poamTableBody').innerHTML = d.poamTable;
+
+        markSaved();
+    }
+
+    function saveReport() {
+        try {
+            localStorage.setItem('cmmc_sar_tool_v1', JSON.stringify(buildSaveObject()));
+            markSaved();
+            showToast('Report saved ✓', 'success');
+        } catch(e) {
+            showToast('Save failed — try Export JSON instead.', 'error');
+        }
+    }
+
+    function loadFromFile(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = e => {
+            try {
+                applyLoadedData(JSON.parse(e.target.result));
+                showToast('File loaded ✓', 'success');
+            } catch(err) {
+                showToast('Error: Invalid JSON file.', 'error');
+            }
+        };
+        reader.readAsText(file);
+        event.target.value = '';
+    }
+
+    function exportJSON() {
+        const blob = new Blob([JSON.stringify(buildSaveObject(), null, 2)], { type: 'application/json' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'CMMC_SAR.json';
+        a.click();
+        URL.revokeObjectURL(a.href);
+        showToast('JSON exported ✓', 'success');
+    }
+
+    // =============================================
+    //  RESET
+    // =============================================
+    function doReset() {
+        localStorage.removeItem('cmmc_sar_tool_v1');
+        closeModal('resetModal');
+        showToast('Resetting…', 'error');
+        setTimeout(() => location.reload(), 800);
+    }
+
+    // =============================================
+    //  MODAL HELPERS
+    // =============================================
+    function openModal(id)  { document.getElementById(id).style.display = 'block'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    window.onclick = e => {
+        document.querySelectorAll('.modal').forEach(m => {
+            if (e.target === m) m.style.display = 'none';
+        });
+    };
+
+    // =============================================
+    //  TOAST
+    // =============================================
+    function showToast(msg, type) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.className = 'toast show ' + (type||'');
+        setTimeout(() => { t.className = 'toast'; }, 3200);
+    }
+
+    // =============================================
+    //  INIT
+    // =============================================
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('footerDate').textContent =
+            new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+
+        const saved = localStorage.getItem('cmmc_sar_tool_v1');
+        if (saved) {
+            try {
+                applyLoadedData(JSON.parse(saved));
+                showToast('Auto-loaded your last saved session.', 'success');
+            } catch(e) {}
+        }
+    });
+
+    // Ctrl+S
+    document.addEventListener('keydown', e => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); saveReport(); }
+    });
+</script>
+</body>
+</html>
