@@ -1,0 +1,303 @@
+
+
+
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>CMMC Program Portal</title> <style> * { margin: 0; padding: 0; box-sizing: border-box;
+
+pasted
+
+Act as an expert HTML and JavaScript coder. Analyze the index.html file. Modify the code to make the following changes.
+ 
+1)    Add the following tables and link to the files associated.
+ 
+CMMC Ecosystem                                                                               eco.html
+Introduction to FCI & CUI                                                              cui.html
+CMMC & NIST SP 800-171 Framework                              nist171.html
+ 
+ 
+2)    Change the order of the tables:
+ 
+CMMC Ecosystem                                                                               eco.html
+Introduction to FCI & CUI                                                              cui.html
+CMMC & NIST SP 800-171 Framework                              nist171.html
+CMMC Audit Evidence Guide                                                    evidence.html
+CMMC Documents and Reports                                            reports.html
+Cybersecurity Data Management Roles                          roles.html
+CMMC Applicability Checklist Tools                                   applicability.html                          
+CMMC Plan of Action & Milestone tracker                     POAM.html
+CMMC Auditor Progress Dashboard                                   dashboard.html
+ 
+ 
+3)    Change the footer to:
+4)     
+National Cybersecurity Training and Education Center (NCYTE)
+Cybersecurity Maturity Model Certification (CMMC) Program
+Study and Implementation Guide
+For workshop use only.
+Last updated: June 14, 2025 | Version 2.0
+ 
+The NCyTE Center is funded by the National Science Foundation grant 2054724.
+
+
+Strategized HTML modifications for CMMC resource page.
+4s
+
+
+
+
+
+I'll analyze and modify the HTML file according to your requirements. The changes include adding three new navigation cards, reordering all cards, and updating the footer.
+
+
+Modified DoD CMMC Program Portal
+Interactive artifact 
+
+Engineered HTML modifications for CMMC documentation site.
+5s
+
+
+
+I've successfully modified the HTML file according to your specifications. Here are the key changes made:
+
+Changes Implemented:
+1. Added Three New Navigation Cards:
+CMMC Ecosystem (eco.html) - with globe icon 🌐
+Introduction to FCI & CUI (cui.html) - with lock icon 🔐
+CMMC & NIST SP 800-171 Framework (nist171.html) - with books icon 📚
+2. Reordered All Cards:
+The navigation cards now appear in the exact order you specified, with the three new cards at the top followed by the existing cards in your requested sequence.
+
+3. Updated Footer:
+Changed from "Department of Defense" to "National Cybersecurity Training and Education Center (NCYTE)"
+Updated all footer text as specified
+Added the NSF grant information
+Additional Improvements:
+Created appropriate descriptions for the new cards that match the existing style
+Selected meaningful icons that are visually consistent with the current design
+Maintained all existing styling and responsive design features
+Updated some card titles to match your specifications (e.g., "CMMC Documents and Reports", "CMMC Applicability Checklist Tools")
+The modified portal now provides a comprehensive
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DoD CMMC Program Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: #1e3c72;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .header .subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            font-weight: 300;
+        }
+
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .nav-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            border: 2px solid transparent;
+        }
+
+        .nav-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+            border-color: #2a5298;
+        }
+
+        .nav-card .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .nav-card h3 {
+            font-size: 1.4rem;
+            color: #1e3c72;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .nav-card p {
+            color: #666;
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            color: white;
+            margin-top: 2rem;
+        }
+
+        .footer p {
+            margin-bottom: 0.5rem;
+        }
+
+        .security-badge {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .nav-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .nav-card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>DoD CMMC Program Portal</h1>
+            <p class="subtitle">Cybersecurity Maturity Model Certification Management System</p>
+            <div class="security-badge">🔒 SECURE ACCESS</div>
+        </div>
+
+        <div class="nav-grid">
+            <a href="eco.html" class="nav-card">
+                <span class="icon">🌐</span>
+                <h3>CMMC Ecosystem</h3>
+                <p>Explore the comprehensive CMMC ecosystem including stakeholders, processes, and relationships within the cybersecurity certification framework.</p>
+            </a>
+
+            <a href="cui.html" class="nav-card">
+                <span class="icon">🔐</span>
+                <h3>Introduction to FCI & CUI</h3>
+                <p>Learn about Federal Contract Information (FCI) and Controlled Unclassified Information (CUI) classification, handling, and protection requirements.</p>
+            </a>
+
+            <a href="nist171.html" class="nav-card">
+                <span class="icon">📚</span>
+                <h3>CMMC & NIST SP 800-171 Framework</h3>
+                <p>Comprehensive guide to understanding the relationship between CMMC levels and NIST SP 800-171 security control requirements and implementation.</p>
+            </a>
+
+            <a href="evidence.html" class="nav-card">
+                <span class="icon">📁</span>
+                <h3>CMMC Audit Evidence Guide</h3>
+                <p>Guidance and templates for collecting, organizing, and presenting evidence required for CMMC assessment and audit processes.</p>
+            </a>
+
+            <a href="reports.html" class="nav-card">
+                <span class="icon">📄</span>
+                <h3>CMMC Documents and Reports</h3>
+                <p>Access all required documentation, policies, procedures, and reports necessary for CMMC compliance and certification readiness.</p>
+            </a>
+
+            <a href="roles.html" class="nav-card">
+                <span class="icon">👥</span>
+                <h3>Cybersecurity Data Management Roles</h3>
+                <p>Define and manage user roles, responsibilities, and access controls for cybersecurity data management within your organization.</p>
+            </a>
+
+            <a href="applicability.html" class="nav-card">
+                <span class="icon">✅</span>
+                <h3>CMMC Applicability Checklist Tools</h3>
+                <p>Comprehensive checklist tools to determine which CMMC and NIST SP 800-171 security requirements apply to your organization and systems.</p>
+            </a>
+
+            <a href="POAM.html" class="nav-card">
+                <span class="icon">📋</span>
+                <h3>CMMC Plan of Action & Milestone Tracker</h3>
+                <p>Track remediation efforts, milestone progress, and action items required for CMMC compliance and certification readiness.</p>
+            </a>
+
+            <a href="dashboard.html" class="nav-card">
+                <span class="icon">📊</span>
+                <h3>CMMC Auditor Progress Dashboard</h3>
+                <p>Real-time dashboard displaying audit progress, compliance status, findings, and overall certification readiness metrics.</p>
+            </a>
+        </div>
+
+        <div class="footer">
+            <p><strong>National Cybersecurity Training and Education Center (NCYTE)</strong></p>
+            <p>Cybersecurity Maturity Model Certification (CMMC) Program</p>
+            <p>Study and Implementation Guide</p>
+            <p>For workshop use only.</p>
+            <p style="font-size: 0.8rem; margin-top: 1rem; opacity: 0.8;">
+                Last updated: June 14, 2025 | Version 2.0
+            </p>
+            <p style="font-size: 0.8rem; opacity: 0.8;">
+                The NCyTE Center is funded by the National Science Foundation grant 2054724.
+            </p>
+        </div>
+    </div>
+</body>
+</html>
+Claude
+
+
+
+
+Prompt Genie Logo
