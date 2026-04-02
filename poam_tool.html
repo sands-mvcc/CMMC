@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMMC POA&M Tracker – Student Practice Tool</title>
+    <style>
+        /* ===== BASE ===== */
+        *, *::before, *::after { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f4f8;
+            color: #1f2937;
+        }
+
+        /* ===== TOOLBAR ===== */
+        .toolbar {
+            max-width: 1400px;
+            margin: 0 auto 16px auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            background: #1e3a8a;
+            padding: 12px 20px;
+            border-radius: 10px;
+        }
+        .toolbar-title {
+            color: #93c5fd;
+            font-weight: 700;
+            font-size: 0.85em;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-right: auto;
+        }
+        .toolbar button {
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.85em;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: filter 0.2s;
+            white-space: nowrap;
+        }
+        .toolbar button:hover { filter: brightness(1.12); }
+        .btn-save   { background: #10b981; color: white; }
+        .btn-load   { background: #6366f1; color: white; }
+        .btn-export { background: #f59e0b; color: #1f2937; }
+        .btn-print  { background: #64748b; color: white; }
+        .btn-reset  { background: #ef4444; color: white; }
+
+        /* ===== CONTAINER ===== */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+            overflow: hidden;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+        .header h1 { margin: 0; font-size: 2em; font-weight: 700; }
+        .header .subtitle { margin: 8px 0 0; font-size: 1em; opacity: 0.9; }
+        .student-badge {
+            position: absolute; top: 14px; right: 14px;
+            background: #fbbf24; color: #1f2937;
+            padding: 6px 14px; border-radius: 20px;
+            font-weight: 700; font-size: 0.8em;
+        }
+        .unsaved-indicator {
+            position: absolute; top: 14px; left: 14px;
+            background: #ef4444; color: white;
+            padding: 6px 14px; border-radius: 20px;
+            font-weight: 700; font-size: 0.8em; display: none;
+        }
+
+        /* ===== INSTRUCTION BOX ===== */
+        .instruction-box {
+            background: #eff6ff;
+            border: 2px dashed #3b82f6;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 20px;
+            font-size: 0.88em;
+            color: #1e40af;
+        }
+        .instruction-box strong { display: block; margin-bottom: 6px; font-size: 1em; }
+        .instruction-box ul { margin: 6px 0 0; padding-left: 20px; }
+        .instruction-box li { margin: 3px 0; }
+
+        /* ===== ORG INFO SECTION ===== */
+        .org-section {
+            background: #f8fafc;
+            padding: 20px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .org-section h3 {
+            color: #1e3a8a;
+            font-size: 1em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin: 0 0 14px;
+        }
+        .org-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 14px;
+        }
+        .form-group { display: flex; flex-direction: column; gap: 4px; }
+        .form-label {
+            font-weight: 600; color: #374151;
+            font-size: 0.8em; text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .form-control {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 0.88em;
+            font-family: inherit;
+            background: white;
+            transition: border-color 0.2s;
+        }
+        .form-control:focus { outline: 2px solid #3b82f6; border-color: transparent; }
+
+        /* ===== DASHBOARD METRICS ===== */
+        .metrics-section {
+            padding: 20px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .metrics-section h3 {
+            color: #1e3a8a; font-size: 1em; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.06em;
+            margin: 0 0 14px;
+        }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 14px;
+        }
+        .metric-card {
+            background: linear-gradient(135deg, #f8fafc, white);
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 18px 14px;
+            text-align: center;
+            border-left: 4px solid #3b82f6;
+            transition: transform 0.2s;
+        }
+        .metric-card:hover { transform: translateY(-2px); }
+        .metric-card h4 {
+            font-size: 0.72em; color: #6b7280;
+            margin: 0 0 8px; text-transform: uppercase;
+            letter-spacing: 0.06em; font-weight: 700;
+        }
+        .metric-number {
+            font-size: 2.2em; font-weight: 800;
+            margin: 0 0 4px; line-height: 1;
+        }
+        .metric-label { font-size: 0.75em; color: #6b7280; }
+        .m-blue   { color: #1e40af; border-left-color: #3b82f6; }
+        .m-red    { color: #dc2626; border-left-color: #ef4444; }
+        .m-yellow { color: #d97706; border-left-color: #f59e0b; }
+        .m-green  { color: #059669; border-left-color: #10b981; }
+        .m-orange { color: #ea580c; border-left-color: #f97316; }
+        .m-teal   { color: #0369a1; border-left-color: #0ea5e9; }
+
+        /* ===== CONTROLS BAR ===== */
+        .controls-bar {
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            border-bottom: 1px solid #e5e7eb;
+            background: white;
+        }
+        .btn-group { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+        .action-btn {
+            border: none; padding: 8px 16px; border-radius: 6px;
+            cursor: pointer; font-size: 0.82em; font-weight: 600;
+            transition: filter 0.2s; white-space: nowrap;
+        }
+        .action-btn:hover { filter: brightness(1.1); }
+        .ab-blue   { background: #1e40af; color: white; }
+        .ab-gray   { background: #6b7280; color: white; }
+        .ab-green  { background: #10b981; color: white; }
+        .ab-amber  { background: #f59e0b; color: #1f2937; }
+
+        .search-filter {
+            display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+        }
+        .search-input {
+            padding: 8px 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 20px;
+            width: 220px; font-size: 0.85em;
+            transition: border-color 0.2s;
+        }
+        .search-input:focus { outline: none; border-color: #3b82f6; }
+        .filter-select {
+            padding: 7px 12px; border: 1px solid #d1d5db;
+            border-radius: 6px; font-size: 0.85em;
+            background: white; cursor: pointer;
+        }
+
+        /* ===== TABLE ===== */
+        .table-wrapper {
+            padding: 0 20px 20px;
+            overflow-x: auto;
+        }
+        .poam-table {
+            width: 100%; border-collapse: collapse;
+            font-size: 0.85em;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .poam-table th {
+            background: #1e40af; color: white;
+            padding: 13px 10px; text-align: left;
+            font-weight: 600; font-size: 0.82em;
+            text-transform: uppercase; letter-spacing: 0.04em;
+            white-space: nowrap;
+        }
+        .poam-table td {
+            padding: 11px 10px;
+            border-bottom: 1px solid #e5e7eb;
+            vertical-align: middle;
+        }
+        .poam-table tr:nth-child(even) td { background: #f9fafb; }
+        .poam-table tr:hover td { background: #eff6ff; }
+        .empty-row td {
+            text-align: center; color: #9ca3af;
+            font-style: italic; padding: 28px;
+        }
+        .poam-id { font-weight: 700; color: #1e40af; white-space: nowrap; }
+        .desc-cell { max-width: 200px; }
+
+        /* ===== BADGES ===== */
+        .status-badge, .priority-badge, .level-badge {
+            padding: 3px 8px; border-radius: 20px;
+            font-size: 0.75em; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.04em;
+            white-space: nowrap;
+        }
+        .s-open          { background: #fee2e2; color: #991b1b; }
+        .s-in-progress   { background: #fef3c7; color: #92400e; }
+        .s-completed     { background: #d1fae5; color: #065f46; }
+        .s-delayed       { background: #ede9fe; color: #5b21b6; }
+        .p-critical      { background: #dc2626; color: white; }
+        .p-high          { background: #f97316; color: white; }
+        .p-medium        { background: #f59e0b; color: #1f2937; }
+        .p-low           { background: #10b981; color: white; }
+        .l-1             { background: #10b981; color: white; }
+        .l-2             { background: #f59e0b; color: #1f2937; }
+        .l-3             { background: #dc2626; color: white; }
+        .overdue-flag    { color: #dc2626; font-weight: 700; font-size: 0.8em; display: block; }
+
+        /* ===== PROGRESS BAR ===== */
+        .progress-wrap { width: 80px; }
+        .progress-bar {
+            width: 100%; height: 8px;
+            background: #e5e7eb; border-radius: 4px;
+            overflow: hidden; margin-bottom: 3px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #3b82f6);
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+        .progress-label { text-align: center; font-size: 0.75em; color: #6b7280; }
+
+        /* ===== ANALYTICS ===== */
+        .analytics-section {
+            padding: 20px;
+            border-top: 2px solid #e2e8f0;
+            background: #f8fafc;
+        }
+        .analytics-section h3 {
+            color: #1e3a8a; font-size: 1em; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.06em;
+            margin: 0 0 14px;
+        }
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 16px;
+        }
+        .chart-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px;
+        }
+        .chart-card h4 {
+            color: #1e3a8a; font-size: 0.88em;
+            margin: 0 0 12px;
+            border-bottom: 2px solid #3b82f6;
+            padding-bottom: 6px;
+        }
+        .chart-bar-row {
+            display: flex; align-items: center;
+            gap: 8px; margin: 7px 0; font-size: 0.82em;
+        }
+        .chart-bar-label { width: 90px; color: #374151; font-weight: 600; flex-shrink: 0; }
+        .chart-bar-track {
+            flex: 1; height: 14px; background: #f1f5f9;
+            border-radius: 7px; overflow: hidden;
+        }
+        .chart-bar-fill { height: 100%; border-radius: 7px; transition: width 0.4s; }
+        .chart-bar-count { width: 24px; text-align: right; font-weight: 700; color: #374151; }
+        .cb-red    { background: #ef4444; }
+        .cb-orange { background: #f97316; }
+        .cb-amber  { background: #f59e0b; }
+        .cb-green  { background: #10b981; }
+        .cb-blue   { background: #3b82f6; }
+        .cb-purple { background: #8b5cf6; }
+        .timeline-big {
+            text-align: center; padding: 18px 0;
+        }
+        .timeline-big .big-num {
+            font-size: 3em; font-weight: 800; color: #1e40af; line-height: 1;
+        }
+        .timeline-big .big-label { font-size: 0.82em; color: #6b7280; margin-top: 4px; }
+
+        /* ===== EXPORT SECTION ===== */
+        .export-section {
+            padding: 18px 20px;
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+        }
+        .export-section h4 {
+            color: #6b7280; font-size: 0.82em; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.06em;
+            width: 100%; text-align: center; margin: 0 0 4px;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            background: #f8fafc; padding: 18px 20px;
+            border-top: 1px solid #e5e7eb;
+            text-align: center; color: #6b7280; font-size: 0.84em;
+        }
+
+        /* ===== MODALS ===== */
+        .modal {
+            display: none; position: fixed;
+            z-index: 2000; left: 0; top: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.55);
+        }
+        .modal-content {
+            background: white; margin: 3% auto;
+            padding: 28px; border-radius: 10px;
+            width: 92%; max-width: 680px;
+            max-height: 90vh; overflow-y: auto;
+        }
+        .modal-content h2 { color: #1e3a8a; margin: 0 0 18px; font-size: 1.2em; }
+        .close-modal {
+            color: #9ca3af; float: right;
+            font-size: 24px; font-weight: bold; cursor: pointer; line-height: 1;
+        }
+        .close-modal:hover { color: #111; }
+        .modal-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .modal-grid .span2 { grid-column: 1 / -1; }
+        .field-group { display: flex; flex-direction: column; gap: 4px; }
+        .field-group label { font-weight: 600; color: #374151; font-size: 0.84em; }
+        .field-group input,
+        .field-group select,
+        .field-group textarea {
+            padding: 8px 12px; border: 1px solid #d1d5db;
+            border-radius: 6px; font-size: 0.88em; font-family: inherit;
+        }
+        .field-group input:focus,
+        .field-group select:focus,
+        .field-group textarea:focus { outline: 2px solid #3b82f6; border-color: transparent; }
+        .field-group textarea { height: 72px; resize: vertical; }
+        .form-hint { font-size: 0.74em; color: #6b7280; margin-top: 2px; }
+        .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 18px; }
+        .btn-primary   { background: #3b82f6; color: white; border: none; padding: 9px 22px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .btn-secondary { background: #6b7280; color: white; border: none; padding: 9px 22px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .btn-primary:hover   { background: #2563eb; }
+        .btn-secondary:hover { background: #4b5563; }
+
+        /* View modal */
+        .view-field { margin-bottom: 12px; }
+        .view-field strong { display: block; font-size: 0.8em; color: #6b7280; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 3px; }
+        .view-field span { font-size: 0.9em; color: #1f2937; }
+        .view-divider { border: none; border-top: 1px solid #e5e7eb; margin: 14px 0; }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed; bottom: 24px; right: 24px;
+            background: #1e3a8a; color: white;
+            padding: 12px 22px; border-radius: 8px;
+            font-size: 0.88em; z-index: 9999;
+            opacity: 0; transform: translateY(10px);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        .toast.show { opacity: 1; transform: translateY(0); }
+        .toast.success { background: #059669; }
+        .toast.error   { background: #dc2626; }
+
+        /* ===== PRINT ===== */
+        @media print {
+            body { background: white; padding: 0; }
+            .toolbar, .instruction-box, .student-badge,
+            .unsaved-indicator, .controls-bar, .export-section,
+            .action-btn, .search-filter { display: none !important; }
+            .container { box-shadow: none; border-radius: 0; }
+            .poam-table { font-size: 0.78em; }
+            .analytics-section, .metrics-section { page-break-inside: avoid; }
+        }
+
+        @media (max-width: 768px) {
+            .modal-grid { grid-template-columns: 1fr; }
+            .modal-grid .span2 { grid-column: 1; }
+            .search-input { width: 100%; }
+            .org-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== TOOLBAR ===== -->
+<div class="toolbar">
+    <span class="toolbar-title">📋 POA&amp;M Tracker — Student Practice</span>
+    <button class="btn-save"   onclick="saveData()">💾 Save</button>
+    <button class="btn-load"   onclick="document.getElementById('fileInput').click()">📂 Load</button>
+    <button class="btn-export" onclick="exportCSV()">📤 Export CSV</button>
+    <button class="btn-export" onclick="exportJSON()" style="background:#0ea5e9; color:white;">📤 Export JSON</button>
+    <button class="btn-print"  onclick="window.print()">🖨️ Print / PDF</button>
+    <button class="btn-reset"  onclick="confirmReset()">🔄 Reset</button>
+    <input type="file" id="fileInput" accept=".json" style="display:none" onchange="loadFromFile(event)">
+</div>
+
+<!-- ===== CONTAINER ===== -->
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="header">
+        <div class="student-badge">STUDENT PRACTICE TOOL</div>
+        <div class="unsaved-indicator" id="unsavedIndicator">● Unsaved Changes</div>
+        <h1>CMMC Plan of Action &amp; Milestones (POA&amp;M) Tracker</h1>
+        <div class="subtitle">Compliance Remediation Management &amp; Progress Tracking — Student Practice Exercise</div>
+    </div>
+
+    <!-- INSTRUCTION BOX -->
+    <div class="instruction-box">
+        <strong>🎓 Student Instructions</strong>
+        <ul>
+            <li>Begin by filling in the <strong>Organization Information</strong> fields below.</li>
+            <li>Use <strong>+ New POA&amp;M Item</strong> to add remediation items for identified security gaps — each item requires a Control ID, weakness description, priority, owner, and due date.</li>
+            <li>Track progress by editing items and updating their status (Open → In Progress → Completed).</li>
+            <li>The <strong>Dashboard Metrics</strong> and <strong>Analytics</strong> panels update automatically as you add items.</li>
+            <li>Use <strong>💾 Save</strong> (or Ctrl+S) to preserve your work in the browser, or <strong>Export</strong> to download files.</li>
+            <li>When finished, use <strong>🖨️ Print / PDF</strong> to submit your completed POA&amp;M tracker.</li>
+        </ul>
+    </div>
+
+    <!-- ORG INFO -->
+    <div class="org-section">
+        <h3>📋 Organization Information</h3>
+        <div class="org-grid">
+            <div class="form-group">
+                <label class="form-label">Organization Name *</label>
+                <input type="text" class="form-control" id="orgName" placeholder="Enter organization name" oninput="markUnsaved(); updateHeader()">
+            </div>
+            <div class="form-group">
+                <label class="form-label">System Name *</label>
+                <input type="text" class="form-control" id="systemName" placeholder="Enter information system name" oninput="markUnsaved()">
+            </div>
+            <div class="form-group">
+                <label class="form-label">POA&amp;M Manager</label>
+                <input type="text" class="form-control" id="poamManager" placeholder="Full name and title" oninput="markUnsaved()">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Target CMMC Level</label>
+                <select class="form-control" id="targetLevel" onchange="markUnsaved()">
+                    <option value="">— Select Level —</option>
+                    <option value="1">Level 1 – Foundational</option>
+                    <option value="2">Level 2 – Advanced</option>
+                    <option value="3">Level 3 – Expert</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Assessment Date</label>
+                <input type="date" class="form-control" id="assessmentDate" oninput="markUnsaved()">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Contract Award Date</label>
+                <input type="date" class="form-control" id="contractDate" oninput="markUnsaved()">
+            </div>
+        </div>
+    </div>
+
+    <!-- DASHBOARD METRICS -->
+    <div class="metrics-section">
+        <h3>📊 Dashboard Metrics</h3>
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <h4>Total POA&amp;M Items</h4>
+                <div class="metric-number m-blue" id="metTotal">0</div>
+                <div class="metric-label">Active Remediation Items</div>
+            </div>
+            <div class="metric-card">
+                <h4>Open Items</h4>
+                <div class="metric-number m-red" id="metOpen">0</div>
+                <div class="metric-label">Requiring Action</div>
+            </div>
+            <div class="metric-card">
+                <h4>In Progress</h4>
+                <div class="metric-number m-yellow" id="metInProgress">0</div>
+                <div class="metric-label">Under Remediation</div>
+            </div>
+            <div class="metric-card">
+                <h4>Completed</h4>
+                <div class="metric-number m-green" id="metCompleted">0</div>
+                <div class="metric-label">Successfully Remediated</div>
+            </div>
+            <div class="metric-card">
+                <h4>Overdue Items</h4>
+                <div class="metric-number m-orange" id="metOverdue">0</div>
+                <div class="metric-label">Past Target Date</div>
+            </div>
+            <div class="metric-card">
+                <h4>Due in 30 Days</h4>
+                <div class="metric-number m-teal" id="metDue30">0</div>
+                <div class="metric-label">Upcoming Deadlines</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTROLS BAR -->
+    <div class="controls-bar">
+        <div class="btn-group">
+            <button class="action-btn ab-blue" onclick="openAddModal()">+ New POA&amp;M Item</button>
+            <button class="action-btn ab-amber" onclick="exportReport()">📄 Generate Report</button>
+            <button class="action-btn ab-green" onclick="exportCSV()">⬇️ Export CSV</button>
+        </div>
+        <div class="search-filter">
+            <input type="text" class="search-input" id="searchInput" placeholder="🔍 Search items..." oninput="applyFilters()">
+            <select class="filter-select" id="filterStatus" onchange="applyFilters()">
+                <option value="all">All Statuses</option>
+                <option value="open">Open</option>
+                <option value="in-progress">In Progress</option>
+                <option value="completed">Completed</option>
+                <option value="delayed">Delayed</option>
+            </select>
+            <select class="filter-select" id="filterPriority" onchange="applyFilters()">
+                <option value="all">All Priorities</option>
+                <option value="critical">Critical</option>
+                <option value="high">High</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-wrapper">
+        <table class="poam-table">
+            <thead>
+                <tr>
+                    <th>POA&amp;M ID</th>
+                    <th>Control ID</th>
+                    <th>Weakness Description</th>
+                    <th>Priority</th>
+                    <th>Status</th>
+                    <th>Owner</th>
+                    <th>Due Date</th>
+                    <th>Progress</th>
+                    <th style="width:100px;">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="poamTableBody">
+                <tr class="empty-row">
+                    <td colspan="9">No POA&amp;M items yet — click <strong>+ New POA&amp;M Item</strong> above to add your first remediation item.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ANALYTICS -->
+    <div class="analytics-section">
+        <h3>📈 POA&amp;M Analytics</h3>
+        <div class="analytics-grid">
+
+            <div class="chart-card">
+                <h4>Status Distribution</h4>
+                <div id="statusChart">
+                    <p style="color:#9ca3af; font-style:italic; font-size:0.85em;">Add items to see status data.</p>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <h4>Priority Breakdown</h4>
+                <div id="priorityChart">
+                    <p style="color:#9ca3af; font-style:italic; font-size:0.85em;">Add items to see priority data.</p>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <h4>Completion Timeline</h4>
+                <div id="timelineChart">
+                    <p style="color:#9ca3af; font-style:italic; font-size:0.85em;">Add items to see timeline data.</p>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <h4>Risk Level Summary</h4>
+                <div id="riskChart">
+                    <p style="color:#9ca3af; font-style:italic; font-size:0.85em;">Add items to see risk data.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- EXPORT SECTION -->
+    <div class="export-section">
+        <h4>Export Options</h4>
+        <button class="action-btn ab-blue"  onclick="exportCSV()">⬇️ Export CSV</button>
+        <button class="action-btn ab-blue"  onclick="exportJSON()" style="background:#0ea5e9;">⬇️ Export JSON</button>
+        <button class="action-btn ab-green" onclick="exportReport()">📄 Text Report</button>
+        <button class="action-btn ab-amber" onclick="window.print()">🖨️ Print / PDF</button>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <p>
+            <strong>Document Classification:</strong> Controlled Unclassified Information (CUI) &nbsp;|&nbsp;
+            <strong>Organization:</strong> <span id="footerOrg">[Organization Name]</span> &nbsp;|&nbsp;
+            <strong>Generated:</strong> <span id="footerDate"></span>
+        </p>
+        <p style="margin-top:6px; font-style:italic;">
+            This document contains sensitive information and should be handled in accordance with CMMC and NIST SP 800-171 requirements.
+        </p>
+    </div>
+
+</div><!-- /container -->
+
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toast"></div>
+
+<!-- ===== ADD / EDIT MODAL ===== -->
+<div id="itemModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal('itemModal')">&times;</span>
+        <h2 id="itemModalTitle">Add POA&amp;M Item</h2>
+        <input type="hidden" id="editIndex" value="-1">
+
+        <div class="modal-grid">
+            <!-- Row 1 -->
+            <div class="field-group">
+                <label>POA&amp;M ID *</label>
+                <input type="text" id="fId" placeholder="e.g., POAM-001">
+                <p class="form-hint">Use consistent numbering: POAM-001, POAM-002…</p>
+            </div>
+            <div class="field-group">
+                <label>Control ID *</label>
+                <input type="text" id="fControlId" placeholder="e.g., AC.L2-3.1.1">
+                <p class="form-hint">NIST SP 800-171 or CMMC practice identifier</p>
+            </div>
+
+            <!-- Row 2 -->
+            <div class="field-group">
+                <label>CMMC Level</label>
+                <select id="fCmmcLevel">
+                    <option value="">— Select —</option>
+                    <option value="1">Level 1 – Foundational</option>
+                    <option value="2">Level 2 – Advanced</option>
+                    <option value="3">Level 3 – Expert</option>
+                </select>
+            </div>
+            <div class="field-group">
+                <label>Priority *</label>
+                <select id="fPriority">
+                    <option value="">— Select —</option>
+                    <option value="critical">Critical</option>
+                    <option value="high">High</option>
+                    <option value="medium">Medium</option>
+                    <option value="low">Low</option>
+                </select>
+            </div>
+
+            <!-- Row 3 -->
+            <div class="field-group">
+                <label>Status *</label>
+                <select id="fStatus">
+                    <option value="open">Open</option>
+                    <option value="in-progress">In Progress</option>
+                    <option value="completed">Completed</option>
+                    <option value="delayed">Delayed</option>
+                </select>
+            </div>
+            <div class="field-group">
+                <label>Progress (0–100%)</label>
+                <input type="number" id="fProgress" min="0" max="100" placeholder="0" value="0">
+            </div>
+
+            <!-- Row 4 -->
+            <div class="field-group">
+                <label>Assigned Owner *</label>
+                <input type="text" id="fOwner" placeholder="Name or team responsible">
+            </div>
+            <div class="field-group">
+                <label>Target Due Date *</label>
+                <input type="date" id="fDueDate">
+            </div>
+
+            <!-- Row 5 -->
+            <div class="field-group">
+                <label>Estimated Cost ($)</label>
+                <input type="number" id="fCost" min="0" placeholder="0" value="">
+            </div>
+            <div class="field-group">
+                <label>Risk Level</label>
+                <select id="fRiskLevel">
+                    <option value="">— Select —</option>
+                    <option value="critical">Critical</option>
+                    <option value="high">High</option>
+                    <option value="medium">Medium</option>
+                    <option value="low">Low</option>
+                </select>
+            </div>
+
+            <!-- Wide rows -->
+            <div class="field-group span2">
+                <label>Weakness / Gap Description *</label>
+                <textarea id="fWeakness" placeholder="Describe the specific security gap, weakness, or non-compliance identified during assessment..."></textarea>
+            </div>
+
+            <div class="field-group span2">
+                <label>Remediation Plan</label>
+                <textarea id="fRemediation" placeholder="Describe the specific actions and steps that will be taken to remediate this weakness..."></textarea>
+            </div>
+
+            <div class="field-group span2">
+                <label>Resources Required</label>
+                <textarea id="fResources" placeholder="List required resources: personnel (FTE), budget, tools, software licenses, training, etc." style="height:56px;"></textarea>
+            </div>
+
+            <div class="field-group span2">
+                <label>Business / Mission Impact</label>
+                <textarea id="fImpact" placeholder="Describe the potential impact of this weakness on mission operations or CUI protection if left unmitigated..." style="height:56px;"></textarea>
+            </div>
+
+            <div class="field-group">
+                <label>Created Date</label>
+                <input type="date" id="fCreatedDate">
+            </div>
+            <div class="field-group">
+                <label>Last Updated</label>
+                <input type="date" id="fLastUpdated">
+            </div>
+        </div>
+
+        <div class="modal-actions">
+            <button class="btn-secondary" onclick="closeModal('itemModal')">Cancel</button>
+            <button class="btn-primary" onclick="saveItem()">Save POA&amp;M Item</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== VIEW MODAL ===== -->
+<div id="viewModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal('viewModal')">&times;</span>
+        <h2 id="viewTitle">POA&amp;M Item Detail</h2>
+        <div id="viewContent"></div>
+        <div class="modal-actions">
+            <button class="btn-secondary" onclick="closeModal('viewModal')">Close</button>
+            <button class="btn-primary" id="viewEditBtn" onclick="">Edit This Item</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== RESET MODAL ===== -->
+<div id="resetModal" class="modal">
+    <div class="modal-content" style="max-width:420px;">
+        <h2>⚠️ Reset All Data?</h2>
+        <p>This will permanently clear all POA&amp;M items and organization information. This cannot be undone.</p>
+        <div class="modal-actions">
+            <button class="btn-secondary" onclick="closeModal('resetModal')">Cancel</button>
+            <button class="btn-primary" style="background:#ef4444;" onclick="doReset()">Yes, Reset Everything</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== JAVASCRIPT ===== -->
+<script>
+    // =============================================
+    //  STATE
+    // =============================================
+    let poamItems = [];
+
+    // =============================================
+    //  INIT
+    // =============================================
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('footerDate').textContent =
+            new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+
+        const saved = localStorage.getItem('cmmc_poam_tool_v1');
+        if (saved) {
+            try {
+                applyLoadedData(JSON.parse(saved));
+                showToast('Auto-loaded your last saved session.', 'success');
+            } catch(e) {}
+        }
+    });
+
+    // =============================================
+    //  UNSAVED / HEADER
+    // =============================================
+    function markUnsaved() {
+        document.getElementById('unsavedIndicator').style.display = 'block';
+    }
+    function markSaved() {
+        document.getElementById('unsavedIndicator').style.display = 'none';
+    }
+    function updateHeader() {
+        const org = document.getElementById('orgName').value.trim();
+        document.getElementById('footerOrg').textContent = org || '[Organization Name]';
+    }
+
+    // =============================================
+    //  MODAL HELPERS
+    // =============================================
+    function openModal(id) { document.getElementById(id).style.display = 'block'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    window.onclick = e => {
+        document.querySelectorAll('.modal').forEach(m => {
+            if (e.target === m) m.style.display = 'none';
+        });
+    };
+
+    // =============================================
+    //  ADD / EDIT MODAL
+    // =============================================
+    function openAddModal() {
+        document.getElementById('itemModalTitle').textContent = 'Add New POA&M Item';
+        document.getElementById('editIndex').value = '-1';
+        clearItemForm();
+        // Auto-suggest next ID
+        document.getElementById('fId').value = 'POAM-' + String(poamItems.length + 1).padStart(3, '0');
+        // Set today as created date
+        document.getElementById('fCreatedDate').value = todayISO();
+        document.getElementById('fLastUpdated').value = todayISO();
+        openModal('itemModal');
+    }
+
+    function openEditModal(index) {
+        const item = poamItems[index];
+        document.getElementById('itemModalTitle').textContent = 'Edit POA&M Item — ' + item.id;
+        document.getElementById('editIndex').value = index;
+
+        document.getElementById('fId').value            = item.id || '';
+        document.getElementById('fControlId').value     = item.controlId || '';
+        document.getElementById('fCmmcLevel').value     = item.cmmcLevel || '';
+        document.getElementById('fPriority').value      = item.priority || '';
+        document.getElementById('fStatus').value        = item.status || 'open';
+        document.getElementById('fProgress').value      = item.progress ?? 0;
+        document.getElementById('fOwner').value         = item.owner || '';
+        document.getElementById('fDueDate').value       = item.dueDate || '';
+        document.getElementById('fCost').value          = item.cost || '';
+        document.getElementById('fRiskLevel').value     = item.riskLevel || '';
+        document.getElementById('fWeakness').value      = item.weakness || '';
+        document.getElementById('fRemediation').value   = item.remediation || '';
+        document.getElementById('fResources').value     = item.resources || '';
+        document.getElementById('fImpact').value        = item.impact || '';
+        document.getElementById('fCreatedDate').value   = item.createdDate || '';
+        document.getElementById('fLastUpdated').value   = todayISO();
+
+        openModal('itemModal');
+    }
+
+    function clearItemForm() {
+        ['fId','fControlId','fOwner','fDueDate','fCost','fWeakness',
+         'fRemediation','fResources','fImpact','fCreatedDate','fLastUpdated'].forEach(id => {
+            document.getElementById(id).value = '';
+        });
+        document.getElementById('fCmmcLevel').value = '';
+        document.getElementById('fPriority').value  = '';
+        document.getElementById('fStatus').value    = 'open';
+        document.getElementById('fRiskLevel').value = '';
+        document.getElementById('fProgress').value  = 0;
+    }
+
+    function saveItem() {
+        const id       = document.getElementById('fId').value.trim();
+        const controlId = document.getElementById('fControlId').value.trim();
+        const priority  = document.getElementById('fPriority').value;
+        const status    = document.getElementById('fStatus').value;
+        const owner     = document.getElementById('fOwner').value.trim();
+        const dueDate   = document.getElementById('fDueDate').value;
+        const weakness  = document.getElementById('fWeakness').value.trim();
+
+        if (!id || !controlId || !priority || !owner || !dueDate || !weakness) {
+            alert('Please fill in all required fields (marked with *).');
+            return;
+        }
+
+        const item = {
+            id, controlId,
+            cmmcLevel:   document.getElementById('fCmmcLevel').value,
+            priority, status,
+            progress:    parseInt(document.getElementById('fProgress').value) || 0,
+            owner, dueDate,
+            cost:        document.getElementById('fCost').value,
+            riskLevel:   document.getElementById('fRiskLevel').value,
+            weakness,
+            remediation: document.getElementById('fRemediation').value.trim(),
+            resources:   document.getElementById('fResources').value.trim(),
+            impact:      document.getElementById('fImpact').value.trim(),
+            createdDate: document.getElementById('fCreatedDate').value,
+            lastUpdated: document.getElementById('fLastUpdated').value || todayISO()
+        };
+
+        const idx = parseInt(document.getElementById('editIndex').value);
+        if (idx === -1) {
+            poamItems.push(item);
+        } else {
+            poamItems[idx] = item;
+        }
+
+        closeModal('itemModal');
+        refreshAll();
+        markUnsaved();
+        showToast('POA&M item saved ✓', 'success');
+    }
+
+    function deleteItem(index) {
+        if (!confirm('Delete this POA&M item?')) return;
+        poamItems.splice(index, 1);
+        refreshAll();
+        markUnsaved();
+        showToast('Item deleted.', 'error');
+    }
+
+    function viewItem(index) {
+        const item = poamItems[index];
+        document.getElementById('viewTitle').textContent = item.id + ' — ' + item.controlId;
+        document.getElementById('viewEditBtn').onclick = () => { closeModal('viewModal'); openEditModal(index); };
+
+        const statusLabel = { open:'Open', 'in-progress':'In Progress', completed:'Completed', delayed:'Delayed' };
+        const priorityLabel = { critical:'Critical', high:'High', medium:'Medium', low:'Low' };
+
+        document.getElementById('viewContent').innerHTML = `
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <div class="view-field"><strong>POA&M ID</strong><span>${esc(item.id)}</span></div>
+                <div class="view-field"><strong>Control ID</strong><span>${esc(item.controlId)}</span></div>
+                <div class="view-field"><strong>CMMC Level</strong><span>${item.cmmcLevel ? 'Level ' + item.cmmcLevel : '—'}</span></div>
+                <div class="view-field"><strong>Priority</strong><span>${esc(item.priority)||'—'}</span></div>
+                <div class="view-field"><strong>Status</strong><span>${statusLabel[item.status]||item.status}</span></div>
+                <div class="view-field"><strong>Progress</strong><span>${item.progress}%</span></div>
+                <div class="view-field"><strong>Owner</strong><span>${esc(item.owner)}</span></div>
+                <div class="view-field"><strong>Due Date</strong><span>${formatDate(item.dueDate)}</span></div>
+                <div class="view-field"><strong>Est. Cost</strong><span>${item.cost ? '$' + Number(item.cost).toLocaleString() : '—'}</span></div>
+                <div class="view-field"><strong>Risk Level</strong><span>${esc(item.riskLevel)||'—'}</span></div>
+                <div class="view-field"><strong>Created</strong><span>${formatDate(item.createdDate)}</span></div>
+                <div class="view-field"><strong>Last Updated</strong><span>${formatDate(item.lastUpdated)}</span></div>
+            </div>
+            <hr class="view-divider">
+            <div class="view-field"><strong>Weakness / Gap Description</strong><span>${esc(item.weakness)}</span></div>
+            ${item.remediation ? `<div class="view-field"><strong>Remediation Plan</strong><span>${esc(item.remediation)}</span></div>` : ''}
+            ${item.resources   ? `<div class="view-field"><strong>Resources Required</strong><span>${esc(item.resources)}</span></div>` : ''}
+            ${item.impact      ? `<div class="view-field"><strong>Business / Mission Impact</strong><span>${esc(item.impact)}</span></div>` : ''}
+        `;
+        openModal('viewModal');
+    }
+
+    // =============================================
+    //  RENDER TABLE
+    // =============================================
+    function renderTable(items) {
+        const tbody = document.getElementById('poamTableBody');
+        if (!items.length) {
+            tbody.innerHTML = '<tr class="empty-row"><td colspan="9">No POA&amp;M items match the current filter — try adjusting the search or filter, or add new items above.</td></tr>';
+            return;
+        }
+
+        const today = new Date(); today.setHours(0,0,0,0);
+
+        tbody.innerHTML = items.map((item, displayIdx) => {
+            // Find real index in poamItems
+            const realIdx = poamItems.indexOf(item);
+            const due = item.dueDate ? new Date(item.dueDate) : null;
+            const isOverdue = due && due < today && item.status !== 'completed';
+
+            const statusClass = { open:'s-open','in-progress':'s-in-progress', completed:'s-completed', delayed:'s-delayed' }[item.status] || 's-open';
+            const statusLabel = { open:'Open','in-progress':'In Progress', completed:'Completed', delayed:'Delayed' }[item.status] || item.status;
+            const prioClass   = { critical:'p-critical', high:'p-high', medium:'p-medium', low:'p-low' }[item.priority] || 'p-medium';
+            const levelClass  = { '1':'l-1','2':'l-2','3':'l-3' }[item.cmmcLevel] || '';
+
+            return `<tr>
+                <td class="poam-id">${esc(item.id)}</td>
+                <td>${esc(item.controlId)}${item.cmmcLevel ? ` <span class="level-badge ${levelClass}">L${item.cmmcLevel}</span>` : ''}</td>
+                <td class="desc-cell" title="${esc(item.weakness)}">${esc(item.weakness.length > 80 ? item.weakness.substring(0,77)+'…' : item.weakness)}</td>
+                <td><span class="priority-badge ${prioClass}">${esc(item.priority)||'—'}</span></td>
+                <td><span class="status-badge ${statusClass}">${statusLabel}</span></td>
+                <td>${esc(item.owner)}</td>
+                <td>${formatDate(item.dueDate)}${isOverdue ? '<span class="overdue-flag">⚠ Overdue</span>' : ''}</td>
+                <td>
+                    <div class="progress-wrap">
+                        <div class="progress-bar"><div class="progress-fill" style="width:${item.progress}%"></div></div>
+                        <div class="progress-label">${item.progress}%</div>
+                    </div>
+                </td>
+                <td>
+                    <button class="action-btn ab-blue" style="padding:4px 8px;font-size:0.76em;margin:0 2px 2px 0;" onclick="viewItem(${realIdx})">View</button>
+                    <button class="action-btn ab-amber" style="padding:4px 8px;font-size:0.76em;margin:0 2px 2px 0;" onclick="openEditModal(${realIdx})">Edit</button>
+                    <button class="action-btn" style="padding:4px 8px;font-size:0.76em;background:#ef4444;color:white;" onclick="deleteItem(${realIdx})">Del</button>
+                </td>
+            </tr>`;
+        }).join('');
+    }
+
+    // =============================================
+    //  FILTERS
+    // =============================================
+    function applyFilters() {
+        const query    = document.getElementById('searchInput').value.toLowerCase();
+        const status   = document.getElementById('filterStatus').value;
+        const priority = document.getElementById('filterPriority').value;
+        const today    = new Date(); today.setHours(0,0,0,0);
+
+        let filtered = poamItems.filter(item => {
+            const matchStatus   = status === 'all' || item.status === status;
+            const matchPriority = priority === 'all' || item.priority === priority;
+            const matchSearch   = !query ||
+                item.id.toLowerCase().includes(query) ||
+                item.controlId.toLowerCase().includes(query) ||
+                item.weakness.toLowerCase().includes(query) ||
+                item.owner.toLowerCase().includes(query);
+            return matchStatus && matchPriority && matchSearch;
+        });
+
+        renderTable(filtered);
+    }
+
+    // =============================================
+    //  METRICS
+    // =============================================
+    function updateMetrics() {
+        const today = new Date(); today.setHours(0,0,0,0);
+        const in30  = new Date(); in30.setDate(in30.getDate() + 30); in30.setHours(23,59,59,999);
+
+        let open=0, inProg=0, completed=0, overdue=0, due30=0;
+        poamItems.forEach(item => {
+            if (item.status === 'open')        open++;
+            if (item.status === 'in-progress') inProg++;
+            if (item.status === 'completed')   completed++;
+            const due = item.dueDate ? new Date(item.dueDate) : null;
+            if (due && due < today && item.status !== 'completed') overdue++;
+            if (due && due >= today && due <= in30 && item.status !== 'completed') due30++;
+        });
+
+        document.getElementById('metTotal').textContent      = poamItems.length;
+        document.getElementById('metOpen').textContent       = open;
+        document.getElementById('metInProgress').textContent = inProg;
+        document.getElementById('metCompleted').textContent  = completed;
+        document.getElementById('metOverdue').textContent    = overdue;
+        document.getElementById('metDue30').textContent      = due30;
+    }
+
+    // =============================================
+    //  ANALYTICS CHARTS
+    // =============================================
+    function updateCharts() {
+        const today = new Date(); today.setHours(0,0,0,0);
+
+        // Status counts
+        const sc = { open:0, 'in-progress':0, completed:0, delayed:0 };
+        const pc = { critical:0, high:0, medium:0, low:0 };
+        const rc = { critical:0, high:0, medium:0, low:0 };
+        let due30=0;
+
+        poamItems.forEach(item => {
+            if (sc[item.status] !== undefined) sc[item.status]++;
+            if (pc[item.priority] !== undefined) pc[item.priority]++;
+            if (item.riskLevel && rc[item.riskLevel] !== undefined) rc[item.riskLevel]++;
+            const due = item.dueDate ? new Date(item.dueDate) : null;
+            const in30 = new Date(); in30.setDate(in30.getDate()+30);
+            if (due && due >= today && due <= in30 && item.status !== 'completed') due30++;
+        });
+
+        const total = poamItems.length || 1;
+
+        document.getElementById('statusChart').innerHTML = !poamItems.length ?
+            '<p style="color:#9ca3af;font-style:italic;font-size:0.85em;">No items yet.</p>' :
+            barChart([
+                { label:'Open',        count:sc.open,             cls:'cb-red',    pct: sc.open/total*100 },
+                { label:'In Progress', count:sc['in-progress'],   cls:'cb-amber',  pct: sc['in-progress']/total*100 },
+                { label:'Completed',   count:sc.completed,        cls:'cb-green',  pct: sc.completed/total*100 },
+                { label:'Delayed',     count:sc.delayed,          cls:'cb-purple', pct: sc.delayed/total*100 }
+            ]);
+
+        document.getElementById('priorityChart').innerHTML = !poamItems.length ?
+            '<p style="color:#9ca3af;font-style:italic;font-size:0.85em;">No items yet.</p>' :
+            barChart([
+                { label:'Critical', count:pc.critical, cls:'cb-red',    pct: pc.critical/total*100 },
+                { label:'High',     count:pc.high,     cls:'cb-orange', pct: pc.high/total*100 },
+                { label:'Medium',   count:pc.medium,   cls:'cb-amber',  pct: pc.medium/total*100 },
+                { label:'Low',      count:pc.low,      cls:'cb-green',  pct: pc.low/total*100 }
+            ]);
+
+        document.getElementById('timelineChart').innerHTML = !poamItems.length ?
+            '<p style="color:#9ca3af;font-style:italic;font-size:0.85em;">No items yet.</p>' : `
+            <div class="timeline-big">
+                <div class="big-num">${due30}</div>
+                <div class="big-label">Items due in the next 30 days</div>
+            </div>
+            <div style="font-size:0.82em; margin-top:12px; color:#374151;">
+                <div style="display:flex;justify-content:space-between; margin:5px 0;">
+                    <span>Total Open + In Progress:</span>
+                    <strong>${sc.open + sc['in-progress']}</strong>
+                </div>
+                <div style="display:flex;justify-content:space-between; margin:5px 0;">
+                    <span>Completion rate:</span>
+                    <strong>${poamItems.length ? Math.round(sc.completed/poamItems.length*100) : 0}%</strong>
+                </div>
+            </div>`;
+
+        document.getElementById('riskChart').innerHTML = !poamItems.length ?
+            '<p style="color:#9ca3af;font-style:italic;font-size:0.85em;">No items yet.</p>' :
+            barChart([
+                { label:'Critical', count:rc.critical, cls:'cb-red',    pct: rc.critical/total*100 },
+                { label:'High',     count:rc.high,     cls:'cb-orange', pct: rc.high/total*100 },
+                { label:'Medium',   count:rc.medium,   cls:'cb-amber',  pct: rc.medium/total*100 },
+                { label:'Low',      count:rc.low,      cls:'cb-green',  pct: rc.low/total*100 }
+            ]);
+    }
+
+    function barChart(rows) {
+        return rows.map(r => `
+            <div class="chart-bar-row">
+                <span class="chart-bar-label">${r.label}</span>
+                <div class="chart-bar-track">
+                    <div class="chart-bar-fill ${r.cls}" style="width:${Math.round(r.pct)}%"></div>
+                </div>
+                <span class="chart-bar-count">${r.count}</span>
+            </div>`).join('');
+    }
+
+    // =============================================
+    //  REFRESH ALL
+    // =============================================
+    function refreshAll() {
+        applyFilters();
+        updateMetrics();
+        updateCharts();
+    }
+
+    // =============================================
+    //  SAVE / LOAD
+    // =============================================
+    function buildSaveObject() {
+        return {
+            org: {
+                name: document.getElementById('orgName').value,
+                system: document.getElementById('systemName').value,
+                manager: document.getElementById('poamManager').value,
+                level: document.getElementById('targetLevel').value,
+                assessmentDate: document.getElementById('assessmentDate').value,
+                contractDate: document.getElementById('contractDate').value
+            },
+            poamItems
+        };
+    }
+
+    function applyLoadedData(d) {
+        if (d.org) {
+            document.getElementById('orgName').value        = d.org.name || '';
+            document.getElementById('systemName').value     = d.org.system || '';
+            document.getElementById('poamManager').value    = d.org.manager || '';
+            document.getElementById('targetLevel').value    = d.org.level || '';
+            document.getElementById('assessmentDate').value = d.org.assessmentDate || '';
+            document.getElementById('contractDate').value   = d.org.contractDate || '';
+            updateHeader();
+        }
+        if (d.poamItems) poamItems = d.poamItems;
+        refreshAll();
+        markSaved();
+    }
+
+    function saveData() {
+        try {
+            localStorage.setItem('cmmc_poam_tool_v1', JSON.stringify(buildSaveObject()));
+            markSaved();
+            showToast('Progress saved ✓', 'success');
+        } catch(e) {
+            showToast('Save failed — try Export JSON instead.', 'error');
+        }
+    }
+
+    function loadFromFile(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = e => {
+            try {
+                applyLoadedData(JSON.parse(e.target.result));
+                showToast('File loaded ✓', 'success');
+            } catch(err) {
+                showToast('Error: Invalid JSON file.', 'error');
+            }
+        };
+        reader.readAsText(file);
+        event.target.value = '';
+    }
+
+    function exportJSON() {
+        const blob = new Blob([JSON.stringify(buildSaveObject(), null, 2)], { type: 'application/json' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob); a.download = 'CMMC_POAM.json'; a.click();
+        URL.revokeObjectURL(a.href);
+        showToast('JSON exported ✓', 'success');
+    }
+
+    function exportCSV() {
+        const org = document.getElementById('orgName').value || 'Organization';
+        const headers = ['POA&M ID','Control ID','CMMC Level','Priority','Status','Progress %','Owner','Due Date','Est. Cost','Risk Level','Weakness Description','Remediation Plan','Resources Required','Business Impact','Created Date','Last Updated'];
+        const rows = poamItems.map(item => [
+            item.id, item.controlId, item.cmmcLevel ? 'Level '+item.cmmcLevel : '',
+            item.priority, item.status, item.progress, item.owner, item.dueDate,
+            item.cost ? '$'+item.cost : '', item.riskLevel,
+            item.weakness, item.remediation, item.resources, item.impact,
+            item.createdDate, item.lastUpdated
+        ]);
+
+        let csv = `CMMC POA&M Tracker — ${org}\nExported: ${new Date().toLocaleDateString()}\n\n`;
+        csv += headers.map(h => `"${h}"`).join(',') + '\n';
+        csv += rows.map(r => r.map(c => `"${String(c||'').replace(/"/g,'""')}"`).join(',')).join('\n');
+
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob); a.download = `${org}_POAM.csv`; a.click();
+        URL.revokeObjectURL(a.href);
+        showToast('CSV exported ✓', 'success');
+    }
+
+    function exportReport() {
+        const org     = document.getElementById('orgName').value || '[Organization]';
+        const mgr     = document.getElementById('poamManager').value || '[Manager]';
+        const level   = document.getElementById('targetLevel').value;
+        const metrics = { total:poamItems.length, open:0, inProg:0, completed:0, overdue:0 };
+        const today   = new Date(); today.setHours(0,0,0,0);
+
+        poamItems.forEach(item => {
+            if (item.status==='open') metrics.open++;
+            if (item.status==='in-progress') metrics.inProg++;
+            if (item.status==='completed') metrics.completed++;
+            const due = item.dueDate ? new Date(item.dueDate) : null;
+            if (due && due < today && item.status !== 'completed') metrics.overdue++;
+        });
+
+        let txt = `CMMC PLAN OF ACTION & MILESTONES (POA&M) STATUS REPORT\n`;
+        txt += `${'='.repeat(60)}\n`;
+        txt += `Organization: ${org}\n`;
+        txt += `POA&M Manager: ${mgr}\n`;
+        txt += `Target CMMC Level: ${level ? 'Level '+level : '—'}\n`;
+        txt += `Generated: ${new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})}\n\n`;
+        txt += `EXECUTIVE SUMMARY\n${'-'.repeat(40)}\n`;
+        txt += `Total POA&M Items:  ${metrics.total}\n`;
+        txt += `Open:               ${metrics.open}\n`;
+        txt += `In Progress:        ${metrics.inProg}\n`;
+        txt += `Completed:          ${metrics.completed}\n`;
+        txt += `Overdue:            ${metrics.overdue}\n\n`;
+        txt += `DETAILED ITEMS\n${'-'.repeat(40)}\n`;
+        poamItems.forEach(item => {
+            txt += `\n${item.id} — ${item.controlId}\n`;
+            txt += `  Priority: ${item.priority||'—'}  |  Status: ${item.status}  |  Progress: ${item.progress}%\n`;
+            txt += `  Owner: ${item.owner}  |  Due: ${item.dueDate}\n`;
+            txt += `  Weakness: ${item.weakness}\n`;
+            if (item.remediation) txt += `  Remediation: ${item.remediation}\n`;
+            txt += `  ${'-'.repeat(40)}\n`;
+        });
+
+        const blob = new Blob([txt], { type: 'text/plain' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob); a.download = `${org}_POAM_Report.txt`; a.click();
+        URL.revokeObjectURL(a.href);
+        showToast('Report generated ✓', 'success');
+    }
+
+    // =============================================
+    //  RESET
+    // =============================================
+    function confirmReset() { openModal('resetModal'); }
+    function doReset() {
+        poamItems = [];
+        ['orgName','systemName','poamManager','targetLevel','assessmentDate','contractDate'].forEach(id => {
+            document.getElementById(id).value = '';
+        });
+        refreshAll();
+        localStorage.removeItem('cmmc_poam_tool_v1');
+        closeModal('resetModal');
+        markSaved();
+        showToast('All data reset.', 'error');
+    }
+
+    // =============================================
+    //  UTILITIES
+    // =============================================
+    function formatDate(str) {
+        if (!str) return '—';
+        try {
+            const d = new Date(str + 'T12:00:00');
+            return d.toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' });
+        } catch(e) { return str; }
+    }
+
+    function todayISO() {
+        return new Date().toISOString().split('T')[0];
+    }
+
+    function esc(s) {
+        return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function showToast(msg, type) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.className = 'toast show ' + (type||'');
+        setTimeout(() => { t.className = 'toast'; }, 3200);
+    }
+
+    // Ctrl+S shortcut
+    document.addEventListener('keydown', e => {
+        if ((e.ctrlKey||e.metaKey) && e.key==='s') { e.preventDefault(); saveData(); }
+    });
+</script>
+</body>
+</html>
