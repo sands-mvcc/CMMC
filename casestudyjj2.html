@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThreadBridge Solutions | CMMC Readiness Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+
+        .sidebar-item:hover { background-color: #1e293b; color: #38bdf8; }
+        .sidebar-item.active { background-color: #334155; border-left: 4px solid #38bdf8; color: #38bdf8; }
+
+        .status-pill {
+            padding: 2px 8px;
+            border-radius: 9999px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .status-critical { background-color: #fee2e2; color: #991b1b; }
+        .status-high { background-color: #ffedd5; color: #9a3412; }
+        .status-medium { background-color: #fef9c3; color: #854d0e; }
+        .status-low { background-color: #f1f5f9; color: #475569; }
+        .status-strength { background-color: #dcfce7; color: #166534; }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        
+        .data-table th { font-size: 0.65rem; padding: 0.75rem 1rem; background-color: #f8fafc; color: #64748b; text-transform: uppercase; border-bottom: 1px solid #e2e8f0; }
+        .data-table td { font-size: 0.75rem; padding: 0.75rem 1rem; border-bottom: 1px solid #f1f5f9; }
+
+        .policy-card { transition: all 0.2s ease; cursor: pointer; }
+        .policy-card:hover { border-color: #38bdf8; transform: translateY(-2px); }
+
+        /* Schematic Styles */
+        .node-rect { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.5; }
+        .node-circle { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.5; }
+        .node-text { font-size: 9px; font-weight: 600; fill: #1e293b; }
+        .link-line { stroke: #94a3b8; stroke-width: 1.5; fill: none; }
+        .link-vpn { stroke: #0ea5e9; stroke-width: 2; stroke-dasharray: 4; fill: none; }
+        .area-label { font-size: 10px; font-weight: 800; fill: #64748b; text-transform: uppercase; }
+    </style>
+</head>
+<body class="h-screen overflow-hidden flex flex-col md:flex-row">
+
+    <!-- Sidebar Navigation -->
+    <nav class="w-full md:w-64 bg-slate-900 text-slate-300 flex flex-col shrink-0">
+        <div class="p-6 border-b border-slate-800">
+            <h1 class="text-xl font-bold text-white flex items-center">
+                <i class="fas fa-shield-halved mr-2 text-sky-400"></i> ThreadBridge
+            </h1>
+            <p class="text-[10px] text-slate-400 mt-1 uppercase tracking-wider font-semibold">CMMC Assessment Portal</p>
+        </div>
+        
+        <div class="flex-1 overflow-y-auto py-4 custom-scrollbar">
+            <div class="px-4 mb-2 text-xs font-semibold text-slate-500 uppercase">Organization</div>
+            <button onclick="showSection('overview')" class="sidebar-item w-full text-left px-6 py-3 flex items-center active" id="btn-overview">
+                <i class="fas fa-building w-5 mr-3 text-sky-500"></i> Org Profile
+            </button>
+            <button onclick="showSection('contracts')" class="sidebar-item w-full text-left px-6 py-3 flex items-center" id="btn-contracts">
+                <i class="fas fa-file-contract w-5 mr-3 text-sky-500"></i> Contracts & Scope
+            </button>
+
+            <div class="px-4 mt-6 mb-2 text-xs font-semibold text-slate-500 uppercase">Architecture</div>
+            <button onclick="showSection('network')" class="sidebar-item w-full text-left px-6 py-3 flex items-center" id="btn-network">
+                <i class="fas fa-network-wired w-5 mr-3 text-sky-500"></i> Network Schematic
+            </button>
+            <button onclick="showSection('technical')" class="sidebar-item w-full text-left px-6 py-3 flex items-center" id="btn-technical">
+                <i class="fas fa-server w-5 mr-3 text-sky-500"></i> IT Infrastructure
+            </button>
+            <button onclick="showSection('data')" class="sidebar-item w-full text-left px-6 py-3 flex items-center" id="btn-data">
+                <i class="fas fa-database w-5 mr-3 text-sky-500"></i> Data Inventory
+            </button>
+
+            <div class="px-4 mt-6 mb-2 text-xs font-semibold text-slate-500 uppercase">Governance</div>
+            <button onclick="showSection('policies')" class="sidebar-item w-full text-left px-6 py-3 flex items-center" id="btn-policies">
+                <i class="fas fa-book w-5 mr-3 text-sky-500"></i> Policies & Procedures
+            </button>
+            <button onclick="showSection('providers')" class="sidebar-item w-full text-left px-6 py-3 flex items-center" id="btn-providers">
+                <i class="fas fa-handshake w-5 mr-3 text-sky-500"></i> Service Providers
+            </button>
+
+            <div class="px-4 mt-6 mb-2 text-xs font-semibold text-slate-500 uppercase">Audit Evidence</div>
+            <button onclick="showSection('interviews')" class="sidebar-item w-full text-left px-6 py-3 flex items-center" id="btn-interviews">
+                <i class="fas fa-comments w-5 mr-3 text-sky-500"></i> Interviews
+            </button>
+            <button onclick="showSection('maintenance')" class="sidebar-item w-full text-left px-6 py-3 flex items-center" id="btn-maintenance">
+                <i class="fas fa-tools w-5 mr-3 text-sky-500"></i> Maintenance Logs
+            </button>
+            <button onclick="showSection('incidents')" class="sidebar-item w-full text-left px-6 py-3 flex items-center" id="btn-incidents">
+                <i class="fas fa-fire-extinguisher w-5 mr-3 text-sky-500"></i> Incident History
+            </button>
+
+            <div class="px-4 mt-6 mb-2 text-xs font-semibold text-slate-500 uppercase">Findings</div>
+            <button onclick="showSection('gaps')" class="sidebar-item w-full text-left px-6 py-3 flex items-center" id="btn-gaps">
+                <i class="fas fa-triangle-exclamation w-5 mr-3 text-sky-500"></i> Compliance Gaps
+            </button>
+            <button onclick="showSection('vulns')" class="sidebar-item w-full text-left px-6 py-3 flex items-center" id="btn-vulns">
+                <i class="fas fa-bug w-5 mr-3 text-sky-500"></i> Vulnerability Report
+            </button>
+        </div>
+
+        <div class="p-4 bg-slate-950 border-t border-slate-800">
+            <a href="https://sands-mvcc.github.io/CMMC/reports.html" target="_blank" class="block w-full bg-sky-600 hover:bg-sky-500 text-white text-center py-2 rounded text-xs font-bold transition-colors">
+                <i class="fas fa-external-link-alt mr-2"></i> Open Assessment Form
+            </a>
+            <p class="mt-2 text-[9px] text-slate-500 italic text-center">Version 1.4 | Updated April 2026</p>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 overflow-y-auto custom-scrollbar">
+        
+        <!-- TOP DISCLAIMER BAR -->
+        <div class="bg-amber-100 border-b border-amber-200 px-6 py-3 text-center">
+            <p class="text-[11px] text-amber-900 font-bold leading-tight">
+                <i class="fas fa-exclamation-triangle mr-1"></i> 
+                DISCLAIMER: This case study is entirely fictitious and created for educational purposes only. Any resemblance to real organizations, contracts, or individuals is coincidental.
+            </p>
+        </div>
+
+        <div class="p-4 md:p-8">
+            <!-- HEADER -->
+            <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 border-b border-slate-200 pb-6">
+                <div>
+                    <h2 id="section-title" class="text-2xl font-bold text-slate-800 uppercase tracking-tight">Organization Profile</h2>
+                    <p id="section-subtitle" class="text-slate-500 text-sm">ThreadBridge Solutions headquarters and management.</p>
+                </div>
+                <div class="flex items-center space-x-3 bg-white p-2 rounded-lg border border-slate-200 shadow-sm">
+                    <div class="text-right px-2 border-r border-slate-100">
+                        <p class="text-[10px] font-bold text-slate-400">UEI</p>
+                        <p class="text-xs font-mono font-bold text-slate-700">TBS22CUMBERLAND</p>
+                    </div>
+                    <div class="text-right px-2 border-r border-slate-100">
+                        <p class="text-[10px] font-bold text-slate-400">CAGE</p>
+                        <p class="text-xs font-mono font-bold text-slate-700">7T4X2</p>
+                    </div>
+                    <div class="text-right px-2">
+                        <p class="text-[10px] font-bold text-slate-400">CMMC TARGET</p>
+                        <p class="text-xs font-bold text-sky-600">LEVEL 2</p>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Overview Section -->
+            <section id="content-overview" class="section-content space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                        <h3 class="font-bold text-slate-800 text-sm uppercase mb-6 border-b pb-2">Org Profile</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-12">
+                            <div><label class="text-[10px] font-bold text-slate-400 uppercase">Headquarters</label><p class="text-sm font-medium">1148 Industrial Parkway, Cumberland, MD 21502</p></div>
+                            <div><label class="text-[10px] font-bold text-slate-400 uppercase">Satellite Facility</label><p class="text-sm font-medium text-sky-700">88 Commerce Drive, Frostburg, MD 21532</p></div>
+                            <div><label class="text-[10px] font-bold text-slate-400 uppercase">Ownership</label><p class="text-sm">Privately held; woman-owned small business (WOSB)</p></div>
+                            <div><label class="text-[10px] font-bold text-slate-400 uppercase">Founded</label><p class="text-sm">2004</p></div>
+                            <div><label class="text-[10px] font-bold text-slate-400 uppercase">Total Employees</label><p class="text-sm">82 (40 Prod, 12 Admin, 8 IT, 15 Sales, 7 Mgmt)</p></div>
+                            <div><label class="text-[10px] font-bold text-slate-400 uppercase">Annual DoD Revenue</label><p class="text-sm">~$14.2M ($11M Uniforms / $3.2M GSA)</p></div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                        <h3 class="font-bold text-slate-800 text-sm uppercase mb-4">Key Personnel</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center"><div class="w-8 h-8 rounded bg-slate-100 flex items-center justify-center text-slate-500 font-bold mr-3 text-xs">MH</div><div><p class="text-xs font-bold">Margaret Holloway</p><p class="text-[10px] text-slate-500">CEO</p></div></div>
+                            <div class="flex items-center"><div class="w-8 h-8 rounded bg-sky-100 flex items-center justify-center text-sky-600 font-bold mr-3 text-xs">DP</div><div><p class="text-xs font-bold">Dennis Park</p><p class="text-[10px] text-slate-500">IT Manager / de facto CISO</p></div></div>
+                            <div class="flex items-center"><div class="w-8 h-8 rounded bg-slate-100 flex items-center justify-center text-slate-500 font-bold mr-3 text-xs">SY</div><div><p class="text-xs font-bold">Sandra Ybarra</p><p class="text-[10px] text-slate-500">Contracts Manager</p></div></div>
+                            <div class="flex items-center"><div class="w-8 h-8 rounded bg-slate-100 flex items-center justify-center text-slate-500 font-bold mr-3 text-xs">RC</div><div><p class="text-xs font-bold">Robert Chen</p><p class="text-[10px] text-slate-500">Production Manager</p></div></div>
+                            <div class="flex items-center"><div class="w-8 h-8 rounded bg-slate-100 flex items-center justify-center text-slate-500 font-bold mr-3 text-xs">LN</div><div><p class="text-xs font-bold">Lisa Nguyen</p><p class="text-[10px] text-slate-500">HR Manager</p></div></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Contracts Section -->
+            <section id="content-contracts" class="section-content hidden space-y-6">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-4 bg-slate-50 border-b border-slate-200 font-bold text-xs uppercase text-slate-600">Active Federal Contracts</div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs data-table">
+                            <thead>
+                                <tr>
+                                    <th>Contract Number</th>
+                                    <th>Agency</th>
+                                    <th>Type</th>
+                                    <th>Product / Service</th>
+                                    <th>CUI Scope</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100">
+                                <tr>
+                                    <td class="font-mono font-bold text-sky-700">FA4890-25-D-0014</td>
+                                    <td class="font-semibold">DLA Troop Support</td>
+                                    <td>IDIQ</td>
+                                    <td>Combat Utility Uniforms (OCP/PFU)</td>
+                                    <td><span class="status-pill status-strength">YES</span></td>
+                                    <td>Active</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-mono font-bold text-slate-700">GS-02F-8847X</td>
+                                    <td class="font-semibold">GSA MAS (Sch 75)</td>
+                                    <td>Multiple Award</td>
+                                    <td>Office Supplies</td>
+                                    <td><span class="status-pill status-low">FCI ONLY</span></td>
+                                    <td>Active</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Network Schematic Section -->
+            <section id="content-network" class="section-content hidden space-y-6">
+                <div class="bg-white p-8 rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                    <h3 class="font-bold text-slate-800 text-sm uppercase mb-6">Logical Network Topology</h3>
+                    <div class="w-full flex justify-center bg-slate-50 p-4 rounded-xl border border-slate-100">
+                        <svg viewBox="0 0 800 450" class="w-full h-auto max-w-4xl">
+                            <!-- Cloud/Internet -->
+                            <path d="M400,20 Q380,20 370,35 T340,40 T330,60 T350,80 T380,85 L420,85 T450,80 T470,60 T460,40 T430,35 T400,20" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5" />
+                            <text x="400" y="55" text-anchor="middle" class="node-text" fill="#64748b">INTERNET / M365</text>
+
+                            <!-- Perimeter -->
+                            <line x1="400" y1="85" x2="400" y2="130" class="link-line" />
+                            <rect x="340" y="130" width="120" height="45" rx="4" class="node-rect" stroke="#ef4444" />
+                            <text x="400" y="150" text-anchor="middle" class="node-text">Sophos XG 310</text>
+                            <text x="400" y="165" text-anchor="middle" class="node-text" font-size="7" fill="#991b1b">IDS/IPS & VPN GW</text>
+
+                            <!-- Site-to-Site Tunnel -->
+                            <path d="M400,175 V220 H200 V250" class="link-line" />
+                            <path d="M400,175 V220 H600 V250" class="link-line" />
+                            <path d="M200,220 H600" class="link-vpn" />
+                            <text x="400" y="215" text-anchor="middle" class="node-text" font-size="8" fill="#0ea5e9">S2S IPSEC VPN TUNNEL</text>
+
+                            <!-- Cumberland HQ Segment -->
+                            <rect x="50" y="250" width="300" height="160" rx="8" fill="#f0f9ff" stroke="#bae6fd" />
+                            <text x="65" y="270" class="area-label" fill="#0369a1">Cumberland HQ (Flat LAN)</text>
+                            
+                            <rect x="70" y="290" width="70" height="40" rx="4" class="node-rect" />
+                            <text x="105" y="310" text-anchor="middle" class="node-text">SRV-001</text>
+                            <text x="105" y="322" text-anchor="middle" class="node-text" font-size="7" fill="#64748b">ERP Server</text>
+
+                            <rect x="165" y="290" width="70" height="40" rx="4" class="node-rect" />
+                            <text x="200" y="310" text-anchor="middle" class="node-text">SRV-002</text>
+                            <text x="200" y="322" text-anchor="middle" class="node-text" font-size="7" fill="#64748b">File Server</text>
+
+                            <rect x="260" y="290" width="70" height="40" rx="4" class="node-rect" />
+                            <text x="295" y="310" text-anchor="middle" class="node-text">SRV-003</text>
+                            <text x="295" y="322" text-anchor="middle" class="node-text" font-size="7" fill="#64748b">Domain Ctrl</text>
+
+                            <rect x="70" y="350" width="165" height="40" rx="4" class="node-rect" stroke="#f43f5e" />
+                            <text x="152" y="370" text-anchor="middle" class="node-text">Production Tablets (Android)</text>
+                            <text x="152" y="382" text-anchor="middle" class="node-text" font-size="7" fill="#991b1b">SHARED BROADCAST DOMAIN</text>
+
+                            <!-- Frostburg Segment -->
+                            <rect x="450" y="250" width="300" height="160" rx="8" fill="#f8fafc" stroke="#e2e8f0" />
+                            <text x="465" y="270" class="area-label">Frostburg Satellite</text>
+
+                            <rect x="560" y="290" width="80" height="40" rx="4" class="node-rect" />
+                            <text x="600" y="315" text-anchor="middle" class="node-text">Cisco SG350</text>
+
+                            <rect x="470" y="350" width="260" height="40" rx="4" class="node-rect" />
+                            <text x="600" y="375" text-anchor="middle" class="node-text">Warehouse Workstations & Inventory Scanners</text>
+
+                            <!-- Remote Users -->
+                            <line x1="340" y1="152" x2="250" y2="152" class="link-line" stroke-dasharray="3" />
+                            <rect x="150" y="135" width="100" height="35" rx="4" class="node-rect" fill="#f8fafc" />
+                            <text x="200" y="152" text-anchor="middle" class="node-text">SSL VPN Users</text>
+                            <text x="200" y="162" text-anchor="middle" class="node-text" font-size="7" fill="#64748b">(Sales / Remote IT)</text>
+                        </svg>
+                    </div>
+                </div>
+            </section>
+
+            <!-- IT Infrastructure Section -->
+            <section id="content-technical" class="section-content hidden space-y-6">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-4 bg-slate-800 text-white font-bold text-xs uppercase flex justify-between items-center">
+                        <span>FULL ASSET INVENTORY</span>
+                        <span class="text-[10px] text-slate-400 uppercase">Audit Target: 58 Physical Assets</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-[11px] data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>OS / Platform</th>
+                                    <th>Role</th>
+                                    <th>Data Sensitivity</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100">
+                                <tr><td class="font-mono">SRV-001</td><td class="font-bold">Epicor Server</td><td>Win Server 2019</td><td>Production ERP</td><td><span class="status-pill status-critical">CUI / FCI</span></td></tr>
+                                <tr><td class="font-mono">SRV-002</td><td class="font-bold">TBS-FS01</td><td>Win Server 2022</td><td>Central File Storage</td><td><span class="status-pill status-critical">CUI / PII / PII</span></td></tr>
+                                <tr><td class="font-mono">SRV-003</td><td class="font-bold">TBS-DC01</td><td>Win Server 2019</td><td>Identity (AD/DNS)</td><td><span class="status-pill status-high">System Critical</span></td></tr>
+                                <tr><td class="font-mono">SRV-004</td><td class="font-bold">TBS-NAS-01</td><td>Synology DSM 7.2</td><td>Backup Repository</td><td><span class="status-pill status-critical">CUI Snapshot</span></td></tr>
+                                <tr><td class="font-mono">NET-001</td><td class="font-bold">Sophos XG 310</td><td>Sophos SFOS</td><td>Firewall / VPN</td><td><span class="status-pill status-high">Security Control</span></td></tr>
+                                <tr><td class="font-mono">WRK-001–040</td><td class="font-bold">Staff Laptops/PCs</td><td>Win 10/11 Pro</td><td>Office Operations</td><td><span class="status-pill status-medium">Mixed</span></td></tr>
+                                <tr><td class="font-mono">MOB-001–008</td><td class="font-bold">Android Tablets</td><td>Android 12</td><td>Floor Scanning</td><td><span class="status-pill status-low">FCI Only</span></td></tr>
+                                <tr><td class="font-mono">PRN-001–003</td><td class="font-bold">Ricoh MFPs</td><td>Ricoh Embedded</td><td>Scan/Print Hub</td><td><span class="status-pill status-medium">Processing CUI</span></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl border border-slate-200">
+                    <h4 class="font-bold text-sm uppercase mb-4">Authentication Summary</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="p-3 bg-red-50 border border-red-100 rounded text-xs">
+                            <p class="font-bold text-red-800 mb-1 uppercase">Internal Network</p>
+                            <p class="text-slate-700">Windows Active Directory username/password. <strong>No MFA enforced</strong> for local logins, RDP, or Server Admin sessions.</p>
+                        </div>
+                        <div class="p-3 bg-green-50 border border-green-100 rounded text-xs">
+                            <p class="font-bold text-green-800 mb-1 uppercase">Cloud (M365)</p>
+                            <p class="text-slate-700">Azure AD Conditional Access. <strong>MFA Enforced</strong> for all remote logins via Microsoft Authenticator.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Data Inventory Section -->
+            <section id="content-data" class="section-content hidden space-y-6">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-4 bg-red-900 text-white font-bold text-xs uppercase">CUI Inventory (Controlled Unclassified Information)</div>
+                    <table class="w-full text-left text-xs data-table">
+                        <thead>
+                            <tr>
+                                <th>CUI Type</th>
+                                <th>Description</th>
+                                <th>Storage Location</th>
+                                <th>Owner</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            <tr><td class="font-bold">Technical Specs</td><td>Uniform design, camouflage patterns</td><td>FS-01 (/CUI/Specs)</td><td>Robert Chen</td></tr>
+                            <tr><td class="font-bold">Contract Info (CTI)</td><td>Deployment schedules, unit designations</td><td>Epicor / FS-01</td><td>Sandra Ybarra</td></tr>
+                            <tr><td class="font-bold">Personnel Privacy</td><td>Employee security clearance data</td><td>FS-01 (/HR/Private)</td><td>Lisa Nguyen</td></tr>
+                            <tr><td class="font-bold">Export Control</td><td>Proprietary material blend data (EAR)</td><td>FS-01 / Email</td><td>Margaret Holloway</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-4 bg-slate-700 text-white font-bold text-xs uppercase">FCI Inventory (Federal Contract Information)</div>
+                    <table class="w-full text-left text-xs data-table">
+                        <thead>
+                            <tr>
+                                <th>FCI Type</th>
+                                <th>Description</th>
+                                <th>Storage Location</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            <tr><td class="font-bold">Pricing/Bids</td><td>GSA and DLA bid documents</td><td>SharePoint / Email</td></tr>
+                            <tr><td class="font-bold">PO History</td><td>Office supply order records</td><td>Epicor / Email</td></tr>
+                            <tr><td class="font-bold">Schedules</td><td>General logistics and shipping dates</td><td>ERP / FS-01</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Governance / Policies Section -->
+            <section id="content-policies" class="section-content hidden space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div onclick="openPolicyModal('ssp')" class="policy-card bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col">
+                        <div class="flex justify-between items-center mb-4">
+                            <i class="fas fa-file-shield text-slate-400 text-xl"></i>
+                            <span class="status-pill status-strength">v1.2</span>
+                        </div>
+                        <h4 class="font-bold text-sm text-slate-800 uppercase tracking-tight">IT Systems Master Map</h4>
+                        <p class="text-[10px] text-slate-500 mt-1">Foundational technical summary of TBS internal assets.</p>
+                        <div class="mt-4 pt-4 border-t text-[10px] text-sky-600 font-bold flex items-center">
+                            VIEW DOCUMENT <i class="fas fa-chevron-right ml-2"></i>
+                        </div>
+                    </div>
+
+                    <div onclick="openPolicyModal('aup')" class="policy-card bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col">
+                        <div class="flex justify-between items-center mb-4">
+                            <i class="fas fa-user-check text-slate-400 text-xl"></i>
+                            <span class="status-pill status-strength">v2.1</span>
+                        </div>
+                        <h4 class="font-bold text-sm text-slate-800 uppercase tracking-tight">TBS Employee Handbook: IT Appendix</h4>
+                        <p class="text-[10px] text-slate-500 mt-1">Standards for device usage and user behavior.</p>
+                        <div class="mt-4 pt-4 border-t text-[10px] text-sky-600 font-bold flex items-center">
+                            VIEW DOCUMENT <i class="fas fa-chevron-right ml-2"></i>
+                        </div>
+                    </div>
+
+                    <div onclick="openPolicyModal('irp')" class="policy-card bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col">
+                        <div class="flex justify-between items-center mb-4">
+                            <i class="fas fa-house-fire text-slate-400 text-xl"></i>
+                            <span class="status-pill status-strength">Draft</span>
+                        </div>
+                        <h4 class="font-bold text-sm text-slate-800 uppercase tracking-tight">Internal Response Guide</h4>
+                        <p class="text-[10px] text-slate-500 mt-1">Disaster recovery and event management notes.</p>
+                        <div class="mt-4 pt-4 border-t text-[10px] text-sky-600 font-bold flex items-center">
+                            VIEW DOCUMENT <i class="fas fa-chevron-right ml-2"></i>
+                        </div>
+                    </div>
+
+                    <div onclick="openPolicyModal('mp')" class="policy-card bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col">
+                        <div class="flex justify-between items-center mb-4">
+                            <i class="fas fa-usb text-slate-400 text-xl"></i>
+                            <span class="status-pill status-strength">v1.0</span>
+                        </div>
+                        <h4 class="font-bold text-sm text-slate-800 uppercase tracking-tight">Removable Storage Protocol</h4>
+                        <p class="text-[10px] text-slate-500 mt-1">Controls for USB drives and physical media.</p>
+                        <div class="mt-4 pt-4 border-t text-[10px] text-sky-600 font-bold flex items-center">
+                            VIEW DOCUMENT <i class="fas fa-chevron-right ml-2"></i>
+                        </div>
+                    </div>
+
+                    <div onclick="openPolicyModal('ac')" class="policy-card bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col">
+                        <div class="flex justify-between items-center mb-4">
+                            <i class="fas fa-user-lock text-slate-400 text-xl"></i>
+                            <span class="status-pill status-strength">v3.4</span>
+                        </div>
+                        <h4 class="font-bold text-sm text-slate-800 uppercase tracking-tight">Identity Management SOP</h4>
+                        <p class="text-[10px] text-slate-500 mt-1">Lifecycle of user credentials and admin access.</p>
+                        <div class="mt-4 pt-4 border-t text-[10px] text-sky-600 font-bold flex items-center">
+                            VIEW DOCUMENT <i class="fas fa-chevron-right ml-2"></i>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Service Providers Section -->
+            <section id="content-providers" class="section-content hidden space-y-6">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <table class="w-full text-left text-xs data-table">
+                        <thead>
+                            <tr>
+                                <th>Provider</th>
+                                <th>Service Role</th>
+                                <th>Remote Access Method</th>
+                                <th>Data Access</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            <tr>
+                                <td class="font-bold">TechServ LLC</td>
+                                <td>ERP Maintenance</td>
+                                <td>Client-to-Site SSL VPN</td>
+                                <td class="font-bold text-red-600 uppercase">Admin / CUI</td>
+                            </tr>
+                            <tr>
+                                <td class="font-bold">Cascade Networks</td>
+                                <td>Managed ISP / UTM</td>
+                                <td>Dedicated WAN Port</td>
+                                <td>Metadata Only</td>
+                            </tr>
+                            <tr>
+                                <td class="font-bold">Ricoh USA</td>
+                                <td>Print Management</td>
+                                <td>Physical Only</td>
+                                <td>Potential Buffer CUI</td>
+                            </tr>
+                            <tr>
+                                <td class="font-bold">Microsoft</td>
+                                <td>SaaS Platform</td>
+                                <td>Tenant Admin Portal</td>
+                                <td class="font-bold text-red-600 uppercase">CUI / FCI / Email</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Audit Evidence Sections -->
+            <section id="content-interviews" class="section-content hidden space-y-4">
+                <div class="bg-white p-6 rounded-xl border border-slate-200 border-l-4 border-l-sky-500 shadow-sm">
+                    <h4 class="font-bold text-sm mb-4">Dennis Park, IT Manager (Interview Summary)</h4>
+                    <div class="text-xs text-slate-600 space-y-4 italic">
+                        <p>"MFA? Yeah, we have it on Microsoft 365 because Margaret was worried about account takeovers. For the local stuff—ERP, File Server—it's just regular passwords. The VPN too. Adding MFA to all that is on my to-do list, but we've got a small team."</p>
+                        <p>"Domain admins? That's me and my IT spec, Jennifer. We both use those accounts as our main logins. It just makes things faster when we're troubleshooting for users."</p>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-xl border border-slate-200 border-l-4 border-l-slate-400 shadow-sm">
+                    <h4 class="font-bold text-sm mb-4">Sandra Ybarra, Contracts Manager (Interview Summary)</h4>
+                    <div class="text-xs text-slate-600 space-y-4 italic">
+                        <p>"CUI documents? They usually come in via email. I save them to the contract folder. Dennis restricted that folder a few months back, I think. I don't know who has the actual list of permissions."</p>
+                        <p>"Phishing? Yeah, we had one last year. We reset the person's password. No, we didn't report it to the DoD. We checked her outgoing mail and didn't see anything stolen, so we thought we were good."</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="content-maintenance" class="section-content hidden space-y-6">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-4 bg-slate-50 border-b border-slate-200 font-bold text-xs uppercase">Internal Maintenance Log (Extract)</div>
+                    <table class="w-full text-left text-xs data-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Engineer</th>
+                                <th>System</th>
+                                <th>Work Description</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            <tr><td>Mar 15, 2026</td><td>Kyle (TechServ)</td><td>SRV-001</td><td>Applied Epicor security patches. Used personal USB for offline patch file transfer.</td></tr>
+                            <tr><td>Apr 02, 2026</td><td>Dennis Park</td><td>SRV-003</td><td>AD Schema cleanup.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="content-incidents" class="section-content hidden space-y-6">
+                <div class="bg-white rounded-xl shadow-sm border border-red-200 overflow-hidden">
+                    <div class="p-4 bg-red-50 border-b border-red-100 font-bold text-xs text-red-900 uppercase">INC-001: Compromised Account (Historical)</div>
+                    <div class="p-6 text-xs text-slate-600">
+                        <p><strong>Timeline:</strong> ~10 Months Ago</p>
+                        <p class="mt-2"><strong>Context:</strong> Accounting staff entered credentials into a fake DLA portal. Account was used by attacker to log into M365 SharePoint from a foreign IP.</p>
+                        <p class="mt-2"><strong>Result:</strong> Dennis Park reset the password and disabled the account for 24 hours. No data export review was conducted. No DoD reporting was initiated.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Findings Sections -->
+            <section id="content-gaps" class="section-content hidden space-y-6">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-4 bg-slate-800 text-white font-bold text-xs uppercase">Assessor GAP Observation Matrix</div>
+                    <table class="w-full text-left text-xs data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Control Family</th>
+                                <th>Observation Detail</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            <tr><td class="font-mono">G-01</td><td class="uppercase">IA</td><td>Failure to implement MFA for local network sessions and VPN access.</td></tr>
+                            <tr><td class="font-mono">G-02</td><td class="uppercase">AC</td><td>Privileged accounts used for non-privileged tasks (Domain Admin as primary).</td></tr>
+                            <tr><td class="font-mono">G-03</td><td class="uppercase">MA</td><td>No escort policy for third-party maintenance; personal USBs used on production servers.</td></tr>
+                            <tr><td class="font-mono">G-04</td><td class="uppercase">IR</td><td>Historical incident not reported to DIBNet despite potential CUI exposure.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="content-vulns" class="section-content hidden space-y-6">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-4 bg-slate-50 border-b border-slate-200 font-bold text-xs uppercase">Internal Vuln Scan Result (Doc 9 Extract)</div>
+                    <table class="w-full text-left text-[11px] data-table">
+                        <thead>
+                            <tr>
+                                <th>Severity</th>
+                                <th>CVE / Title</th>
+                                <th>System</th>
+                                <th>Discovery Date</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            <tr><td class="text-red-600 font-bold">CRITICAL</td><td>CVE-2021-34527 (PrintNightmare)</td><td>WRK-001-040</td><td>14 Months Ago</td></tr>
+                            <tr><td class="text-red-600 font-bold">CRITICAL</td><td>Exposed SMBv1 Protocol</td><td>SRV-001</td><td>14 Months Ago</td></tr>
+                            <tr><td class="text-orange-600 font-bold">HIGH</td><td>End-of-Support OS (Win 7/8 remnants)</td><td>Sales WRK</td><td>14 Months Ago</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Policy Modal -->
+    <div id="policy-modal" class="fixed inset-0 bg-slate-900/50 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[80vh] overflow-hidden flex flex-col">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <h3 id="modal-title" class="font-bold text-slate-800 uppercase text-xs tracking-widest">Policy Document</h3>
+                <button onclick="closePolicyModal()" class="text-slate-400 hover:text-slate-600 transition-colors">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div id="modal-content" class="p-8 overflow-y-auto prose prose-slate max-w-none text-xs leading-relaxed custom-scrollbar bg-white">
+                <!-- Content injected via JS -->
+            </div>
+            <div class="p-4 bg-slate-50 border-t border-slate-100 text-right">
+                <button onclick="closePolicyModal()" class="px-6 py-2 bg-slate-800 text-white rounded-lg text-xs font-bold hover:bg-slate-700">CLOSE</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- UI Logic Script -->
+    <script>
+        const policyDocs = {
+            ssp: {
+                title: "Internal Document: IT Systems Master Map v1.2",
+                content: `
+                    <div class="mb-6 border p-4 bg-slate-50 rounded">
+                        <strong>Classification:</strong> Internal Use Only<br>
+                        <strong>Owner:</strong> Dennis Park (IT Manager)<br>
+                        <strong>Last Updated:</strong> Jan 2026
+                    </div>
+                    <h4>1. Overview</h4>
+                    <p>ThreadBridge Solutions utilizes a client-server architecture to support manufacturing and administration. The primary data center is located in the Cumberland HQ server room.</p>
+                    <h4>2. System Inventory</h4>
+                    <ul>
+                        <li><strong>TBS-ERP01:</strong> Epicor 10.2 production database. Hosts all order and inventory data.</li>
+                        <li><strong>TBS-FS01:</strong> Shared file server. Used by HR, Finance, and Production.</li>
+                        <li><strong>TBS-DC01:</strong> Domain controller for TBS.LOCAL active directory.</li>
+                        <li><strong>TBS-Backup:</strong> Synology NAS for nightly server snapshots.</li>
+                    </ul>
+                    <h4>3. Security Controls</h4>
+                    <p>Antivirus is installed on all servers. The server room is protected by a 4-digit keypad for entry. Network traffic is filtered by a Sophos firewall. All cloud services utilize MFA through Microsoft Azure.</p>
+                    <p><em>Security Plan Status:</em> Approved by CEO (Margaret Holloway) for internal use.</p>
+                `
+            },
+            aup: {
+                title: "TBS Employee Handbook - Appendix B: IT Acceptable Use v2.1",
+                content: `
+                    <h4>1. Purpose</h4>
+                    <p>This policy defines the standards for TBS employees using company IT assets. Computing resources are the property of TBS.</p>
+                    <h4>2. Acceptable Use Guidelines</h4>
+                    <ul>
+                        <li>Users must not share passwords or account credentials with others.</li>
+                        <li>Personal use is permitted during breaks if it does not interfere with operations.</li>
+                        <li>No software may be installed without IT approval.</li>
+                    </ul>
+                    <h4>3. Data Handling</h4>
+                    <p>Employees handling sensitive contract data must ensure files are saved to the correct network drive folders. Design files for military uniforms should be kept in the /CUI share on the TBS-FS01 server.</p>
+                    <h4>4. Reporting</h4>
+                    <p>Any suspicious activity (phishing, lost equipment) must be reported to the IT Manager via email as soon as possible.</p>
+                `
+            },
+            irp: {
+                title: "TBS Internal Incident Handling Guide (Draft)",
+                content: `
+                    <h4>Incident Management Procedure</h4>
+                    <p>In the event of a system failure or security event, follow these steps:</p>
+                    <ol>
+                        <li><strong>Discovery:</strong> User identifies an issue and notifies the IT Manager.</li>
+                        <li><strong>Initial Response:</strong> The IT specialist resets affected passwords or isolates the machine from the network.</li>
+                        <li><strong>Restoration:</strong> Data is restored from the local Synology NAS backup.</li>
+                        <li><strong>Closure:</strong> An internal email is sent to management summarizing the downtime and action taken.</li>
+                    </ol>
+                    <h4>Reporting Thresholds</h4>
+                    <p>Serious events involving financial theft are reported to the CEO. Minor phishing attempts are handled internally through user education and password rotation.</p>
+                `
+            },
+            mp: {
+                title: "TBS Data Media & Storage Protocol v1.0",
+                content: `
+                    <h4>1. Usage of External Media</h4>
+                    <p>To facilitate efficient manufacturing, USB drives are used to move production design files from admin workstations to manufacturing floor units that are not reliably connected to the wireless network.</p>
+                    <h4>2. Media Standards</h4>
+                    <p>TBS-provided USB drives should be used whenever possible. External vendors (maintenance) may use their own tools to facilitate server repairs as necessary for contract fulfillment.</p>
+                    <h4>3. Sanitization</h4>
+                    <p>Media that is no longer needed should be cleared of files before reuse. High-sensitivity media must be physically destroyed by the IT department using the drill press in the shop area.</p>
+                `
+            },
+            ac: {
+                title: "TBS Identity & Account Provisioning SOP v3.4",
+                content: `
+                    <h4>1. Onboarding Process</h4>
+                    <p>Upon notification from HR, IT will create a TBS.LOCAL user account. Default permissions are assigned based on the employee's department.</p>
+                    <h4>2. Admin Accounts</h4>
+                    <p>Administrative rights are granted to IT staff (Dennis and Jennifer) for the purpose of maintaining systems and supporting users. IT staff are expected to maintain security at all times.</p>
+                    <h4>3. Account Termination</h4>
+                    <p>HR notifies IT via email when an employee leaves the firm. IT will disable the account during the next scheduled maintenance window (typically Friday after hours).</p>
+                `
+            }
+        };
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.section-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+            
+            const targetSection = document.getElementById('content-' + sectionId);
+            if(targetSection) targetSection.classList.remove('hidden');
+            
+            const targetBtn = document.getElementById('btn-' + sectionId);
+            if(targetBtn) targetBtn.classList.add('active');
+
+            const titles = {
+                overview: ["Organization Profile", "ThreadBridge Solutions headquarters and management."],
+                contracts: ["Contracts & Scope", "Regulatory drivers for Level 2 compliance."],
+                network: ["Network Schematic", "Enterprise network architecture and logical segments."],
+                technical: ["IT Infrastructure", "System inventory, IAM, and hardware specs."],
+                providers: ["Service Providers", "Third-party relationships and flow-down risks."],
+                policies: ["Policies & Procedures", "Security governance and procedural audit documents."],
+                data: ["Data Inventory", "Classification of CUI vs FCI assets."],
+                interviews: ["Personnel Interviews", "Stakeholder statements and audit evidence."],
+                maintenance: ["Maintenance Logs", "Audit of scheduled and unmonitored maintenance."],
+                incidents: ["Incident History", "Audit of historical security breaches."],
+                gaps: ["Compliance Gaps", "Identified deficiencies for student study."],
+                vulns: ["Vulnerability Report", "Technical findings from legacy environment scan."]
+            };
+
+            document.getElementById('section-title').innerText = titles[sectionId][0];
+            document.getElementById('section-subtitle').innerText = titles[sectionId][1];
+        }
+
+        function openPolicyModal(id) {
+            const doc = policyDocs[id];
+            document.getElementById('modal-title').innerText = doc.title;
+            document.getElementById('modal-content').innerHTML = doc.content;
+            document.getElementById('policy-modal').classList.remove('hidden');
+        }
+
+        function closePolicyModal() {
+            document.getElementById('policy-modal').classList.add('hidden');
+        }
+
+        window.onload = function() {
+            showSection('overview');
+        };
+    </script>
+</body>
+</html>
