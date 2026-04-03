@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMMC 2.0 Access Control Matrix – Student Practice Tool</title>
+    <style>
+        /* ===== BASE ===== */
+        *, *::before, *::after { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f4f8;
+            color: #1f2937;
+        }
+
+        /* ===== TOOLBAR ===== */
+        .toolbar {
+            max-width: 1400px;
+            margin: 0 auto 16px auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            background: #1e3a8a;
+            padding: 12px 20px;
+            border-radius: 10px;
+        }
+        .toolbar-title {
+            color: #93c5fd;
+            font-weight: 700;
+            font-size: 0.85em;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-right: auto;
+        }
+        .toolbar button {
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.85em;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: filter 0.2s;
+            white-space: nowrap;
+        }
+        .toolbar button:hover { filter: brightness(1.12); }
+        .btn-save   { background: #10b981; color: white; }
+        .btn-load   { background: #6366f1; color: white; }
+        .btn-export { background: #f59e0b; color: #1f2937; }
+        .btn-report { background: #0ea5e9; color: white; }
+        .btn-print  { background: #64748b; color: white; }
+        .btn-reset  { background: #ef4444; color: white; }
+
+        /* ===== CONTAINER ===== */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+            overflow: hidden;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+        .header h1 { margin: 0 0 8px; font-size: 2em; font-weight: 700; }
+        .header .subtitle { font-size: 1em; opacity: 0.9; margin: 0 0 18px; }
+        .student-badge {
+            position: absolute; top: 14px; right: 14px;
+            background: #fbbf24; color: #1f2937;
+            padding: 6px 14px; border-radius: 20px;
+            font-weight: 700; font-size: 0.8em;
+        }
+        .unsaved-indicator {
+            position: absolute; top: 14px; left: 14px;
+            background: #ef4444; color: white;
+            padding: 6px 14px; border-radius: 20px;
+            font-weight: 700; font-size: 0.8em; display: none;
+        }
+
+        /* ===== STAT CARDS ===== */
+        .stats-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+        }
+        .stat-card {
+            background: rgba(255,255,255,0.18);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 8px;
+            padding: 12px 20px;
+            text-align: center;
+            min-width: 130px;
+        }
+        .stat-card h3 { font-size: 1.4em; font-weight: 800; margin: 0; }
+        .stat-card p  { font-size: 0.78em; margin: 2px 0 0; opacity: 0.9; }
+
+        /* ===== INSTRUCTION BOX ===== */
+        .instruction-box {
+            background: #eff6ff;
+            border: 2px dashed #3b82f6;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 20px;
+            font-size: 0.88em;
+            color: #1e40af;
+        }
+        .instruction-box strong { display: block; margin-bottom: 6px; font-size: 1em; }
+        .instruction-box ul { margin: 6px 0 0; padding-left: 20px; }
+        .instruction-box li { margin: 3px 0; }
+
+        /* ===== MAIN BODY ===== */
+        .main-body { padding: 20px; }
+
+        /* ===== SECTION CARDS ===== */
+        .card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .card h2 {
+            color: #1e3a8a;
+            font-size: 1.1em;
+            margin: 0 0 14px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #bfdbfe;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ===== ASSET CATEGORIES ===== */
+        .asset-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .asset-category {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px;
+        }
+        .asset-category h3 {
+            color: #1e3a8a;
+            font-size: 0.95em;
+            margin: 0 0 10px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #3b82f6;
+        }
+        .asset-list { list-style: none; padding: 0; margin: 0; }
+        .asset-list li {
+            padding: 7px 0;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.86em;
+        }
+        .asset-list li:last-child { border-bottom: none; }
+        .asset-id {
+            font-weight: 700;
+            color: #1e40af;
+            font-size: 0.82em;
+            background: #dbeafe;
+            padding: 2px 7px;
+            border-radius: 10px;
+            white-space: nowrap;
+        }
+        .asset-empty {
+            color: #9ca3af; font-style: italic; font-size: 0.86em;
+            text-align: center; padding: 12px 0;
+        }
+
+        /* ===== NETWORK ZONES ===== */
+        .zone-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+        }
+        .zone-item {
+            padding: 14px;
+            border-radius: 8px;
+            text-align: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.88em;
+        }
+        .zone-cui  { background: linear-gradient(135deg, #dc2626, #b91c1c); }
+        .zone-mgmt { background: linear-gradient(135deg, #1e40af, #1e3a8a); }
+        .zone-guest{ background: linear-gradient(135deg, #059669, #065f46); }
+        .zone-ot   { background: linear-gradient(135deg, #d97706, #b45309); }
+        .zone-item h3 { font-size: 1em; margin: 0 0 4px; }
+        .zone-item p  { margin: 0; font-size: 0.82em; font-weight: 400; opacity: 0.9; }
+        .zone-edit-field {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.4);
+            color: white;
+            border-radius: 5px;
+            font-size: 0.82em;
+            padding: 4px 8px;
+            width: 100%;
+            margin-top: 6px;
+            font-family: inherit;
+            text-align: center;
+        }
+        .zone-edit-field::placeholder { color: rgba(255,255,255,0.65); }
+        .zone-edit-field:focus { outline: none; background: rgba(255,255,255,0.3); }
+
+        /* ===== CONTROLS PANEL ===== */
+        .controls-panel {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 18px 20px;
+            margin-bottom: 20px;
+        }
+        .controls-panel h2 {
+            color: #1e3a8a; font-size: 1.05em;
+            margin: 0 0 14px; padding-bottom: 8px;
+            border-bottom: 2px solid #bfdbfe;
+        }
+        .ctrl-row {
+            display: flex; flex-wrap: wrap; gap: 10px;
+            align-items: flex-end; margin-bottom: 12px;
+        }
+        .ctrl-group { display: flex; flex-direction: column; gap: 4px; }
+        .ctrl-group label {
+            font-size: 0.78em; font-weight: 700;
+            color: #374151; text-transform: uppercase; letter-spacing: 0.04em;
+        }
+        .ctrl-group input, .ctrl-group select {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 0.88em;
+            font-family: inherit;
+            background: white;
+        }
+        .ctrl-group input:focus, .ctrl-group select:focus {
+            outline: 2px solid #3b82f6; border-color: transparent;
+        }
+        .ctrl-btn {
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: 600;
+            transition: filter 0.2s;
+            white-space: nowrap;
+        }
+        .ctrl-btn:hover { filter: brightness(1.1); }
+        .cb-green  { background: #10b981; color: white; }
+        .cb-blue   { background: #3b82f6; color: white; }
+        .cb-gray   { background: #6b7280; color: white; }
+        .cb-red    { background: #ef4444; color: white; }
+        .cb-amber  { background: #f59e0b; color: #1f2937; }
+
+        /* ===== LEGEND ===== */
+        .legend {
+            display: flex; flex-wrap: wrap;
+            gap: 10px; justify-content: center;
+            margin-bottom: 14px;
+        }
+        .legend-item {
+            display: flex; align-items: center;
+            gap: 7px; padding: 6px 12px;
+            border-radius: 7px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            font-size: 0.82em; font-weight: 600;
+        }
+        .legend-swatch {
+            width: 18px; height: 18px;
+            border-radius: 4px; border: 1px solid #d1d5db;
+            flex-shrink: 0;
+        }
+        .perm-read    { background: #d1fae5; color: #065f46; }
+        .perm-write   { background: #fef3c7; color: #92400e; }
+        .perm-execute { background: #dbeafe; color: #1e40af; }
+        .perm-admin   { background: #fce7f3; color: #9d174d; }
+        .perm-deny    { background: #f3f4f6; color: #6b7280; }
+
+        /* ===== MATRIX TABLE ===== */
+        .matrix-wrapper { overflow-x: auto; }
+        .matrix-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8em;
+        }
+        .matrix-table th {
+            background: #1e40af;
+            color: white;
+            padding: 10px 8px;
+            text-align: center;
+            white-space: nowrap;
+            font-weight: 600;
+            font-size: 0.82em;
+            border: 1px solid #1e3a8a;
+        }
+        .matrix-table th.row-header {
+            background: #1e3a8a;
+            text-align: left;
+            padding-left: 14px;
+            min-width: 160px;
+        }
+        .matrix-table td {
+            border: 1px solid #e5e7eb;
+            padding: 8px 6px;
+            text-align: center;
+            white-space: nowrap;
+        }
+        .matrix-table td.row-label {
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            text-align: left;
+            padding-left: 14px;
+            font-size: 0.88em;
+        }
+        .perm-cell {
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+            font-weight: 700;
+        }
+        .perm-cell:hover {
+            transform: scale(1.15);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.18);
+            z-index: 5;
+            position: relative;
+        }
+        .pc-read    { background: #d1fae5; color: #065f46; }
+        .pc-write   { background: #fef3c7; color: #92400e; }
+        .pc-execute { background: #dbeafe; color: #1e40af; }
+        .pc-admin   { background: #fce7f3; color: #9d174d; }
+        .pc-deny    { background: #f3f4f6; color: #9ca3af; }
+
+        .matrix-empty {
+            text-align: center; color: #9ca3af;
+            font-style: italic; padding: 40px;
+            font-size: 0.9em;
+        }
+
+        /* ===== AUDIT LOG ===== */
+        .audit-log-panel {
+            max-height: 280px;
+            overflow-y: auto;
+        }
+        .log-entry {
+            padding: 9px 12px;
+            margin: 6px 0;
+            border-left: 4px solid #3b82f6;
+            background: #f8fafc;
+            border-radius: 0 6px 6px 0;
+            font-size: 0.83em;
+        }
+        .log-time {
+            font-size: 0.8em; color: #6b7280; margin-bottom: 2px;
+        }
+        .log-action { color: #1f2937; }
+
+        /* ===== COMPLIANCE PANEL ===== */
+        .compliance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+        }
+        .compliance-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 14px;
+            text-align: center;
+        }
+        .compliance-card h4 {
+            font-size: 0.8em; color: #6b7280;
+            text-transform: uppercase; letter-spacing: 0.05em;
+            margin: 0 0 6px;
+        }
+        .compliance-num {
+            font-size: 1.8em; font-weight: 800;
+            line-height: 1; margin-bottom: 4px;
+        }
+        .compliance-label { font-size: 0.78em; color: #6b7280; }
+        .cn-blue   { color: #1e40af; }
+        .cn-green  { color: #059669; }
+        .cn-amber  { color: #d97706; }
+        .cn-red    { color: #dc2626; }
+        .cn-purple { color: #7c3aed; }
+
+        /* ===== MODALS ===== */
+        .modal {
+            display: none; position: fixed;
+            z-index: 2000; left: 0; top: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.55);
+        }
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 28px;
+            border-radius: 10px;
+            width: 92%; max-width: 520px;
+            max-height: 85vh; overflow-y: auto;
+            position: relative;
+        }
+        .modal-content h2 { color: #1e3a8a; margin: 0 0 16px; font-size: 1.1em; }
+        .close-modal {
+            position: absolute; top: 12px; right: 16px;
+            color: #9ca3af; font-size: 22px; font-weight: bold;
+            cursor: pointer; line-height: 1;
+        }
+        .close-modal:hover { color: #111; }
+        .modal-field { margin-bottom: 12px; }
+        .modal-field label { display: block; font-weight: 600; font-size: 0.85em; margin-bottom: 4px; color: #374151; }
+        .modal-field select,
+        .modal-field textarea,
+        .modal-field input {
+            width: 100%; padding: 8px 12px;
+            border: 1px solid #d1d5db; border-radius: 6px;
+            font-family: inherit; font-size: 0.88em;
+        }
+        .modal-field select:focus,
+        .modal-field textarea:focus { outline: 2px solid #3b82f6; border-color: transparent; }
+        .modal-field textarea { height: 72px; resize: vertical; }
+        .modal-info { font-size: 0.88em; margin-bottom: 14px; }
+        .modal-info strong { color: #1e3a8a; }
+        .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; }
+        .btn-primary   { background: #3b82f6; color: white; border: none; padding: 9px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .btn-secondary { background: #6b7280; color: white; border: none; padding: 9px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .btn-success-m { background: #10b981; color: white; border: none; padding: 9px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .btn-danger-m  { background: #ef4444; color: white; border: none; padding: 9px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .report-pre {
+            white-space: pre-wrap;
+            background: #f8fafc;
+            padding: 14px;
+            border-radius: 7px;
+            font-size: 0.82em;
+            border: 1px solid #e2e8f0;
+            max-height: 360px;
+            overflow-y: auto;
+        }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed; bottom: 24px; right: 24px;
+            background: #1e3a8a; color: white;
+            padding: 12px 22px; border-radius: 8px;
+            font-size: 0.88em; z-index: 9999;
+            opacity: 0; transform: translateY(10px);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        .toast.show { opacity: 1; transform: translateY(0); }
+        .toast.success { background: #059669; }
+        .toast.error   { background: #dc2626; }
+        .toast.warn    { background: #d97706; }
+
+        /* ===== FOOTER ===== */
+        .acm-footer {
+            background: #f8fafc; padding: 16px 20px;
+            border-top: 1px solid #e5e7eb;
+            text-align: center; color: #6b7280; font-size: 0.84em;
+        }
+
+        /* ===== PRINT ===== */
+        @media print {
+            body { background: white; padding: 0; }
+            .toolbar, .instruction-box, .student-badge,
+            .unsaved-indicator, .controls-panel { display: none !important; }
+            .container { box-shadow: none; border-radius: 0; }
+            .matrix-table { font-size: 0.7em; }
+            .card { box-shadow: none; border: 1px solid #ddd; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== TOOLBAR ===== -->
+<div class="toolbar">
+    <span class="toolbar-title">🛡️ ACM Tool — Student Practice</span>
+    <button class="btn-save"   onclick="saveData()">💾 Save</button>
+    <button class="btn-load"   onclick="document.getElementById('fileInput').click()">📂 Load</button>
+    <button class="btn-report" onclick="generateReport()">📊 Compliance Report</button>
+    <button class="btn-export" onclick="exportCSV()">📤 Export CSV</button>
+    <button class="btn-print"  onclick="window.print()">🖨️ Print / PDF</button>
+    <button class="btn-reset"  onclick="openModal('resetModal')">🔄 Reset</button>
+    <input type="file" id="fileInput" accept=".json" style="display:none" onchange="loadFromFile(event)">
+</div>
+
+<!-- ===== CONTAINER ===== -->
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="header">
+        <div class="student-badge">STUDENT PRACTICE TOOL</div>
+        <div class="unsaved-indicator" id="unsavedIndicator">● Unsaved Changes</div>
+        <h1>🛡️ CMMC 2.0 Access Control Matrix</h1>
+        <p class="subtitle">Role-Based Access Control Documentation — Student Practice Exercise</p>
+        <div class="stats-row">
+            <div class="stat-card"><h3 id="statRoles">0</h3><p>Roles Defined</p></div>
+            <div class="stat-card"><h3 id="statAssets">0</h3><p>Assets Catalogued</p></div>
+            <div class="stat-card"><h3 id="statAdmin">0</h3><p>Admin Permissions</p></div>
+            <div class="stat-card"><h3 id="statDeny">0</h3><p>Deny Permissions</p></div>
+            <div class="stat-card"><h3 id="statCompliance">—</h3><p>Least Privilege Score</p></div>
+        </div>
+    </div>
+
+    <!-- INSTRUCTION BOX -->
+    <div class="instruction-box">
+        <strong>🎓 Student Instructions</strong>
+        <ul>
+            <li>Start by adding your organization's <strong>roles</strong> and <strong>assets</strong> using the Controls Panel below. Use the asset naming convention: <code>CUI-001</code>, <code>SPA-001</code>, <code>CRMA-001</code>, <code>OOS-001</code>.</li>
+            <li>Once roles and assets are added, the <strong>Access Control Matrix</strong> will appear. <strong>Click any cell</strong> to set or change the permission for that Role ↔ Asset combination.</li>
+            <li>Permissions: <strong>A</strong> = Admin (full control) | <strong>W</strong> = Write (read + modify) | <strong>E</strong> = Execute (run operations) | <strong>R</strong> = Read only | <strong>–</strong> = Deny (no access).</li>
+            <li>Apply the <strong>Principle of Least Privilege</strong> — only grant the minimum access each role requires to perform its job function.</li>
+            <li>Every permission change requires a <strong>justification</strong> — these are recorded in the Audit Log below.</li>
+            <li>Use <strong>📊 Compliance Report</strong> to check your matrix for over-provisioned roles. Use <strong>💾 Save</strong> (Ctrl+S) to preserve your work.</li>
+        </ul>
+    </div>
+
+    <div class="main-body">
+
+        <!-- ASSET CATEGORIES -->
+        <div class="asset-categories" id="assetCategoriesDisplay">
+            <div class="asset-category">
+                <h3>🔒 CUI Assets (In-Scope)</h3>
+                <ul class="asset-list" id="cat-cui">
+                    <li class="asset-empty">No CUI assets added yet</li>
+                </ul>
+            </div>
+            <div class="asset-category">
+                <h3>🔧 Security Protection Assets</h3>
+                <ul class="asset-list" id="cat-spa">
+                    <li class="asset-empty">No SPA assets added yet</li>
+                </ul>
+            </div>
+            <div class="asset-category">
+                <h3>⚠️ Contractor Risk Managed</h3>
+                <ul class="asset-list" id="cat-crma">
+                    <li class="asset-empty">No CRMA assets added yet</li>
+                </ul>
+            </div>
+            <div class="asset-category">
+                <h3>🚫 Out-of-Scope Assets</h3>
+                <ul class="asset-list" id="cat-oos">
+                    <li class="asset-empty">No OOS assets added yet</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- NETWORK ZONES -->
+        <div class="card">
+            <h2>🌐 Network Zone Segmentation</h2>
+            <div class="zone-grid">
+                <div class="zone-item zone-cui">
+                    <h3>CUI Zone</h3>
+                    <p>Restricted access — CUI assets only</p>
+                    <input class="zone-edit-field" placeholder="Describe assets in this zone…" oninput="markUnsaved()" id="zone-cui-desc">
+                </div>
+                <div class="zone-item zone-mgmt">
+                    <h3>Management Zone</h3>
+                    <p>Admin &amp; IT operations</p>
+                    <input class="zone-edit-field" placeholder="Describe assets in this zone…" oninput="markUnsaved()" id="zone-mgmt-desc">
+                </div>
+                <div class="zone-item zone-guest">
+                    <h3>Guest Network</h3>
+                    <p>Isolated from internal systems</p>
+                    <input class="zone-edit-field" placeholder="Describe assets in this zone…" oninput="markUnsaved()" id="zone-guest-desc">
+                </div>
+                <div class="zone-item zone-ot">
+                    <h3>OT Network</h3>
+                    <p>Building / operational technology</p>
+                    <input class="zone-edit-field" placeholder="Describe assets in this zone…" oninput="markUnsaved()" id="zone-ot-desc">
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTROLS PANEL -->
+        <div class="controls-panel">
+            <h2>🎛️ Matrix Controls</h2>
+
+            <!-- Add Role / Asset Row -->
+            <div class="ctrl-row">
+                <div class="ctrl-group">
+                    <label>Add New Role</label>
+                    <input type="text" id="newRoleInput" placeholder="e.g., CISO, Contract Coordinator" style="width:230px;">
+                </div>
+                <button class="ctrl-btn cb-green" onclick="addRole()">+ Add Role</button>
+                <div class="ctrl-group" style="margin-left:16px;">
+                    <label>Add New Asset</label>
+                    <input type="text" id="newAssetId" placeholder="e.g., CUI-001" style="width:120px;">
+                    <input type="text" id="newAssetName" placeholder="Asset description" style="width:200px; margin-top:0;">
+                </div>
+                <button class="ctrl-btn cb-green" onclick="addAsset()">+ Add Asset</button>
+            </div>
+
+            <!-- Filter Row -->
+            <div class="ctrl-row">
+                <div class="ctrl-group">
+                    <label>Filter by Role</label>
+                    <select id="filterRole" style="width:200px;">
+                        <option value="">All Roles</option>
+                    </select>
+                </div>
+                <div class="ctrl-group">
+                    <label>Filter by Asset Type</label>
+                    <select id="filterAsset" style="width:180px;">
+                        <option value="">All Assets</option>
+                        <option value="CUI">CUI Assets</option>
+                        <option value="SPA">Security Protection</option>
+                        <option value="CRMA">Contractor Risk Managed</option>
+                        <option value="OOS">Out-of-Scope</option>
+                        <option value="ZONE">Network Zones</option>
+                    </select>
+                </div>
+                <button class="ctrl-btn cb-blue" onclick="applyFilters()">Apply Filters</button>
+                <button class="ctrl-btn cb-gray" onclick="clearFilters()">Clear Filters</button>
+                <button class="ctrl-btn cb-amber" onclick="applyLeastPrivilegeSuggestion()">💡 Suggest Least Privilege</button>
+            </div>
+        </div>
+
+        <!-- ACCESS CONTROL MATRIX -->
+        <div class="card">
+            <h2>📊 Access Control Matrix</h2>
+
+            <!-- Legend -->
+            <div class="legend">
+                <div class="legend-item"><div class="legend-swatch perm-read"></div>Read (R) — View only</div>
+                <div class="legend-item"><div class="legend-swatch perm-write"></div>Write (W) — Read + Modify</div>
+                <div class="legend-item"><div class="legend-swatch perm-execute"></div>Execute (E) — Run operations</div>
+                <div class="legend-item"><div class="legend-swatch perm-admin"></div>Admin (A) — Full control</div>
+                <div class="legend-item"><div class="legend-swatch perm-deny"></div>Deny (–) — No access</div>
+            </div>
+
+            <div class="matrix-wrapper">
+                <div id="matrixOutput">
+                    <div class="matrix-empty">
+                        No roles or assets added yet.<br>Use the Controls Panel above to add roles and assets — the matrix will appear automatically.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- COMPLIANCE SUMMARY -->
+        <div class="card">
+            <h2>✅ Compliance Summary</h2>
+            <div class="compliance-grid">
+                <div class="compliance-card">
+                    <h4>Total Roles</h4>
+                    <div class="compliance-num cn-blue" id="cmpRoles">0</div>
+                    <div class="compliance-label">Defined in matrix</div>
+                </div>
+                <div class="compliance-card">
+                    <h4>Total Assets</h4>
+                    <div class="compliance-num cn-blue" id="cmpAssets">0</div>
+                    <div class="compliance-label">Catalogued</div>
+                </div>
+                <div class="compliance-card">
+                    <h4>Admin Permissions</h4>
+                    <div class="compliance-num cn-red" id="cmpAdmin">0</div>
+                    <div class="compliance-label">Should be &lt;10% of total</div>
+                </div>
+                <div class="compliance-card">
+                    <h4>Write Permissions</h4>
+                    <div class="compliance-num cn-amber" id="cmpWrite">0</div>
+                    <div class="compliance-label">Read/Modify access</div>
+                </div>
+                <div class="compliance-card">
+                    <h4>Read Permissions</h4>
+                    <div class="compliance-num cn-green" id="cmpRead">0</div>
+                    <div class="compliance-label">View-only access</div>
+                </div>
+                <div class="compliance-card">
+                    <h4>Deny Permissions</h4>
+                    <div class="compliance-num cn-blue" id="cmpDeny">0</div>
+                    <div class="compliance-label">Explicitly blocked</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AUDIT LOG -->
+        <div class="card">
+            <h2>📋 Audit Log</h2>
+            <div class="audit-log-panel" id="auditLog">
+                <div class="log-entry">
+                    <div class="log-time">—</div>
+                    <div class="log-action">No audit entries yet. Add roles, assets, or change permissions to begin logging.</div>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- /main-body -->
+
+    <!-- FOOTER -->
+    <div class="acm-footer">
+        <p>
+            <strong>Document Type:</strong> CMMC 2.0 Access Control Matrix &nbsp;|&nbsp;
+            <strong>Organization:</strong> <span id="footerOrg">[Enter organization via matrix]</span> &nbsp;|&nbsp;
+            <strong>Last Updated:</strong> <span id="footerDate"></span>
+        </p>
+        <p style="margin-top:4px; font-style:italic;">Apply the Principle of Least Privilege — grant only the minimum permissions required for each role to perform its function.</p>
+    </div>
+
+</div><!-- /container -->
+
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toast"></div>
+
+<!-- ===== PERMISSION EDIT MODAL ===== -->
+<div id="permModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal('permModal')">&times;</span>
+        <h2>Edit Permission</h2>
+        <div class="modal-info" id="permModalInfo"></div>
+        <div class="modal-field">
+            <label>New Permission Level</label>
+            <select id="permSelect">
+                <option value="-">– Deny (no access)</option>
+                <option value="R">R — Read only (view)</option>
+                <option value="W">W — Write (read + modify)</option>
+                <option value="E">E — Execute (run operations)</option>
+                <option value="A">A — Admin (full control)</option>
+            </select>
+        </div>
+        <div class="modal-field">
+            <label>Justification <span style="color:#ef4444;">*</span></label>
+            <textarea id="permJustification" placeholder="Explain why this role needs this level of access to this asset. Reference the Principle of Least Privilege in your reasoning…"></textarea>
+        </div>
+        <div class="modal-actions">
+            <button class="btn-secondary" onclick="closeModal('permModal')">Cancel</button>
+            <button class="btn-success-m" onclick="savePermission()">Save Permission</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== REPORT MODAL ===== -->
+<div id="reportModal" class="modal">
+    <div class="modal-content" style="max-width:620px;">
+        <span class="close-modal" onclick="closeModal('reportModal')">&times;</span>
+        <h2>📊 Compliance Report</h2>
+        <pre class="report-pre" id="reportContent"></pre>
+        <div class="modal-actions">
+            <button class="btn-secondary" onclick="closeModal('reportModal')">Close</button>
+            <button class="btn-primary" onclick="downloadReport()">⬇️ Download Report</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== RESET MODAL ===== -->
+<div id="resetModal" class="modal">
+    <div class="modal-content" style="max-width:420px;">
+        <h2>⚠️ Reset Matrix?</h2>
+        <p style="font-size:0.9em;color:#374151;">This will clear all roles, assets, permissions, and audit log entries. This cannot be undone.</p>
+        <div class="modal-actions">
+            <button class="btn-secondary" onclick="closeModal('resetModal')">Cancel</button>
+            <button class="btn-danger-m" onclick="doReset()">Yes, Reset Everything</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== JAVASCRIPT ===== -->
+<script>
+    // =============================================
+    //  STATE
+    // =============================================
+    let roles  = [];    // array of role name strings
+    let assets = [];    // array of "ID: Description" strings
+    let matrix = {};    // matrix[role][asset] = 'R'|'W'|'E'|'A'|'-'
+    let auditEntries = [];
+    let currentEditRole  = '';
+    let currentEditAsset = '';
+    let lastReport = '';
+
+    // =============================================
+    //  INIT
+    // =============================================
+    document.addEventListener('DOMContentLoaded', () => {
+        updateFooterDate();
+        const saved = localStorage.getItem('cmmc_acm_tool_v1');
+        if (saved) {
+            try {
+                applyLoadedData(JSON.parse(saved));
+                showToast('Auto-loaded your last saved session.', 'success');
+            } catch(e) {}
+        }
+    });
+
+    function updateFooterDate() {
+        document.getElementById('footerDate').textContent =
+            new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit' });
+    }
+
+    // =============================================
+    //  UNSAVED
+    // =============================================
+    function markUnsaved() {
+        document.getElementById('unsavedIndicator').style.display = 'block';
+        updateFooterDate();
+    }
+    function markSaved() {
+        document.getElementById('unsavedIndicator').style.display = 'none';
+    }
+
+    // =============================================
+    //  ADD ROLE
+    // =============================================
+    function addRole() {
+        const name = document.getElementById('newRoleInput').value.trim();
+        if (!name) { showToast('Enter a role name first.', 'warn'); return; }
+        if (roles.includes(name)) { showToast('That role already exists.', 'warn'); return; }
+
+        roles.push(name);
+        matrix[name] = {};
+        assets.forEach(a => { matrix[name][a] = '-'; });
+
+        document.getElementById('newRoleInput').value = '';
+        refreshAll();
+        logAudit(`Role added: "${name}" — all permissions defaulted to Deny`);
+        markUnsaved();
+        showToast(`Role "${name}" added ✓`, 'success');
+    }
+
+    // =============================================
+    //  ADD ASSET
+    // =============================================
+    function addAsset() {
+        const id   = document.getElementById('newAssetId').value.trim().toUpperCase();
+        const desc = document.getElementById('newAssetName').value.trim();
+        if (!id)   { showToast('Enter an Asset ID first (e.g., CUI-001).', 'warn'); return; }
+        if (!desc) { showToast('Enter an asset description.', 'warn'); return; }
+
+        const fullKey = `${id}: ${desc}`;
+        if (assets.includes(fullKey)) { showToast('That asset already exists.', 'warn'); return; }
+
+        assets.push(fullKey);
+        roles.forEach(r => { matrix[r][fullKey] = '-'; });
+
+        document.getElementById('newAssetId').value   = '';
+        document.getElementById('newAssetName').value = '';
+        refreshAll();
+        logAudit(`Asset added: "${fullKey}" — all roles defaulted to Deny`);
+        markUnsaved();
+        showToast(`Asset "${id}: ${desc}" added ✓`, 'success');
+    }
+
+    // =============================================
+    //  REFRESH ALL UI
+    // =============================================
+    function refreshAll() {
+        renderAssetCategories();
+        renderMatrix();
+        updateFilters();
+        updateStats();
+        updateComplianceSummary();
+    }
+
+    // =============================================
+    //  ASSET CATEGORY LISTS
+    // =============================================
+    function renderAssetCategories() {
+        const cats = { cui: [], spa: [], crma: [], oos: [] };
+        assets.forEach(a => {
+            const prefix = a.split(':')[0].split('-')[0].toUpperCase();
+            if (prefix === 'CUI')  cats.cui.push(a);
+            else if (prefix === 'SPA')  cats.spa.push(a);
+            else if (prefix === 'CRMA') cats.crma.push(a);
+            else if (prefix === 'OOS')  cats.oos.push(a);
+        });
+
+        ['cui','spa','crma','oos'].forEach(cat => {
+            const ul = document.getElementById('cat-' + cat);
+            if (!ul) return;
+            if (!cats[cat].length) {
+                ul.innerHTML = `<li class="asset-empty">No ${cat.toUpperCase()} assets added yet</li>`;
+                return;
+            }
+            ul.innerHTML = cats[cat].map(a => {
+                const parts = a.split(': ');
+                return `<li><span>${parts.slice(1).join(': ')}</span><span class="asset-id">${parts[0]}</span></li>`;
+            }).join('');
+        });
+    }
+
+    // =============================================
+    //  RENDER MATRIX
+    // =============================================
+    function renderMatrix() {
+        const container = document.getElementById('matrixOutput');
+        if (!roles.length || !assets.length) {
+            container.innerHTML = `<div class="matrix-empty">
+                ${!roles.length && !assets.length ? 'Add roles and assets to build the matrix.' :
+                  !roles.length ? 'Add at least one role to build the matrix.' :
+                  'Add at least one asset to build the matrix.'}
+            </div>`;
+            return;
+        }
+
+        // Apply current filters
+        const roleFilter  = document.getElementById('filterRole')?.value  || '';
+        const assetFilter = document.getElementById('filterAsset')?.value || '';
+
+        const visibleRoles  = roles.filter(r => !roleFilter || r === roleFilter);
+        const visibleAssets = assets.filter(a => !assetFilter || a.startsWith(assetFilter));
+
+        if (!visibleRoles.length || !visibleAssets.length) {
+            container.innerHTML = `<div class="matrix-empty">No items match the current filter. <a href="#" onclick="clearFilters();return false;">Clear filters</a>.</div>`;
+            return;
+        }
+
+        let html = '<table class="matrix-table"><thead><tr><th class="row-header">Role ↓ / Asset →</th>';
+        visibleAssets.forEach(a => {
+            const label = a.split(':')[0];
+            html += `<th title="${esc(a)}">${esc(label)}</th>`;
+        });
+        html += '</tr></thead><tbody>';
+
+        visibleRoles.forEach(role => {
+            html += `<tr><td class="row-label">${esc(role)}</td>`;
+            visibleAssets.forEach(asset => {
+                const perm  = (matrix[role] && matrix[role][asset]) || '-';
+                const cls   = permClass(perm);
+                const label = perm === '-' ? '–' : perm;
+                html += `<td class="perm-cell ${cls}" onclick="openPermEdit('${esc(role)}','${esc(asset)}')"
+                             title="Role: ${esc(role)}&#10;Asset: ${esc(asset)}&#10;Permission: ${permName(perm)}">${label}</td>`;
+            });
+            html += '</tr>';
+        });
+        html += '</tbody></table>';
+        container.innerHTML = html;
+    }
+
+    function permClass(p) {
+        return { R:'pc-read', W:'pc-write', E:'pc-execute', A:'pc-admin' }[p] || 'pc-deny';
+    }
+    function permName(p) {
+        return { R:'Read Only', W:'Write (Read+Modify)', E:'Execute', A:'Admin (Full Control)', '-':'Deny' }[p] || 'Deny';
+    }
+
+    // =============================================
+    //  PERMISSION EDIT
+    // =============================================
+    function openPermEdit(role, asset) {
+        currentEditRole  = role;
+        currentEditAsset = asset;
+        const cur = (matrix[role] && matrix[role][asset]) || '-';
+
+        document.getElementById('permModalInfo').innerHTML = `
+            <p><strong>Role:</strong> ${esc(role)}</p>
+            <p><strong>Asset:</strong> ${esc(asset)}</p>
+            <p><strong>Current Permission:</strong> <span style="font-weight:700;color:#1e40af;">${permName(cur)}</span></p>`;
+
+        document.getElementById('permSelect').value = cur;
+        document.getElementById('permJustification').value = '';
+        openModal('permModal');
+    }
+
+    function savePermission() {
+        const newPerm = document.getElementById('permSelect').value;
+        const just    = document.getElementById('permJustification').value.trim();
+        if (!just) { showToast('A justification is required for every permission change.', 'warn'); return; }
+
+        const oldPerm = (matrix[currentEditRole] && matrix[currentEditRole][currentEditAsset]) || '-';
+        if (!matrix[currentEditRole]) matrix[currentEditRole] = {};
+        matrix[currentEditRole][currentEditAsset] = newPerm;
+
+        logAudit(`Permission changed: [${currentEditRole}] → [${currentEditAsset}] | ${oldPerm} → ${newPerm} | Justification: ${just}`);
+        closeModal('permModal');
+        refreshAll();
+        markUnsaved();
+        showToast('Permission saved ✓', 'success');
+    }
+
+    // =============================================
+    //  FILTERS
+    // =============================================
+    function updateFilters() {
+        const rf = document.getElementById('filterRole');
+        if (!rf) return;
+        const cur = rf.value;
+        rf.innerHTML = '<option value="">All Roles</option>';
+        roles.forEach(r => {
+            const opt = document.createElement('option');
+            opt.value = r; opt.textContent = r;
+            if (r === cur) opt.selected = true;
+            rf.appendChild(opt);
+        });
+    }
+
+    function applyFilters() { renderMatrix(); logAudit('Filters applied'); }
+    function clearFilters() {
+        document.getElementById('filterRole').value  = '';
+        document.getElementById('filterAsset').value = '';
+        renderMatrix();
+        logAudit('Filters cleared');
+    }
+
+    // =============================================
+    //  LEAST PRIVILEGE SUGGESTION
+    // =============================================
+    function applyLeastPrivilegeSuggestion() {
+        if (!roles.length || !assets.length) {
+            showToast('Add roles and assets first.', 'warn'); return;
+        }
+        let changes = 0;
+        // Warn if any role has Admin on more than 30% of assets
+        const issues = [];
+        roles.forEach(role => {
+            const adminCount = assets.filter(a => matrix[role]?.[a] === 'A').length;
+            if (adminCount > Math.ceil(assets.length * 0.3)) {
+                issues.push(`"${role}" has Admin on ${adminCount}/${assets.length} assets — consider reducing.`);
+            }
+        });
+        if (issues.length) {
+            showToast('⚠️ Over-provisioned roles found — see Compliance Report.', 'warn');
+            generateReport();
+        } else {
+            showToast('✅ No obvious over-provisioning detected. Review the Compliance Report for details.', 'success');
+        }
+        logAudit('Least privilege analysis run');
+    }
+
+    // =============================================
+    //  STATS & COMPLIANCE
+    // =============================================
+    function updateStats() {
+        const counts = countPerms();
+        const total  = roles.length * assets.length || 1;
+        const adminPct = Math.round(counts.A / total * 100);
+        const score = adminPct <= 10 ? '✅ Good' : adminPct <= 20 ? '⚠️ Review' : '❌ High';
+
+        document.getElementById('statRoles').textContent = roles.length;
+        document.getElementById('statAssets').textContent = assets.length;
+        document.getElementById('statAdmin').textContent = counts.A;
+        document.getElementById('statDeny').textContent  = counts['-'];
+        document.getElementById('statCompliance').textContent = roles.length ? score : '—';
+    }
+
+    function updateComplianceSummary() {
+        const counts = countPerms();
+        document.getElementById('cmpRoles').textContent  = roles.length;
+        document.getElementById('cmpAssets').textContent = assets.length;
+        document.getElementById('cmpAdmin').textContent  = counts.A;
+        document.getElementById('cmpWrite').textContent  = counts.W;
+        document.getElementById('cmpRead').textContent   = counts.R;
+        document.getElementById('cmpDeny').textContent   = counts['-'];
+    }
+
+    function countPerms() {
+        const c = { R:0, W:0, E:0, A:0, '-':0 };
+        roles.forEach(role => {
+            assets.forEach(asset => {
+                const p = (matrix[role] && matrix[role][asset]) || '-';
+                if (c[p] !== undefined) c[p]++; else c['-']++;
+            });
+        });
+        return c;
+    }
+
+    // =============================================
+    //  COMPLIANCE REPORT
+    // =============================================
+    function generateReport() {
+        const counts = countPerms();
+        const total  = roles.length * assets.length || 1;
+
+        let report = 'CMMC 2.0 ACCESS CONTROL MATRIX — COMPLIANCE REPORT\n';
+        report += '='.repeat(55) + '\n';
+        report += `Generated: ${new Date().toLocaleString()}\n`;
+        report += `Roles: ${roles.length}  |  Assets: ${assets.length}  |  Total Cells: ${roles.length * assets.length}\n\n`;
+
+        report += 'PERMISSION DISTRIBUTION\n' + '-'.repeat(40) + '\n';
+        ['A','W','E','R','-'].forEach(p => {
+            const lbl = { A:'Admin (A)', W:'Write (W)', E:'Execute (E)', R:'Read (R)', '-':'Deny (–)' }[p];
+            report += `  ${lbl.padEnd(14)}: ${String(counts[p]).padStart(4)}  (${(counts[p]/total*100).toFixed(1)}%)\n`;
+        });
+
+        report += '\nCOMPLIANCE ANALYSIS\n' + '-'.repeat(40) + '\n';
+        const issues = [];
+        const adminPct = counts.A / total * 100;
+        if (adminPct > 10) issues.push(`High Admin permission rate: ${adminPct.toFixed(1)}% (target < 10%)`);
+
+        roles.forEach(role => {
+            const adminCount = assets.filter(a => matrix[role]?.[a] === 'A').length;
+            if (assets.length && adminCount > assets.length * 0.3) {
+                issues.push(`"${role}" has Admin on ${adminCount}/${assets.length} assets — review least privilege`);
+            }
+            // Check if any role has blanket Write on everything
+            const writeCount = assets.filter(a => matrix[role]?.[a] === 'W').length;
+            if (assets.length > 3 && writeCount === assets.length) {
+                issues.push(`"${role}" has Write access to ALL assets — likely over-provisioned`);
+            }
+        });
+
+        if (!roles.length) issues.push('No roles defined — add roles to complete the matrix');
+        if (!assets.length) issues.push('No assets defined — add assets to complete the matrix');
+
+        if (issues.length === 0) {
+            report += '✅ No compliance issues detected. Matrix appears to follow least privilege principles.\n';
+        } else {
+            report += `⚠️  ${issues.length} issue(s) detected:\n`;
+            issues.forEach((iss, i) => { report += `  ${i+1}. ${iss}\n`; });
+        }
+
+        report += '\nROLE SUMMARY\n' + '-'.repeat(40) + '\n';
+        if (roles.length) {
+            roles.forEach(role => {
+                const rc = { R:0, W:0, E:0, A:0, '-':0 };
+                assets.forEach(a => {
+                    const p = matrix[role]?.[a] || '-';
+                    if (rc[p] !== undefined) rc[p]++; else rc['-']++;
+                });
+                report += `  ${role.padEnd(30)}: A=${rc.A} W=${rc.W} E=${rc.E} R=${rc.R} –=${rc['-']}\n`;
+            });
+        } else { report += '  No roles defined.\n'; }
+
+        lastReport = report;
+        document.getElementById('reportContent').textContent = report;
+        openModal('reportModal');
+        logAudit('Compliance report generated');
+    }
+
+    function downloadReport() {
+        if (!lastReport) return;
+        const blob = new Blob([lastReport], { type: 'text/plain' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `CMMC_ACM_Report_${new Date().toISOString().split('T')[0]}.txt`;
+        a.click(); URL.revokeObjectURL(a.href);
+        showToast('Report downloaded ✓', 'success');
+    }
+
+    // =============================================
+    //  EXPORT CSV
+    // =============================================
+    function exportCSV() {
+        if (!roles.length || !assets.length) {
+            showToast('Add roles and assets first.', 'warn'); return;
+        }
+        let csv = 'Role,' + assets.map(a => `"${a}"`).join(',') + '\n';
+        roles.forEach(role => {
+            const row = ['"' + role + '"'].concat(assets.map(a => matrix[role]?.[a] || '-'));
+            csv += row.join(',') + '\n';
+        });
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `CMMC_Access_Control_Matrix_${new Date().toISOString().split('T')[0]}.csv`;
+        a.click(); URL.revokeObjectURL(a.href);
+        logAudit('Matrix exported to CSV');
+        showToast('CSV exported ✓', 'success');
+    }
+
+    // =============================================
+    //  AUDIT LOG
+    // =============================================
+    function logAudit(action) {
+        const entry = { ts: new Date().toLocaleString(), action };
+        auditEntries.unshift(entry);
+        if (auditEntries.length > 100) auditEntries = auditEntries.slice(0, 100);
+        renderAuditLog();
+        updateFooterDate();
+    }
+
+    function renderAuditLog() {
+        const div = document.getElementById('auditLog');
+        if (!auditEntries.length) {
+            div.innerHTML = '<div class="log-entry"><div class="log-time">—</div><div class="log-action">No entries yet.</div></div>';
+            return;
+        }
+        div.innerHTML = auditEntries.slice(0, 15).map(e =>
+            `<div class="log-entry">
+                <div class="log-time">${e.ts}</div>
+                <div class="log-action">${esc(e.action)}</div>
+             </div>`
+        ).join('');
+    }
+
+    // =============================================
+    //  SAVE / LOAD
+    // =============================================
+    function buildSaveObject() {
+        const zones = {};
+        ['cui','mgmt','guest','ot'].forEach(z => {
+            const el = document.getElementById('zone-' + z + '-desc');
+            if (el) zones[z] = el.value;
+        });
+        return { roles, assets, matrix, auditEntries, zones };
+    }
+
+    function applyLoadedData(d) {
+        roles        = d.roles        || [];
+        assets       = d.assets       || [];
+        matrix       = d.matrix       || {};
+        auditEntries = d.auditEntries || [];
+
+        if (d.zones) {
+            ['cui','mgmt','guest','ot'].forEach(z => {
+                const el = document.getElementById('zone-' + z + '-desc');
+                if (el && d.zones[z] !== undefined) el.value = d.zones[z];
+            });
+        }
+        refreshAll();
+        renderAuditLog();
+        markSaved();
+    }
+
+    function saveData() {
+        try {
+            localStorage.setItem('cmmc_acm_tool_v1', JSON.stringify(buildSaveObject()));
+            markSaved();
+            showToast('Matrix saved ✓', 'success');
+        } catch(e) {
+            showToast('Save failed — try Export CSV instead.', 'error');
+        }
+    }
+
+    function loadFromFile(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = e => {
+            try {
+                applyLoadedData(JSON.parse(e.target.result));
+                showToast('File loaded ✓', 'success');
+            } catch(err) {
+                showToast('Error: Invalid JSON file.', 'error');
+            }
+        };
+        reader.readAsText(file);
+        event.target.value = '';
+    }
+
+    // =============================================
+    //  RESET
+    // =============================================
+    function doReset() {
+        roles = []; assets = []; matrix = {}; auditEntries = [];
+        ['cui','mgmt','guest','ot'].forEach(z => {
+            const el = document.getElementById('zone-' + z + '-desc');
+            if (el) el.value = '';
+        });
+        localStorage.removeItem('cmmc_acm_tool_v1');
+        refreshAll();
+        renderAuditLog();
+        closeModal('resetModal');
+        markSaved();
+        showToast('Matrix reset.', 'error');
+    }
+
+    // =============================================
+    //  MODAL HELPERS
+    // =============================================
+    function openModal(id)  { document.getElementById(id).style.display = 'block'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    window.onclick = e => {
+        document.querySelectorAll('.modal').forEach(m => {
+            if (e.target === m) m.style.display = 'none';
+        });
+    };
+
+    // =============================================
+    //  UTILITIES
+    // =============================================
+    function esc(s) {
+        return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function showToast(msg, type) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.className = 'toast show ' + (type||'');
+        setTimeout(() => { t.className = 'toast'; }, 3200);
+    }
+
+    // Ctrl+S
+    document.addEventListener('keydown', e => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); saveData(); }
+    });
+</script>
+</body>
+</html>
