@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atlas Systems Group | CMMC Level 2 Case Study</title>
+    <style>
+        :root {
+            --primary-green: #2e7d32;
+            --accent-black: #000000;
+            --white: #ffffff;
+            --light-gray: #f4f4f4;
+            --border: #dddddd;
+            --warning: #ff9800;
+            --critical: #d32f2f;
+        }
+
+        body {
+            font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
+            background-color: var(--white);
+            color: var(--accent-black);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        /* Header & Branding */
+        header {
+            border-bottom: 5px solid var(--primary-green);
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--white);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .logo-container { display: flex; align-items: center; gap: 20px; }
+        .logo-sq { width: 60px; height: 60px; background: var(--accent-black); color: var(--primary-green); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 24px; border: 2px solid var(--primary-green); }
+        
+        .header-text h1 { margin: 0; font-size: 22px; text-transform: uppercase; letter-spacing: 2px; }
+        .header-text p { margin: 0; color: var(--primary-green); font-weight: bold; font-size: 14px; }
+
+        /* Navigation */
+        nav {
+            background: var(--accent-black);
+            display: flex;
+            padding: 0 50px;
+            overflow-x: auto;
+            border-bottom: 2px solid var(--primary-green);
+        }
+
+        .nav-item {
+            color: white;
+            padding: 15px 25px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border-right: 1px solid #333;
+            transition: 0.3s;
+            white-space: nowrap;
+        }
+
+        .nav-item:hover, .nav-item.active { background: var(--primary-green); color: white; }
+
+        /* Main Content */
+        .container { max-width: 1300px; margin: 30px auto; padding: 0 40px; }
+        
+        .tab-content { display: none; animation: slideUp 0.4s ease-out; }
+        .tab-content.active { display: block; }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Dashboard/Hero Stats */
+        .hero-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        .stat-card { border: 1px solid var(--border); padding: 20px; text-align: center; border-bottom: 4px solid var(--primary-green); }
+        .stat-card h3 { margin: 0; color: var(--primary-green); font-size: 28px; }
+        .stat-card p { margin: 5px 0 0; font-size: 12px; font-weight: bold; text-transform: uppercase; }
+
+        /* Typography & Layout */
+        h2 { border-left: 5px solid var(--primary-green); padding-left: 15px; text-transform: uppercase; font-size: 20px; margin-top: 40px; }
+        .callout { background: var(--light-gray); border-left: 5px solid var(--accent-black); padding: 20px; margin: 20px 0; }
+        
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+        th { background: var(--light-gray); text-align: left; padding: 12px; border-bottom: 2px solid var(--primary-green); }
+        td { padding: 12px; border-bottom: 1px solid var(--border); }
+        tr:hover { background-color: #fcfcfc; }
+
+        /* Specific Component: Findings/Gaps */
+        .finding { border: 1px solid var(--border); margin-bottom: 10px; }
+        .finding-header { padding: 15px; background: var(--light-gray); cursor: pointer; display: flex; justify-content: space-between; font-weight: bold; align-items: center; }
+        .finding-body { padding: 20px; display: none; border-top: 1px solid var(--border); background: #fff; }
+        .finding.crit { border-left: 10px solid var(--accent-black); }
+        .finding.high { border-left: 10px solid var(--critical); }
+        .tag { padding: 2px 8px; font-size: 10px; color: white; text-transform: uppercase; border-radius: 3px; }
+        .tag-crit { background: black; }
+        .tag-high { background: var(--critical); }
+
+        /* Personnel Grid */
+        .people-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .person-card { border: 1px solid var(--border); padding: 15px; display: flex; gap: 15px; align-items: center; }
+        .person-avatar { width: 50px; height: 50px; background: #eee; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--primary-green); border: 1px solid var(--primary-green); }
+
+        /* Interactive Elements */
+        .editable:focus { background: #fff9c4; outline: none; padding: 2px; }
+        .btn-group { margin-bottom: 20px; }
+        .action-btn { background: var(--primary-green); color: white; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; }
+        .action-btn:hover { background: var(--accent-black); }
+
+        @media print {
+            nav, .btn-group, header button { display: none; }
+            .tab-content { display: block !important; page-break-after: always; }
+            header { position: static; border-bottom: 2px solid black; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo-container">
+        <div class="logo-sq">ASG</div>
+        <div class="header-text">
+            <h1>Atlas Systems Group, LLC</h1>
+            <p>CMMC 2.0 Level 2 Audit Scenario</p>
+        </div>
+    </div>
+    <div class="btn-group">
+        <button class="action-btn" onclick="window.print()">🖨 Print Case Study</button>
+        <button class="action-btn" id="editToggle" onclick="toggleEdit()">✏ Enable Edit Mode</button>
+    </div>
+</header>
+
+<nav>
+    <div class="nav-item active" onclick="showTab('tab-overview', this)">🏢 Overview</div>
+    <div class="nav-item" onclick="showTab('tab-contracts', this)">📋 Contracts</div>
+    <div class="nav-item" onclick="showTab('tab-people', this)">👥 Personnel</div>
+    <div class="nav-item" onclick="showTab('tab-it', this)">🖥 IT & Cloud</div>
+    <div class="nav-item" onclick="showTab('tab-physical', this)">🏛 Physical Security</div>
+    <div class="nav-item" onclick="showTab('tab-risk', this)">🚨 Risk & Incidents</div>
+    <div class="nav-item" onclick="showTab('tab-findings', this)">📂 Audit Gaps (7)</div>
+</nav>
+
+<div class="container">
+
+    <div id="tab-overview" class="tab-content active">
+        <div class="hero-grid">
+            <div class="stat-card"><h3>85</h3><p>Employees</p></div>
+            <div class="stat-card"><h3>$19M</h3><p>FY25 Revenue</p></div>
+            <div class="stat-card"><h3>Azure Gov</h3><p>Primary Cloud</p></div>
+            <div class="stat-card"><h3>Arlington</h3><p>HQ Location</p></div>
+        </div>
+        
+        <h2>Company Profile</h2>
+        <div class="callout">
+            <p class="editable">Atlas Systems Group (ASG) is a premier DoD IT services contractor. We specialize in providing managed help desk, SOC-as-a-Service, and enterprise-level IT infrastructure support to federal civilian and defense agencies. Our architecture is "Cloud-First," leveraging IL4/IL5 Azure Government environments for all CUI processing.</p>
+        </div>
+
+        <h3>Key Metrics</h3>
+        <table>
+            <tr><th>Legal Name</th><td class="editable">Atlas Systems Group, LLC</td><th>CAGE Code</th><td class="editable">8V9L1</td></tr>
+            <tr><th>UEI Number</th><td class="editable">ASG2026UEI102</td><th>Founded</th><td class="editable">2014</td></tr>
+            <tr><th>NAICS</th><td class="editable">541513, 541519</td><th>Ownership</th><td class="editable">Privately Held</td></tr>
+        </table>
+    </div>
+
+    <div id="tab-contracts" class="tab-content">
+        <h2>Active Federal Contracts</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Contract #</th>
+                    <th>Agency</th>
+                    <th>Role</th>
+                    <th>CUI Category</th>
+                    <th>Clauses</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>N00039-24-C-0012</td>
+                    <td>Navy NAVWAR</td>
+                    <td>Prime</td>
+                    <td>CUI//CTI (Network Topology)</td>
+                    <td>7012, 7019, 7020</td>
+                </tr>
+                <tr>
+                    <td>DHS-SUB-8812</td>
+                    <td>CISA (via GDIT)</td>
+                    <td>Sub</td>
+                    <td>CUI//INDICATOR (Threat Intel)</td>
+                    <td>7012, 252.204-21</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="tab-people" class="tab-content">
+        <h2>Key Personnel & Roles</h2>
+        <div class="people-grid">
+            <div class="person-card"><div class="person-avatar">SV</div><div><strong>Sarah Vance</strong><br><small>CEO / Authorizing Official (AO)</small></div></div>
+            <div class="person-card"><div class="person-avatar">DC</div><div><strong>David Chen</strong><br><small>CTO & CISO (Audit POC)</small></div></div>
+            <div class="person-card"><div class="person-avatar">ER</div><div><strong>Elena Rodriguez</strong><br><small>Lead Cloud Architect (Global Admin)</small></div></div>
+            <div class="person-card"><div class="person-avatar">RS</div><div><strong>Robert Smith</strong><br><small>Facilities Mgr (Physical Sec)</small></div></div>
+            <div class="person-card"><div class="person-avatar">MT</div><div><strong>Marcus Thorne</strong><br><small>HR Director</small></div></div>
+            <div class="person-card"><div class="person-avatar">PK</div><div><strong>Priya Kapur</strong><br><small>Contracts Manager</small></div></div>
+            <div class="person-card"><div class="person-avatar">JW</div><div><strong>James "Jimmy" Wu</strong><br><small>Junior SysAdmin (No SAT Training)</small></div></div>
+            <div class="person-card"><div class="person-avatar">SJ</div><div><strong>Sarah Jenkins</strong><br><small>SOC Manager</small></div></div>
+            <div class="person-card"><div class="person-avatar">KO</div><div><strong>Kevin O’Malley</strong><br><small>Lead SOC Analyst</small></div></div>
+            <div class="person-card"><div class="person-avatar">LZ</div><div><strong>Linda Zhao</strong><br><small>Project Manager (DHS)</small></div></div>
+            <div class="person-card"><div class="person-avatar">TB</div><div><strong>Tom Baker</strong><br><small>Field Engineer (Remote VPN)</small></div></div>
+            <div class="person-card"><div class="person-avatar">JV</div><div><strong>Janet Vance</strong><br><small>Admin (Shared Password User)</small></div></div>
+            <div class="person-card"><div class="person-avatar">AV</div><div><strong>Dr. Aris Varma</strong><br><small>Consultant (1099 - Full VPN)</small></div></div>
+            <div class="person-card"><div class="person-avatar">SG</div><div><strong>Security Guard</strong><br><small>Contract Night Shift</small></div></div>
+        </div>
+
+        <h3>Security Training Status</h3>
+        <table>
+            <tr><th>Employee</th><th>Module</th><th>Date</th><th>Status</th></tr>
+            <tr><td>David Chen</td><td>Advanced CMMC Prep</td><td>Jan 2026</td><td>Pass</td></tr>
+            <tr><td>James Wu</td><td>CUI Handling v1</td><td>--</td><td style="color:red; font-weight:bold;">OVERDUE</td></tr>
+            <tr><td>Linda Zhao</td><td>CUI Marking</td><td>Mar 2026</td><td>Pass</td></tr>
+        </table>
+    </div>
+
+    <div id="tab-it" class="tab-content">
+        <h2>Network & Infrastructure</h2>
+        <div class="callout">
+            <strong>Hybrid Architecture:</strong> Arlington HQ (Site-to-Site VPN) ⟷ Azure Government (Entra ID).
+        </div>
+
+        <h3>VLAN Configuration</h3>
+        <table>
+            <tr><th>VLAN</th><th>Name</th><th>Purpose</th><th>Scope</th></tr>
+            <tr><td>10</td><td>CORP-MGMT</td><td>Exec & HR Traffic</td><td>In-Scope</td></tr>
+            <tr><td>20</td><td>SOC-OPS</td><td>Monitoring & SIEM feeds</td><td>In-Scope</td></tr>
+            <tr><td>30</td><td>LAB-DEV</td><td>Test environment</td><td>Out-of-Scope</td></tr>
+            <tr><td>99</td><td>GUEST</td><td>Internet only (Visitors)</td><td>Out-of-Scope</td></tr>
+        </table>
+
+        <h3>Hardware Inventory</h3>
+        <ul>
+            <li><strong>Firewalls:</strong> 2x FortiGate 100F (HA Cluster) at Arlington; Azure Firewall Premium in Cloud.</li>
+            <li><strong>Switches:</strong> 4x Cisco Catalyst 9300 (48-port) managed switches.</li>
+            <li><strong>Wireless:</strong> 6x Aruba AP-515 Access Points (WPA3-Enterprise).</li>
+            <li><strong>Sensors:</strong> 2x Security Onion IDS Nodes (Port Mirroring Core Switch).</li>
+        </ul>
+    </div>
+
+    <div id="tab-physical" class="tab-content">
+        <h2>Physical Security Controls</h2>
+        <div class="callout">
+            <strong>Arlington HQ:</strong> 4th Floor Multi-tenant Office. Interior "CUI Enclave" construction.
+        </div>
+        
+        <h3>Infrastructure Controls</h3>
+        <ul>
+            <li><strong>Electronic Entry:</strong> HID iCLASS SE Badge Readers (S2 NetBox Controller).</li>
+            <li><strong>Secure Server Room:</strong> Slab-to-slab partitioned walls with security mesh drop-ceilings.</li>
+            <li><strong>SOC Visibility:</strong> Frosted privacy film on all "Fishbowl" glass walls.</li>
+            <li><strong>CCTV:</strong> 8x Verkada IP Cameras. 30-day cloud retention.</li>
+        </ul>
+
+        <h3>Audit Evidence — Visitor Logs</h3>
+        <table>
+            <tr><th>Date</th><th>Visitor Name</th><th>Purpose</th><th>Escort Name</th></tr>
+            <tr><td>Mar 01</td><td>John Doe (Verizon)</td><td>ISP Repair</td><td>Robert Smith</td></tr>
+            <tr><td>Mar 03</td><td>HVAC Tech (Building)</td><td>Unit Repair</td><td style="color:red; font-weight:bold;">[BLANK]</td></tr>
+        </table>
+    </div>
+
+    <div id="tab-risk" class="tab-content">
+        <h2>Incident Response & Risk Register</h2>
+        
+        <h3>Recent Incidents (Logged in Sentinel)</h3>
+        <table>
+            <tr><th>ID</th><th>Date</th><th>Description</th><th>Action Taken</th></tr>
+            <tr><td>INC-26-02</td><td>Feb 02</td><td>Mimikatz alert on analyst Cloud PC.</td><td>Informal triage (no formal IR report).</td></tr>
+            <tr><td>INC-26-03</td><td>Mar 12</td><td>4GB upload to personal Dropbox.</td><td><strong>Closed as "False Positive" by J. Wu.</strong></td></tr>
+        </table>
+
+        <h3>Risk Register Highlights</h3>
+        <div class="finding high">
+            <div class="finding-header">RA-01: Shared Admin Accounts</div>
+            <div class="finding-body" style="display:block">Engineers share one global admin account. Likelihood: High | Impact: High. Mitigation: Delayed due to operations.</div>
+        </div>
+    </div>
+
+    <div id="tab-findings" class="tab-content">
+        <h2>Seeded Audit Findings (Audit Prep)</h2>
+        <p>Students must identify these 7 findings within the data sets provided.</p>
+
+        <div class="finding crit">
+            <div class="finding-header" onclick="toggleFinding(this)">GAP-01: Shared Admin Credentials <span class="tag tag-crit">Critical</span></div>
+            <div class="finding-body">
+                <strong>Requirement:</strong> AC.L2-3.1.1, 3.1.2.<br>
+                <strong>Finding:</strong> Shared global admin usage prevents non-repudiation and violates separation of duties.
+            </div>
+        </div>
+
+        <div class="finding high">
+            <div class="finding-header" onclick="toggleFinding(this)">GAP-02: Cloud Misconfiguration <span class="tag tag-high">High</span></div>
+            <div class="finding-body">
+                <strong>Requirement:</strong> SC.L1-3.13.1.<br>
+                <strong>Finding:</strong> Azure Blob Storage "Contract_Technical_Data" found with Public Read access enabled.
+            </div>
+        </div>
+
+        <div class="finding high">
+            <div class="finding-header" onclick="toggleFinding(this)">GAP-03: No IR Testing <span class="tag tag-high">High</span></div>
+            <div class="finding-body">
+                <strong>Requirement:</strong> IR.L2-3.6.3.<br>
+                <strong>Finding:</strong> IRP is stale (2023) with no evidence of tabletop exercises in last 12 months.
+            </div>
+        </div>
+
+        <div class="finding high">
+            <div class="finding-header" onclick="toggleFinding(this)">GAP-04: Supply Chain Risk <span class="tag tag-high">High</span></div>
+            <div class="finding-body">
+                <strong>Requirement:</strong> SR.L2-3.17.1.<br>
+                <strong>Finding:</strong> No security assessment performed for third-party RMM tool used on CUI enclave.
+            </div>
+        </div>
+
+        <div class="finding high">
+            <div class="finding-header" onclick="toggleFinding(this)">GAP-05: Shadow IT / Unmanaged Assets <span class="tag tag-high">High</span></div>
+            <div class="finding-body">
+                <strong>Requirement:</strong> CM.L2-3.4.1.<br>
+                <strong>Finding:</strong> Analysts using personal MacBooks to access CUI via browser sessions.
+            </div>
+        </div>
+
+        <div class="finding high">
+            <div class="finding-header" onclick="toggleFinding(this)">GAP-06: Failed Audit Log Review <span class="tag tag-high">High</span></div>
+            <div class="finding-body">
+                <strong>Requirement:</strong> AU.L2-3.3.3.<br>
+                <strong>Finding:</strong> Weekly log reviews not signed since Nov 2025; INC-26-03 closed improperly.
+            </div>
+        </div>
+
+        <div class="finding crit">
+            <div class="finding-header" onclick="toggleFinding(this)">GAP-07: Physical Media Control <span class="tag tag-crit">Critical</span></div>
+            <div class="finding-body">
+                <strong>Requirement:</strong> MP.L2-3.8.7.<br>
+                <strong>Finding:</strong> Unlocked shred bin containing CUI diagrams in common hallway.
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function showTab(tabId, el) {
+        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        el.classList.add('active');
+    }
+
+    function toggleFinding(header) {
+        const body = header.nextElementSibling;
+        body.style.display = (body.style.display === 'block') ? 'none' : 'block';
+    }
+
+    let editMode = false;
+    function toggleEdit() {
+        editMode = !editMode;
+        const btn = document.getElementById('editToggle');
+        const editables = document.querySelectorAll('.editable');
+        if (editMode) {
+            btn.innerHTML = "💾 Save Scenario";
+            btn.style.background = "#000";
+            editables.forEach(e => e.contentEditable = "true");
+        } else {
+            btn.innerHTML = "✏ Enable Edit Mode";
+            btn.style.background = "var(--primary-green)";
+            editables.forEach(e => e.contentEditable = "false");
+        }
+    }
+</script>
+
+</body>
+</html>
