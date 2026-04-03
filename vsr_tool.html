@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMMC 2.0 Vulnerability Scan Report (VSR) – Student Practice Tool</title>
+    <style>
+        /* ===== BASE ===== */
+        *, *::before, *::after { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f4f8;
+            color: #1f2937;
+        }
+
+        /* ===== TOOLBAR ===== */
+        .toolbar {
+            max-width: 1200px;
+            margin: 0 auto 16px auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            background: #1e3a8a;
+            padding: 12px 20px;
+            border-radius: 10px;
+        }
+        .toolbar-title {
+            color: #93c5fd;
+            font-weight: 700;
+            font-size: 0.85em;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-right: auto;
+        }
+        .toolbar button {
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.85em;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: filter 0.2s;
+            white-space: nowrap;
+        }
+        .toolbar button:hover { filter: brightness(1.12); }
+        .tb-edit   { background: #10b981; color: white; }
+        .tb-edit.active { background: #059669; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3); }
+        .tb-save   { background: #f59e0b; color: #1f2937; }
+        .tb-load   { background: #6366f1; color: white; }
+        .tb-export { background: #0ea5e9; color: white; }
+        .tb-print  { background: #64748b; color: white; }
+        .tb-reset  { background: #ef4444; color: white; }
+        .edit-status {
+            font-size: 0.82em; font-weight: 700;
+            padding: 5px 12px; border-radius: 20px;
+            background: #374151; color: #9ca3af;
+            white-space: nowrap;
+        }
+        .edit-status.on { background: #065f46; color: #6ee7b7; }
+
+        /* ===== CONTAINER ===== */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+            overflow: hidden;
+        }
+
+        /* ===== CUI BANNER ===== */
+        .cui-banner {
+            background: #dc2626;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            font-weight: 700;
+            font-size: 0.88em;
+            letter-spacing: 0.05em;
+            animation: blink 3s infinite;
+        }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.8} }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: white;
+            padding: 28px 30px;
+            text-align: center;
+            position: relative;
+        }
+        .header h1 { margin: 0 0 6px; font-size: 1.8em; font-weight: 700; }
+        .header h2 { margin: 0; font-size: 1em; font-weight: 400; opacity: 0.88; }
+        .student-badge {
+            position: absolute; top: 14px; right: 14px;
+            background: #fbbf24; color: #1f2937;
+            padding: 6px 14px; border-radius: 20px;
+            font-weight: 700; font-size: 0.8em;
+        }
+        .unsaved-indicator {
+            position: absolute; top: 14px; left: 14px;
+            background: #ef4444; color: white;
+            padding: 6px 14px; border-radius: 20px;
+            font-weight: 700; font-size: 0.8em; display: none;
+        }
+
+        /* ===== INSTRUCTION BOX ===== */
+        .instruction-box {
+            background: #eff6ff;
+            border: 2px dashed #3b82f6;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 20px;
+            font-size: 0.88em;
+            color: #1e40af;
+        }
+        .instruction-box strong { display: block; margin-bottom: 6px; font-size: 1em; }
+        .instruction-box ul { margin: 6px 0 0; padding-left: 20px; }
+        .instruction-box li { margin: 3px 0; }
+
+        /* ===== MAIN CONTENT ===== */
+        .content { padding: 20px; }
+
+        /* ===== SECTIONS ===== */
+        .section {
+            margin-bottom: 24px;
+            background: white;
+            padding: 22px 24px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.07);
+            border-left: 4px solid #3b82f6;
+            transition: box-shadow 0.2s;
+        }
+        .section:hover { box-shadow: 0 5px 18px rgba(0,0,0,0.11); }
+
+        .section-title {
+            color: #1e3a8a;
+            font-size: 1.15em;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section h3 {
+            color: #1e40af;
+            font-size: 0.95em;
+            margin: 18px 0 10px;
+            border-bottom: 1px solid #dbeafe;
+            padding-bottom: 5px;
+        }
+
+        /* ===== EDITABLE BLOCKS ===== */
+        .editable {
+            border: 2px dashed #d1d5db;
+            padding: 12px 14px;
+            border-radius: 7px;
+            min-height: 50px;
+            transition: border-color 0.2s, background 0.2s;
+            color: #9ca3af;
+            font-style: italic;
+            margin: 8px 0;
+        }
+        .editable.has-content { color: #1f2937; font-style: normal; border-color: #e5e7eb; }
+        .editable.edit-active {
+            border-color: #3b82f6; background: #fefce8;
+            color: #1f2937; font-style: normal; outline: none;
+        }
+        .editable[data-placeholder]:empty::before {
+            content: attr(data-placeholder);
+            color: #9ca3af; font-style: italic;
+            pointer-events: none; display: block;
+        }
+        .editable p { margin: 5px 0; }
+        .editable ol, .editable ul { padding-left: 20px; }
+        .editable li { margin: 4px 0; }
+
+        /* ===== ORG INFO GRID ===== */
+        .org-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 14px;
+            margin-bottom: 10px;
+        }
+        .org-card {
+            background: #f8fafc;
+            padding: 13px 16px;
+            border-radius: 8px;
+            border-left: 3px solid #3b82f6;
+        }
+        .org-label {
+            font-weight: 700; color: #1e3a8a;
+            font-size: 0.78em; text-transform: uppercase;
+            letter-spacing: 0.05em; margin-bottom: 5px;
+        }
+        .org-card input, .org-card select {
+            width: 100%; border: none;
+            border-bottom: 1px dashed #d1d5db;
+            background: transparent;
+            font-family: inherit; font-size: 0.9em;
+            color: #1f2937; padding: 2px 4px;
+        }
+        .org-card input:focus, .org-card select:focus {
+            outline: none; border-bottom-color: #3b82f6; background: #fefce8;
+        }
+        .org-card input::placeholder { color: #9ca3af; font-style: italic; }
+
+        /* ===== METRIC CARDS ===== */
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 14px;
+            margin: 14px 0;
+        }
+        .metric-card {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: white;
+            padding: 18px 14px;
+            border-radius: 10px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        .metric-card:hover { transform: scale(1.03); }
+        .metric-val {
+            font-size: 2em; font-weight: 800;
+            line-height: 1; margin-bottom: 6px;
+        }
+        .metric-val input {
+            background: transparent; border: none;
+            border-bottom: 1px dashed rgba(255,255,255,0.5);
+            color: white; font-size: 0.9em;
+            font-weight: 800; text-align: center;
+            width: 100%; font-family: inherit;
+        }
+        .metric-val input:focus { outline: none; border-bottom-color: white; }
+        .metric-val input::placeholder { color: rgba(255,255,255,0.55); font-size:0.7em; font-weight:400; }
+        .metric-lbl { font-size: 0.82em; opacity: 0.9; }
+        .metric-lbl input {
+            background: transparent; border: none;
+            border-bottom: 1px dashed rgba(255,255,255,0.35);
+            color: white; font-size: 1em;
+            text-align: center; width: 100%;
+            font-family: inherit;
+        }
+        .metric-lbl input:focus { outline: none; border-bottom-color: white; }
+        .metric-lbl input::placeholder { color: rgba(255,255,255,0.45); }
+
+        /* ===== VULNERABILITY TABLE ===== */
+        .table-wrap { overflow-x: auto; margin: 12px 0; }
+        .vuln-table {
+            width: 100%; border-collapse: collapse;
+            background: white; border-radius: 8px;
+            overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            font-size: 0.88em;
+        }
+        .vuln-table th {
+            background: #1e40af; color: white;
+            padding: 12px 14px; text-align: left;
+            font-weight: 600;
+        }
+        .vuln-table td {
+            padding: 11px 14px;
+            border-bottom: 1px solid #e5e7eb;
+            vertical-align: middle;
+        }
+        .vuln-table tr:nth-child(even) td { background: #f9fafb; }
+        .vuln-table tr:hover td { background: #eff6ff; }
+        .vuln-table td input, .vuln-table td textarea {
+            width: 100%; border: none;
+            border-bottom: 1px dashed #d1d5db;
+            background: transparent;
+            font-family: inherit; font-size: inherit; color: #1f2937;
+            padding: 2px 4px;
+        }
+        .vuln-table td input:focus, .vuln-table td textarea:focus {
+            outline: none; border-bottom-color: #3b82f6; background: #fefce8;
+        }
+        .vuln-table td input::placeholder { color: #9ca3af; font-style: italic; }
+        .empty-table-row td {
+            text-align: center; color: #9ca3af;
+            font-style: italic; padding: 22px;
+        }
+
+        /* ===== RISK BADGES ===== */
+        .risk-badge {
+            display: inline-block;
+            padding: 3px 10px; border-radius: 12px;
+            font-size: 0.82em; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.04em;
+            white-space: nowrap;
+        }
+        .risk-critical { background: #dc2626; color: white; }
+        .risk-high     { background: #f97316; color: white; }
+        .risk-medium   { background: #f59e0b; color: #1f2937; }
+        .risk-low      { background: #10b981; color: white; }
+        .risk-info     { background: #3b82f6; color: white; }
+
+        /* ===== SEVERITY SELECT ===== */
+        .sev-select {
+            border: 1px solid #d1d5db; border-radius: 5px;
+            padding: 3px 8px; background: white;
+            font-size: 0.82em; cursor: pointer;
+            font-family: inherit;
+        }
+
+        /* ===== FINDINGS LIST ===== */
+        .findings-list { list-style: none; padding: 0; margin: 10px 0; }
+        .findings-list li {
+            background: white;
+            margin: 8px 0; padding: 12px 14px;
+            border-radius: 7px;
+            border-left: 4px solid #3b82f6;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.07);
+            display: flex; align-items: flex-start; gap: 10px;
+            font-size: 0.9em;
+        }
+        .findings-list li input {
+            flex: 1; border: none;
+            border-bottom: 1px dashed #d1d5db;
+            background: transparent;
+            font-family: inherit; font-size: inherit;
+            color: #374151; padding: 2px 4px;
+        }
+        .findings-list li input:focus {
+            outline: none; border-bottom-color: #3b82f6; background: #fefce8;
+        }
+        .findings-list li input::placeholder { color: #9ca3af; font-style: italic; }
+        .finding-empty { color: #9ca3af; font-style: italic; font-size: 0.88em; padding: 10px 0; }
+
+        /* ===== RECOMMENDATIONS LIST ===== */
+        .rec-list { padding-left: 0; margin: 0; list-style: none; }
+        .rec-item {
+            background: white;
+            margin: 7px 0; padding: 11px 14px;
+            border-radius: 7px;
+            border-left: 3px solid #10b981;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            display: flex; align-items: flex-start; gap: 10px;
+            font-size: 0.9em;
+        }
+        .rec-num {
+            background: #1e40af; color: white;
+            width: 22px; height: 22px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.76em; font-weight: 700; flex-shrink: 0;
+        }
+        .rec-item input {
+            flex: 1; border: none;
+            border-bottom: 1px dashed #d1d5db;
+            background: transparent;
+            font-family: inherit; font-size: inherit;
+            color: #374151; padding: 2px 4px;
+        }
+        .rec-item input:focus {
+            outline: none; border-bottom-color: #10b981; background: #f0fdf4;
+        }
+        .rec-item input::placeholder { color: #9ca3af; font-style: italic; }
+
+        /* ===== TRENDS SECTION ===== */
+        .trends-section {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border: 1px solid #f59e0b;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 24px;
+            border-left: 4px solid #f59e0b;
+        }
+        .trends-section .section-title { color: #92400e; }
+
+        /* ===== COMPLIANCE MATRIX ===== */
+        .compliance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+            margin: 14px 0;
+        }
+        .compliance-item {
+            background: white;
+            padding: 12px 14px;
+            border-radius: 8px;
+            border-left: 4px solid;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.88em;
+        }
+        .compliance-item.ci-compliant    { border-color: #10b981; }
+        .compliance-item.ci-partial      { border-color: #f59e0b; }
+        .compliance-item.ci-noncompliant { border-color: #ef4444; }
+        .compliance-item.ci-pending      { border-color: #9ca3af; }
+        .compliance-label { font-weight: 600; color: #374151; }
+        .compliance-val-select {
+            border: 1px solid #d1d5db; border-radius: 10px;
+            padding: 3px 10px; font-size: 0.8em;
+            font-weight: 700; cursor: pointer;
+            font-family: inherit; white-space: nowrap;
+        }
+
+        /* ===== BUTTONS ===== */
+        .add-btn {
+            background: #10b981; color: white; border: none;
+            padding: 8px 16px; border-radius: 6px; cursor: pointer;
+            font-size: 0.82em; font-weight: 600; margin-top: 10px;
+            transition: background 0.2s;
+        }
+        .add-btn:hover { background: #059669; }
+        .add-btn.blue { background: #3b82f6; }
+        .add-btn.blue:hover { background: #2563eb; }
+        .del-btn {
+            background: #ef4444; color: white; border: none;
+            padding: 4px 8px; border-radius: 4px; cursor: pointer;
+            font-size: 0.76em; flex-shrink: 0; transition: background 0.2s;
+        }
+        .del-btn:hover { background: #dc2626; }
+
+        /* ===== FOOTER ===== */
+        .vsr-footer {
+            text-align: center; margin-top: 10px; padding: 20px;
+            border-top: 2px solid #bfdbfe; color: #6b7280;
+            font-size: 0.86em;
+        }
+        .vsr-footer .footer-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-bottom: 14px; text-align: left; }
+        .footer-field label { font-size: 0.78em; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: 0.04em; display: block; margin-bottom: 3px; }
+        .footer-field input { width: 100%; border: none; border-bottom: 1px dashed #d1d5db; background: transparent; font-family: inherit; font-size: 0.9em; color: #374151; padding: 2px 4px; }
+        .footer-field input:focus { outline: none; border-bottom-color: #3b82f6; }
+        .footer-field input::placeholder { color: #9ca3af; font-style: italic; }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed; bottom: 24px; right: 24px;
+            background: #1e3a8a; color: white;
+            padding: 12px 22px; border-radius: 8px;
+            font-size: 0.88em; z-index: 9999;
+            opacity: 0; transform: translateY(10px);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        .toast.show { opacity: 1; transform: translateY(0); }
+        .toast.success { background: #059669; }
+        .toast.error   { background: #dc2626; }
+
+        /* ===== MODALS ===== */
+        .modal {
+            display: none; position: fixed;
+            z-index: 2000; left: 0; top: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.55);
+        }
+        .modal-box {
+            background: white; margin: 5% auto;
+            padding: 28px; border-radius: 10px;
+            width: 92%; max-width: 480px;
+            position: relative;
+        }
+        .modal-box h2 { color: #1e3a8a; margin: 0 0 14px; font-size: 1.1em; }
+        .close-m { position: absolute; top: 12px; right: 16px; color: #9ca3af; font-size: 22px; font-weight: bold; cursor: pointer; line-height: 1; background: none; border: none; }
+        .close-m:hover { color: #111; }
+        .btn-primary-m  { background: #3b82f6; color: white; border: none; padding: 9px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .btn-secondary-m{ background: #6b7280; color: white; border: none; padding: 9px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .btn-danger-m   { background: #ef4444; color: white; border: none; padding: 9px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .m-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; }
+
+        /* ===== PRINT ===== */
+        @media print {
+            body { background: white; padding: 0; }
+            .toolbar, .instruction-box, .student-badge, .unsaved-indicator,
+            .add-btn, .del-btn { display: none !important; }
+            .container { box-shadow: none; border-radius: 0; }
+            .editable {
+                border: none !important; background: white !important;
+                color: #1f2937 !important; font-style: normal !important;
+            }
+            .vuln-table td input, .findings-list li input,
+            .rec-item input, .org-card input,
+            .metric-val input, .metric-lbl input { border-bottom: none; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== TOOLBAR ===== -->
+<div class="toolbar">
+    <span class="toolbar-title">🔍 VSR Tool — Student Practice</span>
+    <button class="tb-edit" id="editToggleBtn" onclick="toggleEditMode()">✏️ Edit Mode</button>
+    <span class="edit-status" id="editStatus">Edit: OFF</span>
+    <button class="tb-save"   onclick="saveReport()">💾 Save</button>
+    <button class="tb-load"   onclick="document.getElementById('fileInput').click()">📂 Load</button>
+    <button class="tb-export" onclick="exportJSON()">📤 Export JSON</button>
+    <button class="tb-print"  onclick="window.print()">🖨️ Print / PDF</button>
+    <button class="tb-reset"  onclick="openModal('resetModal')">🔄 Reset</button>
+    <input type="file" id="fileInput" accept=".json" style="display:none" onchange="loadFromFile(event)">
+</div>
+
+<!-- ===== CONTAINER ===== -->
+<div class="container">
+
+    <div class="cui-banner">CONTROLLED UNCLASSIFIED INFORMATION (CUI) — STUDENT PRACTICE TOOL</div>
+
+    <!-- HEADER -->
+    <div class="header">
+        <div class="student-badge">STUDENT PRACTICE TOOL</div>
+        <div class="unsaved-indicator" id="unsavedIndicator">● Unsaved Changes</div>
+        <h1>Vulnerability Scan Report (VSR)</h1>
+        <h2>CMMC 2.0 Level 2 Compliance — Student Practice Exercise</h2>
+    </div>
+
+    <!-- INSTRUCTION BOX -->
+    <div class="instruction-box">
+        <strong>🎓 Student Instructions</strong>
+        <ul>
+            <li>Click <strong>✏️ Edit Mode</strong> to enable editing of all narrative blocks. All table cells, metric cards, and list items are always directly editable.</li>
+            <li>Fill in <strong>Section 1 (Org Info)</strong> with your case study company details, then complete all sections below.</li>
+            <li>In <strong>Section 3 (Key Metrics)</strong>, click the value and label fields in each metric card to enter your scan data.</li>
+            <li>In <strong>Section 4 (Vulnerability Categories)</strong>, use <strong>"+ Add Category"</strong> to document vulnerability findings from your scan. Set severity and enter CVE IDs.</li>
+            <li>Update the <strong>CMMC Compliance Matrix</strong> (Section 7) to reflect your organization's actual compliance status for each RA control.</li>
+            <li>Add <strong>Findings, Trends, and Recommendations</strong> to complete the report. Use <strong>💾 Save</strong> (Ctrl+S) to preserve your work.</li>
+        </ul>
+    </div>
+
+    <div class="content">
+
+        <!-- ============================================================
+             SECTION 1: ORGANIZATION INFORMATION
+        ============================================================ -->
+        <div class="section">
+            <div class="section-title">🏢 1. Organization Information</div>
+            <div class="org-grid">
+                <div class="org-card">
+                    <div class="org-label">Organization</div>
+                    <input type="text" id="org-name" placeholder="Full legal organization name" oninput="markUnsaved()">
+                </div>
+                <div class="org-card">
+                    <div class="org-label">Prepared By</div>
+                    <input type="text" id="org-preparedby" placeholder="Name, Title (e.g., CISO)" oninput="markUnsaved()">
+                </div>
+                <div class="org-card">
+                    <div class="org-label">Scan Period / Report Date</div>
+                    <input type="text" id="org-date" placeholder="e.g., CY2024 — Report Date: Jan 15, 2025" oninput="markUnsaved()">
+                </div>
+                <div class="org-card">
+                    <div class="org-label">Classification</div>
+                    <select id="org-class" onchange="markUnsaved()" style="width:100%;border:none;border-bottom:1px dashed #d1d5db;background:transparent;font-family:inherit;font-size:0.9em;color:#1f2937;padding:2px 4px;">
+                        <option value="">— Select —</option>
+                        <option value="CUI">Controlled Unclassified Information (CUI)</option>
+                        <option value="FCI">Federal Contract Information (FCI)</option>
+                        <option value="Public">Public</option>
+                        <option value="Internal">Internal Use Only</option>
+                    </select>
+                </div>
+                <div class="org-card">
+                    <div class="org-label">Scan Tool(s) Used</div>
+                    <input type="text" id="org-tools" placeholder="e.g., Nessus, Qualys, OpenVAS" oninput="markUnsaved()">
+                </div>
+                <div class="org-card">
+                    <div class="org-label">Scan Scope</div>
+                    <input type="text" id="org-scope" placeholder="e.g., Internal networks, cloud, endpoints" oninput="markUnsaved()">
+                </div>
+                <div class="org-card">
+                    <div class="org-label">Scan Frequency</div>
+                    <input type="text" id="org-freq" placeholder="e.g., Quarterly enterprise + monthly targeted" oninput="markUnsaved()">
+                </div>
+                <div class="org-card">
+                    <div class="org-label">CMMC Level / NIST Reference</div>
+                    <input type="text" id="org-cmmc" placeholder="e.g., CMMC Level 2 / NIST SP 800-171 RA.L2-3.11.2" oninput="markUnsaved()">
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+             SECTION 2: EXECUTIVE SUMMARY
+        ============================================================ -->
+        <div class="section">
+            <div class="section-title">📋 2. Executive Summary</div>
+            <div class="editable" data-field="exec-summary"
+                 data-placeholder="Write an executive summary for this Vulnerability Scan Report. Include:
+• The overall purpose of the report and what period it covers
+• The number and types of scans conducted (enterprise-wide, targeted, cloud, etc.)
+• The scan tools used and their authorization basis
+• A high-level summary of findings (total vulnerabilities, severity breakdown)
+• The overall remediation status and key accomplishments
+• How this report demonstrates CMMC RA.L2-3.11.2 compliance">
+            </div>
+        </div>
+
+        <!-- ============================================================
+             SECTION 3: KEY METRICS
+        ============================================================ -->
+        <div class="section">
+            <div class="section-title">📊 3. Key Scan Metrics</div>
+            <p style="font-size:0.88em;color:#6b7280;margin-bottom:12px;">Click any metric card value or label to edit it. Add or remove cards to match your scan data.</p>
+            <div class="metric-grid" id="metricsGrid">
+                <!-- Rendered by JS -->
+            </div>
+            <button class="add-btn blue" onclick="addMetricCard()">+ Add Metric</button>
+        </div>
+
+        <!-- ============================================================
+             SECTION 4: VULNERABILITY CATEGORIES
+        ============================================================ -->
+        <div class="section">
+            <div class="section-title">🔴 4. Vulnerability Categories</div>
+            <p style="font-size:0.88em;color:#6b7280;margin-bottom:10px;">Document the top vulnerability categories identified in your scans. Use the severity selector to set the risk level — the badge will update automatically.</p>
+            <div class="table-wrap">
+                <table class="vuln-table">
+                    <thead>
+                        <tr>
+                            <th style="min-width:200px;">Vulnerability Category</th>
+                            <th style="width:120px;">Severity</th>
+                            <th style="width:110px;">% of Findings</th>
+                            <th>Common CVEs / Notes</th>
+                            <th style="width:70px;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="vulnTableBody">
+                        <tr class="empty-table-row">
+                            <td colspan="5">No vulnerability categories added yet — click <strong>"+ Add Category"</strong> below to begin.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <button class="add-btn" onclick="addVulnRow()">+ Add Category</button>
+        </div>
+
+        <!-- ============================================================
+             SECTION 5: NOTABLE FINDINGS
+        ============================================================ -->
+        <div class="section">
+            <div class="section-title">🔍 5. Notable Findings</div>
+            <p style="font-size:0.88em;color:#6b7280;margin-bottom:10px;">Document the most significant individual vulnerabilities or security weaknesses identified during the scan period. Each finding should reference a specific system, CVE, or risk.</p>
+            <ul class="findings-list" id="findingsList">
+                <li class="finding-empty" id="findingsEmpty">No findings added yet — click <strong>"+ Add Finding"</strong> below.</li>
+            </ul>
+            <button class="add-btn" onclick="addFinding()">+ Add Finding</button>
+        </div>
+
+        <!-- ============================================================
+             SECTION 6: TRENDS
+        ============================================================ -->
+        <div class="trends-section">
+            <div class="section-title">📈 6. Vulnerability Trends &amp; Industry Context</div>
+            <div class="editable" data-field="trends"
+                 data-placeholder="Describe vulnerability trends observed during the scan period and how they relate to national or industry-wide patterns affecting similar organizations (SMBs, defense contractors). Consider:
+1. Legacy System Exposure: Aging infrastructure without vendor support
+2. Patch Management Gaps: Delays due to resource constraints or operational concerns
+3. Remote Work / VPN Risks: Increased attack surface from remote access tools
+4. Cloud Misconfigurations: IAM policy gaps, logging deficiencies
+5. Social Engineering Threats: Phishing, credential harvesting, MFA bypass trends
+Reference any relevant threat intelligence sources (CISA alerts, NIST NVD, FBI IC3 report, etc.)">
+            </div>
+        </div>
+
+        <!-- ============================================================
+             SECTION 7: CMMC COMPLIANCE STATUS
+        ============================================================ -->
+        <div class="section">
+            <div class="section-title">✅ 7. CMMC 2.0 Level 2 — RA Control Compliance Status</div>
+            <p style="font-size:0.88em;color:#6b7280;margin-bottom:12px;">Update the status for each Risk Assessment (RA) control. Click a status badge to cycle through: Compliant → Partial → Non-Compliant → Pending → Compliant.</p>
+            <div class="compliance-grid" id="complianceGrid">
+                <!-- Rendered by JS -->
+            </div>
+            <button class="add-btn blue" onclick="addComplianceItem()">+ Add Compliance Item</button>
+        </div>
+
+        <!-- ============================================================
+             SECTION 8: RECOMMENDATIONS
+        ============================================================ -->
+        <div class="section" style="background:#f0fdf4; border-left-color:#10b981;">
+            <div class="section-title" style="color:#065f46;">🎯 8. CMMC Level 2 Recommendations</div>
+            <p style="font-size:0.88em;color:#374151;margin-bottom:12px;">List prioritized remediation recommendations. Each should be specific, actionable, and tied to a CMMC control or identified vulnerability.</p>
+            <ul class="rec-list" id="recList">
+                <li class="finding-empty" id="recEmpty">No recommendations added yet — click <strong>"+ Add Recommendation"</strong> below.</li>
+            </ul>
+            <button class="add-btn" onclick="addRecommendation()">+ Add Recommendation</button>
+        </div>
+
+        <!-- ============================================================
+             SECTION 9: CONCLUSION
+        ============================================================ -->
+        <div class="section">
+            <div class="section-title">📄 9. Conclusion</div>
+            <div class="editable" data-field="conclusion"
+                 data-placeholder="Write the conclusion for this Vulnerability Scan Report. Include:
+• A summary of the organization's overall vulnerability posture and improvement over the scan period
+• A statement of compliance with NIST SP 800-171 RA.L2-3.11.2 (Vulnerability Scanning)
+• Reference to how this report supports the organization's broader CMMC Level 2 certification efforts
+• A forward-looking statement about the organization's commitment to continuous improvement
+• Next steps or timeline for addressing remaining open vulnerabilities">
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="vsr-footer">
+            <div class="footer-fields">
+                <div class="footer-field">
+                    <label>Prepared By</label>
+                    <input type="text" id="footer-preparedby" placeholder="Name, Title" oninput="markUnsaved()">
+                </div>
+                <div class="footer-field">
+                    <label>Review Date</label>
+                    <input type="date" id="footer-date" oninput="markUnsaved()">
+                </div>
+                <div class="footer-field">
+                    <label>Document Classification</label>
+                    <input type="text" id="footer-class" placeholder="e.g., Controlled Unclassified Information (CUI)" oninput="markUnsaved()">
+                </div>
+                <div class="footer-field">
+                    <label>Next Scan Due</label>
+                    <input type="text" id="footer-nextscan" placeholder="e.g., Q1 2026" oninput="markUnsaved()">
+                </div>
+            </div>
+            <hr style="border-color:#dbeafe; margin-bottom:12px;">
+            <p style="font-style:italic; color:#9ca3af;">This document is a student practice exercise for CMMC 2.0 Level 2 compliance education.</p>
+        </div>
+
+    </div><!-- /content -->
+</div><!-- /container -->
+
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toast"></div>
+
+<!-- ===== RESET MODAL ===== -->
+<div id="resetModal" class="modal">
+    <div class="modal-box" style="max-width:420px;">
+        <h2>⚠️ Reset All Data?</h2>
+        <p style="font-size:0.9em;color:#374151;">This will clear all entered data and reset the tool to a blank state. This cannot be undone.</p>
+        <div class="m-actions">
+            <button class="btn-secondary-m" onclick="closeModal('resetModal')">Cancel</button>
+            <button class="btn-danger-m" onclick="doReset()">Yes, Reset Everything</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== JAVASCRIPT ===== -->
+<script>
+    // =============================================
+    //  EDIT MODE
+    // =============================================
+    let editMode = false;
+
+    function toggleEditMode() {
+        editMode = !editMode;
+        const btn = document.getElementById('editToggleBtn');
+        const status = document.getElementById('editStatus');
+        document.querySelectorAll('.editable').forEach(el => {
+            el.contentEditable = editMode ? 'true' : 'false';
+            if (editMode) {
+                el.classList.add('edit-active');
+            } else {
+                el.classList.remove('edit-active');
+                if (el.textContent.trim()) el.classList.add('has-content');
+                markUnsaved();
+            }
+        });
+        btn.textContent = editMode ? '🔒 Lock Editing' : '✏️ Edit Mode';
+        btn.className = editMode ? 'tb-edit active' : 'tb-edit';
+        status.textContent = editMode ? 'Edit: ON' : 'Edit: OFF';
+        status.className = editMode ? 'edit-status on' : 'edit-status';
+    }
+
+    // =============================================
+    //  METRICS
+    // =============================================
+    let metrics = [
+        { val:'', lbl:'Total Systems Scanned' },
+        { val:'', lbl:'Total Vulnerabilities Detected' },
+        { val:'', lbl:'Critical Vulnerabilities' },
+        { val:'', lbl:'High-Risk Vulnerabilities' },
+        { val:'', lbl:'Vulnerabilities Remediated (%)' },
+        { val:'', lbl:'Avg Days to Remediate (Critical)' }
+    ];
+
+    function renderMetrics() {
+        const grid = document.getElementById('metricsGrid');
+        grid.innerHTML = metrics.map((m, i) => `
+            <div class="metric-card">
+                <div class="metric-val">
+                    <input type="text" value="${esc(m.val)}" placeholder="0"
+                           onchange="metrics[${i}].val=this.value; markUnsaved();"
+                           title="Click to edit value">
+                </div>
+                <div class="metric-lbl">
+                    <input type="text" value="${esc(m.lbl)}" placeholder="Metric label"
+                           onchange="metrics[${i}].lbl=this.value; markUnsaved();"
+                           title="Click to edit label">
+                </div>
+                <button onclick="metrics.splice(${i},1); renderMetrics(); markUnsaved();"
+                        style="background:rgba(255,255,255,0.2);border:none;color:white;border-radius:5px;padding:3px 8px;cursor:pointer;font-size:0.75em;margin-top:8px;">✕ Remove</button>
+            </div>`).join('');
+    }
+
+    function addMetricCard() {
+        metrics.push({ val:'', lbl:'New Metric' });
+        renderMetrics(); markUnsaved();
+    }
+
+    // =============================================
+    //  VULNERABILITY TABLE
+    // =============================================
+    let vulnRows = [];
+
+    function renderVulnTable() {
+        const tbody = document.getElementById('vulnTableBody');
+        if (!vulnRows.length) {
+            tbody.innerHTML = '<tr class="empty-table-row"><td colspan="5">No vulnerability categories added yet — click <strong>"+ Add Category"</strong> below to begin.</td></tr>';
+            return;
+        }
+        tbody.innerHTML = vulnRows.map((row, i) => {
+            const badgeClass = { Critical:'risk-critical', High:'risk-high', Medium:'risk-medium', Low:'risk-low', Informational:'risk-info' }[row.sev] || 'risk-info';
+            return `<tr>
+                <td><input type="text" value="${esc(row.category)}" placeholder="e.g., Outdated Software / Unpatched OS"
+                    onchange="vulnRows[${i}].category=this.value; markUnsaved();"></td>
+                <td>
+                    <select class="sev-select" onchange="vulnRows[${i}].sev=this.value; renderVulnTable(); markUnsaved();">
+                        <option value="Critical"     ${row.sev==='Critical'     ?'selected':''}>Critical</option>
+                        <option value="High"         ${row.sev==='High'         ?'selected':''}>High</option>
+                        <option value="Medium"       ${row.sev==='Medium'       ?'selected':''}>Medium</option>
+                        <option value="Low"          ${row.sev==='Low'          ?'selected':''}>Low</option>
+                        <option value="Informational"${row.sev==='Informational'?'selected':''}>Info</option>
+                    </select>
+                    <span class="risk-badge ${badgeClass}" style="display:block;margin-top:5px;">${row.sev||'—'}</span>
+                </td>
+                <td><input type="text" value="${esc(row.pct)}" placeholder="e.g., 26%"
+                    onchange="vulnRows[${i}].pct=this.value; markUnsaved();" style="width:70px;"></td>
+                <td><input type="text" value="${esc(row.cves)}" placeholder="e.g., CVE-2024-0179, CVE-2023-21674"
+                    onchange="vulnRows[${i}].cves=this.value; markUnsaved();"></td>
+                <td><button class="del-btn" onclick="vulnRows.splice(${i},1); renderVulnTable(); markUnsaved();">Del</button></td>
+            </tr>`;
+        }).join('');
+    }
+
+    function addVulnRow() {
+        vulnRows.push({ category:'', sev:'High', pct:'', cves:'' });
+        renderVulnTable(); markUnsaved();
+    }
+
+    // =============================================
+    //  FINDINGS LIST
+    // =============================================
+    let findings = [];
+
+    function renderFindings() {
+        const ul = document.getElementById('findingsList');
+        const emptyEl = document.getElementById('findingsEmpty');
+        if (!findings.length) {
+            ul.innerHTML = '<li class="finding-empty" id="findingsEmpty">No findings added yet — click <strong>"+ Add Finding"</strong> below.</li>';
+            return;
+        }
+        ul.innerHTML = findings.map((f, i) => `
+            <li>
+                <input type="text" value="${esc(f)}" placeholder="Describe a specific vulnerability finding (reference system, CVE, risk, and action taken)…"
+                       onchange="findings[${i}]=this.value; markUnsaved();">
+                <button class="del-btn" onclick="findings.splice(${i},1); renderFindings(); markUnsaved();">✕</button>
+            </li>`).join('');
+    }
+
+    function addFinding() {
+        findings.push('');
+        renderFindings(); markUnsaved();
+        // Focus the new input
+        const inputs = document.querySelectorAll('#findingsList li input');
+        if (inputs.length) inputs[inputs.length-1].focus();
+    }
+
+    // =============================================
+    //  RECOMMENDATIONS
+    // =============================================
+    let recommendations = [];
+
+    function renderRecommendations() {
+        const ul = document.getElementById('recList');
+        if (!recommendations.length) {
+            ul.innerHTML = '<li class="finding-empty" id="recEmpty">No recommendations added yet — click <strong>"+ Add Recommendation"</strong> below.</li>';
+            return;
+        }
+        ul.innerHTML = recommendations.map((r, i) => `
+            <li class="rec-item">
+                <span class="rec-num">${i+1}</span>
+                <input type="text" value="${esc(r)}" placeholder="Describe a specific, actionable recommendation tied to a CMMC control or finding…"
+                       onchange="recommendations[${i}]=this.value; markUnsaved();">
+                <button class="del-btn" onclick="recommendations.splice(${i},1); renderRecommendations(); markUnsaved();">✕</button>
+            </li>`).join('');
+    }
+
+    function addRecommendation() {
+        recommendations.push('');
+        renderRecommendations(); markUnsaved();
+        const inputs = document.querySelectorAll('#recList li input');
+        if (inputs.length) inputs[inputs.length-1].focus();
+    }
+
+    // =============================================
+    //  COMPLIANCE MATRIX
+    // =============================================
+    const DEFAULT_COMPLIANCE = [
+        { label:'Asset Inventory (CM.L2-3.4.8)',               status:'pending' },
+        { label:'Vulnerability Scanning (RA.L2-3.11.2)',       status:'pending' },
+        { label:'Risk Assessment (RA.L2-3.11.1)',               status:'pending' },
+        { label:'Vulnerability Remediation (RA.L2-3.11.3)',     status:'pending' },
+        { label:'FIPS 140-2 Encryption',                       status:'pending' },
+        { label:'Access Controls (AC.L2-3.1.1)',                status:'pending' }
+    ];
+    let complianceItems = DEFAULT_COMPLIANCE.map(c => ({...c}));
+
+    const STATUS_CYCLE = ['compliant','partial','noncompliant','pending'];
+    const STATUS_LABELS = { compliant:'Compliant', partial:'Partial', noncompliant:'Non-Compliant', pending:'Not Assessed' };
+    const STATUS_COLORS = { compliant:'#059669', partial:'#d97706', noncompliant:'#dc2626', pending:'#6b7280' };
+    const STATUS_CLASS  = { compliant:'ci-compliant', partial:'ci-partial', noncompliant:'ci-noncompliant', pending:'ci-pending' };
+
+    function renderComplianceGrid() {
+        const grid = document.getElementById('complianceGrid');
+        grid.innerHTML = complianceItems.map((item, i) => {
+            const cls = STATUS_CLASS[item.status] || 'ci-pending';
+            const lbl = STATUS_LABELS[item.status] || 'Not Assessed';
+            const col = STATUS_COLORS[item.status] || '#6b7280';
+            return `<div class="compliance-item ${cls}">
+                <input type="text" value="${esc(item.label)}" placeholder="Control / requirement name"
+                       onchange="complianceItems[${i}].label=this.value; markUnsaved();"
+                       style="border:none;border-bottom:1px dashed #d1d5db;background:transparent;font-family:inherit;font-size:0.88em;font-weight:600;color:#374151;flex:1;padding:2px 4px;">
+                <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+                    <span style="background:${col};color:white;padding:3px 10px;border-radius:12px;font-size:0.78em;font-weight:700;cursor:pointer;white-space:nowrap;"
+                          onclick="cycleStatus(${i})" title="Click to change status">${lbl}</span>
+                    <button class="del-btn" onclick="complianceItems.splice(${i},1); renderComplianceGrid(); markUnsaved();">✕</button>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    function cycleStatus(i) {
+        const cur = STATUS_CYCLE.indexOf(complianceItems[i].status);
+        complianceItems[i].status = STATUS_CYCLE[(cur + 1) % STATUS_CYCLE.length];
+        renderComplianceGrid(); markUnsaved();
+    }
+
+    function addComplianceItem() {
+        complianceItems.push({ label:'New Control / Requirement', status:'pending' });
+        renderComplianceGrid(); markUnsaved();
+    }
+
+    // =============================================
+    //  UNSAVED + FOOTER DATE
+    // =============================================
+    function markUnsaved() {
+        document.getElementById('unsavedIndicator').style.display = 'block';
+    }
+    function markSaved() {
+        document.getElementById('unsavedIndicator').style.display = 'none';
+    }
+
+    // =============================================
+    //  COLLECT EDITABLE FIELDS
+    // =============================================
+    function collectEditableFields() {
+        const f = {};
+        document.querySelectorAll('.editable[data-field]').forEach(el => {
+            f[el.dataset.field] = el.innerHTML;
+        });
+        return f;
+    }
+    function applyEditableFields(f) {
+        if (!f) return;
+        document.querySelectorAll('.editable[data-field]').forEach(el => {
+            const v = f[el.dataset.field];
+            if (v !== undefined) { el.innerHTML = v; if (el.textContent.trim()) el.classList.add('has-content'); }
+        });
+    }
+
+    function collectOrgFields() {
+        const ids = ['org-name','org-preparedby','org-date','org-class','org-tools','org-scope','org-freq','org-cmmc',
+                     'footer-preparedby','footer-date','footer-class','footer-nextscan'];
+        const d = {};
+        ids.forEach(id => { const el = document.getElementById(id); if (el) d[id] = el.value; });
+        return d;
+    }
+    function applyOrgFields(d) {
+        if (!d) return;
+        Object.keys(d).forEach(id => { const el = document.getElementById(id); if (el) el.value = d[id]; });
+    }
+
+    // =============================================
+    //  SAVE / LOAD
+    // =============================================
+    function buildSaveObject() {
+        return {
+            editableFields: collectEditableFields(),
+            orgFields:      collectOrgFields(),
+            metrics,
+            vulnRows,
+            findings,
+            recommendations,
+            complianceItems
+        };
+    }
+
+    function applyLoadedData(d) {
+        if (d.editableFields)  applyEditableFields(d.editableFields);
+        if (d.orgFields)       applyOrgFields(d.orgFields);
+        if (d.metrics)         { metrics = d.metrics; renderMetrics(); }
+        if (d.vulnRows)        { vulnRows = d.vulnRows; renderVulnTable(); }
+        if (d.findings)        { findings = d.findings; renderFindings(); }
+        if (d.recommendations) { recommendations = d.recommendations; renderRecommendations(); }
+        if (d.complianceItems) { complianceItems = d.complianceItems; renderComplianceGrid(); }
+        markSaved();
+    }
+
+    function saveReport() {
+        try {
+            localStorage.setItem('cmmc_vsr_tool_v1', JSON.stringify(buildSaveObject()));
+            markSaved();
+            showToast('Report saved ✓', 'success');
+        } catch(e) {
+            showToast('Save failed — try Export JSON.', 'error');
+        }
+    }
+
+    function exportJSON() {
+        const blob = new Blob([JSON.stringify(buildSaveObject(), null, 2)], { type: 'application/json' });
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+        a.download = `CMMC_VSR_${new Date().toISOString().split('T')[0]}.json`;
+        a.click(); URL.revokeObjectURL(a.href);
+        showToast('JSON exported ✓', 'success');
+    }
+
+    function loadFromFile(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = e => {
+            try {
+                applyLoadedData(JSON.parse(e.target.result));
+                showToast('File loaded ✓', 'success');
+            } catch(err) { showToast('Error: Invalid JSON file.', 'error'); }
+        };
+        reader.readAsText(file);
+        event.target.value = '';
+    }
+
+    // =============================================
+    //  RESET
+    // =============================================
+    function doReset() {
+        metrics         = [
+            { val:'', lbl:'Total Systems Scanned' },
+            { val:'', lbl:'Total Vulnerabilities Detected' },
+            { val:'', lbl:'Critical Vulnerabilities' },
+            { val:'', lbl:'High-Risk Vulnerabilities' },
+            { val:'', lbl:'Vulnerabilities Remediated (%)' },
+            { val:'', lbl:'Avg Days to Remediate (Critical)' }
+        ];
+        vulnRows        = [];
+        findings        = [];
+        recommendations = [];
+        complianceItems = DEFAULT_COMPLIANCE.map(c => ({...c}));
+
+        document.querySelectorAll('.editable[data-field]').forEach(el => {
+            el.innerHTML = ''; el.classList.remove('has-content');
+        });
+        ['org-name','org-preparedby','org-date','org-class','org-tools','org-scope','org-freq','org-cmmc',
+         'footer-preparedby','footer-date','footer-class','footer-nextscan'].forEach(id => {
+            const el = document.getElementById(id); if (el) el.value = '';
+        });
+
+        renderMetrics(); renderVulnTable(); renderFindings();
+        renderRecommendations(); renderComplianceGrid();
+        localStorage.removeItem('cmmc_vsr_tool_v1');
+        closeModal('resetModal'); markSaved();
+        showToast('All data reset.', 'error');
+    }
+
+    // =============================================
+    //  MODAL HELPERS
+    // =============================================
+    function openModal(id)  { document.getElementById(id).style.display = 'block'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    window.onclick = e => {
+        if (e.target === document.getElementById('resetModal')) closeModal('resetModal');
+    };
+
+    // =============================================
+    //  UTILITIES
+    // =============================================
+    function esc(s) {
+        return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+    function showToast(msg, type) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.className = 'toast show ' + (type||'');
+        setTimeout(() => { t.className = 'toast'; }, 3200);
+    }
+
+    // =============================================
+    //  INIT
+    // =============================================
+    document.addEventListener('DOMContentLoaded', () => {
+        renderMetrics();
+        renderVulnTable();
+        renderFindings();
+        renderRecommendations();
+        renderComplianceGrid();
+
+        const saved = localStorage.getItem('cmmc_vsr_tool_v1');
+        if (saved) {
+            try { applyLoadedData(JSON.parse(saved)); showToast('Auto-loaded your last session.', 'success'); }
+            catch(e) {}
+        }
+
+        // Scroll animation
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.style.opacity = '1';
+                    e.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.05 });
+        document.querySelectorAll('.section, .trends-section').forEach(s => {
+            s.style.opacity = '0';
+            s.style.transform = 'translateY(16px)';
+            s.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            observer.observe(s);
+        });
+    });
+
+    // Ctrl+S
+    document.addEventListener('keydown', e => {
+        if ((e.ctrlKey||e.metaKey) && e.key === 's') { e.preventDefault(); saveReport(); }
+    });
+</script>
+</body>
+</html>
