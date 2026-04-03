@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMMC 2.0 Configuration Management Plan (CMP) – Student Practice Tool</title>
+    <style>
+        /* ===== BASE ===== */
+        *, *::before, *::after { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f4f8;
+            color: #1f2937;
+        }
+
+        /* ===== TOOLBAR ===== */
+        .toolbar {
+            max-width: 1200px;
+            margin: 0 auto 16px auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            background: #1e3a8a;
+            padding: 12px 20px;
+            border-radius: 10px;
+        }
+        .toolbar-title {
+            color: #93c5fd;
+            font-weight: 700;
+            font-size: 0.85em;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-right: auto;
+        }
+        .toolbar button {
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.85em;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: filter 0.2s;
+            white-space: nowrap;
+        }
+        .toolbar button:hover { filter: brightness(1.12); }
+        .tb-edit   { background: #10b981; color: white; }
+        .tb-edit.active { background: #059669; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3); }
+        .tb-save   { background: #f59e0b; color: #1f2937; }
+        .tb-load   { background: #6366f1; color: white; }
+        .tb-export { background: #0ea5e9; color: white; }
+        .tb-print  { background: #64748b; color: white; }
+        .tb-reset  { background: #ef4444; color: white; }
+        .edit-status {
+            font-size: 0.82em; font-weight: 700;
+            padding: 5px 12px; border-radius: 20px;
+            background: #374151; color: #9ca3af;
+            white-space: nowrap;
+        }
+        .edit-status.on { background: #065f46; color: #6ee7b7; }
+
+        /* ===== CONTAINER ===== */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+            overflow: hidden;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+        .header h1 { margin: 0 0 8px; font-size: 2em; font-weight: 700; }
+        .header .subtitle { font-size: 1em; opacity: 0.9; margin: 0 0 16px; }
+        .student-badge {
+            position: absolute; top: 14px; right: 14px;
+            background: #fbbf24; color: #1f2937;
+            padding: 6px 14px; border-radius: 20px;
+            font-weight: 700; font-size: 0.8em;
+        }
+        .unsaved-indicator {
+            position: absolute; top: 14px; left: 14px;
+            background: #ef4444; color: white;
+            padding: 6px 14px; border-radius: 20px;
+            font-weight: 700; font-size: 0.8em; display: none;
+        }
+        .compliance-badges {
+            display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
+        }
+        .comp-badge {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.35);
+            color: white;
+            padding: 5px 14px; border-radius: 20px;
+            font-size: 0.82em; font-weight: 700;
+        }
+
+        /* ===== INSTRUCTION BOX ===== */
+        .instruction-box {
+            background: #eff6ff;
+            border: 2px dashed #3b82f6;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 20px;
+            font-size: 0.88em;
+            color: #1e40af;
+        }
+        .instruction-box strong { display: block; margin-bottom: 6px; font-size: 1em; }
+        .instruction-box ul { margin: 6px 0 0; padding-left: 20px; }
+        .instruction-box li { margin: 3px 0; }
+
+        /* ===== CONTENT AREA ===== */
+        .content { padding: 24px; }
+
+        /* ===== SECTION CARDS ===== */
+        .section {
+            margin-bottom: 28px;
+            padding: 24px;
+            background: #fafbfc;
+            border-radius: 10px;
+            border-left: 5px solid #3b82f6;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .section h2 {
+            color: #1e3a8a;
+            font-size: 1.25em;
+            margin: 0 0 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .section h3 {
+            color: #1e40af;
+            font-size: 1em;
+            margin: 20px 0 12px;
+            border-bottom: 2px solid #dbeafe;
+            padding-bottom: 6px;
+        }
+        .section h3:first-of-type { margin-top: 0; }
+        .section p, .section li { font-size: 0.9em; }
+
+        /* ===== EDITABLE BLOCKS ===== */
+        .editable {
+            border: 2px dashed #d1d5db;
+            padding: 12px 14px;
+            border-radius: 7px;
+            min-height: 50px;
+            transition: border-color 0.2s, background 0.2s;
+            color: #9ca3af;
+            font-style: italic;
+            margin: 8px 0;
+        }
+        .editable.has-content { color: #1f2937; font-style: normal; border-color: #e5e7eb; }
+        .editable.edit-active {
+            border-color: #3b82f6;
+            background: #fefce8;
+            color: #1f2937;
+            font-style: normal;
+            outline: none;
+        }
+        .editable[data-placeholder]:empty::before {
+            content: attr(data-placeholder);
+            color: #9ca3af;
+            font-style: italic;
+            pointer-events: none;
+            display: block;
+        }
+        .editable p, .editable li { margin: 5px 0; }
+        .editable ol, .editable ul { padding-left: 20px; }
+
+        /* ===== TABLES ===== */
+        .table-wrap { overflow-x: auto; margin: 14px 0; }
+        .cmp-table {
+            width: 100%; border-collapse: collapse;
+            background: white;
+            border-radius: 8px; overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            font-size: 0.88em;
+        }
+        .cmp-table th {
+            background: #1e40af; color: white;
+            padding: 12px 14px; text-align: left;
+            font-weight: 600;
+        }
+        .cmp-table td {
+            padding: 11px 14px;
+            border-bottom: 1px solid #e5e7eb;
+            vertical-align: top;
+        }
+        .cmp-table tr:nth-child(even) td { background: #f9fafb; }
+        .cmp-table tr:hover td { background: #eff6ff; }
+        .cmp-table td input,
+        .cmp-table td select,
+        .cmp-table td textarea {
+            width: 100%; border: none;
+            border-bottom: 1px dashed #d1d5db;
+            background: transparent;
+            font-family: inherit; font-size: inherit;
+            color: #1f2937; padding: 2px 4px;
+        }
+        .cmp-table td input:focus,
+        .cmp-table td select:focus,
+        .cmp-table td textarea:focus {
+            outline: none; border-bottom-color: #3b82f6; background: #fefce8;
+        }
+        .cmp-table td input::placeholder,
+        .cmp-table td textarea::placeholder { color: #9ca3af; font-style: italic; }
+        .cmp-table td textarea { resize: vertical; min-height: 38px; }
+
+        /* ===== STATUS CELLS ===== */
+        .status-select {
+            border: 1px solid #d1d5db !important;
+            border-radius: 5px !important;
+            padding: 4px 8px !important;
+            background: white !important;
+            cursor: pointer;
+        }
+        .status-dot {
+            width: 10px; height: 10px; border-radius: 50%;
+            display: inline-block; margin-right: 6px; flex-shrink: 0;
+        }
+        .sd-green { background: #10b981; }
+        .sd-amber { background: #f59e0b; }
+        .sd-red   { background: #ef4444; }
+        .sd-gray  { background: #9ca3af; }
+        .status-cell { display: flex; align-items: center; white-space: nowrap; }
+
+        /* ===== ITEM LISTS ===== */
+        .item-list { list-style: none; padding: 0; margin: 10px 0; }
+        .item-list li {
+            background: white;
+            margin: 8px 0;
+            padding: 12px 14px;
+            border-radius: 8px;
+            border-left: 4px solid #3b82f6;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.07);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        .item-list li .item-text {
+            flex: 1;
+            font-size: 0.88em;
+            color: #374151;
+        }
+        .item-list.empty-hint::after {
+            content: attr(data-empty);
+            display: block;
+            color: #9ca3af;
+            font-style: italic;
+            font-size: 0.88em;
+            padding: 10px 4px;
+        }
+        .del-btn {
+            background: #ef4444; color: white; border: none;
+            padding: 4px 9px; border-radius: 5px; cursor: pointer;
+            font-size: 0.76em; flex-shrink: 0;
+            transition: background 0.2s;
+        }
+        .del-btn:hover { background: #dc2626; }
+        .add-btn {
+            background: #10b981; color: white; border: none;
+            padding: 8px 16px; border-radius: 6px; cursor: pointer;
+            font-size: 0.82em; font-weight: 600; margin-top: 8px;
+            transition: background 0.2s;
+        }
+        .add-btn:hover { background: #059669; }
+        .add-btn.blue { background: #3b82f6; }
+        .add-btn.blue:hover { background: #2563eb; }
+
+        /* ===== ORDERED LIST EDITABLE ===== */
+        .step-list { padding: 0; margin: 12px 0; }
+        .step-list li {
+            background: white;
+            margin: 6px 0;
+            padding: 10px 14px;
+            border-radius: 6px;
+            border-left: 3px solid #bfdbfe;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.88em;
+        }
+        .step-num {
+            background: #1e40af; color: white;
+            width: 22px; height: 22px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.76em; font-weight: 700; flex-shrink: 0;
+        }
+        .step-text {
+            flex: 1; border: none;
+            border-bottom: 1px dashed #d1d5db;
+            background: transparent;
+            font-family: inherit; font-size: inherit; color: #374151;
+            padding: 2px 4px; width: 100%;
+        }
+        .step-text:focus { outline: none; border-bottom-color: #3b82f6; background: #fefce8; }
+        .step-text::placeholder { color: #9ca3af; font-style: italic; }
+
+        /* ===== MODALS ===== */
+        .modal {
+            display: none; position: fixed;
+            z-index: 2000; left: 0; top: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.55);
+        }
+        .modal-box {
+            background: white; margin: 5% auto;
+            padding: 28px; border-radius: 10px;
+            width: 92%; max-width: 520px;
+            max-height: 85vh; overflow-y: auto;
+            position: relative;
+        }
+        .modal-box h2 { color: #1e3a8a; margin: 0 0 16px; font-size: 1.1em; }
+        .close-modal {
+            position: absolute; top: 12px; right: 16px;
+            color: #9ca3af; font-size: 22px; font-weight: bold;
+            cursor: pointer; line-height: 1; background: none; border: none;
+        }
+        .close-modal:hover { color: #111; }
+        .mfield { margin-bottom: 13px; }
+        .mfield label { display: block; font-weight: 700; font-size: 0.84em; color: #374151; margin-bottom: 4px; }
+        .mfield input, .mfield textarea, .mfield select {
+            width: 100%; padding: 8px 12px;
+            border: 1px solid #d1d5db; border-radius: 6px;
+            font-family: inherit; font-size: 0.88em;
+        }
+        .mfield textarea { height: 72px; resize: vertical; }
+        .mfield input:focus, .mfield textarea:focus, .mfield select:focus {
+            outline: 2px solid #3b82f6; border-color: transparent;
+        }
+        .mfield .hint { font-size: 0.76em; color: #6b7280; margin-top: 3px; }
+        .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; }
+        .btn-primary   { background: #3b82f6; color: white; border: none; padding: 9px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .btn-secondary { background: #6b7280; color: white; border: none; padding: 9px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .btn-success-m { background: #10b981; color: white; border: none; padding: 9px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .btn-danger-m  { background: #ef4444; color: white; border: none; padding: 9px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed; bottom: 24px; right: 24px;
+            background: #1e3a8a; color: white;
+            padding: 12px 22px; border-radius: 8px;
+            font-size: 0.88em; z-index: 9999;
+            opacity: 0; transform: translateY(10px);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        .toast.show { opacity: 1; transform: translateY(0); }
+        .toast.success { background: #059669; }
+        .toast.error   { background: #dc2626; }
+        .toast.warn    { background: #d97706; }
+
+        /* ===== FOOTER ===== */
+        .cmp-footer {
+            background: #f8fafc; padding: 16px 24px;
+            border-top: 1px solid #e5e7eb;
+            text-align: center; color: #6b7280; font-size: 0.84em;
+        }
+
+        /* ===== PRINT ===== */
+        @media print {
+            body { background: white; padding: 0; }
+            .toolbar, .instruction-box, .student-badge,
+            .unsaved-indicator, .add-btn, .del-btn { display: none !important; }
+            .container { box-shadow: none; border-radius: 0; }
+            .section { box-shadow: none; border: 1px solid #ddd; }
+            .editable {
+                border: none !important; background: white !important;
+                color: #1f2937 !important; font-style: normal !important;
+            }
+            .cmp-table td input, .cmp-table td select,
+            .cmp-table td textarea, .step-text { border-bottom: none; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== TOOLBAR ===== -->
+<div class="toolbar">
+    <span class="toolbar-title">⚙️ CMP Tool — Student Practice</span>
+    <button class="tb-edit" id="editToggleBtn" onclick="toggleEditMode()">✏️ Edit Mode</button>
+    <span class="edit-status" id="editStatus">Edit: OFF</span>
+    <button class="tb-save"   onclick="savePlan()">💾 Save</button>
+    <button class="tb-load"   onclick="document.getElementById('fileInput').click()">📂 Load</button>
+    <button class="tb-export" onclick="exportJSON()">📤 Export JSON</button>
+    <button class="tb-print"  onclick="window.print()">🖨️ Print / PDF</button>
+    <button class="tb-reset"  onclick="openModal('resetModal')">🔄 Reset</button>
+    <input type="file" id="fileInput" accept=".json" style="display:none" onchange="loadFromFile(event)">
+</div>
+
+<!-- ===== CONTAINER ===== -->
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="header">
+        <div class="student-badge">STUDENT PRACTICE TOOL</div>
+        <div class="unsaved-indicator" id="unsavedIndicator">● Unsaved Changes</div>
+        <h1>⚙️ Configuration Management Plan (CMP)</h1>
+        <p class="subtitle">CMMC 2.0 Level 2 Compliance Framework — Student Practice Exercise</p>
+        <div class="compliance-badges">
+            <span class="comp-badge">NIST SP 800-171</span>
+            <span class="comp-badge">CMMC 2.0 Level 2</span>
+            <span class="comp-badge">CM Controls 3.4.1–3.4.9</span>
+        </div>
+    </div>
+
+    <!-- INSTRUCTION BOX -->
+    <div class="instruction-box">
+        <strong>🎓 Student Instructions</strong>
+        <ul>
+            <li>Click <strong>✏️ Edit Mode</strong> to enable editing of all narrative blocks — click again to lock. All table cells, list items, and inline fields are always editable.</li>
+            <li>Work through all <strong>9 sections</strong> of the CMP for your assigned case study company.</li>
+            <li>In <strong>Section 3 (CM Controls)</strong>, update each control's implementation status and description using the dropdowns and text fields.</li>
+            <li>Use the <strong>"+ Add"</strong> buttons in Sections 4–8 to populate your CCB members, CM team, CUI systems, monitoring tools, approved software, and training programs.</li>
+            <li>All tables are directly editable — click any cell to type. Step-by-step process fields are also directly editable.</li>
+            <li>Use <strong>💾 Save</strong> (Ctrl+S) to preserve your work, or <strong>📤 Export JSON</strong> to download a file. <strong>🖨️ Print</strong> generates your final submission.</li>
+        </ul>
+    </div>
+
+    <div class="content">
+
+        <!-- ============================================================
+             SECTION 1: ORGANIZATION INFORMATION
+        ============================================================ -->
+        <div class="section">
+            <h2>🏢 1. Organization Information</h2>
+            <div class="table-wrap">
+                <table class="cmp-table">
+                    <tbody>
+                        <tr>
+                            <th style="width:220px;">Organization Name</th>
+                            <td><input type="text" id="org-name" placeholder="Full legal organization name" oninput="markUnsaved()"></td>
+                        </tr>
+                        <tr>
+                            <th>Location</th>
+                            <td><input type="text" id="org-location" placeholder="City, State" oninput="markUnsaved()"></td>
+                        </tr>
+                        <tr>
+                            <th>Employee Count</th>
+                            <td><input type="text" id="org-employees" placeholder="e.g., 85 employees" oninput="markUnsaved()"></td>
+                        </tr>
+                        <tr>
+                            <th>Primary Mission</th>
+                            <td><input type="text" id="org-mission" placeholder="Describe the organization's primary DoD contract work" oninput="markUnsaved()"></td>
+                        </tr>
+                        <tr>
+                            <th>CMMC Level Required</th>
+                            <td>
+                                <select id="org-cmmclevel" onchange="markUnsaved()" style="padding:4px 8px;border:1px solid #d1d5db;border-radius:5px;font-family:inherit;">
+                                    <option value="">— Select Level —</option>
+                                    <option>Level 1 – Foundational</option>
+                                    <option>Level 2 – Advanced</option>
+                                    <option>Level 3 – Expert</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Plan Version</th>
+                            <td><input type="text" id="org-version" placeholder="e.g., 1.0" oninput="markUnsaved()"></td>
+                        </tr>
+                        <tr>
+                            <th>Effective Date</th>
+                            <td><input type="date" id="org-date" oninput="markUnsaved()"></td>
+                        </tr>
+                        <tr>
+                            <th>Review Cycle</th>
+                            <td>
+                                <select id="org-review" onchange="markUnsaved()" style="padding:4px 8px;border:1px solid #d1d5db;border-radius:5px;font-family:inherit;">
+                                    <option value="">— Select —</option>
+                                    <option>Monthly</option>
+                                    <option>Quarterly</option>
+                                    <option>Semi-Annually</option>
+                                    <option>Annually</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ============================================================
+             SECTION 2: EXECUTIVE SUMMARY
+        ============================================================ -->
+        <div class="section">
+            <h2>📋 2. Executive Summary</h2>
+            <div class="editable" data-field="exec-summary"
+                 data-placeholder="Write an executive summary for this Configuration Management Plan. Describe:
+• The purpose of the CMP and which CMMC level it supports
+• The organization's CUI handling context and why CM is critical
+• The scope of systems and personnel covered
+• The overall framework (NIST SP 800-171 CM controls 3.4.1–3.4.9)
+• How this plan integrates with other security plans (SSP, IRP, POA&M)">
+            </div>
+        </div>
+
+        <!-- ============================================================
+             SECTION 3: CM CONTROLS
+        ============================================================ -->
+        <div class="section">
+            <h2>🔒 3. CMMC 2.0 Configuration Management Controls</h2>
+            <p style="font-size:0.88em; color:#6b7280; margin-bottom:14px;">Update each control's implementation status and add a brief description of how your organization implements it. Click any cell to edit.</p>
+            <div class="table-wrap">
+                <table class="cmp-table" id="controlsTable">
+                    <thead>
+                        <tr>
+                            <th style="width:110px;">Control ID</th>
+                            <th>Control Name &amp; Description</th>
+                            <th style="width:160px;">Implementation Status</th>
+                            <th style="width:90px;">Priority</th>
+                        </tr>
+                    </thead>
+                    <tbody id="controlsBody">
+                        <!-- Rendered by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ============================================================
+             SECTION 4: ROLES AND RESPONSIBILITIES
+        ============================================================ -->
+        <div class="section">
+            <h2>👥 4. Roles and Responsibilities</h2>
+
+            <h3>Configuration Control Board (CCB)</h3>
+            <p style="font-size:0.88em; color:#6b7280; margin-bottom:10px;">List every member of the CCB with their role, name, and primary responsibilities. The CCB is responsible for reviewing and approving all configuration changes.</p>
+            <ul class="item-list" id="ccb-list" data-empty="No CCB members added yet — click + Add CCB Member below."></ul>
+            <button class="add-btn" onclick="openAddModal('ccb-list','CCB Member','e.g., CISO: [Name] — Final approval authority for all configuration changes')">+ Add CCB Member</button>
+
+            <h3>Configuration Management Team</h3>
+            <p style="font-size:0.88em; color:#6b7280; margin-bottom:10px;">List each CM team member with their role and daily responsibilities for implementing and maintaining configurations.</p>
+            <ul class="item-list" id="cm-team-list" data-empty="No CM team members added yet — click + Add Team Member below."></ul>
+            <button class="add-btn" onclick="openAddModal('cm-team-list','CM Team Member','e.g., Systems Administrator: [Name] — Daily configuration management and monitoring')">+ Add Team Member</button>
+
+            <h3>Roles &amp; Responsibilities Matrix</h3>
+            <div class="editable" data-field="roles-matrix"
+                 data-placeholder="Describe the separation of duties and accountability for CM activities:
+• Who can REQUEST a configuration change
+• Who REVIEWS and assesses security impact
+• Who APPROVES changes (by change type)
+• Who IMPLEMENTS approved changes
+• Who VERIFIES and validates after implementation
+• Who DOCUMENTS and maintains change records">
+            </div>
+        </div>
+
+        <!-- ============================================================
+             SECTION 5: CONFIGURATION BASELINES
+        ============================================================ -->
+        <div class="section">
+            <h2>⚙️ 5. Configuration Baselines (NIST 3.4.1 &amp; 3.4.2)</h2>
+
+            <h3>CUI Processing Systems — Baseline Inventory</h3>
+            <p style="font-size:0.88em; color:#6b7280; margin-bottom:10px;">Document each CUI-processing system with its baseline configuration standard. Include OS version, hardening benchmark applied, and encryption status.</p>
+            <ul class="item-list" id="cui-systems-list" data-empty="No CUI systems added yet — click + Add CUI System below."></ul>
+            <button class="add-btn" onclick="openAddModal('cui-systems-list','CUI System','e.g., CUI-001 Primary Data Server: Windows Server 2022, DISA STIG hardened, AES-256 encrypted storage')">+ Add CUI System</button>
+
+            <h3>Security Configuration Standards</h3>
+            <div class="editable" data-field="config-standards"
+                 data-placeholder="Describe the configuration standards applied to each system category:
+• Windows Systems: [e.g., DISA STIGs for Windows Server / Windows 11]
+• Network Devices: [e.g., CIS Benchmarks for routers, switches, firewalls]
+• Cloud Services: [e.g., FedRAMP Moderate baseline for Azure Government]
+• Encryption Standards: [e.g., FIPS 140-2 validated modules — AES-256]
+• Access Controls: [e.g., MFA for privileged accounts, RBAC via Active Directory]
+• Mobile/Endpoint: [e.g., MDM policy, BitLocker, endpoint protection]">
+            </div>
+
+            <h3>Baseline Documentation and Version Control</h3>
+            <div class="editable" data-field="baseline-doc"
+                 data-placeholder="Describe how configuration baselines are documented, stored, and version-controlled:
+• Where baseline documentation is stored (e.g., secure SharePoint, configuration repository)
+• Who maintains baseline records and how often they are reviewed
+• Version control process — how changes to baselines are tracked
+• How baselines are validated against actual system configurations (drift detection)">
+            </div>
+        </div>
+
+        <!-- ============================================================
+             SECTION 6: CHANGE CONTROL PROCEDURES
+        ============================================================ -->
+        <div class="section">
+            <h2>🔄 6. Change Control Procedures (NIST 3.4.5 &amp; 3.4.6)</h2>
+
+            <h3>Change Classification</h3>
+            <div class="table-wrap">
+                <table class="cmp-table" id="changeClassTable">
+                    <thead>
+                        <tr>
+                            <th>Change Type</th>
+                            <th>Approval Authority</th>
+                            <th>Documentation Required</th>
+                            <th>Testing Required</th>
+                        </tr>
+                    </thead>
+                    <tbody id="changeClassBody">
+                        <!-- Rendered by JS -->
+                    </tbody>
+                </table>
+            </div>
+            <button class="add-btn blue" onclick="addChangeClassRow()">+ Add Change Type</button>
+
+            <h3>Change Request Process (Step-by-Step)</h3>
+            <p style="font-size:0.88em; color:#6b7280; margin-bottom:10px;">Document each step in your change request and approval workflow. Edit the text in each step.</p>
+            <ul class="step-list" id="change-process-steps">
+                <!-- Rendered by JS -->
+            </ul>
+            <button class="add-btn" onclick="addProcessStep()">+ Add Process Step</button>
+
+            <h3>Security Impact Analysis (NIST 3.4.6)</h3>
+            <div class="editable" data-field="security-impact"
+                 data-placeholder="Describe your organization's process for analyzing the security impact of proposed configuration changes before implementation:
+• What triggers a security impact analysis
+• Who conducts the analysis (e.g., Security Officer, CISO)
+• What criteria are evaluated (e.g., CUI exposure, attack surface changes, compliance impact)
+• How results are documented and factored into CCB approval decisions
+• How emergency changes handle security impact analysis post-implementation">
+            </div>
+        </div>
+
+        <!-- ============================================================
+             SECTION 7: MONITORING AND COMPLIANCE
+        ============================================================ -->
+        <div class="section">
+            <h2>📊 7. Monitoring and Compliance (NIST 3.4.8)</h2>
+
+            <h3>Automated Monitoring Tools</h3>
+            <ul class="item-list" id="monitoring-tools-list" data-empty="No monitoring tools added — click + Add Monitoring Tool below."></ul>
+            <button class="add-btn" onclick="openAddModal('monitoring-tools-list','Monitoring Tool','e.g., Microsoft SCCM: Automated baseline compliance scanning and drift detection for all managed systems')">+ Add Monitoring Tool</button>
+
+            <h3>Compliance Monitoring Schedule</h3>
+            <div class="table-wrap">
+                <table class="cmp-table" id="monitoringScheduleTable">
+                    <thead>
+                        <tr>
+                            <th>Activity</th>
+                            <th>Frequency</th>
+                            <th>Responsible Party</th>
+                            <th>Output / Documentation</th>
+                        </tr>
+                    </thead>
+                    <tbody id="monitoringScheduleBody">
+                        <!-- Rendered by JS -->
+                    </tbody>
+                </table>
+            </div>
+            <button class="add-btn blue" onclick="addMonitoringRow()">+ Add Monitoring Activity</button>
+        </div>
+
+        <!-- ============================================================
+             SECTION 8: SOFTWARE AND ACCESS CONTROL
+        ============================================================ -->
+        <div class="section">
+            <h2>💻 8. Software and Access Control (NIST 3.4.4 &amp; 3.4.7)</h2>
+
+            <h3>Approved Software List</h3>
+            <p style="font-size:0.88em; color:#6b7280; margin-bottom:10px;">Document every application authorized for use on CUI-processing systems. Include version/edition, purpose, and authorization basis.</p>
+            <ul class="item-list" id="approved-software-list" data-empty="No approved software listed — click + Add Approved Software below."></ul>
+            <button class="add-btn" onclick="openAddModal('approved-software-list','Approved Software','e.g., Microsoft Office 365 Government: Productivity suite for CUI processing — FedRAMP Moderate authorized')">+ Add Approved Software</button>
+
+            <h3>Least Functionality (NIST 3.4.3)</h3>
+            <div class="editable" data-field="least-functionality"
+                 data-placeholder="Describe how your organization enforces least functionality — only enabling capabilities required for authorized functions:
+• Which ports, protocols, and services are disabled by default
+• How user-installed software is restricted (e.g., software whitelisting, AppLocker)
+• How unnecessary accounts, features, and functionality are removed
+• How exceptions are requested, approved, and documented">
+            </div>
+
+            <h3>Change Access Restrictions (NIST 3.4.7)</h3>
+            <div class="editable" data-field="access-restrictions"
+                 data-placeholder="Describe access restrictions that prevent unauthorized configuration changes:
+• Administrative Access: Who has privileged access and how it is controlled (e.g., MFA, PAM solution)
+• Configuration Changes: Approval requirements before any changes can be implemented
+• Privileged Account Management: Review frequency and credential rotation policy
+• Audit Trail: How all configuration changes are logged and reviewed
+• Separation of Duties: Policy preventing requestors from implementing their own changes">
+            </div>
+        </div>
+
+        <!-- ============================================================
+             SECTION 8b: INCIDENT RESPONSE
+        ============================================================ -->
+        <div class="section">
+            <h2>🚨 9. Configuration Incident Response</h2>
+
+            <h3>Unauthorized Configuration Change Response</h3>
+            <ul class="step-list" id="incident-steps">
+                <!-- Rendered by JS -->
+            </ul>
+            <button class="add-btn" onclick="addIncidentStep()">+ Add Response Step</button>
+
+            <h3>Emergency Change Procedures</h3>
+            <div class="editable" data-field="emergency-change"
+                 data-placeholder="Describe your emergency change procedures for critical security situations:
+• Security Emergency: Who has authority to approve immediate changes (e.g., CISO) and under what conditions
+• Business Continuity: Who can authorize changes to restore critical operations
+• Documentation Requirements: Timeline for post-emergency documentation (e.g., within 24 hours)
+• CCB Review: When the CCB must review emergency changes after the fact (e.g., within 72 hours)
+• Validation: Post-implementation security validation and compliance verification steps">
+            </div>
+
+            <!-- ============================================================
+                 SECTION 9: TRAINING AND AWARENESS
+            ============================================================ -->
+            <h3 style="margin-top:24px; border-top: 2px solid #dbeafe; padding-top:18px;">🎓 Training and Awareness</h3>
+            <h3>Required Training Programs</h3>
+            <ul class="item-list" id="training-list" data-empty="No training programs listed — click + Add Training Program below."></ul>
+            <button class="add-btn" onclick="openAddModal('training-list','Training Program','e.g., CMMC 2.0 Awareness Training: Annual — all personnel with CUI access — content covers handling, classification, and reporting requirements')">+ Add Training Program</button>
+        </div>
+
+        <!-- ============================================================
+             SECTION 10: CONTINUOUS IMPROVEMENT
+        ============================================================ -->
+        <div class="section">
+            <h2>📈 10. Continuous Improvement</h2>
+
+            <h3>Performance Metrics</h3>
+            <div class="table-wrap">
+                <table class="cmp-table" id="metricsTable">
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Target</th>
+                            <th>Current Status</th>
+                            <th>Reporting Frequency</th>
+                        </tr>
+                    </thead>
+                    <tbody id="metricsBody">
+                        <!-- Rendered by JS -->
+                    </tbody>
+                </table>
+            </div>
+            <button class="add-btn blue" onclick="addMetricRow()">+ Add Metric</button>
+
+            <h3>Review and Update Schedule</h3>
+            <div class="editable" data-field="review-schedule"
+                 data-placeholder="Define the CMP review and update schedule:
+• Monthly: [Describe what is reviewed monthly, e.g., performance metrics, open change requests]
+• Quarterly: [e.g., Configuration baseline review and updates]
+• Semi-Annually: [e.g., CCB effectiveness review and process improvement]
+• Annually: [e.g., Complete CMP review, major updates based on lessons learned]
+• Ad-Hoc: [e.g., Updates following significant security incidents or regulatory changes]">
+            </div>
+
+            <h3>Plan Approval and Signature</h3>
+            <div class="table-wrap">
+                <table class="cmp-table" id="approvalsTable">
+                    <thead>
+                        <tr>
+                            <th>Role</th>
+                            <th>Name</th>
+                            <th>Signature / Approval</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="approvalsBody">
+                        <!-- Rendered by JS -->
+                    </tbody>
+                </table>
+            </div>
+            <button class="add-btn blue" onclick="addApprovalRow()">+ Add Approver</button>
+        </div>
+
+    </div><!-- /content -->
+
+    <!-- FOOTER -->
+    <div class="cmp-footer">
+        <p>
+            <strong>Document Type:</strong> Configuration Management Plan (CMP) — CMMC 2.0 Level 2 &nbsp;|&nbsp;
+            <strong>Organization:</strong> <span id="footerOrg">[Enter in Section 1]</span> &nbsp;|&nbsp;
+            <strong>Last Modified:</strong> <span id="footerDate"></span>
+        </p>
+        <p style="margin-top:4px; font-style:italic;">This document should be protected as CUI and reviewed at the interval specified in Section 1.</p>
+    </div>
+
+</div><!-- /container -->
+
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toast"></div>
+
+<!-- ===== ADD ITEM MODAL ===== -->
+<div id="addItemModal" class="modal">
+    <div class="modal-box">
+        <button class="close-modal" onclick="closeModal('addItemModal')">&times;</button>
+        <h2 id="addModalTitle">Add Item</h2>
+        <div class="mfield">
+            <label>Description *</label>
+            <textarea id="addItemText" rows="3"></textarea>
+            <p class="hint" id="addModalHint"></p>
+        </div>
+        <div class="modal-actions">
+            <button class="btn-secondary" onclick="closeModal('addItemModal')">Cancel</button>
+            <button class="btn-success-m" onclick="confirmAddItem()">Add Item</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== RESET MODAL ===== -->
+<div id="resetModal" class="modal">
+    <div class="modal-box" style="max-width:420px;">
+        <h2>⚠️ Reset All Data?</h2>
+        <p style="font-size:0.9em;color:#374151;">This will clear all text, table entries, and list items you have entered. This cannot be undone.</p>
+        <div class="modal-actions">
+            <button class="btn-secondary" onclick="closeModal('resetModal')">Cancel</button>
+            <button class="btn-danger-m" onclick="doReset()">Yes, Reset Everything</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== JAVASCRIPT ===== -->
+<script>
+    // =============================================
+    //  EDIT MODE
+    // =============================================
+    let editMode = false;
+
+    function toggleEditMode() {
+        editMode = !editMode;
+        const btn    = document.getElementById('editToggleBtn');
+        const status = document.getElementById('editStatus');
+        document.querySelectorAll('.editable').forEach(el => {
+            el.contentEditable = editMode ? 'true' : 'false';
+            if (editMode) {
+                el.classList.add('edit-active');
+            } else {
+                el.classList.remove('edit-active');
+                if (el.textContent.trim()) el.classList.add('has-content');
+                markUnsaved();
+            }
+        });
+        btn.textContent = editMode ? '🔒 Lock Editing' : '✏️ Edit Mode';
+        btn.className = editMode ? 'tb-edit active' : 'tb-edit';
+        status.textContent = editMode ? 'Edit: ON' : 'Edit: OFF';
+        status.className = editMode ? 'edit-status on' : 'edit-status';
+    }
+
+    // =============================================
+    //  CM CONTROLS TABLE
+    // =============================================
+    const CM_CONTROLS = [
+        { id:'3.4.1 (CM-2)', name:'Baseline Configurations',                      desc:'Establish and maintain baseline configurations for IT systems.' },
+        { id:'3.4.2 (CM-6)', name:'Configuration Settings',                       desc:'Establish and document configuration settings that reflect the most restrictive mode consistent with operational requirements.' },
+        { id:'3.4.3 (CM-7)', name:'Least Functionality',                          desc:'Configure systems to provide only essential capabilities; prohibit or restrict the use of unauthorized functions, ports, protocols, and services.' },
+        { id:'3.4.4 (CM-11)',name:'User-Installed Software',                       desc:'Establish and enforce policies and procedures that govern user-installed software on organizational systems.' },
+        { id:'3.4.5 (CM-3)', name:'Configuration Change Control',                  desc:'Establish and implement change control processes for configuration management of IT systems.' },
+        { id:'3.4.6 (CM-4)', name:'Security Impact Analysis',                      desc:'Analyze the security impact of changes prior to implementation.' },
+        { id:'3.4.7 (CM-5)', name:'Access Restrictions for Change',                desc:'Define, document, approve, and enforce physical and logical access restrictions associated with changes to IT systems.' },
+        { id:'3.4.8 (CM-8)', name:'System Component Inventory',                    desc:'Develop and document an inventory of system components that accurately reflects the current system.' },
+        { id:'3.4.9 (CM-8e)',name:'Component Inventory — Enhanced',                desc:'Use automated mechanisms to help maintain an up-to-date, complete, accurate, and readily available inventory of system components.' }
+    ];
+
+    let controlStatuses = CM_CONTROLS.map(() => ({ status:'not-started', desc:'' }));
+
+    function renderControlsTable() {
+        const tbody = document.getElementById('controlsBody');
+        tbody.innerHTML = CM_CONTROLS.map((ctrl, i) => {
+            const s = controlStatuses[i];
+            const dotCls = { 'implemented':'sd-green','in-progress':'sd-amber','not-started':'sd-red','planned':'sd-gray' }[s.status] || 'sd-gray';
+            return `<tr>
+                <td style="font-weight:700; color:#1e40af; white-space:nowrap;">${ctrl.id}</td>
+                <td>
+                    <div style="font-weight:600; color:#1f2937; font-size:0.88em; margin-bottom:4px;">${ctrl.name}</div>
+                    <div style="font-size:0.8em; color:#6b7280; margin-bottom:6px;">${ctrl.desc}</div>
+                    <input type="text" placeholder="Describe how your organization implements this control…"
+                           value="${esc(s.desc)}"
+                           onchange="controlStatuses[${i}].desc=this.value; markUnsaved();"
+                           style="font-size:0.85em;">
+                </td>
+                <td>
+                    <div class="status-cell">
+                        <span class="status-dot ${dotCls}"></span>
+                        <select class="status-select"
+                                onchange="controlStatuses[${i}].status=this.value; renderControlsTable(); markUnsaved();">
+                            <option value="not-started"  ${s.status==='not-started'  ?'selected':''}>Not Started</option>
+                            <option value="planned"      ${s.status==='planned'      ?'selected':''}>Planned</option>
+                            <option value="in-progress"  ${s.status==='in-progress'  ?'selected':''}>In Progress</option>
+                            <option value="implemented"  ${s.status==='implemented'  ?'selected':''}>Implemented</option>
+                        </select>
+                    </div>
+                </td>
+                <td>
+                    <select onchange="controlPriorities[${i}]=this.value; markUnsaved();"
+                            style="padding:4px 8px;border:1px solid #d1d5db;border-radius:5px;font-family:inherit;font-size:0.85em;">
+                        <option value="">—</option>
+                        <option value="High"   ${(controlPriorities[i]||'')==='High'  ?'selected':''}>High</option>
+                        <option value="Medium" ${(controlPriorities[i]||'')==='Medium'?'selected':''}>Medium</option>
+                        <option value="Low"    ${(controlPriorities[i]||'')==='Low'   ?'selected':''}>Low</option>
+                    </select>
+                </td>
+            </tr>`;
+        }).join('');
+    }
+
+    let controlPriorities = CM_CONTROLS.map(() => '');
+
+    // =============================================
+    //  CHANGE CLASSIFICATION TABLE
+    // =============================================
+    let changeClassRows = [
+        { type:'', authority:'', docs:'', testing:'' },
+        { type:'', authority:'', docs:'', testing:'' },
+        { type:'', authority:'', docs:'', testing:'' }
+    ];
+
+    function renderChangeClassTable() {
+        const tbody = document.getElementById('changeClassBody');
+        tbody.innerHTML = changeClassRows.map((row, i) => `
+            <tr>
+                <td><input type="text" value="${esc(row.type)}" placeholder="e.g., Emergency Security Patch"
+                    onchange="changeClassRows[${i}].type=this.value; markUnsaved();"></td>
+                <td><input type="text" value="${esc(row.authority)}" placeholder="e.g., CISO (within 24 hours)"
+                    onchange="changeClassRows[${i}].authority=this.value; markUnsaved();"></td>
+                <td><input type="text" value="${esc(row.docs)}" placeholder="e.g., Post-implementation documentation"
+                    onchange="changeClassRows[${i}].docs=this.value; markUnsaved();"></td>
+                <td>
+                    <div style="display:flex; gap:6px; align-items:center;">
+                        <input type="text" value="${esc(row.testing)}" placeholder="e.g., Staging environment"
+                            onchange="changeClassRows[${i}].testing=this.value; markUnsaved();"
+                            style="flex:1;">
+                        <button class="del-btn" onclick="changeClassRows.splice(${i},1); renderChangeClassTable(); markUnsaved();">✕</button>
+                    </div>
+                </td>
+            </tr>`).join('');
+    }
+
+    function addChangeClassRow() {
+        changeClassRows.push({ type:'', authority:'', docs:'', testing:'' });
+        renderChangeClassTable(); markUnsaved();
+    }
+
+    // =============================================
+    //  PROCESS STEPS
+    // =============================================
+    let changeSteps = [
+        'Requestor submits formal change request with business justification',
+        'Security impact assessment performed by Security Officer',
+        'Technical feasibility review by IT Operations Manager',
+        'CCB review and approval/denial decision',
+        'Implementation planning and scheduling',
+        'Testing in non-production/staging environment',
+        'Production implementation with documented rollback plan',
+        'Post-implementation validation and documentation'
+    ].map(() => '');
+
+    // Start empty for student practice
+    let processSteps   = ['','','','','','','',''];
+    let incidentSteps  = ['','','','','',''];
+
+    function renderStepList(listId, stepsArr, addFn) {
+        const ul = document.getElementById(listId);
+        if (!stepsArr.length) {
+            ul.innerHTML = '<li style="color:#9ca3af;font-style:italic;font-size:0.88em;border-left:none;background:transparent;box-shadow:none;padding:8px 0;">No steps added yet — use the button below.</li>';
+            return;
+        }
+        ul.innerHTML = stepsArr.map((step, i) => `
+            <li>
+                <div class="step-num">${i+1}</div>
+                <input class="step-text" value="${esc(step)}"
+                       placeholder="Describe step ${i+1} of the process…"
+                       onchange="stepsArr_update('${listId}', ${i}, this.value); markUnsaved();">
+                <button class="del-btn" onclick="stepsArr_delete('${listId}', ${i})">✕</button>
+            </li>`).join('');
+    }
+
+    // Map listId → array reference
+    const stepArrays = {
+        'change-process-steps': () => processSteps,
+        'incident-steps': () => incidentSteps
+    };
+
+    function stepsArr_update(listId, i, val) {
+        const arr = stepArrays[listId]();
+        arr[i] = val;
+    }
+    function stepsArr_delete(listId, i) {
+        const arr = stepArrays[listId]();
+        arr.splice(i, 1);
+        renderAllStepLists(); markUnsaved();
+    }
+
+    function addProcessStep()  { processSteps.push('');  renderAllStepLists(); markUnsaved(); }
+    function addIncidentStep() { incidentSteps.push(''); renderAllStepLists(); markUnsaved(); }
+
+    function renderAllStepLists() {
+        renderStepList('change-process-steps', processSteps);
+        renderStepList('incident-steps',        incidentSteps);
+    }
+
+    // =============================================
+    //  MONITORING SCHEDULE TABLE
+    // =============================================
+    let monitoringRows = [
+        { activity:'', freq:'', party:'', output:'' },
+        { activity:'', freq:'', party:'', output:'' },
+        { activity:'', freq:'', party:'', output:'' }
+    ];
+
+    function renderMonitoringTable() {
+        const tbody = document.getElementById('monitoringScheduleBody');
+        tbody.innerHTML = monitoringRows.map((row, i) => `
+            <tr>
+                <td><input type="text" value="${esc(row.activity)}" placeholder="e.g., Baseline Compliance Scan"
+                    onchange="monitoringRows[${i}].activity=this.value; markUnsaved();"></td>
+                <td><input type="text" value="${esc(row.freq)}" placeholder="e.g., Daily (Automated)"
+                    onchange="monitoringRows[${i}].freq=this.value; markUnsaved();"></td>
+                <td><input type="text" value="${esc(row.party)}" placeholder="e.g., Systems Administrator"
+                    onchange="monitoringRows[${i}].party=this.value; markUnsaved();"></td>
+                <td>
+                    <div style="display:flex;gap:6px;align-items:center;">
+                        <input type="text" value="${esc(row.output)}" placeholder="e.g., Automated compliance reports"
+                            onchange="monitoringRows[${i}].output=this.value; markUnsaved();" style="flex:1;">
+                        <button class="del-btn" onclick="monitoringRows.splice(${i},1); renderMonitoringTable(); markUnsaved();">✕</button>
+                    </div>
+                </td>
+            </tr>`).join('');
+    }
+
+    function addMonitoringRow() {
+        monitoringRows.push({ activity:'', freq:'', party:'', output:'' });
+        renderMonitoringTable(); markUnsaved();
+    }
+
+    // =============================================
+    //  METRICS TABLE
+    // =============================================
+    let metricsRows = [
+        { metric:'', target:'', current:'', freq:'' },
+        { metric:'', target:'', current:'', freq:'' },
+        { metric:'', target:'', current:'', freq:'' }
+    ];
+
+    function renderMetricsTable() {
+        const tbody = document.getElementById('metricsBody');
+        tbody.innerHTML = metricsRows.map((row, i) => `
+            <tr>
+                <td><input type="text" value="${esc(row.metric)}" placeholder="e.g., Baseline Compliance Rate"
+                    onchange="metricsRows[${i}].metric=this.value; markUnsaved();"></td>
+                <td><input type="text" value="${esc(row.target)}" placeholder="e.g., 98%"
+                    onchange="metricsRows[${i}].target=this.value; markUnsaved();"></td>
+                <td><input type="text" value="${esc(row.current)}" placeholder="Current value"
+                    onchange="metricsRows[${i}].current=this.value; markUnsaved();"></td>
+                <td>
+                    <div style="display:flex;gap:6px;align-items:center;">
+                        <input type="text" value="${esc(row.freq)}" placeholder="e.g., Monthly"
+                            onchange="metricsRows[${i}].freq=this.value; markUnsaved();" style="flex:1;">
+                        <button class="del-btn" onclick="metricsRows.splice(${i},1); renderMetricsTable(); markUnsaved();">✕</button>
+                    </div>
+                </td>
+            </tr>`).join('');
+    }
+
+    function addMetricRow() {
+        metricsRows.push({ metric:'', target:'', current:'', freq:'' });
+        renderMetricsTable(); markUnsaved();
+    }
+
+    // =============================================
+    //  APPROVALS TABLE
+    // =============================================
+    let approvalsRows = [
+        { role:'Chief Information Security Officer', name:'', sig:'', date:'' },
+        { role:'IT Operations Manager',              name:'', sig:'', date:'' },
+        { role:'General Manager / Executive Sponsor', name:'', sig:'', date:'' }
+    ];
+
+    function renderApprovalsTable() {
+        const tbody = document.getElementById('approvalsBody');
+        tbody.innerHTML = approvalsRows.map((row, i) => `
+            <tr>
+                <td>
+                    <div style="display:flex;gap:6px;align-items:center;">
+                        <input type="text" value="${esc(row.role)}" placeholder="Approver role/title"
+                            onchange="approvalsRows[${i}].role=this.value; markUnsaved();" style="flex:1;">
+                        <button class="del-btn" onclick="approvalsRows.splice(${i},1); renderApprovalsTable(); markUnsaved();">✕</button>
+                    </div>
+                </td>
+                <td><input type="text" value="${esc(row.name)}" placeholder="Full name"
+                    onchange="approvalsRows[${i}].name=this.value; markUnsaved();"></td>
+                <td><input type="text" value="${esc(row.sig)}" placeholder="[Digital Signature / Approval]"
+                    onchange="approvalsRows[${i}].sig=this.value; markUnsaved();"></td>
+                <td><input type="date" value="${esc(row.date)}"
+                    onchange="approvalsRows[${i}].date=this.value; markUnsaved();"></td>
+            </tr>`).join('');
+    }
+
+    function addApprovalRow() {
+        approvalsRows.push({ role:'', name:'', sig:'', date:'' });
+        renderApprovalsTable(); markUnsaved();
+    }
+
+    // =============================================
+    //  ITEM LISTS (CCB, CM team, CUI systems, etc.)
+    // =============================================
+    const listData = {
+        'ccb-list':              [],
+        'cm-team-list':          [],
+        'cui-systems-list':      [],
+        'monitoring-tools-list': [],
+        'approved-software-list':[],
+        'training-list':         []
+    };
+
+    let addTargetListId = '';
+
+    function openAddModal(listId, title, hint) {
+        addTargetListId = listId;
+        document.getElementById('addModalTitle').textContent = `Add ${title}`;
+        document.getElementById('addItemText').value = '';
+        document.getElementById('addItemText').placeholder = hint || 'Enter description…';
+        document.getElementById('addModalHint').textContent = hint ? `Example: ${hint.substring(0, 80)}…` : '';
+        openModal('addItemModal');
+        setTimeout(() => document.getElementById('addItemText').focus(), 100);
+    }
+
+    function confirmAddItem() {
+        const text = document.getElementById('addItemText').value.trim();
+        if (!text) { showToast('Please enter a description.', 'warn'); return; }
+        listData[addTargetListId].push(text);
+        renderItemList(addTargetListId);
+        closeModal('addItemModal');
+        markUnsaved();
+        showToast('Item added ✓', 'success');
+    }
+
+    function deleteListItem(listId, index) {
+        listData[listId].splice(index, 1);
+        renderItemList(listId);
+        markUnsaved();
+    }
+
+    function renderItemList(listId) {
+        const ul = document.getElementById(listId);
+        const items = listData[listId];
+
+        if (!items.length) {
+            ul.innerHTML = '';
+            ul.classList.add('empty-hint');
+        } else {
+            ul.classList.remove('empty-hint');
+            ul.innerHTML = items.map((item, i) => `
+                <li>
+                    <span class="item-text">${esc(item)}</span>
+                    <button class="del-btn" onclick="deleteListItem('${listId}',${i})">Delete</button>
+                </li>`).join('');
+        }
+    }
+
+    function renderAllItemLists() {
+        Object.keys(listData).forEach(id => renderItemList(id));
+    }
+
+    // =============================================
+    //  UNSAVED + FOOTER
+    // =============================================
+    function markUnsaved() {
+        document.getElementById('unsavedIndicator').style.display = 'block';
+        const orgName = document.getElementById('org-name')?.value?.trim();
+        document.getElementById('footerOrg').textContent = orgName || '[Enter in Section 1]';
+        document.getElementById('footerDate').textContent =
+            new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+    }
+    function markSaved() {
+        document.getElementById('unsavedIndicator').style.display = 'none';
+    }
+
+    // =============================================
+    //  COLLECT EDITABLE FIELDS
+    // =============================================
+    function collectEditableFields() {
+        const f = {};
+        document.querySelectorAll('.editable[data-field]').forEach(el => {
+            f[el.dataset.field] = el.innerHTML;
+        });
+        return f;
+    }
+
+    function applyEditableFields(f) {
+        if (!f) return;
+        document.querySelectorAll('.editable[data-field]').forEach(el => {
+            const v = f[el.dataset.field];
+            if (v !== undefined) {
+                el.innerHTML = v;
+                if (el.textContent.trim()) el.classList.add('has-content');
+            }
+        });
+    }
+
+    function collectOrgTable() {
+        const fields = ['org-name','org-location','org-employees','org-mission','org-cmmclevel','org-version','org-date','org-review'];
+        const d = {};
+        fields.forEach(id => { const el = document.getElementById(id); if (el) d[id] = el.value; });
+        return d;
+    }
+
+    function applyOrgTable(d) {
+        if (!d) return;
+        Object.keys(d).forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = d[id];
+        });
+    }
+
+    // =============================================
+    //  SAVE / LOAD
+    // =============================================
+    function buildSaveObject() {
+        return {
+            editableFields:   collectEditableFields(),
+            orgTable:         collectOrgTable(),
+            controlStatuses,
+            controlPriorities,
+            changeClassRows,
+            processSteps,
+            incidentSteps,
+            monitoringRows,
+            metricsRows,
+            approvalsRows,
+            listData
+        };
+    }
+
+    function applyLoadedData(d) {
+        if (d.editableFields)   applyEditableFields(d.editableFields);
+        if (d.orgTable)         applyOrgTable(d.orgTable);
+        if (d.controlStatuses)  { controlStatuses = d.controlStatuses; renderControlsTable(); }
+        if (d.controlPriorities){ controlPriorities = d.controlPriorities; renderControlsTable(); }
+        if (d.changeClassRows)  { changeClassRows = d.changeClassRows; renderChangeClassTable(); }
+        if (d.processSteps)     { processSteps = d.processSteps; }
+        if (d.incidentSteps)    { incidentSteps = d.incidentSteps; }
+        renderAllStepLists();
+        if (d.monitoringRows)   { monitoringRows = d.monitoringRows; renderMonitoringTable(); }
+        if (d.metricsRows)      { metricsRows = d.metricsRows; renderMetricsTable(); }
+        if (d.approvalsRows)    { approvalsRows = d.approvalsRows; renderApprovalsTable(); }
+        if (d.listData)         { Object.assign(listData, d.listData); renderAllItemLists(); }
+        markSaved();
+    }
+
+    function savePlan() {
+        try {
+            localStorage.setItem('cmmc_cmp_tool_v1', JSON.stringify(buildSaveObject()));
+            markSaved();
+            showToast('CMP saved ✓', 'success');
+        } catch(e) {
+            showToast('Save failed — try Export JSON.', 'error');
+        }
+    }
+
+    function exportJSON() {
+        const blob = new Blob([JSON.stringify(buildSaveObject(), null, 2)], { type: 'application/json' });
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+        a.download = `CMMC_CMP_${new Date().toISOString().split('T')[0]}.json`;
+        a.click(); URL.revokeObjectURL(a.href);
+        showToast('JSON exported ✓', 'success');
+    }
+
+    function loadFromFile(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = e => {
+            try {
+                applyLoadedData(JSON.parse(e.target.result));
+                showToast('File loaded ✓', 'success');
+            } catch(err) { showToast('Error: Invalid JSON file.', 'error'); }
+        };
+        reader.readAsText(file);
+        event.target.value = '';
+    }
+
+    // =============================================
+    //  RESET
+    // =============================================
+    function doReset() {
+        controlStatuses   = CM_CONTROLS.map(() => ({ status:'not-started', desc:'' }));
+        controlPriorities = CM_CONTROLS.map(() => '');
+        changeClassRows   = [{type:'',authority:'',docs:'',testing:''},{type:'',authority:'',docs:'',testing:''},{type:'',authority:'',docs:'',testing:''}];
+        processSteps      = ['','','','','','','',''];
+        incidentSteps     = ['','','','','',''];
+        monitoringRows    = [{activity:'',freq:'',party:'',output:''},{activity:'',freq:'',party:'',output:''},{activity:'',freq:'',party:'',output:''}];
+        metricsRows       = [{metric:'',target:'',current:'',freq:''},{metric:'',target:'',current:'',freq:''},{metric:'',target:'',current:'',freq:''}];
+        approvalsRows     = [
+            {role:'Chief Information Security Officer',name:'',sig:'',date:''},
+            {role:'IT Operations Manager',name:'',sig:'',date:''},
+            {role:'General Manager / Executive Sponsor',name:'',sig:'',date:''}
+        ];
+        Object.keys(listData).forEach(k => { listData[k] = []; });
+
+        document.querySelectorAll('.editable[data-field]').forEach(el => {
+            el.innerHTML = ''; el.classList.remove('has-content');
+        });
+        ['org-name','org-location','org-employees','org-mission','org-cmmclevel','org-version','org-date','org-review'].forEach(id => {
+            const el = document.getElementById(id); if (el) el.value = '';
+        });
+
+        renderControlsTable(); renderChangeClassTable(); renderAllStepLists();
+        renderMonitoringTable(); renderMetricsTable(); renderApprovalsTable(); renderAllItemLists();
+        localStorage.removeItem('cmmc_cmp_tool_v1');
+        closeModal('resetModal'); markSaved();
+        showToast('All data reset.', 'error');
+    }
+
+    // =============================================
+    //  MODAL HELPERS
+    // =============================================
+    function openModal(id)  { document.getElementById(id).style.display = 'block'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    window.onclick = e => {
+        ['addItemModal','resetModal'].forEach(id => {
+            const m = document.getElementById(id);
+            if (e.target === m) m.style.display = 'none';
+        });
+    };
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') { ['addItemModal','resetModal'].forEach(closeModal); }
+        if (e.key === 'Enter' && document.getElementById('addItemModal').style.display === 'block') {
+            e.preventDefault(); confirmAddItem();
+        }
+        if ((e.ctrlKey||e.metaKey) && e.key === 's') { e.preventDefault(); savePlan(); }
+        if ((e.ctrlKey||e.metaKey) && e.key === 'e') { e.preventDefault(); toggleEditMode(); }
+    });
+
+    // =============================================
+    //  UTILITIES
+    // =============================================
+    function esc(s) {
+        return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function showToast(msg, type) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.className = 'toast show ' + (type||'');
+        setTimeout(() => { t.className = 'toast'; }, 3200);
+    }
+
+    // =============================================
+    //  INIT
+    // =============================================
+    document.addEventListener('DOMContentLoaded', () => {
+        renderControlsTable();
+        renderChangeClassTable();
+        renderAllStepLists();
+        renderMonitoringTable();
+        renderMetricsTable();
+        renderApprovalsTable();
+        renderAllItemLists();
+
+        document.getElementById('footerDate').textContent =
+            new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+
+        const saved = localStorage.getItem('cmmc_cmp_tool_v1');
+        if (saved) {
+            try {
+                applyLoadedData(JSON.parse(saved));
+                showToast('Auto-loaded your last saved session.', 'success');
+            } catch(e) {}
+        }
+    });
+</script>
+</body>
+</html>
