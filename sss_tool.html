@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPRS Submission Score Sheet – Student Practice Tool</title>
+    <style>
+        /* ===== BASE ===== */
+        *, *::before, *::after { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.5;
+            color: #1f2937;
+            background: #f0f4f8;
+            padding: 20px;
+        }
+
+        /* ===== TOOLBAR ===== */
+        .toolbar {
+            max-width: 1200px;
+            margin: 0 auto 16px auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            background: #1e3a8a;
+            padding: 12px 20px;
+            border-radius: 10px;
+        }
+        .toolbar-title {
+            color: #93c5fd;
+            font-weight: 700;
+            font-size: 0.85em;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-right: auto;
+        }
+        .toolbar button {
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.85em;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: filter 0.2s;
+            white-space: nowrap;
+        }
+        .toolbar button:hover { filter: brightness(1.12); }
+        .tb-save   { background: #10b981; color: white; }
+        .tb-load   { background: #6366f1; color: white; }
+        .tb-export { background: #f59e0b; color: #1f2937; }
+        .tb-report { background: #0ea5e9; color: white; }
+        .tb-print  { background: #64748b; color: white; }
+        .tb-reset  { background: #ef4444; color: white; }
+
+        /* ===== CONTAINER ===== */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+            overflow: hidden;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+        .header h1 { font-size: 2em; font-weight: 700; margin-bottom: 8px; }
+        .header .subtitle { font-size: 1em; opacity: 0.9; }
+        .student-badge {
+            position: absolute; top: 14px; right: 14px;
+            background: #fbbf24; color: #1f2937;
+            padding: 6px 14px; border-radius: 20px;
+            font-weight: 700; font-size: 0.8em;
+        }
+        .unsaved-indicator {
+            position: absolute; top: 14px; left: 14px;
+            background: #ef4444; color: white;
+            padding: 6px 14px; border-radius: 20px;
+            font-weight: 700; font-size: 0.8em; display: none;
+        }
+
+        /* ===== INSTRUCTION BOX ===== */
+        .instruction-box {
+            background: #eff6ff;
+            border: 2px dashed #3b82f6;
+            border-radius: 8px;
+            padding: 14px 18px;
+            margin: 20px 20px 0;
+            font-size: 0.86em;
+            color: #1e40af;
+        }
+        .instruction-box strong { display: block; margin-bottom: 5px; }
+        .instruction-box ul { margin: 5px 0 0; padding-left: 18px; }
+        .instruction-box li { margin: 2px 0; }
+
+        /* ===== COMPANY INFO ===== */
+        .company-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            padding: 24px;
+            background: #f8fafc;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .info-group { display: flex; flex-direction: column; gap: 5px; }
+        .info-group label {
+            font-weight: 700; color: #374151;
+            font-size: 0.78em; text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .info-group input, .info-group select {
+            padding: 10px 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 0.9em;
+            font-family: inherit;
+            background: white;
+            transition: border-color 0.2s;
+        }
+        .info-group input:focus, .info-group select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+        }
+
+        /* ===== SCORE SUMMARY ===== */
+        .score-summary {
+            padding: 28px 24px;
+            text-align: center;
+            position: relative;
+        }
+        .score-bar {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            border-radius: 10px;
+            padding: 24px;
+            color: white;
+            margin-bottom: 16px;
+        }
+        .total-score {
+            font-size: 3.5em;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+        .score-range { font-size: 0.95em; opacity: 0.9; }
+        .score-interpretation {
+            font-size: 1.1em; font-weight: 700;
+            padding: 6px 0 2px;
+        }
+
+        /* ===== MINI STATS ===== */
+        .mini-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px;
+            margin-top: 14px;
+        }
+        .mini-stat {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+        }
+        .mini-stat .ms-val { font-size: 1.6em; font-weight: 800; }
+        .mini-stat .ms-lbl { font-size: 0.74em; color: #6b7280; margin-top: 3px; }
+        .ms-green  { color: #059669; }
+        .ms-amber  { color: #d97706; }
+        .ms-red    { color: #dc2626; }
+        .ms-blue   { color: #1e40af; }
+
+        /* ===== PROGRESS BAR ===== */
+        .progress-wrap { margin: 14px 0 4px; }
+        .progress-label { display: flex; justify-content: space-between; font-size: 0.8em; color: #6b7280; margin-bottom: 5px; }
+        .progress-track {
+            width: 100%; height: 16px;
+            background: #e5e7eb; border-radius: 8px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%; border-radius: 8px;
+            background: linear-gradient(90deg, #10b981, #3b82f6);
+            transition: width 0.4s ease;
+        }
+
+        /* ===== CONTROLS SECTION ===== */
+        .controls-section { padding: 20px; }
+
+        /* ===== FAMILY HEADERS ===== */
+        .control-family {
+            margin-bottom: 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .family-header {
+            background: linear-gradient(135deg, #1e3a8a, #1e40af);
+            color: white;
+            padding: 16px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s;
+            user-select: none;
+        }
+        .family-header:hover { background: linear-gradient(135deg, #1e40af, #2563eb); }
+        .family-title { font-size: 1em; font-weight: 700; }
+        .family-right { display: flex; align-items: center; gap: 10px; }
+        .family-score {
+            font-size: 1em; font-weight: 700;
+            background: rgba(255,255,255,0.2);
+            padding: 6px 14px; border-radius: 20px;
+            white-space: nowrap;
+        }
+        .toggle-arrow { font-size: 1em; transition: transform 0.3s; }
+        .family-header.expanded .toggle-arrow { transform: rotate(180deg); }
+
+        /* ===== CONTROLS GRID ===== */
+        .controls-grid { display: none; padding: 16px; background: #f8fafc; }
+        .controls-grid.expanded { display: block; }
+
+        /* ===== CONTROL ITEM ===== */
+        .control-item {
+            display: grid;
+            grid-template-columns: 110px 1fr 160px 90px;
+            gap: 12px;
+            align-items: center;
+            padding: 12px 14px;
+            margin-bottom: 8px;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #dbeafe;
+            transition: box-shadow 0.2s, border-color 0.2s;
+            font-size: 0.88em;
+        }
+        .control-item:hover {
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            border-left-color: #3b82f6;
+        }
+        .control-item.status-full    { border-left-color: #10b981; }
+        .control-item.status-partial { border-left-color: #f59e0b; }
+        .control-item.status-not     { border-left-color: #ef4444; }
+
+        .control-id {
+            font-weight: 700;
+            color: #1e40af;
+            font-family: 'Courier New', monospace;
+            font-size: 0.92em;
+        }
+        .control-desc { color: #374151; line-height: 1.4; }
+        .control-weight { color: #6b7280; font-size: 0.8em; }
+
+        .control-select {
+            padding: 7px 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            background: white;
+            font-family: inherit;
+            font-size: 0.88em;
+            cursor: pointer;
+            transition: border-color 0.2s;
+            width: 100%;
+        }
+        .control-select:focus { outline: none; border-color: #3b82f6; }
+
+        .control-points {
+            font-weight: 700;
+            text-align: center;
+            padding: 6px 8px;
+            border-radius: 6px;
+            font-size: 0.92em;
+            white-space: nowrap;
+        }
+        .pts-positive { background: #d1fae5; color: #065f46; }
+        .pts-zero     { background: #fef3c7; color: #92400e; }
+        .pts-negative { background: #fee2e2; color: #991b1b; }
+
+        /* ===== SUBMISSION SECTION ===== */
+        .submission-section {
+            padding: 24px;
+            background: #f8fafc;
+            border-top: 2px solid #e2e8f0;
+        }
+        .submission-section h2 { color: #1e3a8a; margin-bottom: 16px; font-size: 1.1em; }
+        .submission-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        /* ===== GENERATE BUTTON ===== */
+        .gen-btn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white; border: none;
+            padding: 14px 32px; border-radius: 8px;
+            font-size: 1em; font-weight: 700;
+            cursor: pointer; transition: all 0.2s;
+            text-transform: uppercase; letter-spacing: 0.05em;
+            display: block; margin: 0 auto 24px;
+        }
+        .gen-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(16,185,129,0.35); }
+
+        /* ===== LEGEND ===== */
+        .legend {
+            padding: 18px;
+            background: white;
+            border-radius: 8px;
+            border: 2px solid #e2e8f0;
+        }
+        .legend h3 { color: #1e3a8a; margin-bottom: 12px; font-size: 0.95em; }
+        .legend-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 0.88em; }
+        .legend-swatch { width: 18px; height: 18px; border-radius: 4px; flex-shrink: 0; }
+
+        /* ===== REPORT MODAL ===== */
+        .modal {
+            display: none; position: fixed;
+            z-index: 2000; left: 0; top: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.55);
+        }
+        .modal-box {
+            background: white; margin: 3% auto;
+            padding: 28px; border-radius: 10px;
+            width: 92%; max-width: 680px;
+            max-height: 90vh; overflow-y: auto;
+            position: relative;
+        }
+        .modal-box h2 { color: #1e3a8a; margin: 0 0 16px; font-size: 1.2em; }
+        .close-m {
+            position: absolute; top: 12px; right: 16px;
+            color: #9ca3af; font-size: 22px; font-weight: bold;
+            cursor: pointer; line-height: 1; background: none; border: none;
+        }
+        .close-m:hover { color: #111; }
+        .report-pre {
+            white-space: pre-wrap;
+            background: #f8fafc; padding: 14px;
+            border-radius: 7px; font-size: 0.8em;
+            border: 1px solid #e2e8f0;
+            max-height: 420px; overflow-y: auto;
+            font-family: 'Courier New', monospace;
+        }
+        .m-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; }
+        .btn-primary-m   { background: #3b82f6; color: white; border: none; padding: 9px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .btn-secondary-m { background: #6b7280; color: white; border: none; padding: 9px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .btn-danger-m    { background: #ef4444; color: white; border: none; padding: 9px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed; bottom: 24px; right: 24px;
+            background: #1e3a8a; color: white;
+            padding: 12px 22px; border-radius: 8px;
+            font-size: 0.88em; z-index: 9999;
+            opacity: 0; transform: translateY(10px);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        .toast.show { opacity: 1; transform: translateY(0); }
+        .toast.success { background: #059669; }
+        .toast.error   { background: #dc2626; }
+
+        /* ===== PRINT ===== */
+        @media print {
+            body { background: white; padding: 0; }
+            .toolbar, .instruction-box, .student-badge, .unsaved-indicator { display: none !important; }
+            .container { box-shadow: none; border-radius: 0; }
+            .controls-grid { display: block !important; }
+            .family-header { background: #1e3a8a !important; }
+        }
+
+        @media (max-width: 768px) {
+            .control-item { grid-template-columns: 1fr 1fr; grid-template-rows: auto auto; }
+            .control-desc { grid-column: 1 / -1; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== TOOLBAR ===== -->
+<div class="toolbar">
+    <span class="toolbar-title">📊 SPRS Tool — Student Practice</span>
+    <button class="tb-save"   onclick="saveData()">💾 Save</button>
+    <button class="tb-load"   onclick="document.getElementById('fileInput').click()">📂 Load</button>
+    <button class="tb-report" onclick="generateReport()">📄 Generate Report</button>
+    <button class="tb-export" onclick="exportCSV()">📤 Export CSV</button>
+    <button class="tb-print"  onclick="window.print()">🖨️ Print</button>
+    <button class="tb-reset"  onclick="openModal('resetModal')">🔄 Reset</button>
+    <input type="file" id="fileInput" accept=".json" style="display:none" onchange="loadFromFile(event)">
+</div>
+
+<!-- ===== CONTAINER ===== -->
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="header">
+        <div class="student-badge">STUDENT PRACTICE TOOL</div>
+        <div class="unsaved-indicator" id="unsavedIndicator">● Unsaved Changes</div>
+        <h1>SPRS Submission Score Sheet</h1>
+        <div class="subtitle">Supplier Performance Risk System — NIST SP 800-171 Self-Assessment (110 Controls)</div>
+    </div>
+
+    <!-- INSTRUCTION BOX -->
+    <div class="instruction-box">
+        <strong>🎓 Student Instructions</strong>
+        <ul>
+            <li>Fill in your case study company's information in the fields below. All fields are editable.</li>
+            <li>For each of the <strong>110 NIST SP 800-171 controls</strong>, select the implementation status — the score updates automatically. Click any family header to expand/collapse it.</li>
+            <li><strong>Fully Implemented</strong> = positive points | <strong>Partially Implemented</strong> = 0 points | <strong>Not Implemented</strong> = negative points.</li>
+            <li>The <strong>Total SPRS Score</strong> range is <strong>-203 to +110</strong>. A score of 110 = perfect implementation. Target ≥ 70 for most CMMC Level 2 contexts.</li>
+            <li>Use <strong>📄 Generate Report</strong> to create a printable SPRS submission summary. Use <strong>💾 Save</strong> (Ctrl+S) to preserve your work.</li>
+        </ul>
+    </div>
+
+    <!-- COMPANY INFO -->
+    <div class="company-info">
+        <div class="info-group">
+            <label>Company Name</label>
+            <input type="text" id="companyName" placeholder="Full legal company name" oninput="markUnsaved()">
+        </div>
+        <div class="info-group">
+            <label>CAGE Code</label>
+            <input type="text" id="cageCode" placeholder="e.g., A1B2C" oninput="markUnsaved()">
+        </div>
+        <div class="info-group">
+            <label>UEI / DUNS Number</label>
+            <input type="text" id="ueiNumber" placeholder="e.g., 12-character UEI" oninput="markUnsaved()">
+        </div>
+        <div class="info-group">
+            <label>Assessment Date</label>
+            <input type="date" id="assessmentDate" oninput="markUnsaved()">
+        </div>
+        <div class="info-group">
+            <label>Assessor Name</label>
+            <input type="text" id="assessorName" placeholder="Full name" oninput="markUnsaved()">
+        </div>
+        <div class="info-group">
+            <label>Assessor Title</label>
+            <input type="text" id="assessorTitle" placeholder="e.g., Chief Information Security Officer" oninput="markUnsaved()">
+        </div>
+    </div>
+
+    <!-- SCORE SUMMARY -->
+    <div class="score-summary">
+        <div class="score-bar">
+            <div class="total-score" id="totalScore">110</div>
+            <div class="score-range">Total SPRS Score — Range: -203 to +110</div>
+            <div class="score-interpretation" id="scoreInterp">All controls set to Fully Implemented</div>
+        </div>
+
+        <div class="progress-wrap">
+            <div class="progress-label">
+                <span>-203 (Worst)</span>
+                <span id="progressPct">100%</span>
+                <span>+110 (Best)</span>
+            </div>
+            <div class="progress-track">
+                <div class="progress-fill" id="progressFill" style="width:100%;"></div>
+            </div>
+        </div>
+
+        <div class="mini-stats">
+            <div class="mini-stat"><div class="ms-val ms-green" id="statFull">110</div><div class="ms-lbl">Fully Implemented</div></div>
+            <div class="mini-stat"><div class="ms-val ms-amber" id="statPartial">0</div><div class="ms-lbl">Partially Implemented</div></div>
+            <div class="mini-stat"><div class="ms-val ms-red" id="statNot">0</div><div class="ms-lbl">Not Implemented</div></div>
+            <div class="mini-stat"><div class="ms-val ms-blue" id="statTotal">110</div><div class="ms-lbl">Total Controls</div></div>
+        </div>
+    </div>
+
+    <!-- CONTROLS -->
+    <div class="controls-section" id="controlsSection">
+        <!-- Rendered by JS -->
+    </div>
+
+    <!-- SUBMISSION SECTION -->
+    <div class="submission-section">
+        <h2>Submission Information</h2>
+        <div class="submission-grid">
+            <div class="info-group">
+                <label>Submission Date</label>
+                <input type="date" id="submissionDate" oninput="markUnsaved()">
+            </div>
+            <div class="info-group">
+                <label>Next Assessment Due</label>
+                <input type="date" id="nextAssessment" oninput="markUnsaved()">
+            </div>
+            <div class="info-group">
+                <label>POA&amp;M Status</label>
+                <select id="poamStatus" onchange="markUnsaved()">
+                    <option value="">— Select —</option>
+                    <option value="current">Current</option>
+                    <option value="pending">Pending Update</option>
+                    <option value="none">Not Required</option>
+                </select>
+            </div>
+            <div class="info-group">
+                <label>Contract Requirement</label>
+                <select id="contractReq" onchange="markUnsaved()">
+                    <option value="">— Select —</option>
+                    <option value="7012">DFARS 252.204-7012</option>
+                    <option value="7019">DFARS 252.204-7019</option>
+                    <option value="7020">DFARS 252.204-7020</option>
+                    <option value="7021">DFARS 252.204-7021</option>
+                </select>
+            </div>
+            <div class="info-group">
+                <label>Assessed By</label>
+                <select id="assessedBy" onchange="markUnsaved()">
+                    <option value="">— Select —</option>
+                    <option value="self">Self-Assessment</option>
+                    <option value="c3pao">C3PAO Assessment</option>
+                    <option value="3pao">Third-Party Assessment</option>
+                    <option value="dib">DIB Assessment</option>
+                </select>
+            </div>
+            <div class="info-group">
+                <label>System Name / Boundary</label>
+                <input type="text" id="systemName" placeholder="Name of assessed information system" oninput="markUnsaved()">
+            </div>
+        </div>
+
+        <button class="gen-btn" onclick="generateReport()">📄 Generate SPRS Submission Report</button>
+
+        <div class="legend">
+            <h3>Scoring Legend</h3>
+            <div class="legend-item">
+                <div class="legend-swatch pts-positive"></div>
+                <span><strong>Fully Implemented:</strong> Control is fully in place — positive points awarded (varies by control weight)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-swatch pts-zero"></div>
+                <span><strong>Partially Implemented:</strong> Control is partially in place — 0 points (no credit, no penalty)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-swatch pts-negative"></div>
+                <span><strong>Not Implemented:</strong> Control is not in place — negative points assessed (required in POA&amp;M)</span>
+            </div>
+            <p style="margin-top:10px; font-size:0.82em; color:#6b7280;">
+                <strong>Note:</strong> Point values follow the DoD NIST SP 800-171 Assessment Methodology. High-priority controls (weight 5) affect the score by +5/−5. Standard controls (weight 1) affect by +1/−1. Total possible: +110. Total possible deficit: −203.
+            </p>
+        </div>
+    </div>
+
+</div><!-- /container -->
+
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toast"></div>
+
+<!-- ===== REPORT MODAL ===== -->
+<div id="reportModal" class="modal">
+    <div class="modal-box">
+        <button class="close-m" onclick="closeModal('reportModal')">&times;</button>
+        <h2>📄 SPRS Submission Report</h2>
+        <pre class="report-pre" id="reportContent"></pre>
+        <div class="m-actions">
+            <button class="btn-secondary-m" onclick="closeModal('reportModal')">Close</button>
+            <button class="btn-primary-m" onclick="downloadReport()">⬇️ Download Report</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== RESET MODAL ===== -->
+<div id="resetModal" class="modal">
+    <div class="modal-box" style="max-width:420px;">
+        <h2>⚠️ Reset All Data?</h2>
+        <p style="font-size:0.9em;color:#374151;">This will clear all company info and reset all 110 controls to "Fully Implemented." This cannot be undone.</p>
+        <div class="m-actions">
+            <button class="btn-secondary-m" onclick="closeModal('resetModal')">Cancel</button>
+            <button class="btn-danger-m" onclick="doReset()">Yes, Reset Everything</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== JAVASCRIPT ===== -->
+<script>
+// =============================================
+//  ALL 110 NIST SP 800-171 CONTROLS
+//  Format: { id, desc, weight (positive pts if fully implemented) }
+//  Negative score = -weight if Not Implemented
+//  Source: DoD NIST SP 800-171 Assessment Methodology v1.2.1
+// =============================================
+const CONTROL_FAMILIES = [
+    {
+        id: 'ac', name: 'Access Control (AC)', count: 22,
+        controls: [
+            { id:'AC.1.001', desc:'Limit system access to authorized users, processes, and devices', weight:5 },
+            { id:'AC.1.002', desc:'Limit system access to the types of transactions authorized users are permitted to execute', weight:5 },
+            { id:'AC.1.003', desc:'Verify and control all connections to external systems', weight:5 },
+            { id:'AC.1.004', desc:'Control information posted or processed on publicly accessible systems', weight:5 },
+            { id:'AC.2.005', desc:'Provide privacy and security notices consistent with CUI rules', weight:3 },
+            { id:'AC.2.006', desc:'Limit use of portable storage devices on external systems', weight:3 },
+            { id:'AC.2.007', desc:'Employ the principle of least privilege', weight:5 },
+            { id:'AC.2.008', desc:'Use non-privileged accounts or roles when accessing non-security functions', weight:3 },
+            { id:'AC.2.009', desc:'Prevent non-privileged users from executing privileged functions', weight:5 },
+            { id:'AC.2.010', desc:'Employ dual authorization for critical or sensitive operations', weight:3 },
+            { id:'AC.2.011', desc:'Authorize wireless access prior to allowing connections', weight:3 },
+            { id:'AC.2.012', desc:'Protect wireless access using authentication and encryption', weight:5 },
+            { id:'AC.2.013', desc:'Limit access to mobile devices with CUI to authorized users', weight:3 },
+            { id:'AC.2.014', desc:'Employ cryptographic mechanisms to protect the confidentiality of remote access sessions', weight:5 },
+            { id:'AC.2.015', desc:'Route remote access via managed access control points', weight:3 },
+            { id:'AC.2.016', desc:'Authorize the execution of privileged commands via remote access only for documented needs', weight:3 },
+            { id:'AC.3.017', desc:'Separate duties of individuals to reduce risk of malevolent activity', weight:3 },
+            { id:'AC.3.018', desc:'Prevent non-privileged users from executing privileged functions and audit execution', weight:5 },
+            { id:'AC.3.019', desc:'Terminate sessions after defined period of inactivity', weight:3 },
+            { id:'AC.3.020', desc:'Monitor and control remote access sessions', weight:3 },
+            { id:'AC.3.021', desc:'Authorize remote execution of privileged commands and access to security-relevant information via remote access only for documented needs', weight:3 },
+            { id:'AC.3.022', desc:'Encrypt CUI on mobile devices and mobile computing platforms', weight:5 },
+        ]
+    },
+    {
+        id: 'at', name: 'Awareness and Training (AT)', count: 3,
+        controls: [
+            { id:'AT.2.056', desc:'Ensure personnel are aware of security risks associated with their activities', weight:3 },
+            { id:'AT.2.057', desc:'Ensure personnel are trained to carry out assigned security responsibilities', weight:3 },
+            { id:'AT.3.058', desc:'Provide security awareness training on recognizing and reporting threats', weight:3 },
+        ]
+    },
+    {
+        id: 'au', name: 'Audit and Accountability (AU)', count: 9,
+        controls: [
+            { id:'AU.2.041', desc:'Create and retain system audit logs to enable monitoring of unlawful activity', weight:3 },
+            { id:'AU.2.042', desc:'Ensure actions of individual users can be uniquely traced', weight:3 },
+            { id:'AU.3.044', desc:'Alert in the event of an audit logging process failure', weight:3 },
+            { id:'AU.3.045', desc:'Correlate audit record review and analysis with investigation of unusual activity', weight:3 },
+            { id:'AU.3.046', desc:'Provide audit reduction and report generation to support analysis', weight:1 },
+            { id:'AU.3.047', desc:'Provide a system capability that compares and synchronizes internal clocks', weight:1 },
+            { id:'AU.3.048', desc:'Protect audit information and audit tools from unauthorized access, modification, and deletion', weight:3 },
+            { id:'AU.3.049', desc:'Limit management of audit functionality to a subset of privileged users', weight:3 },
+            { id:'AU.3.050', desc:'Create and retain system audit logs to enable monitoring and analysis', weight:1 },
+        ]
+    },
+    {
+        id: 'ca', name: 'Security Assessment (CA)', count: 4,
+        controls: [
+            { id:'CA.2.157', desc:'Periodically assess security controls to determine effectiveness', weight:3 },
+            { id:'CA.2.158', desc:'Develop and implement plans of action to correct deficiencies', weight:3 },
+            { id:'CA.2.159', desc:'Monitor security controls on an ongoing basis to ensure continued effectiveness', weight:3 },
+            { id:'CA.3.161', desc:'Employ security assessment techniques to support auditing and accountability', weight:3 },
+        ]
+    },
+    {
+        id: 'cm', name: 'Configuration Management (CM)', count: 9,
+        controls: [
+            { id:'CM.2.061', desc:'Establish and maintain baseline configurations for information technology', weight:3 },
+            { id:'CM.2.062', desc:'Establish and enforce security configuration settings', weight:5 },
+            { id:'CM.2.063', desc:'Control and monitor user-installed software', weight:3 },
+            { id:'CM.2.064', desc:'Establish and document configuration settings that reflect the most restrictive mode', weight:3 },
+            { id:'CM.3.067', desc:'Define, document, approve, and enforce physical and logical access restrictions', weight:3 },
+            { id:'CM.3.068', desc:'Restrict, disable, or prevent the use of nonessential programs, functions, ports, and services', weight:5 },
+            { id:'CM.3.069', desc:'Apply deny-by-exception policy to prevent use of unauthorized software', weight:5 },
+            { id:'CM.3.070', desc:'Track, review, approve, and log changes to organizational systems', weight:3 },
+            { id:'CM.3.071', desc:'Analyze the security impact of changes prior to implementation', weight:3 },
+        ]
+    },
+    {
+        id: 'ia', name: 'Identification and Authentication (IA)', count: 11,
+        controls: [
+            { id:'IA.1.076', desc:'Identify information system users, processes, and devices', weight:5 },
+            { id:'IA.1.077', desc:'Authenticate identities before allowing access to systems', weight:5 },
+            { id:'IA.2.078', desc:'Enforce minimum password complexity and change requirements', weight:3 },
+            { id:'IA.2.079', desc:'Prohibit password reuse for a specified number of generations', weight:1 },
+            { id:'IA.2.080', desc:'Allow temporary password use with immediate change requirement', weight:1 },
+            { id:'IA.2.081', desc:'Employ cryptographically protected passwords', weight:5 },
+            { id:'IA.2.082', desc:'Employ replay-resistant authentication mechanisms', weight:5 },
+            { id:'IA.3.083', desc:'Use multifactor authentication for local and network access', weight:5 },
+            { id:'IA.3.084', desc:'Employ replay-resistant authentication mechanisms for network access to privileged accounts', weight:5 },
+            { id:'IA.3.085', desc:'Employ multifactor authentication for network access to non-privileged accounts', weight:3 },
+            { id:'IA.3.086', desc:'Disable identifiers after a defined period of inactivity', weight:1 },
+        ]
+    },
+    {
+        id: 'ir', name: 'Incident Response (IR)', count: 6,
+        controls: [
+            { id:'IR.2.092', desc:'Establish an operational incident-handling capability for organizational systems', weight:3 },
+            { id:'IR.2.093', desc:'Track, document, and report incidents to officials', weight:3 },
+            { id:'IR.2.094', desc:'Test the organizational incident response capability', weight:3 },
+            { id:'IR.3.098', desc:'Track and document system security incidents', weight:3 },
+            { id:'IR.3.099', desc:'Test the organizational incident response capability on a regular basis', weight:3 },
+            { id:'IR.3.100', desc:'Use knowledge of current cyber threats including TTPs to inform incident response', weight:3 },
+        ]
+    },
+    {
+        id: 'ma', name: 'Maintenance (MA)', count: 6,
+        controls: [
+            { id:'MA.2.111', desc:'Perform maintenance on organizational systems', weight:1 },
+            { id:'MA.2.112', desc:'Provide controls on tools and personnel used for maintenance', weight:1 },
+            { id:'MA.2.113', desc:'Ensure equipment removed for maintenance is sanitized', weight:3 },
+            { id:'MA.2.114', desc:'Check media containing diagnostic programs for malicious code', weight:3 },
+            { id:'MA.3.115', desc:'Require MFA for remote maintenance sessions', weight:5 },
+            { id:'MA.3.116', desc:'Supervise the maintenance activities of personnel without required access authorization', weight:3 },
+        ]
+    },
+    {
+        id: 'mp', name: 'Media Protection (MP)', count: 9,
+        controls: [
+            { id:'MP.1.118', desc:'Protect system media containing CUI, both paper and digital', weight:3 },
+            { id:'MP.1.119', desc:'Limit access to CUI on system media to authorized users', weight:3 },
+            { id:'MP.2.120', desc:'Sanitize or destroy system media before disposal or reuse', weight:5 },
+            { id:'MP.2.121', desc:'Mark media with necessary CUI markings and distribution limitations', weight:3 },
+            { id:'MP.3.122', desc:'Prohibit the use of portable storage without an identifiable owner', weight:3 },
+            { id:'MP.3.123', desc:'Protect portable storage devices containing CUI from physical damage', weight:1 },
+            { id:'MP.3.124', desc:'Control access to media containing CUI during transport', weight:3 },
+            { id:'MP.3.125', desc:'Implement cryptographic mechanisms to protect CUI during transport', weight:5 },
+            { id:'MP.3.126', desc:'Control the use of removable media on system components', weight:3 },
+        ]
+    },
+    {
+        id: 'pe', name: 'Personnel Security (PS)', count: 2,
+        controls: [
+            { id:'PS.2.127', desc:'Screen individuals prior to authorizing access to organizational systems', weight:1 },
+            { id:'PS.2.128', desc:'Ensure CUI is protected during and after personnel actions such as termination', weight:3 },
+        ]
+    },
+    {
+        id: 'ra', name: 'Risk Assessment (RA)', count: 3,
+        controls: [
+            { id:'RA.2.141', desc:'Periodically assess the risk to organizational operations and assets', weight:3 },
+            { id:'RA.2.142', desc:'Scan for vulnerabilities periodically and when new vulnerabilities are identified', weight:5 },
+            { id:'RA.2.143', desc:'Remediate vulnerabilities in accordance with risk assessments', weight:5 },
+        ]
+    },
+    {
+        id: 'ca2', name: 'Security Assessment — Additional (CA)', count: 2,
+        controls: [
+            { id:'CA.3.162', desc:'Conduct penetration testing periodically', weight:3 },
+            { id:'CA.3.163', desc:'Receive cyber threat intelligence from government sources', weight:3 },
+        ]
+    },
+    {
+        id: 'sc', name: 'System and Comms Protection (SC)', count: 16,
+        controls: [
+            { id:'SC.1.175', desc:'Monitor, control, and protect communications at external boundaries', weight:3 },
+            { id:'SC.1.176', desc:'Implement subnetworks for publicly accessible system components', weight:3 },
+            { id:'SC.3.177', desc:'Employ FIPS-validated cryptography to protect CUI', weight:5 },
+            { id:'SC.3.178', desc:'Deny network communications traffic by default; allow by exception', weight:5 },
+            { id:'SC.3.179', desc:'Disable network services not required', weight:3 },
+            { id:'SC.3.180', desc:'Implement architectural designs and software development techniques that promote effective security', weight:3 },
+            { id:'SC.3.181', desc:'Separate user functionality from system management functionality', weight:3 },
+            { id:'SC.3.182', desc:'Prevent unauthorized and unintended information transfer via shared resources', weight:5 },
+            { id:'SC.3.183', desc:'Implement cryptographic mechanisms to prevent unauthorized disclosure of CUI during transmission', weight:5 },
+            { id:'SC.3.184', desc:'Terminate network connections after defined period of inactivity', weight:1 },
+            { id:'SC.3.185', desc:'Establish and manage cryptographic keys for any cryptography employed', weight:5 },
+            { id:'SC.3.186', desc:'Employ FIPS-validated cryptography when used to protect the confidentiality of CUI', weight:5 },
+            { id:'SC.3.187', desc:'Protect CUI at rest', weight:5 },
+            { id:'SC.3.188', desc:'Prohibit remote activation of collaborative computing devices', weight:1 },
+            { id:'SC.3.189', desc:'Control and monitor the use of mobile code', weight:3 },
+            { id:'SC.3.190', desc:'Control and monitor the use of VoIP technologies', weight:1 },
+        ]
+    },
+    {
+        id: 'si', name: 'System and Info Integrity (SI)', count: 8,
+        controls: [
+            { id:'SI.1.210', desc:'Identify, report, and correct system flaws in a timely manner', weight:5 },
+            { id:'SI.1.211', desc:'Provide protection from malicious code at appropriate locations', weight:5 },
+            { id:'SI.1.212', desc:'Update malicious code protection mechanisms when new releases are available', weight:3 },
+            { id:'SI.1.213', desc:'Perform periodic scans of the system and real-time scans of files', weight:3 },
+            { id:'SI.2.214', desc:'Monitor system security alerts and advisories', weight:3 },
+            { id:'SI.2.216', desc:'Monitor organizational systems to detect attacks and indicators of potential attacks', weight:5 },
+            { id:'SI.3.218', desc:'Employ spam protection mechanisms at information system access entry and exit points', weight:1 },
+            { id:'SI.3.219', desc:'Implement an intrusion-detection system', weight:5 },
+        ]
+    }
+];
+
+// =============================================
+//  STATE
+// =============================================
+// For each control: 'full' | 'partial' | 'not'
+let controlStatus = {};
+
+// Initialize all to 'full'
+CONTROL_FAMILIES.forEach(family => {
+    family.controls.forEach(ctrl => {
+        controlStatus[ctrl.id] = 'full';
+    });
+});
+
+let lastReport = '';
+
+// =============================================
+//  RENDER ALL CONTROL FAMILIES
+// =============================================
+function renderControls() {
+    const section = document.getElementById('controlsSection');
+    section.innerHTML = CONTROL_FAMILIES.map(family => {
+        const familyScore = getFamilyScore(family);
+        const maxScore = family.controls.reduce((s, c) => s + c.weight, 0);
+        return `
+        <div class="control-family">
+            <div class="family-header" id="hdr-${family.id}" onclick="toggleFamily('${family.id}')">
+                <div class="family-title">${family.name} — ${family.controls.length} Controls</div>
+                <div class="family-right">
+                    <div class="family-score" id="score-${family.id}">${familyScore >= 0 ? '+' : ''}${familyScore} / +${maxScore}</div>
+                    <span class="toggle-arrow">▼</span>
+                </div>
+            </div>
+            <div class="controls-grid" id="grid-${family.id}">
+                ${family.controls.map(ctrl => renderControlItem(ctrl)).join('')}
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function renderControlItem(ctrl) {
+    const status = controlStatus[ctrl.id] || 'full';
+    const pts = getPoints(ctrl.weight, status);
+    const ptsClass = pts > 0 ? 'pts-positive' : pts < 0 ? 'pts-negative' : 'pts-zero';
+    const ptsLabel = pts > 0 ? `+${pts}` : `${pts}`;
+    const rowClass = status === 'full' ? 'status-full' : status === 'partial' ? 'status-partial' : 'status-not';
+
+    return `<div class="control-item ${rowClass}" id="row-${ctrl.id.replace(/\./g,'')}">
+        <div>
+            <div class="control-id">${ctrl.id}</div>
+            <div class="control-weight" style="font-size:0.76em;color:#6b7280;">Weight: ±${ctrl.weight}</div>
+        </div>
+        <div class="control-desc">${ctrl.desc}</div>
+        <select class="control-select" onchange="onStatusChange('${ctrl.id}', this.value)">
+            <option value="full"    ${status==='full'    ?'selected':''}>Fully Implemented</option>
+            <option value="partial" ${status==='partial' ?'selected':''}>Partially Implemented</option>
+            <option value="not"     ${status==='not'     ?'selected':''}>Not Implemented</option>
+        </select>
+        <div class="control-points ${ptsClass}" id="pts-${ctrl.id.replace(/\./g,'')}">${ptsLabel}</div>
+    </div>`;
+}
+
+function getPoints(weight, status) {
+    if (status === 'full')    return weight;
+    if (status === 'partial') return 0;
+    return -weight;
+}
+
+// =============================================
+//  STATUS CHANGE
+// =============================================
+function onStatusChange(ctrlId, newStatus) {
+    controlStatus[ctrlId] = newStatus;
+    updateRowVisual(ctrlId);
+    updateScores();
+    markUnsaved();
+}
+
+function updateRowVisual(ctrlId) {
+    const ctrl = findControl(ctrlId);
+    if (!ctrl) return;
+    const status = controlStatus[ctrlId];
+    const pts = getPoints(ctrl.weight, status);
+    const ptsClass = pts > 0 ? 'pts-positive' : pts < 0 ? 'pts-negative' : 'pts-zero';
+    const ptsLabel = pts > 0 ? `+${pts}` : `${pts}`;
+    const rowClass = status === 'full' ? 'status-full' : status === 'partial' ? 'status-partial' : 'status-not';
+
+    const safeId = ctrlId.replace(/\./g,'');
+    const ptsEl = document.getElementById('pts-' + safeId);
+    const rowEl = document.getElementById('row-' + safeId);
+    if (ptsEl) { ptsEl.textContent = ptsLabel; ptsEl.className = 'control-points ' + ptsClass; }
+    if (rowEl)  { rowEl.className = 'control-item ' + rowClass; }
+}
+
+function findControl(id) {
+    for (const f of CONTROL_FAMILIES) {
+        const c = f.controls.find(c => c.id === id);
+        if (c) return c;
+    }
+    return null;
+}
+
+// =============================================
+//  SCORE CALCULATIONS
+// =============================================
+function getFamilyScore(family) {
+    return family.controls.reduce((sum, ctrl) => {
+        return sum + getPoints(ctrl.weight, controlStatus[ctrl.id] || 'full');
+    }, 0);
+}
+
+function getTotalScore() {
+    return CONTROL_FAMILIES.reduce((sum, f) => sum + getFamilyScore(f), 0);
+}
+
+function updateScores() {
+    const total = getTotalScore();
+    const totalEl = document.getElementById('totalScore');
+    if (totalEl) totalEl.textContent = total;
+
+    // Color the score bar
+    const scoreBar = document.querySelector('.score-bar');
+    if (scoreBar) {
+        if (total >= 90) scoreBar.style.background = 'linear-gradient(135deg,#059669,#10b981)';
+        else if (total >= 70) scoreBar.style.background = 'linear-gradient(135deg,#1e3a8a,#3b82f6)';
+        else if (total >= 40) scoreBar.style.background = 'linear-gradient(135deg,#92400e,#d97706)';
+        else scoreBar.style.background = 'linear-gradient(135deg,#991b1b,#dc2626)';
+    }
+
+    // Interpretation
+    const interp = document.getElementById('scoreInterp');
+    if (interp) {
+        if (total === 110) interp.textContent = '✅ Perfect score — all controls fully implemented';
+        else if (total >= 90)  interp.textContent = '✅ Excellent — strong CMMC Level 2 posture';
+        else if (total >= 70)  interp.textContent = '⚠️ Acceptable — meets minimum thresholds with POA&M';
+        else if (total >= 40)  interp.textContent = '⚠️ Below target — significant gaps require immediate attention';
+        else interp.textContent = '❌ Critical — major remediation required before CMMC certification';
+    }
+
+    // Progress bar: map -203 to +110 → 0% to 100%
+    const pct = Math.max(0, Math.min(100, ((total + 203) / 313) * 100));
+    const fill = document.getElementById('progressFill');
+    const pctLabel = document.getElementById('progressPct');
+    if (fill)     fill.style.width = pct.toFixed(1) + '%';
+    if (pctLabel) pctLabel.textContent = pct.toFixed(1) + '%';
+
+    // Family scores
+    CONTROL_FAMILIES.forEach(f => {
+        const el = document.getElementById('score-' + f.id);
+        if (el) {
+            const fs = getFamilyScore(f);
+            const max = f.controls.reduce((s, c) => s + c.weight, 0);
+            el.textContent = (fs >= 0 ? '+' : '') + fs + ' / +' + max;
+        }
+    });
+
+    // Mini stats
+    let full = 0, partial = 0, not = 0;
+    CONTROL_FAMILIES.forEach(f => f.controls.forEach(c => {
+        const s = controlStatus[c.id] || 'full';
+        if (s === 'full') full++;
+        else if (s === 'partial') partial++;
+        else not++;
+    }));
+    const statFull = document.getElementById('statFull');
+    const statPartial = document.getElementById('statPartial');
+    const statNot = document.getElementById('statNot');
+    const statTotal = document.getElementById('statTotal');
+    if (statFull)    statFull.textContent    = full;
+    if (statPartial) statPartial.textContent = partial;
+    if (statNot)     statNot.textContent     = not;
+    if (statTotal)   statTotal.textContent   = full + partial + not;
+}
+
+// =============================================
+//  ACCORDION
+// =============================================
+function toggleFamily(id) {
+    const grid = document.getElementById('grid-' + id);
+    const hdr  = document.getElementById('hdr-' + id);
+    if (!grid) return;
+    grid.classList.toggle('expanded');
+    if (hdr) hdr.classList.toggle('expanded');
+}
+
+// =============================================
+//  GENERATE REPORT
+// =============================================
+function generateReport() {
+    const company  = document.getElementById('companyName')?.value || '[Not entered]';
+    const cage     = document.getElementById('cageCode')?.value || '[Not entered]';
+    const uei      = document.getElementById('ueiNumber')?.value || '[Not entered]';
+    const aDate    = document.getElementById('assessmentDate')?.value || '[Not entered]';
+    const assessor = document.getElementById('assessorName')?.value || '[Not entered]';
+    const title    = document.getElementById('assessorTitle')?.value || '[Not entered]';
+    const subDate  = document.getElementById('submissionDate')?.value || '[Not entered]';
+    const nextA    = document.getElementById('nextAssessment')?.value || '[Not entered]';
+    const poam     = document.getElementById('poamStatus')?.value || '[Not entered]';
+    const contract = document.getElementById('contractReq')?.value || '[Not entered]';
+    const assessedBy = document.getElementById('assessedBy')?.value || '[Not entered]';
+    const sysName  = document.getElementById('systemName')?.value || '[Not entered]';
+
+    const total = getTotalScore();
+    let full = 0, partial = 0, not = 0;
+    CONTROL_FAMILIES.forEach(f => f.controls.forEach(c => {
+        const s = controlStatus[c.id] || 'full';
+        if (s === 'full') full++;
+        else if (s === 'partial') partial++;
+        else not++;
+    }));
+
+    let r = 'SPRS SUBMISSION SCORE SHEET\n';
+    r += 'Supplier Performance Risk System — NIST SP 800-171 Self-Assessment\n';
+    r += '='.repeat(60) + '\n\n';
+
+    r += 'ORGANIZATION INFORMATION\n' + '-'.repeat(40) + '\n';
+    r += `  Company Name:       ${company}\n`;
+    r += `  CAGE Code:          ${cage}\n`;
+    r += `  UEI / DUNS:         ${uei}\n`;
+    r += `  Assessment Date:    ${aDate}\n`;
+    r += `  Assessed By:        ${assessedBy}\n`;
+    r += `  Assessor Name:      ${assessor}\n`;
+    r += `  Assessor Title:     ${title}\n`;
+    r += `  System / Boundary:  ${sysName}\n\n`;
+
+    r += 'SUBMISSION INFORMATION\n' + '-'.repeat(40) + '\n';
+    r += `  Submission Date:    ${subDate}\n`;
+    r += `  Next Assessment:    ${nextA}\n`;
+    r += `  POA&M Status:       ${poam}\n`;
+    r += `  Contract Clause:    ${contract}\n\n`;
+
+    r += 'ASSESSMENT RESULTS\n' + '-'.repeat(40) + '\n';
+    r += `  TOTAL SPRS SCORE:   ${total >= 0 ? '+' : ''}${total}\n`;
+    r += `  Score Range:        -203 to +110\n`;
+    r += `  Fully Implemented:  ${full} controls\n`;
+    r += `  Partially Impl.:    ${partial} controls\n`;
+    r += `  Not Implemented:    ${not} controls\n\n`;
+
+    r += 'SCORES BY CONTROL FAMILY\n' + '-'.repeat(40) + '\n';
+    CONTROL_FAMILIES.forEach(f => {
+        const fs  = getFamilyScore(f);
+        const max = f.controls.reduce((s, c) => s + c.weight, 0);
+        const fFull    = f.controls.filter(c => controlStatus[c.id]==='full').length;
+        const fPartial = f.controls.filter(c => controlStatus[c.id]==='partial').length;
+        const fNot     = f.controls.filter(c => controlStatus[c.id]==='not').length;
+        r += `  ${f.name.padEnd(38)} ${(fs>=0?'+':'')+fs} / +${max}   [F:${fFull} P:${fPartial} N:${fNot}]\n`;
+    });
+
+    if (not > 0) {
+        r += '\nCONTROLS REQUIRING POA&M\n' + '-'.repeat(40) + '\n';
+        CONTROL_FAMILIES.forEach(f => {
+            f.controls.forEach(c => {
+                if (controlStatus[c.id] === 'not') {
+                    r += `  ${c.id}: ${c.desc}\n`;
+                }
+            });
+        });
+    }
+
+    if (partial > 0) {
+        r += '\nPARTIALLY IMPLEMENTED CONTROLS\n' + '-'.repeat(40) + '\n';
+        CONTROL_FAMILIES.forEach(f => {
+            f.controls.forEach(c => {
+                if (controlStatus[c.id] === 'partial') {
+                    r += `  ${c.id}: ${c.desc}\n`;
+                }
+            });
+        });
+    }
+
+    r += '\nCERTIFICATION STATEMENT\n' + '-'.repeat(40) + '\n';
+    r += `I, ${assessor}, ${title} of ${company}, certify that this self-assessment accurately reflects the current implementation status of NIST SP 800-171 security requirements and that this information will be submitted to the Supplier Performance Risk System (SPRS).\n\n`;
+    r += `Signature: ________________________________  Date: ________________\n\n`;
+    r += `This assessment was conducted in accordance with DFARS ${contract} requirements.\n`;
+    r += 'Generated: ' + new Date().toLocaleString() + '\n';
+
+    lastReport = r;
+    document.getElementById('reportContent').textContent = r;
+    openModal('reportModal');
+}
+
+function downloadReport() {
+    if (!lastReport) return;
+    const company = document.getElementById('companyName')?.value || 'Organization';
+    const blob = new Blob([lastReport], { type: 'text/plain' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `SPRS_Score_Sheet_${company.replace(/\s+/g,'_')}_${new Date().toISOString().split('T')[0]}.txt`;
+    a.click(); URL.revokeObjectURL(a.href);
+    showToast('Report downloaded ✓', 'success');
+}
+
+// =============================================
+//  EXPORT CSV
+// =============================================
+function exportCSV() {
+    const company = document.getElementById('companyName')?.value || 'Organization';
+    let csv = 'Control ID,Description,Weight,Status,Points\n';
+    CONTROL_FAMILIES.forEach(f => {
+        f.controls.forEach(c => {
+            const status = controlStatus[c.id] || 'full';
+            const pts = getPoints(c.weight, status);
+            const statusLabel = status === 'full' ? 'Fully Implemented' : status === 'partial' ? 'Partially Implemented' : 'Not Implemented';
+            csv += `"${c.id}","${c.desc}",${c.weight},"${statusLabel}",${pts}\n`;
+        });
+    });
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `SPRS_${company.replace(/\s+/g,'_')}_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click(); URL.revokeObjectURL(a.href);
+    showToast('CSV exported ✓', 'success');
+}
+
+// =============================================
+//  SAVE / LOAD
+// =============================================
+function markUnsaved() { document.getElementById('unsavedIndicator').style.display = 'block'; }
+function markSaved()   { document.getElementById('unsavedIndicator').style.display = 'none'; }
+
+function collectOrgFields() {
+    const ids = ['companyName','cageCode','ueiNumber','assessmentDate','assessorName','assessorTitle',
+                 'submissionDate','nextAssessment','poamStatus','contractReq','assessedBy','systemName'];
+    const d = {};
+    ids.forEach(id => { const el = document.getElementById(id); if (el) d[id] = el.value; });
+    return d;
+}
+function applyOrgFields(d) {
+    if (!d) return;
+    Object.keys(d).forEach(id => { const el = document.getElementById(id); if (el) el.value = d[id]; });
+}
+
+function buildSaveObject() {
+    return { orgFields: collectOrgFields(), controlStatus };
+}
+
+function applyLoadedData(d) {
+    if (d.orgFields)      applyOrgFields(d.orgFields);
+    if (d.controlStatus) {
+        Object.assign(controlStatus, d.controlStatus);
+        // Re-render to reflect loaded statuses
+        renderControls();
+    }
+    updateScores();
+    markSaved();
+}
+
+function saveData() {
+    try {
+        localStorage.setItem('cmmc_sprs_tool_v1', JSON.stringify(buildSaveObject()));
+        markSaved();
+        showToast('Score sheet saved ✓', 'success');
+    } catch(e) {
+        showToast('Save failed — try Export CSV.', 'error');
+    }
+}
+
+function loadFromFile(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+        try {
+            applyLoadedData(JSON.parse(e.target.result));
+            showToast('File loaded ✓', 'success');
+        } catch(err) { showToast('Error: Invalid JSON file.', 'error'); }
+    };
+    reader.readAsText(file);
+    event.target.value = '';
+}
+
+// =============================================
+//  RESET
+// =============================================
+function doReset() {
+    CONTROL_FAMILIES.forEach(f => f.controls.forEach(c => { controlStatus[c.id] = 'full'; }));
+    collectOrgFields && ['companyName','cageCode','ueiNumber','assessmentDate','assessorName','assessorTitle',
+                         'submissionDate','nextAssessment','poamStatus','contractReq','assessedBy','systemName']
+        .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+    renderControls();
+    updateScores();
+    localStorage.removeItem('cmmc_sprs_tool_v1');
+    closeModal('resetModal');
+    markSaved();
+    showToast('Reset to default (all Fully Implemented).', 'error');
+}
+
+// =============================================
+//  MODAL HELPERS
+// =============================================
+function openModal(id)  { document.getElementById(id).style.display = 'block'; }
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+window.onclick = e => {
+    ['reportModal','resetModal'].forEach(id => {
+        const m = document.getElementById(id);
+        if (m && e.target === m) m.style.display = 'none';
+    });
+};
+
+// =============================================
+//  TOAST
+// =============================================
+function showToast(msg, type) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast show ' + (type||'');
+    setTimeout(() => { t.className = 'toast'; }, 3200);
+}
+
+// =============================================
+//  INIT
+// =============================================
+document.addEventListener('DOMContentLoaded', () => {
+    renderControls();
+    updateScores();
+
+    const saved = localStorage.getItem('cmmc_sprs_tool_v1');
+    if (saved) {
+        try { applyLoadedData(JSON.parse(saved)); showToast('Auto-loaded your last session.', 'success'); }
+        catch(e) {}
+    }
+});
+
+// Ctrl+S
+document.addEventListener('keydown', e => {
+    if ((e.ctrlKey||e.metaKey) && e.key === 's') { e.preventDefault(); saveData(); }
+});
+</script>
+</body>
+</html>
