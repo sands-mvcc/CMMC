@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMMC 2.0 System Maintenance Report – Student Practice Tool</title>
+    <style>
+        /* ===== BASE ===== */
+        *, *::before, *::after { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #1f2937;
+            background: #f0f4f8;
+            padding: 20px;
+        }
+
+        /* ===== TOOLBAR ===== */
+        .toolbar {
+            max-width: 1200px;
+            margin: 0 auto 16px auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            background: #1e3a8a;
+            padding: 12px 20px;
+            border-radius: 10px;
+        }
+        .toolbar-title {
+            color: #93c5fd; font-weight: 700; font-size: 0.85em;
+            letter-spacing: 0.08em; text-transform: uppercase; margin-right: auto;
+        }
+        .toolbar button {
+            border: none; padding: 8px 16px; border-radius: 6px;
+            font-size: 0.85em; font-weight: 600; cursor: pointer;
+            display: flex; align-items: center; gap: 5px;
+            transition: filter 0.2s; white-space: nowrap;
+        }
+        .toolbar button:hover { filter: brightness(1.12); }
+        .tb-edit   { background: #10b981; color: white; }
+        .tb-edit.active { background: #059669; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3); }
+        .tb-save   { background: #f59e0b; color: #1f2937; }
+        .tb-load   { background: #6366f1; color: white; }
+        .tb-export { background: #0ea5e9; color: white; }
+        .tb-print  { background: #64748b; color: white; }
+        .tb-reset  { background: #ef4444; color: white; }
+        .edit-status {
+            font-size: 0.82em; font-weight: 700;
+            padding: 5px 12px; border-radius: 20px;
+            background: #374151; color: #9ca3af; white-space: nowrap;
+        }
+        .edit-status.on { background: #065f46; color: #6ee7b7; }
+
+        /* ===== CONTAINER ===== */
+        .page-container { max-width: 1200px; margin: 0 auto; }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: white; padding: 30px; text-align: center;
+            border-radius: 10px; margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.12);
+            position: relative;
+        }
+        .header h1 { margin: 0 0 6px; font-size: 2em; font-weight: 600; }
+        .header h2 { margin: 0 0 8px; font-size: 1.1em; font-weight: 300; opacity: 0.9; }
+        .header p  { margin: 0; opacity: 0.85; font-size: 0.95em; }
+        .student-badge {
+            position: absolute; top: 14px; right: 14px;
+            background: #fbbf24; color: #1f2937;
+            padding: 6px 14px; border-radius: 20px;
+            font-weight: 700; font-size: 0.8em;
+        }
+        .unsaved-indicator {
+            position: absolute; top: 14px; left: 14px;
+            background: #ef4444; color: white;
+            padding: 6px 14px; border-radius: 20px;
+            font-weight: 700; font-size: 0.8em; display: none;
+        }
+
+        /* ===== INSTRUCTION BOX ===== */
+        .instruction-box {
+            background: #eff6ff; border: 2px dashed #3b82f6;
+            border-radius: 8px; padding: 14px 18px;
+            margin-bottom: 20px; font-size: 0.87em; color: #1e40af;
+        }
+        .instruction-box strong { display: block; margin-bottom: 5px; }
+        .instruction-box ul { margin: 5px 0 0; padding-left: 18px; }
+        .instruction-box li { margin: 2px 0; }
+
+        /* ===== CARD SECTIONS ===== */
+        .card {
+            background: white; border-radius: 8px; margin-bottom: 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            border-left: 4px solid #3b82f6; overflow: hidden;
+        }
+        .card-header {
+            background: #f8fafc; padding: 14px 20px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 8px;
+        }
+        .card-header h3 {
+            color: #1e3a8a; margin: 0; font-size: 1.05em; font-weight: 700;
+        }
+        .card-body { padding: 20px; }
+        .card-body h4 { color: #1e40af; margin: 16px 0 8px; font-size: 0.95em; }
+        .card-body h4:first-child { margin-top: 0; }
+        .card-body p { margin: 6px 0; font-size: 0.9em; }
+        .card-body ul, .card-body ol { padding-left: 20px; margin: 8px 0; font-size: 0.9em; }
+        .card-body li { margin: 3px 0; }
+
+        /* ===== EDITABLE BLOCKS ===== */
+        .editable {
+            border: 2px dashed #d1d5db; padding: 10px 13px;
+            border-radius: 6px; min-height: 44px;
+            transition: border-color 0.2s, background 0.2s;
+            color: #9ca3af; font-style: italic; margin: 6px 0;
+        }
+        .editable.has-content { color: #1f2937; font-style: normal; border-color: #e5e7eb; }
+        .editable.edit-active {
+            border-color: #3b82f6; background: #fefce8;
+            color: #1f2937; font-style: normal; outline: none;
+        }
+        .editable[data-placeholder]:empty::before {
+            content: attr(data-placeholder);
+            color: #9ca3af; font-style: italic; pointer-events: none; display: block;
+        }
+        .editable p, .editable li { margin: 4px 0; }
+
+        /* ===== INLINE FIELDS ===== */
+        .inline-field {
+            border: none; border-bottom: 1px dashed #d1d5db;
+            background: transparent; font-family: inherit;
+            font-size: inherit; color: #1f2937; padding: 2px 5px;
+            min-width: 160px; transition: border-color 0.2s;
+        }
+        .inline-field:focus { outline: none; border-bottom-color: #3b82f6; background: #fefce8; }
+        .inline-field::placeholder { color: #9ca3af; font-style: italic; }
+        .inline-field.wide { min-width: 260px; }
+        .inline-select {
+            border: 1px solid #d1d5db; border-radius: 5px;
+            background: white; font-family: inherit; font-size: inherit;
+            padding: 3px 8px; color: #1f2937;
+        }
+        .inline-select:focus { outline: 2px solid #3b82f6; border-color: transparent; }
+
+        /* ===== REPORT INFO GRID ===== */
+        .report-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+            margin-bottom: 0;
+        }
+        .report-field { margin: 7px 0; font-size: 0.9em; }
+
+        /* ===== COMPLIANCE CHART ===== */
+        .compliance-chart {
+            display: flex; justify-content: space-around; align-items: center;
+            padding: 16px; background: #f8fafc; border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+        .chart-item { text-align: center; font-size: 0.82em; color: #374151; }
+        .chart-circle {
+            width: 76px; height: 76px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 1.1em; color: white;
+            margin: 0 auto 8px;
+        }
+        .cc-green  { background: #10b981; }
+        .cc-amber  { background: #f59e0b; color: #1f2937; }
+        .cc-red    { background: #ef4444; }
+        .cc-blue   { background: #3b82f6; }
+        .chart-circle input {
+            background: transparent; border: none; color: inherit;
+            font-weight: 800; font-size: 1em; text-align: center;
+            width: 100%; font-family: inherit;
+        }
+        .chart-circle input:focus { outline: none; }
+
+        /* ===== METRIC CARDS ===== */
+        .metrics-row {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr));
+            gap: 14px; margin: 14px 0;
+        }
+        .metric-card {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: white; padding: 18px; border-radius: 8px; text-align: center;
+        }
+        .metric-number { font-size: 2.2em; font-weight: 800; margin-bottom: 5px; line-height: 1; }
+        .metric-number input {
+            background: transparent; border: none; border-bottom: 1px dashed rgba(255,255,255,0.5);
+            color: white; font-size: 0.9em; font-weight: 800; text-align: center;
+            width: 100%; font-family: inherit;
+        }
+        .metric-number input:focus { outline: none; }
+        .metric-label { font-size: 0.82em; opacity: 0.9; }
+        .metric-label input {
+            background: transparent; border: none; color: white;
+            font-size: 1em; text-align: center; width: 100%; font-family: inherit;
+        }
+        .metric-label input:focus { outline: none; }
+
+        /* ===== CONTROL BOXES ===== */
+        .control-box {
+            background: #f8f9ff; border: 1px solid #dbeafe;
+            border-radius: 8px; padding: 16px; margin: 14px 0;
+        }
+        .control-id-badge {
+            background: #1e40af; color: white;
+            padding: 3px 9px; border-radius: 4px;
+            font-size: 0.85em; font-weight: 700;
+            display: inline-block; margin-bottom: 6px;
+            font-family: monospace;
+        }
+        .status-badge {
+            padding: 4px 11px; border-radius: 20px;
+            font-size: 0.82em; font-weight: 700;
+            display: inline-block; margin-left: 8px;
+        }
+        .sb-compliant    { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+        .sb-partial      { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+        .sb-noncompliant { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+        .status-select-inline {
+            border: 1px solid #d1d5db; border-radius: 10px;
+            font-size: 0.82em; font-weight: 700; padding: 3px 10px;
+            cursor: pointer; font-family: inherit; background: white;
+            margin-left: 6px;
+        }
+        .control-box h4 { color: #1e3a8a; margin: 6px 0 10px; font-size: 0.95em; }
+        .control-box .field-label { font-weight: 700; color: #374151; font-size: 0.88em; }
+
+        /* ===== ALERTS ===== */
+        .alert {
+            padding: 12px 15px; border-radius: 6px; margin: 12px 0;
+            font-size: 0.88em; border-left: 4px solid;
+        }
+        .alert-info    { background: #eff6ff; border-color: #3b82f6; color: #1e40af; }
+        .alert-warning { background: #fef3c7; border-color: #f59e0b; color: #92400e; }
+        .alert-success { background: #f0fdf4; border-color: #10b981; color: #065f46; }
+
+        /* ===== TABLES ===== */
+        .table-wrap { overflow-x: auto; margin: 12px 0; }
+        .maint-table {
+            width: 100%; border-collapse: collapse; background: white;
+            font-size: 0.86em; border-radius: 7px; overflow: hidden;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+        }
+        .maint-table th {
+            background: #1e40af; color: white;
+            padding: 10px 12px; text-align: left;
+            font-weight: 600; font-size: 0.84em;
+        }
+        .maint-table td {
+            padding: 9px 12px; border-bottom: 1px solid #e5e7eb; vertical-align: middle;
+        }
+        .maint-table tr:nth-child(even) td { background: #f9fafb; }
+        .maint-table tr:hover td { background: #eff6ff; }
+        .maint-table td input, .maint-table td select {
+            width: 100%; border: none; border-bottom: 1px dashed #d1d5db;
+            background: transparent; font-family: inherit; font-size: inherit;
+            color: #1f2937; padding: 2px 3px;
+        }
+        .maint-table td input:focus, .maint-table td select:focus {
+            outline: none; border-bottom-color: #3b82f6; background: #fefce8;
+        }
+        .maint-table td input::placeholder { color: #9ca3af; font-style: italic; }
+        .empty-row td { text-align: center; color: #9ca3af; font-style: italic; padding: 18px; }
+
+        /* ===== LIST ITEMS ===== */
+        .editable-list { list-style: none; padding: 0; margin: 8px 0; }
+        .editable-list li {
+            background: white; margin: 6px 0; padding: 9px 13px;
+            border-radius: 6px; border-left: 3px solid #3b82f6;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            display: flex; align-items: flex-start; gap: 10px;
+            font-size: 0.88em;
+        }
+        .editable-list li input {
+            flex: 1; border: none; border-bottom: 1px dashed #d1d5db;
+            background: transparent; font-family: inherit; font-size: inherit;
+            color: #374151; padding: 2px 3px;
+        }
+        .editable-list li input:focus { outline: none; border-bottom-color: #3b82f6; background: #fefce8; }
+        .editable-list li input::placeholder { color: #9ca3af; font-style: italic; }
+        .list-empty { color: #9ca3af; font-style: italic; font-size: 0.88em; padding: 8px 0; }
+
+        /* ===== RISK LEVEL BADGE ===== */
+        .risk-badge {
+            padding: 2px 8px; border-radius: 10px;
+            font-size: 0.78em; font-weight: 700; white-space: nowrap;
+        }
+        .rb-high   { background: #fee2e2; color: #991b1b; }
+        .rb-medium { background: #fef3c7; color: #92400e; }
+        .rb-low    { background: #d1fae5; color: #065f46; }
+
+        /* ===== BUTTONS ===== */
+        .add-btn {
+            background: #10b981; color: white; border: none;
+            padding: 7px 14px; border-radius: 6px; cursor: pointer;
+            font-size: 0.8em; font-weight: 600; margin: 4px 4px 4px 0;
+            transition: background 0.2s;
+        }
+        .add-btn:hover { background: #059669; }
+        .add-btn.blue { background: #3b82f6; }
+        .add-btn.blue:hover { background: #2563eb; }
+        .del-btn {
+            background: #ef4444; color: white; border: none;
+            padding: 4px 8px; border-radius: 4px; cursor: pointer;
+            font-size: 0.75em; transition: background 0.2s; flex-shrink: 0;
+        }
+        .del-btn:hover { background: #dc2626; }
+
+        /* ===== MODALS ===== */
+        .modal {
+            display: none; position: fixed;
+            z-index: 2000; left: 0; top: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.55);
+        }
+        .modal-box {
+            background: white; margin: 5% auto; padding: 28px;
+            border-radius: 10px; width: 92%; max-width: 440px; position: relative;
+        }
+        .modal-box h2 { color: #1e3a8a; margin: 0 0 14px; font-size: 1.1em; }
+        .close-m { position: absolute; top: 12px; right: 16px; color: #9ca3af; font-size: 22px; font-weight: bold; cursor: pointer; line-height: 1; background: none; border: none; }
+        .close-m:hover { color: #111; }
+        .m-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 14px; }
+        .btn-pm { background: #3b82f6; color: white; border: none; padding: 9px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .btn-sm { background: #6b7280; color: white; border: none; padding: 9px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .btn-dm { background: #ef4444; color: white; border: none; padding: 9px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed; bottom: 24px; right: 24px;
+            background: #1e3a8a; color: white; padding: 12px 22px;
+            border-radius: 8px; font-size: 0.88em; z-index: 9999;
+            opacity: 0; transform: translateY(10px);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        .toast.show { opacity: 1; transform: translateY(0); }
+        .toast.success { background: #059669; }
+        .toast.error   { background: #dc2626; }
+
+        /* ===== FOOTER ===== */
+        .page-footer {
+            background: #1e3a8a; color: white; padding: 20px;
+            text-align: center; border-radius: 8px; margin-top: 10px;
+            font-size: 0.88em;
+        }
+        .page-footer input {
+            background: rgba(255,255,255,0.15); border: none;
+            border-bottom: 1px dashed rgba(255,255,255,0.4);
+            color: white; font-family: inherit; font-size: inherit;
+            text-align: center; padding: 2px 6px; margin: 3px 0;
+        }
+        .page-footer input:focus { outline: none; background: rgba(255,255,255,0.25); }
+        .page-footer input::placeholder { color: rgba(255,255,255,0.55); }
+
+        /* ===== PRINT ===== */
+        @media print {
+            body { background: white; padding: 0; }
+            .toolbar, .instruction-box, .student-badge, .unsaved-indicator,
+            .add-btn, .del-btn { display: none !important; }
+            .page-container { max-width: 100%; }
+            .header { border-radius: 0; }
+            .card { box-shadow: none; border: 1px solid #ddd; }
+            .editable { border: none !important; background: white !important; color: #1f2937 !important; font-style: normal !important; }
+            .maint-table td input { border-bottom: none; }
+        }
+
+        @media (max-width: 768px) {
+            .report-grid { grid-template-columns: 1fr; }
+            .metrics-row { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== TOOLBAR ===== -->
+<div class="toolbar">
+    <span class="toolbar-title">🔧 Maintenance Report — Student Practice</span>
+    <button class="tb-edit" id="editToggleBtn" onclick="toggleEditMode()">✏️ Edit Mode</button>
+    <span class="edit-status" id="editStatus">Edit: OFF</span>
+    <button class="tb-save"   onclick="saveData()">💾 Save</button>
+    <button class="tb-load"   onclick="document.getElementById('fileInput').click()">📂 Load</button>
+    <button class="tb-export" onclick="exportJSON()">📤 Export JSON</button>
+    <button class="tb-print"  onclick="window.print()">🖨️ Print / PDF</button>
+    <button class="tb-reset"  onclick="openModal('resetModal')">🔄 Reset</button>
+    <input type="file" id="fileInput" accept=".json" style="display:none" onchange="loadFromFile(event)">
+</div>
+
+<div class="page-container">
+
+<!-- HEADER -->
+<div class="header">
+    <div class="student-badge">STUDENT PRACTICE TOOL</div>
+    <div class="unsaved-indicator" id="unsavedIndicator">● Unsaved Changes</div>
+    <h1>System Maintenance Report</h1>
+    <h2>CMMC 2.0 Level 2 Compliance — Student Practice Exercise</h2>
+    <p id="hdr-org">[Enter organization name below]</p>
+</div>
+
+<!-- INSTRUCTION BOX -->
+<div class="instruction-box">
+    <strong>🎓 Student Instructions</strong>
+    <ul>
+        <li>Click <strong>✏️ Edit Mode</strong> to enable all narrative text blocks — click again to lock. All inline fields and tables are always directly editable.</li>
+        <li>Complete <strong>Section 1 (Report Info)</strong> with your case study organization's details. All fields are clickable.</li>
+        <li>In <strong>Section 2 (MA Controls)</strong>, update each control's status and write your organization's implementation description and evidence.</li>
+        <li>Use <strong>"+ Add Row"</strong> buttons to populate tables in Sections 3–8. Use <strong>"+ Add Item"</strong> to expand lists.</li>
+        <li>Use <strong>💾 Save</strong> (Ctrl+S) to preserve your work, <strong>📤 Export JSON</strong> to download, and <strong>🖨️ Print</strong> for your final submission.</li>
+    </ul>
+</div>
+
+<!-- ============================================================
+     SECTION 1: REPORT INFORMATION
+============================================================ -->
+<div class="card">
+    <div class="card-header">
+        <h3>1. Report Information &amp; Compliance Overview</h3>
+    </div>
+    <div class="card-body">
+        <div class="report-grid">
+            <div>
+                <div class="report-field"><strong>Organization Name:</strong> <input class="inline-field wide" id="orgName" placeholder="Full legal organization name" oninput="markUnsaved(); updateHeader()"></div>
+                <div class="report-field"><strong>Report Period:</strong> <input class="inline-field wide" id="reportPeriod" placeholder="e.g., Q2 2025 (April 1 – June 30, 2025)" oninput="markUnsaved()"></div>
+                <div class="report-field"><strong>Prepared By:</strong> <input class="inline-field" id="preparedBy" placeholder="Name, Title (e.g., CISO)" oninput="markUnsaved()"></div>
+                <div class="report-field"><strong>Review Date:</strong> <input class="inline-field" id="reviewDate" type="date" oninput="markUnsaved()"></div>
+                <div class="report-field"><strong>Next Review:</strong> <input class="inline-field" id="nextReview" type="date" oninput="markUnsaved()"></div>
+                <div class="report-field"><strong>Classification:</strong>
+                    <select class="inline-select" id="classification" onchange="markUnsaved()">
+                        <option value="">— Select —</option>
+                        <option>Controlled Unclassified Information (CUI)</option>
+                        <option>Federal Contract Information (FCI)</option>
+                        <option>Internal Use Only</option>
+                        <option>Public</option>
+                    </select>
+                </div>
+                <div class="report-field"><strong>CMMC Level:</strong>
+                    <select class="inline-select" id="cmmcLevel" onchange="markUnsaved()">
+                        <option value="">— Select —</option>
+                        <option>Level 1 – Foundational</option>
+                        <option>Level 2 – Advanced</option>
+                        <option>Level 3 – Expert</option>
+                    </select>
+                </div>
+            </div>
+            <div class="compliance-chart">
+                <div class="chart-item">
+                    <div class="chart-circle cc-blue">
+                        <input id="chartControls" value="0/6" title="Click to edit" oninput="markUnsaved()">
+                    </div>
+                    <div>MA Controls<br>Implemented</div>
+                </div>
+                <div class="chart-item">
+                    <div class="chart-circle cc-blue">
+                        <input id="chartCompliance" value="0%" title="Click to edit" oninput="markUnsaved()">
+                    </div>
+                    <div>Compliance<br>Score</div>
+                </div>
+                <div class="chart-item">
+                    <div class="chart-circle cc-blue">
+                        <input id="chartActivities" value="0" title="Click to edit" oninput="markUnsaved()">
+                    </div>
+                    <div>Activities<br>Completed</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     SECTION 2: EXECUTIVE SUMMARY
+============================================================ -->
+<div class="card">
+    <div class="card-header"><h3>2. Executive Summary</h3></div>
+    <div class="card-body">
+        <div class="editable" data-field="exec-summary"
+             data-placeholder="Write an executive summary for this maintenance report. Include:
+• The scope of the report (which maintenance controls MA.L2-3.7.1 through MA.L2-3.7.6 are addressed)
+• The reporting period and organization covered
+• High-level compliance status (e.g., all 6 MA controls fully implemented)
+• Total number of maintenance activities completed during the period
+• Any significant findings, exceptions, or areas requiring attention">
+        </div>
+
+        <div class="alert alert-info" style="margin-top:12px;">
+            <strong>Key Findings:</strong>
+            <input class="inline-field wide" id="keyFindings" placeholder="Summarize the key findings for this report period — e.g., all 6 MA controls implemented and operational, X activities completed" oninput="markUnsaved()">
+        </div>
+
+        <div class="metrics-row">
+            <div class="metric-card">
+                <div class="metric-number"><input id="m1val" placeholder="0" title="Edit value" oninput="markUnsaved()"></div>
+                <div class="metric-label"><input id="m1lbl" value="Maintenance Activities Completed" oninput="markUnsaved()"></div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-number"><input id="m2val" placeholder="0%" title="Edit value" oninput="markUnsaved()"></div>
+                <div class="metric-label"><input id="m2lbl" value="On-Schedule Completion Rate" oninput="markUnsaved()"></div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-number"><input id="m3val" placeholder="0" title="Edit value" oninput="markUnsaved()"></div>
+                <div class="metric-label"><input id="m3lbl" value="Third-Party Vendors Managed" oninput="markUnsaved()"></div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-number"><input id="m4val" placeholder="0" title="Edit value" oninput="markUnsaved()"></div>
+                <div class="metric-label"><input id="m4lbl" value="Assets in Lifecycle Tracking" oninput="markUnsaved()"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     SECTION 3: MA CONTROLS COMPLIANCE
+============================================================ -->
+<div class="card">
+    <div class="card-header"><h3>3. CMMC 2.0 Maintenance Controls Compliance (MA.L2-3.7.1 – 3.7.6)</h3></div>
+    <div class="card-body">
+
+        <!-- MA.L2-3.7.1 -->
+        <div class="control-box" id="ctrl-371">
+            <div class="control-id-badge">MA.L2-3.7.1</div>
+            <select class="status-select-inline" onchange="updateControlStyle('ctrl-371',this.value); markUnsaved();" id="status-371">
+                <option value="pending">⏸ Not Assessed</option>
+                <option value="compliant">✅ Compliant</option>
+                <option value="partial">⚠️ Partial</option>
+                <option value="noncompliant">❌ Non-Compliant</option>
+            </select>
+            <h4>Perform Maintenance</h4>
+            <p><span class="field-label">Requirement:</span> Perform maintenance on organizational systems.</p>
+            <p><span class="field-label">Implementation:</span></p>
+            <div class="editable" data-field="ma371-impl"
+                 data-placeholder="Describe how your organization performs and documents maintenance on all IT systems. Include maintenance schedule frequency (daily/weekly/monthly/quarterly), the ticketing or ITSM system used, and how activities are tracked and documented.">
+            </div>
+            <p><span class="field-label">Evidence:</span></p>
+            <div class="editable" data-field="ma371-evid"
+                 data-placeholder="List evidence that demonstrates compliance: e.g., maintenance schedules, completed work orders, system health reports, ITSM records.">
+            </div>
+        </div>
+
+        <!-- MA.L2-3.7.2 -->
+        <div class="control-box" id="ctrl-372">
+            <div class="control-id-badge">MA.L2-3.7.2</div>
+            <select class="status-select-inline" onchange="updateControlStyle('ctrl-372',this.value); markUnsaved();" id="status-372">
+                <option value="pending">⏸ Not Assessed</option>
+                <option value="compliant">✅ Compliant</option>
+                <option value="partial">⚠️ Partial</option>
+                <option value="noncompliant">❌ Non-Compliant</option>
+            </select>
+            <h4>System Maintenance Control</h4>
+            <p><span class="field-label">Requirement:</span> Provide controls on tools, techniques, mechanisms, and personnel used to conduct system maintenance.</p>
+            <p><span class="field-label">Implementation:</span></p>
+            <div class="editable" data-field="ma372-impl"
+                 data-placeholder="Describe controls on maintenance tools and personnel. Include: tool approval process, personnel authorization requirements, external vendor requirements, and how diagnostic tools are vetted and tracked.">
+            </div>
+            <p><span class="field-label">Evidence:</span></p>
+            <div class="editable" data-field="ma372-evid"
+                 data-placeholder="List evidence: e.g., tool inventory register, personnel authorization matrix, vendor agreements, tool inspection logs.">
+            </div>
+        </div>
+
+        <!-- MA.L2-3.7.3 -->
+        <div class="control-box" id="ctrl-373">
+            <div class="control-id-badge">MA.L2-3.7.3</div>
+            <select class="status-select-inline" onchange="updateControlStyle('ctrl-373',this.value); markUnsaved();" id="status-373">
+                <option value="pending">⏸ Not Assessed</option>
+                <option value="compliant">✅ Compliant</option>
+                <option value="partial">⚠️ Partial</option>
+                <option value="noncompliant">❌ Non-Compliant</option>
+            </select>
+            <h4>Equipment Sanitization</h4>
+            <p><span class="field-label">Requirement:</span> Ensure equipment removed for off-site maintenance is sanitized of any CUI.</p>
+            <p><span class="field-label">Implementation:</span></p>
+            <div class="editable" data-field="ma373-impl"
+                 data-placeholder="Describe the sanitization procedures applied to equipment before off-site maintenance. Reference the sanitization standard used (e.g., NIST SP 800-88), the method applied (cryptographic wipe, degauss, physical destruction), and who authorizes and documents each sanitization.">
+            </div>
+            <p><span class="field-label">Evidence:</span></p>
+            <div class="editable" data-field="ma373-evid"
+                 data-placeholder="List evidence: sanitization procedures documentation, certificates of destruction/sanitization, equipment disposition logs.">
+            </div>
+        </div>
+
+        <!-- MA.L2-3.7.4 -->
+        <div class="control-box" id="ctrl-374">
+            <div class="control-id-badge">MA.L2-3.7.4</div>
+            <select class="status-select-inline" onchange="updateControlStyle('ctrl-374',this.value); markUnsaved();" id="status-374">
+                <option value="pending">⏸ Not Assessed</option>
+                <option value="compliant">✅ Compliant</option>
+                <option value="partial">⚠️ Partial</option>
+                <option value="noncompliant">❌ Non-Compliant</option>
+            </select>
+            <h4>Media Inspection (Check Diagnostic Media)</h4>
+            <p><span class="field-label">Requirement:</span> Check media containing diagnostic and test programs for malicious code before use.</p>
+            <p><span class="field-label">Implementation:</span></p>
+            <div class="editable" data-field="ma374-impl"
+                 data-placeholder="Describe how all diagnostic media (USB drives, CDs, software downloads) are scanned for malware before use. Include: the antivirus/EDR solution used, the scanning procedure, who performs it, and how results are documented.">
+            </div>
+            <p><span class="field-label">Evidence:</span></p>
+            <div class="editable" data-field="ma374-evid"
+                 data-placeholder="List evidence: antivirus scan logs, approved tool registry, media inspection procedures, scan result records.">
+            </div>
+        </div>
+
+        <!-- MA.L2-3.7.5 -->
+        <div class="control-box" id="ctrl-375">
+            <div class="control-id-badge">MA.L2-3.7.5</div>
+            <select class="status-select-inline" onchange="updateControlStyle('ctrl-375',this.value); markUnsaved();" id="status-375">
+                <option value="pending">⏸ Not Assessed</option>
+                <option value="compliant">✅ Compliant</option>
+                <option value="partial">⚠️ Partial</option>
+                <option value="noncompliant">❌ Non-Compliant</option>
+            </select>
+            <h4>Nonlocal Maintenance (Remote Maintenance)</h4>
+            <p><span class="field-label">Requirement:</span> Require MFA for remote maintenance sessions via external network connections; terminate sessions when complete.</p>
+            <p><span class="field-label">Implementation:</span></p>
+            <div class="editable" data-field="ma375-impl"
+                 data-placeholder="Describe remote maintenance controls. Include: the MFA solution required (e.g., Microsoft Authenticator, Duo), the VPN/remote access method, automatic session timeout settings, how sessions are logged and monitored, and the session termination procedure.">
+            </div>
+            <p><span class="field-label">Evidence:</span></p>
+            <div class="editable" data-field="ma375-evid"
+                 data-placeholder="List evidence: VPN logs, MFA authentication records, session termination logs, remote access audit reports.">
+            </div>
+        </div>
+
+        <!-- MA.L2-3.7.6 -->
+        <div class="control-box" id="ctrl-376">
+            <div class="control-id-badge">MA.L2-3.7.6</div>
+            <select class="status-select-inline" onchange="updateControlStyle('ctrl-376',this.value); markUnsaved();" id="status-376">
+                <option value="pending">⏸ Not Assessed</option>
+                <option value="compliant">✅ Compliant</option>
+                <option value="partial">⚠️ Partial</option>
+                <option value="noncompliant">❌ Non-Compliant</option>
+            </select>
+            <h4>Maintenance Personnel Supervision</h4>
+            <p><span class="field-label">Requirement:</span> Supervise maintenance activities of personnel without required access authorization.</p>
+            <p><span class="field-label">Implementation:</span></p>
+            <div class="editable" data-field="ma376-impl"
+                 data-placeholder="Describe how unauthorized maintenance personnel (e.g., external contractors) are supervised. Include: supervision requirements, visitor access procedures, escorting policies, how all maintenance activities by unauthorized personnel are logged, and how supervisor approval is obtained.">
+            </div>
+            <p><span class="field-label">Evidence:</span></p>
+            <div class="editable" data-field="ma376-evid"
+                 data-placeholder="List evidence: supervision logs, visitor access records, maintenance approval workflows, escort policy documentation.">
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- ============================================================
+     SECTION 4: MAINTENANCE ACTIVITIES SUMMARY
+============================================================ -->
+<div class="card">
+    <div class="card-header">
+        <h3>4. Maintenance Activities Summary</h3>
+        <div><button class="add-btn" onclick="addTableRow('actTable')">+ Add Activity</button></div>
+    </div>
+    <div class="card-body">
+        <div class="table-wrap">
+            <table class="maint-table">
+                <thead>
+                    <tr>
+                        <th>Activity Type</th>
+                        <th>Scheduled</th>
+                        <th>Completed</th>
+                        <th>Pending</th>
+                        <th>Compliance Rate</th>
+                        <th style="width:60px;">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="actTable">
+                    <tr class="empty-row"><td colspan="6">No activities added — click "+ Add Activity" above.</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h4>Preventive Maintenance Schedule</h4>
+        <ul class="editable-list" id="pmScheduleList">
+            <li><input placeholder="e.g., Daily: Automated system health checks and log review" oninput="markUnsaved()"><button class="del-btn" onclick="delListItem(this)">✕</button></li>
+            <li><input placeholder="e.g., Weekly: Security patch assessment and deployment planning" oninput="markUnsaved()"><button class="del-btn" onclick="delListItem(this)">✕</button></li>
+            <li><input placeholder="e.g., Monthly: Network equipment inspection and firmware updates" oninput="markUnsaved()"><button class="del-btn" onclick="delListItem(this)">✕</button></li>
+        </ul>
+        <button class="add-btn" onclick="addListItem('pmScheduleList')">+ Add Schedule Item</button>
+
+        <h4>Emergency Maintenance Procedures</h4>
+        <div class="editable" data-field="emergency-maint"
+             data-placeholder="Describe your organization's emergency maintenance response capability. Include:
+• 24/7 response capability (yes/no, who is on call)
+• Emergency change approval process (who authorizes, timeline)
+• CUI protection verification steps before any emergency maintenance
+• Monitoring requirements during emergency maintenance activities
+• Post-maintenance security validation and documentation requirements">
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     SECTION 5: ASSET LIFECYCLE MANAGEMENT
+============================================================ -->
+<div class="card">
+    <div class="card-header">
+        <h3>5. Asset Lifecycle Management</h3>
+        <div><button class="add-btn" onclick="addTableRow('assetTable')">+ Add Asset Category</button></div>
+    </div>
+    <div class="card-body">
+        <div class="table-wrap">
+            <table class="maint-table">
+                <thead>
+                    <tr>
+                        <th>Asset Category</th>
+                        <th>Total Count</th>
+                        <th>Active</th>
+                        <th>In Maintenance</th>
+                        <th>End of Life</th>
+                        <th>Replacement Planned</th>
+                        <th style="width:60px;">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="assetTable">
+                    <tr class="empty-row"><td colspan="7">No assets added — click "+ Add Asset Category" above.</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="alert alert-warning">
+            <strong>Action Required:</strong>
+            <input class="inline-field wide" id="assetAction" placeholder="Describe any assets approaching end-of-life or requiring near-term replacement planning" oninput="markUnsaved()">
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     SECTION 6: THIRD-PARTY MAINTENANCE OVERSIGHT
+============================================================ -->
+<div class="card">
+    <div class="card-header">
+        <h3>6. Third-Party Maintenance Oversight</h3>
+        <div><button class="add-btn" onclick="addTableRow('vendorTable')">+ Add Vendor</button></div>
+    </div>
+    <div class="card-body">
+        <div class="table-wrap">
+            <table class="maint-table">
+                <thead>
+                    <tr>
+                        <th>Vendor Name</th>
+                        <th>Service Type</th>
+                        <th>Access Level</th>
+                        <th>Last Activity</th>
+                        <th>Compliance Status</th>
+                        <th style="width:60px;">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="vendorTable">
+                    <tr class="empty-row"><td colspan="6">No vendors added — click "+ Add Vendor" above.</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h4>Third-Party Vendor Requirements</h4>
+        <p style="font-size:0.88em;color:#6b7280;margin-bottom:8px;">List the security requirements all third-party maintenance vendors must satisfy:</p>
+        <ul class="editable-list" id="vendorReqList">
+            <li><input placeholder="e.g., Must have signed CMMC-compliant service agreement before access" oninput="markUnsaved()"><button class="del-btn" onclick="delListItem(this)">✕</button></li>
+            <li><input placeholder="e.g., Undergo background verification where applicable" oninput="markUnsaved()"><button class="del-btn" onclick="delListItem(this)">✕</button></li>
+            <li><input placeholder="e.g., Receive security awareness briefing before access to facilities or systems" oninput="markUnsaved()"><button class="del-btn" onclick="delListItem(this)">✕</button></li>
+        </ul>
+        <button class="add-btn" onclick="addListItem('vendorReqList')">+ Add Requirement</button>
+    </div>
+</div>
+
+<!-- ============================================================
+     SECTION 7: CUI PROTECTION DURING MAINTENANCE
+============================================================ -->
+<div class="card">
+    <div class="card-header"><h3>7. CUI Protection During Maintenance</h3></div>
+    <div class="card-body">
+        <div class="editable" data-field="cui-protection"
+             data-placeholder="Describe the procedures in place to protect CUI during all maintenance activities. Include:
+• Pre-maintenance CUI assessment (identifying which systems contain CUI)
+• Access controls applied before maintenance technicians are given access
+• CUI verification checks before equipment is removed from the facility
+• Monitoring and logging requirements while maintenance is in progress
+• CUI handling procedures if equipment must be returned to a vendor
+• Post-maintenance verification that CUI integrity has been maintained">
+        </div>
+
+        <h4>Remote Access CUI Controls (MA.L2-3.7.5)</h4>
+        <div class="editable" data-field="remote-cui"
+             data-placeholder="Specifically describe how CUI is protected during remote/nonlocal maintenance sessions:
+• What CUI systems are accessible remotely (and which are restricted)
+• How remote sessions are isolated and monitored
+• What MFA requirements apply
+• How session recordings or logs capture remote maintenance activity
+• Session termination procedures when maintenance is complete">
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     SECTION 8: MAINTENANCE TOOLS & SECURITY
+============================================================ -->
+<div class="card">
+    <div class="card-header">
+        <h3>8. Approved Maintenance Tools Registry</h3>
+        <div><button class="add-btn" onclick="addTableRow('toolsTable')">+ Add Tool</button></div>
+    </div>
+    <div class="card-body">
+        <div class="table-wrap">
+            <table class="maint-table">
+                <thead>
+                    <tr>
+                        <th>Tool Name</th>
+                        <th>Version</th>
+                        <th>Purpose</th>
+                        <th>Last Malware Scan</th>
+                        <th>Approval Status</th>
+                        <th style="width:60px;">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="toolsTable">
+                    <tr class="empty-row"><td colspan="6">No tools added — click "+ Add Tool" above.</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h4>Tool Security Measures</h4>
+        <ul class="editable-list" id="toolSecList">
+            <li><input placeholder="e.g., All tools undergo malware scanning before first use and monthly thereafter" oninput="markUnsaved()"><button class="del-btn" onclick="delListItem(this)">✕</button></li>
+            <li><input placeholder="e.g., Tool access restricted to authorized maintenance personnel only" oninput="markUnsaved()"><button class="del-btn" onclick="delListItem(this)">✕</button></li>
+            <li><input placeholder="e.g., Usage logs maintained in centralized SIEM system" oninput="markUnsaved()"><button class="del-btn" onclick="delListItem(this)">✕</button></li>
+        </ul>
+        <button class="add-btn" onclick="addListItem('toolSecList')">+ Add Security Measure</button>
+    </div>
+</div>
+
+<!-- ============================================================
+     SECTION 9: RISK ASSESSMENT
+============================================================ -->
+<div class="card">
+    <div class="card-header">
+        <h3>9. Risk Assessment and Mitigation</h3>
+        <div><button class="add-btn" onclick="addTableRow('riskTable')">+ Add Risk</button></div>
+    </div>
+    <div class="card-body">
+        <div class="table-wrap">
+            <table class="maint-table">
+                <thead>
+                    <tr>
+                        <th>Risk Description</th>
+                        <th>Likelihood</th>
+                        <th>Impact</th>
+                        <th>Risk Level</th>
+                        <th>Mitigation Status</th>
+                        <th style="width:60px;">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="riskTable">
+                    <tr class="empty-row"><td colspan="6">No risks added — click "+ Add Risk" above.</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h4>Mitigation Strategies</h4>
+        <ul class="editable-list" id="mitigationList">
+            <li><input placeholder="e.g., All remote sessions require MFA through approved authenticator app" oninput="markUnsaved()"><button class="del-btn" onclick="delListItem(this)">✕</button></li>
+            <li><input placeholder="e.g., All diagnostic media scanned before use with enterprise AV solution" oninput="markUnsaved()"><button class="del-btn" onclick="delListItem(this)">✕</button></li>
+            <li><input placeholder="e.g., External maintenance personnel escorted and supervised at all times" oninput="markUnsaved()"><button class="del-btn" onclick="delListItem(this)">✕</button></li>
+        </ul>
+        <button class="add-btn" onclick="addListItem('mitigationList')">+ Add Mitigation Strategy</button>
+    </div>
+</div>
+
+<!-- ============================================================
+     SECTION 10: RECOMMENDATIONS & COMPLIANCE ATTESTATION
+============================================================ -->
+<div class="card">
+    <div class="card-header"><h3>10. Recommendations &amp; Continuous Improvement</h3></div>
+    <div class="card-body">
+        <ul class="editable-list" id="recList">
+            <li><input placeholder="e.g., Implement automated maintenance scheduling and tracking in ITSM tool" oninput="markUnsaved()"><button class="del-btn" onclick="delListItem(this)">✕</button></li>
+            <li><input placeholder="e.g., Expand remote maintenance monitoring to include session recording" oninput="markUnsaved()"><button class="del-btn" onclick="delListItem(this)">✕</button></li>
+        </ul>
+        <button class="add-btn" onclick="addListItem('recList')">+ Add Recommendation</button>
+
+        <h4>Compliance Attestation</h4>
+        <div class="editable" data-field="attestation"
+             data-placeholder="Write the compliance attestation statement. This should include:
+• A statement confirming that all 6 MA controls are assessed as [status]
+• Name and title of the certifying official
+• The basis for the assessment (self-assessment, C3PAO assessment, etc.)
+• A statement that the information in this report is accurate and complete
+• Reference to how this report supports the organization's CMMC Level 2 certification">
+        </div>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<div class="page-footer">
+    <p>
+        <strong>Prepared by:</strong>
+        <input id="footerPrepared" placeholder="Name, Title" oninput="markUnsaved()">
+    </p>
+    <p>
+        <strong>Review Date:</strong>
+        <input id="footerDate" type="date" oninput="markUnsaved()">
+        &nbsp;|&nbsp;
+        <strong>Classification:</strong>
+        <input id="footerClass" placeholder="e.g., Controlled Unclassified Information (CUI)" style="min-width:300px;" oninput="markUnsaved()">
+    </p>
+    <p style="margin-top:8px;font-style:italic;opacity:0.8;">This document is a student practice exercise for CMMC 2.0 Level 2 compliance education — MA Controls MA.L2-3.7.1 through MA.L2-3.7.6.</p>
+</div>
+
+</div><!-- /page-container -->
+
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toast"></div>
+
+<!-- ===== RESET MODAL ===== -->
+<div id="resetModal" class="modal">
+    <div class="modal-box" style="max-width:420px;">
+        <button class="close-m" onclick="closeModal('resetModal')">&times;</button>
+        <h2>⚠️ Reset All Data?</h2>
+        <p style="font-size:0.9em;color:#374151;">This will clear all entered data. This cannot be undone.</p>
+        <div class="m-actions">
+            <button class="btn-sm" onclick="closeModal('resetModal')">Cancel</button>
+            <button class="btn-dm" onclick="doReset()">Yes, Reset Everything</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== JAVASCRIPT ===== -->
+<script>
+    // =============================================
+    //  EDIT MODE
+    // =============================================
+    let editMode = false;
+
+    function toggleEditMode() {
+        editMode = !editMode;
+        const btn = document.getElementById('editToggleBtn');
+        const status = document.getElementById('editStatus');
+        document.querySelectorAll('.editable').forEach(el => {
+            el.contentEditable = editMode ? 'true' : 'false';
+            if (editMode) {
+                el.classList.add('edit-active');
+            } else {
+                el.classList.remove('edit-active');
+                if (el.textContent.trim()) el.classList.add('has-content');
+                markUnsaved();
+            }
+        });
+        btn.textContent = editMode ? '🔒 Lock Editing' : '✏️ Edit Mode';
+        btn.className = editMode ? 'tb-edit active' : 'tb-edit';
+        status.textContent = editMode ? 'Edit: ON' : 'Edit: OFF';
+        status.className = editMode ? 'edit-status on' : 'edit-status';
+    }
+
+    // =============================================
+    //  CONTROL STATUS STYLING
+    // =============================================
+    function updateControlStyle(boxId, status) {
+        const box = document.getElementById(boxId);
+        if (!box) return;
+        const colorMap = { compliant:'#d1fae5', partial:'#fef3c7', noncompliant:'#fee2e2', pending:'#f8f9ff' };
+        const borderMap = { compliant:'#10b981', partial:'#f59e0b', noncompliant:'#ef4444', pending:'#dbeafe' };
+        box.style.background = colorMap[status] || '#f8f9ff';
+        box.style.borderColor = borderMap[status] || '#dbeafe';
+    }
+
+    // =============================================
+    //  DYNAMIC TABLES
+    // =============================================
+    const TABLE_CONFIGS = {
+        actTable: {
+            cols: ['Activity Type','Scheduled','Completed','Pending','Compliance Rate'],
+            placeholders: ['e.g., Server Preventive Maintenance','6','6','0','100%']
+        },
+        assetTable: {
+            cols: ['Asset Category','Total','Active','In Maintenance','End of Life','Replacement Planned'],
+            placeholders: ['e.g., Laptops','0','0','0','0','e.g., Q4 2025']
+        },
+        vendorTable: {
+            cols: ['Vendor Name','Service Type','Access Level','Last Activity','Compliance Status'],
+            placeholders: ['e.g., Dell Technologies','e.g., Server Hardware Support','e.g., Supervised Physical','e.g., Jan 15, 2025','e.g., Compliant']
+        },
+        toolsTable: {
+            cols: ['Tool Name','Version','Purpose','Last Malware Scan','Approval Status'],
+            placeholders: ['e.g., Dell OpenManage','e.g., v3.8.1','e.g., Server Management','e.g., June 15, 2025','e.g., Approved']
+        },
+        riskTable: {
+            cols: ['Risk Description','Likelihood','Impact','Risk Level','Mitigation Status'],
+            placeholders: ['e.g., Unauthorized access during maintenance','Low','High','Medium','e.g., Mitigated']
+        }
+    };
+
+    function addTableRow(tableId) {
+        const tbody = document.getElementById(tableId);
+        const cfg = TABLE_CONFIGS[tableId];
+        if (!cfg) return;
+
+        // Remove empty row
+        const emptyRow = tbody.querySelector('.empty-row');
+        if (emptyRow) emptyRow.remove();
+
+        const tr = document.createElement('tr');
+        const cells = cfg.cols.map((col, i) => {
+            const input = `<input type="text" placeholder="${cfg.placeholders[i] || ''}" oninput="markUnsaved()">`;
+            return `<td>${input}</td>`;
+        });
+        cells.push(`<td><button class="del-btn" onclick="delTableRow(this)">Del</button></td>`);
+        tr.innerHTML = cells.join('');
+        tbody.appendChild(tr);
+        markUnsaved();
+
+        // Focus first input
+        const inputs = tr.querySelectorAll('input');
+        if (inputs.length) inputs[0].focus();
+    }
+
+    function delTableRow(btn) {
+        const row = btn.closest('tr');
+        const tbody = row.parentElement;
+        row.remove();
+        // Show empty row if needed
+        if (!tbody.querySelector('tr:not(.empty-row)')) {
+            const tableId = tbody.id;
+            const cfg = TABLE_CONFIGS[tableId];
+            const cols = cfg ? cfg.cols.length + 1 : 6;
+            tbody.innerHTML = `<tr class="empty-row"><td colspan="${cols}">No entries — click the Add button above.</td></tr>`;
+        }
+        markUnsaved();
+    }
+
+    // =============================================
+    //  DYNAMIC LISTS
+    // =============================================
+    function addListItem(listId) {
+        const ul = document.getElementById(listId);
+        if (!ul) return;
+        // Remove empty hint if present
+        const hint = ul.querySelector('.list-empty');
+        if (hint) hint.remove();
+        const li = document.createElement('li');
+        li.innerHTML = `<input type="text" placeholder="Enter item…" oninput="markUnsaved()">
+                        <button class="del-btn" onclick="delListItem(this)">✕</button>`;
+        ul.appendChild(li);
+        markUnsaved();
+        li.querySelector('input').focus();
+    }
+
+    function delListItem(btn) {
+        const li = btn.closest('li');
+        const ul = li.parentElement;
+        li.remove();
+        markUnsaved();
+    }
+
+    // =============================================
+    //  HEADER UPDATE
+    // =============================================
+    function updateHeader() {
+        const org = document.getElementById('orgName')?.value.trim();
+        document.getElementById('hdr-org').textContent = org || '[Enter organization name below]';
+    }
+
+    // =============================================
+    //  UNSAVED
+    // =============================================
+    function markUnsaved() {
+        document.getElementById('unsavedIndicator').style.display = 'block';
+    }
+    function markSaved() {
+        document.getElementById('unsavedIndicator').style.display = 'none';
+    }
+
+    // =============================================
+    //  COLLECT / APPLY DATA
+    // =============================================
+    function collectEditableFields() {
+        const f = {};
+        document.querySelectorAll('.editable[data-field]').forEach(el => {
+            f[el.dataset.field] = el.innerHTML;
+        });
+        return f;
+    }
+    function applyEditableFields(f) {
+        if (!f) return;
+        document.querySelectorAll('.editable[data-field]').forEach(el => {
+            const v = f[el.dataset.field];
+            if (v !== undefined) { el.innerHTML = v; if (el.textContent.trim()) el.classList.add('has-content'); }
+        });
+    }
+
+    function collectSimpleFields() {
+        const ids = ['orgName','reportPeriod','preparedBy','reviewDate','nextReview',
+                     'classification','cmmcLevel','keyFindings','assetAction',
+                     'chartControls','chartCompliance','chartActivities',
+                     'm1val','m1lbl','m2val','m2lbl','m3val','m3lbl','m4val','m4lbl',
+                     'footerPrepared','footerDate','footerClass'];
+        const d = {};
+        ids.forEach(id => { const el = document.getElementById(id); if (el) d[id] = el.value; });
+        return d;
+    }
+    function applySimpleFields(d) {
+        if (!d) return;
+        Object.keys(d).forEach(id => { const el = document.getElementById(id); if (el) el.value = d[id]; });
+        updateHeader();
+    }
+
+    function collectControlStatuses() {
+        const d = {};
+        ['371','372','373','374','375','376'].forEach(n => {
+            const el = document.getElementById('status-' + n);
+            if (el) d[n] = el.value;
+        });
+        return d;
+    }
+    function applyControlStatuses(d) {
+        if (!d) return;
+        Object.keys(d).forEach(n => {
+            const el = document.getElementById('status-' + n);
+            if (el) { el.value = d[n]; updateControlStyle('ctrl-' + n, d[n]); }
+        });
+    }
+
+    function collectTableData(tableId) {
+        const tbody = document.getElementById(tableId);
+        const rows = [];
+        tbody.querySelectorAll('tr:not(.empty-row)').forEach(tr => {
+            const vals = [];
+            tr.querySelectorAll('td input').forEach(inp => vals.push(inp.value));
+            if (vals.length) rows.push(vals);
+        });
+        return rows;
+    }
+    function applyTableData(tableId, rows) {
+        if (!rows || !rows.length) return;
+        const tbody = document.getElementById(tableId);
+        const cfg = TABLE_CONFIGS[tableId];
+        tbody.innerHTML = '';
+        rows.forEach(vals => {
+            const tr = document.createElement('tr');
+            const cells = vals.map(v => `<td><input type="text" value="${esc(v)}" oninput="markUnsaved()"></td>`);
+            cells.push(`<td><button class="del-btn" onclick="delTableRow(this)">Del</button></td>`);
+            tr.innerHTML = cells.join('');
+            tbody.appendChild(tr);
+        });
+        if (!rows.length) {
+            const cols = cfg ? cfg.cols.length + 1 : 6;
+            tbody.innerHTML = `<tr class="empty-row"><td colspan="${cols}">No entries.</td></tr>`;
+        }
+    }
+
+    function collectListData(listId) {
+        const ul = document.getElementById(listId);
+        const items = [];
+        ul.querySelectorAll('li input').forEach(inp => items.push(inp.value));
+        return items;
+    }
+    function applyListData(listId, items) {
+        if (!items) return;
+        const ul = document.getElementById(listId);
+        ul.innerHTML = '';
+        items.forEach(v => {
+            const li = document.createElement('li');
+            li.innerHTML = `<input type="text" value="${esc(v)}" oninput="markUnsaved()">
+                            <button class="del-btn" onclick="delListItem(this)">✕</button>`;
+            ul.appendChild(li);
+        });
+    }
+
+    const TABLE_IDS = ['actTable','assetTable','vendorTable','toolsTable','riskTable'];
+    const LIST_IDS  = ['pmScheduleList','vendorReqList','toolSecList','mitigationList','recList'];
+
+    function buildSaveObject() {
+        const tables = {}, lists = {};
+        TABLE_IDS.forEach(id => { tables[id] = collectTableData(id); });
+        LIST_IDS.forEach(id  => { lists[id]  = collectListData(id); });
+        return {
+            editableFields:   collectEditableFields(),
+            simpleFields:     collectSimpleFields(),
+            controlStatuses:  collectControlStatuses(),
+            tables, lists
+        };
+    }
+
+    function applyLoadedData(d) {
+        if (d.editableFields)  applyEditableFields(d.editableFields);
+        if (d.simpleFields)    applySimpleFields(d.simpleFields);
+        if (d.controlStatuses) applyControlStatuses(d.controlStatuses);
+        if (d.tables) TABLE_IDS.forEach(id => { if (d.tables[id]) applyTableData(id, d.tables[id]); });
+        if (d.lists)  LIST_IDS.forEach(id  => { if (d.lists[id])  applyListData(id, d.lists[id]); });
+        markSaved();
+    }
+
+    // =============================================
+    //  SAVE / LOAD
+    // =============================================
+    function saveData() {
+        try {
+            localStorage.setItem('cmmc_maint_tool_v1', JSON.stringify(buildSaveObject()));
+            markSaved();
+            showToast('Report saved ✓', 'success');
+        } catch(e) {
+            showToast('Save failed — try Export JSON.', 'error');
+        }
+    }
+
+    function exportJSON() {
+        const blob = new Blob([JSON.stringify(buildSaveObject(), null, 2)], { type: 'application/json' });
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+        a.download = `CMMC_Maintenance_Report_${new Date().toISOString().split('T')[0]}.json`;
+        a.click(); URL.revokeObjectURL(a.href);
+        showToast('JSON exported ✓', 'success');
+    }
+
+    function loadFromFile(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = e => {
+            try { applyLoadedData(JSON.parse(e.target.result)); showToast('File loaded ✓', 'success'); }
+            catch(err) { showToast('Error: Invalid JSON file.', 'error'); }
+        };
+        reader.readAsText(file);
+        event.target.value = '';
+    }
+
+    // =============================================
+    //  RESET
+    // =============================================
+    function doReset() {
+        document.querySelectorAll('.editable[data-field]').forEach(el => {
+            el.innerHTML = ''; el.classList.remove('has-content');
+        });
+        ['orgName','reportPeriod','preparedBy','reviewDate','nextReview','classification','cmmcLevel',
+         'keyFindings','assetAction','chartControls','chartCompliance','chartActivities',
+         'm1val','m1lbl','m2val','m2lbl','m3val','m3lbl','m4val','m4lbl',
+         'footerPrepared','footerDate','footerClass'].forEach(id => {
+            const el = document.getElementById(id); if (el) el.value = '';
+        });
+        ['371','372','373','374','375','376'].forEach(n => {
+            const el = document.getElementById('status-' + n);
+            if (el) { el.value = 'pending'; updateControlStyle('ctrl-' + n, 'pending'); }
+        });
+        // Reset metric labels
+        document.getElementById('m1lbl').value = 'Maintenance Activities Completed';
+        document.getElementById('m2lbl').value = 'On-Schedule Completion Rate';
+        document.getElementById('m3lbl').value = 'Third-Party Vendors Managed';
+        document.getElementById('m4lbl').value = 'Assets in Lifecycle Tracking';
+        // Reset chart values
+        document.getElementById('chartControls').value   = '0/6';
+        document.getElementById('chartCompliance').value = '0%';
+        document.getElementById('chartActivities').value = '0';
+        TABLE_IDS.forEach(id => {
+            const cfg = TABLE_CONFIGS[id];
+            const cols = cfg ? cfg.cols.length + 1 : 6;
+            document.getElementById(id).innerHTML = `<tr class="empty-row"><td colspan="${cols}">No entries — click the Add button above.</td></tr>`;
+        });
+        LIST_IDS.forEach(id => {
+            const ul = document.getElementById(id);
+            // Keep 2 blank starter items
+            ul.innerHTML = `<li><input type="text" placeholder="Enter item…" oninput="markUnsaved()"><button class="del-btn" onclick="delListItem(this)">✕</button></li>
+                            <li><input type="text" placeholder="Enter item…" oninput="markUnsaved()"><button class="del-btn" onclick="delListItem(this)">✕</button></li>`;
+        });
+        updateHeader();
+        localStorage.removeItem('cmmc_maint_tool_v1');
+        closeModal('resetModal'); markSaved();
+        showToast('All data reset.', 'error');
+    }
+
+    // =============================================
+    //  MODAL HELPERS
+    // =============================================
+    function openModal(id)  { document.getElementById(id).style.display = 'block'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    window.onclick = e => {
+        if (e.target === document.getElementById('resetModal')) closeModal('resetModal');
+    };
+
+    // =============================================
+    //  UTILITIES
+    // =============================================
+    function esc(s) {
+        return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+    function showToast(msg, type) {
+        const t = document.getElementById('toast');
+        t.textContent = msg; t.className = 'toast show ' + (type||'');
+        setTimeout(() => { t.className = 'toast'; }, 3200);
+    }
+
+    // =============================================
+    //  INIT
+    // =============================================
+    document.addEventListener('DOMContentLoaded', () => {
+        const saved = localStorage.getItem('cmmc_maint_tool_v1');
+        if (saved) {
+            try { applyLoadedData(JSON.parse(saved)); showToast('Auto-loaded your last session.', 'success'); }
+            catch(e) {}
+        }
+        // Listen to all simple inputs for unsaved marker
+        document.querySelectorAll('input, select').forEach(el => {
+            if (!el.closest('.toolbar') && el.id !== 'fileInput') {
+                el.addEventListener('input', () => markUnsaved());
+                el.addEventListener('change', () => markUnsaved());
+            }
+        });
+    });
+
+    document.addEventListener('keydown', e => {
+        if ((e.ctrlKey||e.metaKey) && e.key === 's') { e.preventDefault(); saveData(); }
+        if ((e.ctrlKey||e.metaKey) && e.key === 'e') { e.preventDefault(); toggleEditMode(); }
+    });
+</script>
+</body>
+</html>
