@@ -31,17 +31,43 @@
   .purpose-box h3{font-size:1rem;color:#0d1b2a;margin-bottom:.4rem;font-weight:700;}
   .purpose-box p{color:#555;font-size:.88rem;line-height:1.65;}
 
-  /* Progress section */
-  .progress-section{background:rgba(255,255,255,.97);border-radius:14px;padding:1.5rem;margin-bottom:2rem;box-shadow:0 6px 20px rgba(0,0,0,.12);}
-  .progress-section h3{font-size:1rem;color:#0d1b2a;margin-bottom:1rem;font-weight:700;}
-  .progress-row{display:flex;align-items:center;gap:1rem;margin-bottom:.6rem;}
-  .prog-label{width:210px;font-size:.83rem;color:#333;flex-shrink:0;}
-  .prog-bar{flex:1;background:#e2e8f0;border-radius:20px;height:10px;}
-  .prog-fill{height:100%;border-radius:20px;}
-  .prog-fill.done{background:#2ecc71;}
-  .prog-badge{font-size:.7rem;font-weight:700;padding:.15rem .5rem;border-radius:8px;flex-shrink:0;}
-  .prog-badge.complete{background:#d1fae5;color:#064e3b;}
-  .prog-badge.planned{background:#fef3c7;color:#7c4a00;}
+  /* Contractor types section */
+  .dib-section{background:rgba(255,255,255,.97);border-radius:14px;padding:1.75rem;margin-bottom:2rem;box-shadow:0 6px 20px rgba(0,0,0,.12);}
+  .dib-section-hdr{margin-bottom:1rem;}
+  .dib-section-hdr h3{font-size:1rem;color:#0d1b2a;font-weight:700;margin-bottom:.45rem;}
+  .dib-section-hdr p{font-size:.85rem;color:#555;line-height:1.65;}
+  .dib-value-box{background:#f0f6ff;border:1px solid #b0c8e8;border-radius:10px;padding:1rem 1.25rem;margin-bottom:1.25rem;font-size:.85rem;color:#1e3a5f;line-height:1.65;}
+  .dib-value-box strong{color:#0d1b2a;}
+  .dib-chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:.65rem;}
+  .dib-chip{background:linear-gradient(135deg,#0d1b2a,#1b3a5c);border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:.75rem 1rem;color:#fff;display:flex;align-items:center;gap:.6rem;cursor:pointer;transition:all .2s;font-size:.84rem;font-weight:600;text-align:left;width:100%;}
+  .dib-chip:hover{background:linear-gradient(135deg,#1e3a6b,#1e90ff);transform:translateY(-2px);box-shadow:0 5px 16px rgba(30,144,255,.3);border-color:#1e90ff;}
+  .dib-chip-icon{font-size:1.3rem;flex-shrink:0;}
+  .dib-chip-arrow{margin-left:auto;opacity:.55;font-size:.75rem;}
+
+  /* Contractor modal */
+  .ctr-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:2000;align-items:center;justify-content:center;padding:1rem;}
+  .ctr-overlay.show{display:flex;}
+  .ctr-box{background:#fff;border-radius:18px;max-width:700px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,0,.4);animation:ctrIn .2s ease;}
+  @keyframes ctrIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+  .ctr-header{padding:1.5rem 1.75rem 1rem;border-bottom:2px solid #e2e8f0;position:sticky;top:0;background:#fff;border-radius:18px 18px 0 0;z-index:1;}
+  .ctr-hdr-top{display:flex;align-items:center;gap:1rem;justify-content:space-between;}
+  .ctr-icon-badge{font-size:2rem;width:58px;height:58px;background:linear-gradient(135deg,#0d1b2a,#1e90ff);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .ctr-title{flex:1;}
+  .ctr-title h2{font-size:1.2rem;font-weight:800;color:#0d1b2a;margin-bottom:.15rem;}
+  .ctr-title p{font-size:.8rem;color:#64748b;}
+  .ctr-close{background:none;border:none;font-size:1.4rem;color:#94a3b8;cursor:pointer;padding:.2rem;line-height:1;transition:color .15s;}
+  .ctr-close:hover{color:#0d1b2a;}
+  .ctr-body{padding:1.25rem 1.75rem 1.75rem;}
+  .ctr-body h3{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#64748b;margin-bottom:.55rem;padding-bottom:.3rem;border-bottom:1px solid #e2e8f0;}
+  .ctr-body p{font-size:.9rem;color:#334155;line-height:1.7;margin-bottom:1rem;}
+  .ctr-examples{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem;}
+  .ctr-ex{background:#e8f0fa;color:#0d1b2a;font-size:.76rem;font-weight:700;padding:.22rem .65rem;border-radius:20px;border:1px solid #b0c8e8;}
+  .ctr-cmmc-box{background:#fef3c7;border:1px solid #fcd34d;border-radius:10px;padding:.9rem 1.1rem;font-size:.85rem;color:#7c4a00;line-height:1.6;}
+  .ctr-cmmc-box strong{color:#0d1b2a;}
+  @media(max-width:640px){
+    .ctr-box{border-radius:12px;}
+    .dib-chips{grid-template-columns:1fr 1fr;}
+  }
 
   /* Section label */
   .section-label{color:rgba(255,255,255,.8);font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:.9rem;}
@@ -107,17 +133,51 @@
     </div>
   </div>
 
-  <!-- Progress -->
-  <div class="progress-section">
-    <h3>📈 Case Study Development Progress — 8 of 8 Sectors Complete</h3>
-    <div class="progress-row"><div class="prog-label">🏭 Defense Manufacturing</div><div class="prog-bar"><div class="prog-fill done" style="width:100%"></div></div><span class="prog-badge complete">Complete</span></div>
-    <div class="progress-row"><div class="prog-label">💻 IT Services</div><div class="prog-bar"><div class="prog-fill done" style="width:100%"></div></div><span class="prog-badge complete">Complete</span></div>
-    <div class="progress-row"><div class="prog-label">✈ Aerospace</div><div class="prog-bar"><div class="prog-fill done" style="width:100%"></div></div><span class="prog-badge complete">Complete</span></div>
-    <div class="progress-row"><div class="prog-label">🔬 Research Institution</div><div class="prog-bar"><div class="prog-fill done" style="width:100%"></div></div><span class="prog-badge complete">Complete</span></div>
-    <div class="progress-row"><div class="prog-label">📦 Defense Logistics</div><div class="prog-bar"><div class="prog-fill done" style="width:100%"></div></div><span class="prog-badge complete">Complete</span></div>
-    <div class="progress-row"><div class="prog-label">🖥 Embedded Systems</div><div class="prog-bar"><div class="prog-fill done" style="width:100%"></div></div><span class="prog-badge complete">Complete</span></div>
-    <div class="progress-row"><div class="prog-label">📋 Management Consulting</div><div class="prog-bar"><div class="prog-fill done" style="width:100%"></div></div><span class="prog-badge complete">Complete</span></div>
-    <div class="progress-row"><div class="prog-label">🧬 BioDefense Research</div><div class="prog-bar"><div class="prog-fill done" style="width:100%"></div></div><span class="prog-badge complete">Complete</span></div>
+  <!-- Types of DoD Contractors -->
+  <div class="dib-section">
+    <div class="dib-section-hdr">
+      <h3>🏗 Types of DoD Contractors — Defense Industrial Base (DIB)</h3>
+      <p>The Defense Industrial Base spans over 80,000 companies across virtually every economic sector. CMMC applies to any organization that processes, stores, or transmits Federal Contract Information (FCI) or Controlled Unclassified Information (CUI) on behalf of the Department of Defense — regardless of size or industry. Click any category below to explore what these contractors do and how CUI and CMMC obligations arise in their work.</p>
+    </div>
+    <div class="dib-value-box">
+      <strong>Why Case Studies?</strong> — CMMC compliance is not a checkbox exercise — it requires applying abstract cybersecurity principles to concrete, operational environments. Case studies bridge that gap by immersing students in a real-world organizational context: a specific business, a network, a set of contracts, and a collection of people making imperfect security decisions. Rather than simply reciting NIST SP 800-171 control requirements, students must <em>identify</em> which controls apply, <em>assess</em> whether they are implemented, <em>document</em> findings using professional audit tools, and <em>recommend</em> remediation — exactly as a C3PAO assessor would. Sector diversity across these case studies ensures that students encounter the full breadth of CUI environments: manufacturing floors, cloud-native IT providers, university labs, logistics warehouses, embedded firmware shops, and biodefense facilities. Each sector presents distinct risk patterns, regulatory overlaps (ITAR, EAR, HIPAA), and technical configurations that demand situational judgment — not rote memorization.
+    </div>
+    <div class="dib-chips">
+      <button class="dib-chip" onclick="openCtr('FC')"><span class="dib-chip-icon">🏭</span>Facilities &amp; Construction<span class="dib-chip-arrow">›</span></button>
+      <button class="dib-chip" onclick="openCtr('WA')"><span class="dib-chip-icon">💥</span>Weapons &amp; Ammunition<span class="dib-chip-arrow">›</span></button>
+      <button class="dib-chip" onclick="openCtr('AA')"><span class="dib-chip-icon">✈</span>Aerospace &amp; Aircraft<span class="dib-chip-arrow">›</span></button>
+      <button class="dib-chip" onclick="openCtr('PT')"><span class="dib-chip-icon">🔬</span>Professional &amp; Technical Svcs<span class="dib-chip-arrow">›</span></button>
+      <button class="dib-chip" onclick="openCtr('LT')"><span class="dib-chip-icon">📦</span>Logistics &amp; Transportation<span class="dib-chip-arrow">›</span></button>
+      <button class="dib-chip" onclick="openCtr('ST')"><span class="dib-chip-icon">🖥</span>Smart Tech &amp; Embedded Systems<span class="dib-chip-arrow">›</span></button>
+      <button class="dib-chip" onclick="openCtr('TU')"><span class="dib-chip-icon">👔</span>Textiles &amp; Uniforms<span class="dib-chip-arrow">›</span></button>
+      <button class="dib-chip" onclick="openCtr('ME')"><span class="dib-chip-icon">🧬</span>Medical Services &amp; Equipment<span class="dib-chip-arrow">›</span></button>
+    </div>
+  </div>
+
+  <!-- Contractor Type Modal -->
+  <div id="ctr-modal" class="ctr-overlay" onclick="if(event.target===this)closeCtr()">
+    <div class="ctr-box">
+      <div class="ctr-header">
+        <div class="ctr-hdr-top">
+          <div class="ctr-icon-badge" id="ctr-icon">🏭</div>
+          <div class="ctr-title">
+            <h2 id="ctr-name">Facilities &amp; Construction</h2>
+            <p id="ctr-sub">DoD Contractor Category</p>
+          </div>
+          <button class="ctr-close" onclick="closeCtr()">✕</button>
+        </div>
+      </div>
+      <div class="ctr-body">
+        <h3>Category Overview</h3>
+        <p id="ctr-overview"></p>
+        <h3>Products &amp; Services</h3>
+        <p id="ctr-products"></p>
+        <h3>Representative Examples</h3>
+        <div class="ctr-examples" id="ctr-examples"></div>
+        <h3>CMMC &amp; CUI Considerations</h3>
+        <div class="ctr-cmmc-box" id="ctr-cmmc"></div>
+      </div>
+    </div>
   </div>
 
   <!-- Cards -->
@@ -351,5 +411,84 @@
   </div>
 
 </div>
+
+<script>
+const CTR = {
+  FC:{
+    icon:'🏭', name:'Facilities & Construction',
+    overview:'Facilities and construction contractors form the physical backbone of U.S. military readiness. They design, build, maintain, and operate the installations, ranges, laboratories, and infrastructure that house military personnel, equipment, and operations worldwide — from domestic bases to overseas contingency locations.',
+    products:'Services include base operations support (BOS), military construction (MILCON), design-build projects, civil engineering, environmental remediation, utility systems management, facilities maintenance, rapid-deployment temporary structures, ranges and training facilities construction, and real property management. Contractors may also operate power plants, water treatment systems, and airfield pavement at military installations.',
+    examples:['MILCON Projects','Base Ops Support (BOS)','Airfield Construction','Range & Training Facilities','Civil Engineering','Environmental Remediation','Utility Operations','Temporary Expeditionary Structures'],
+    cmmc:'<strong>CMMC Exposure:</strong> Facilities contractors routinely receive CUI in the form of base master plans, security vulnerability assessments, explosive safety site plans, and critical infrastructure design drawings. Operations personnel may handle controlled information via facility management systems, work order software, and access control databases. CMMC Level 2 applies when CUI appears in contract deliverables, design documents, or operational data systems.'
+  },
+  WA:{
+    icon:'💥', name:'Weapons & Ammunition',
+    overview:'Weapons and ammunition contractors develop, manufacture, integrate, and sustain the kinetic and directed-energy systems that form the core of U.S. warfighting capability. This sector spans everything from individual soldier ammunition to intercontinental ballistic missiles and represents some of the most sensitive and export-controlled technology in the DoD supply chain.',
+    products:'Products include small arms ammunition, artillery shells, rockets, guided missiles (tactical and strategic), torpedoes, mines, bombs, mortar systems, infantry weapons, directed-energy weapons, counter-drone systems, electronic warfare payloads, explosive ordnance, and warhead assemblies. Services include life-cycle sustainment, demilitarization, stockpile reliability testing, and systems integration for weapons platforms.',
+    examples:['Guided Missiles & Torpedoes','Artillery & Mortar Rounds','Small Arms Ammunition','Electronic Warfare Systems','Counter-UAS Weapons','Directed Energy','Warhead Integration','Explosive Ordnance Disposal (EOD)'],
+    cmmc:'<strong>CMMC Exposure:</strong> Weapons contractors handle some of the most sensitive CUI categories, including ITAR-controlled technical data (22 CFR Parts 120–130), propellant formulations, fuze design specifications, and weapons system performance parameters. Nearly all CUI in this sector falls under CTI (Controlled Technical Information). DFARS 252.204-7012 and CMMC Level 2 are baseline requirements; many programs require Level 3 (NIST SP 800-172) given the critical nature of the technology.'
+  },
+  AA:{
+    icon:'✈', name:'Aerospace & Aircraft',
+    overview:'Aerospace and aircraft contractors design, build, integrate, and sustain the airborne platforms that project U.S. air, space, and maritime power. This sector encompasses prime integrators of complete aircraft as well as the vast network of Tier 1–4 subcontractors supplying engines, avionics, structural components, and mission systems.',
+    products:'Products include fighter aircraft, strategic bombers, transport aircraft, helicopters, unmanned aerial systems (UAS/drones), missiles, satellite systems, launch vehicles, engine systems, airframes, avionics suites, flight control software, radar systems, electro-optical/infrared (EO/IR) sensors, and aircraft sustainment services. Many contractors specialize in subsystem components — airframe structures, landing gear, hydraulics, or navigation systems — as Tier 2/3 suppliers to prime integrators.',
+    examples:['Fighter Jets & Bombers','Military Helicopters','UAS / Drone Systems','Satellite & Space Launch','Jet Engines & Propulsion','Avionics & Flight Control','Radar & EO/IR Sensors','MRO (Maintenance, Repair, Overhaul)'],
+    cmmc:'<strong>CMMC Exposure:</strong> Aerospace contractors are among the most CMMC-intensive in the DIB. CUI includes airworthiness certifications, flight test data, system performance specifications, radar cross-section data, electronic warfare parameters, and export-controlled technical drawings under ITAR (22 CFR 121 — USML). CMMC Level 2 (110 practices) applies broadly; prime integrators and critical subsystem suppliers are often candidates for Level 3 assessment.'
+  },
+  PT:{
+    icon:'🔬', name:'Professional & Technical Services',
+    overview:'Professional and technical services contractors provide the intellectual and specialized expertise that DoD requires to manage complex acquisition programs, develop policy, conduct scientific research, and maintain operational readiness. This sector is defined by knowledge work — CUI lives in documents, presentations, databases, emails, and cloud collaboration tools rather than physical products.',
+    products:'Services include defense acquisition consulting, program management support, systems engineering and technical assistance (SETA), independent verification and validation (IV&V), scientific research (basic, applied, and advanced technology development), policy analysis, modeling and simulation, training and education services, software development, cybersecurity consulting, intelligence analysis support, and financial management advisory services.',
+    examples:['SETA / Program Management','Systems Engineering (SE)','Scientific R&D (DARPA/ONR)','IV&V and Test & Evaluation','Cybersecurity Consulting','Policy & Acquisition Advisory','Modeling & Simulation','Software Engineering'],
+    cmmc:'<strong>CMMC Exposure:</strong> Professional and technical services contractors often underestimate their CMMC obligations because they produce no physical product. However, CUI pervades their work: controlled technical information in R&D reports, acquisition-sensitive program data, export-controlled research results, budget and cost data, personally identifiable information (PII), and operational security details. CMMC Level 2 applies broadly; research institutions with export-controlled data may face EAR/ITAR overlay requirements.'
+  },
+  LT:{
+    icon:'📦', name:'Logistics & Transportation Services',
+    overview:'Defense logistics and transportation contractors sustain military operations by managing the movement, storage, distribution, and accountability of equipment, supplies, fuel, and munitions across the global defense supply chain. Without reliable logistics, no weapon system can be fielded or sustained — making this sector a critical but often underrecognized component of national security.',
+    products:'Services include defense supply chain management, warehouse and inventory operations, ammunition storage and distribution, fuel supply and petroleum operations, transportation management (air, sea, ground, intermodal), freight forwarding, base supply support, pre-positioned stock management, defense logistics software (WMS/TMS), maintenance parts kitting, and humanitarian assistance logistics support.',
+    examples:['Supply Chain Management','Ammunition Storage & Distribution','Fuel Supply (DFSP Operations)','Freight & Transportation Mgmt','Warehouse Operations (WMS)','Pre-Positioned Equipment','Base Supply Support','MRO Parts & Kitting'],
+    cmmc:'<strong>CMMC Exposure:</strong> Logistics contractors handle CUI in shipment documentation, inventory systems, transportation plans, munitions accountability records, and controlled storage manifests. WMS and TMS platforms may process CUI alongside commercial data, creating boundary ambiguity. Common gaps include unprotected paper CUI on warehouse floors, contractor access to inventory systems without adequate authentication, and audit logging gaps in operational technology environments. CMMC Level 2 applies when CUI appears in logistics systems or documentation.'
+  },
+  ST:{
+    icon:'🖥', name:'Smart Technologies & Embedded Systems',
+    overview:'Smart technology and embedded systems contractors design and produce the sensors, radios, processors, and surveillance equipment that give U.S. forces information dominance on the modern battlefield. These contractors operate at the intersection of hardware and software, often producing safety-critical systems where a firmware flaw can have life-or-death consequences.',
+    products:'Products include radar systems (air surveillance, ground-based, shipborne), electronic warfare (EW) systems and jammers, software-defined radios (SDR), command and control (C2) systems, Intelligence, Surveillance and Reconnaissance (ISR) sensors, satellite communications (SATCOM) terminals, GPS receivers, unmanned ground and maritime vehicles, cybersecurity hardware, night-vision and thermal imaging devices, and embedded control systems for weapons platforms.',
+    examples:['Radar & Sensor Systems','Electronic Warfare / Jammers','Software-Defined Radios (SDR)','ISR / SIGINT Platforms','SATCOM Terminals','Embedded Firmware Development','Night Vision & EO/IR Sensors','C2 Software & Hardware'],
+    cmmc:'<strong>CMMC Exposure:</strong> Embedded systems contractors frequently handle CTI (Controlled Technical Information) embedded in firmware source code, hardware design files (FPGA bitstreams, PCB schematics), RF parameter specifications, and classified interface control documents. Software supply chain risk is acute — open-source components and third-party libraries in firmware create SCRM obligations. CMMC Level 2 is mandatory; programs involving classified systems or critical safety functions frequently require additional controls under DoD Instruction 8510.01 (RMF).'
+  },
+  TU:{
+    icon:'👔', name:'Textiles & Uniforms',
+    overview:'Textile and uniform contractors supply the personal equipment and material goods that equip, clothe, and shelter U.S. military personnel. While this sector may seem distant from cybersecurity concerns, it is fully subject to CMMC when contracts include design specifications for specialized protective equipment, pattern data for camouflage systems, or other technical information that adversaries could exploit.',
+    products:'Products include military uniforms (ACU, NWU, ABU patterns), combat boots and footwear, load-bearing equipment and tactical gear, ballistic helmets and body armor, flame-resistant clothing (FRC), camouflage netting and concealment systems, sleeping bags and field equipment, tent systems and expeditionary shelters, military bedding and linens, parachutes and aircrew survival equipment, and specialized protective clothing for chemical/biological environments.',
+    examples:['Military Uniforms & ACU/NWU','Body Armor & Ballistic Helmets','Flame-Resistant Clothing (FRC)','Combat Boots & Footwear','Tactical Gear & Load-Bearing Equip','Camouflage & Concealment Systems','Parachutes & Aircrew Survival Gear','Chemical/Biological Protective Clothing'],
+    cmmc:'<strong>CMMC Exposure:</strong> Textile contractors may handle CUI in the form of controlled camouflage pattern specifications (e.g., MultiCam/OCP pattern data), body armor ballistic performance testing data, specifications for chemical/biological protective garments, and design data for specialized aircrew survival equipment. Buy American Act (BAA) and Berry Amendment compliance data may also be sensitive. CMMC Level 1 applies to all FCI; CMMC Level 2 applies when contracts include CUI in technical specifications or testing documentation.'
+  },
+  ME:{
+    icon:'🧬', name:'Medical Services & Equipment',
+    overview:'Medical services and equipment contractors support the health, survivability, and medical readiness of U.S. military personnel worldwide. This sector blends traditional healthcare obligations (HIPAA) with defense-specific regulations (CMMC, ITAR for dual-use biological research, and export controls under EAR for pharmaceuticals). It is one of the most regulatory-dense sectors in the DIB.',
+    products:'Products and services include military pharmaceuticals and medical countermeasures, field medical equipment and trauma kits (IFAK), surgical instruments and hospital equipment, blood products and transfusion systems, chemical and biological defense medical products (CHEMPACK, antidotes), telemedicine platforms, medical information systems (MIS/EHR), biodefense research and vaccine development, occupational health services, dental and mental health services, and combat casualty care training systems.',
+    examples:['Pharmaceuticals & Vaccines','Medical Countermeasures (MCM)','Field Medical Kits (IFAK)','Biodefense R&D (BARDA/DARPA)','Combat Medical Equipment','Military Telemedicine Platforms','Medical Information Systems (EHR)','Chemical/Bio Defense Products'],
+    cmmc:'<strong>CMMC Exposure:</strong> Medical contractors operate at the intersection of CMMC and HIPAA. CUI categories include health information (CTI-HLTH), personally identifiable information (PII), pharmaceutical formulation data, biodefense research data under EAR/ITAR export controls, and clinical trial data. Electronic Health Record (EHR) and medical information systems may process CUI alongside PHI, creating complex scoping decisions. BARDA and DARPA contractors conducting biodefense research frequently handle dual-use biological research subject to additional federal oversight.'
+  }
+};
+
+function openCtr(id){
+  const d=CTR[id];
+  if(!d)return;
+  document.getElementById('ctr-icon').textContent=d.icon;
+  document.getElementById('ctr-name').textContent=d.name;
+  document.getElementById('ctr-overview').textContent=d.overview;
+  document.getElementById('ctr-products').textContent=d.products;
+  document.getElementById('ctr-examples').innerHTML=d.examples.map(e=>`<span class="ctr-ex">${e}</span>`).join('');
+  document.getElementById('ctr-cmmc').innerHTML=d.cmmc;
+  document.getElementById('ctr-modal').classList.add('show');
+  document.body.style.overflow='hidden';
+}
+function closeCtr(){
+  document.getElementById('ctr-modal').classList.remove('show');
+  document.body.style.overflow='';
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeCtr();});
+</script>
 </body>
 </html>
