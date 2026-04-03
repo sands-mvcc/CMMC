@@ -1,0 +1,1402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMMC 2.0 Audit Log Monitoring Report (ALMR) – Student Practice Tool</title>
+    <style>
+        /* ===== BASE ===== */
+        *, *::before, *::after { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f4f8;
+            color: #1f2937;
+        }
+
+        /* ===== TOOLBAR ===== */
+        .toolbar {
+            max-width: 1200px;
+            margin: 0 auto 16px auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            background: #1e3a8a;
+            padding: 12px 20px;
+            border-radius: 10px;
+        }
+        .toolbar-title {
+            color: #93c5fd;
+            font-weight: 700;
+            font-size: 0.85em;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-right: auto;
+        }
+        .toolbar button {
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.85em;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: filter 0.2s;
+            white-space: nowrap;
+        }
+        .toolbar button:hover { filter: brightness(1.12); }
+        .tb-green  { background: #10b981; color: white; }
+        .tb-purple { background: #6366f1; color: white; }
+        .tb-amber  { background: #f59e0b; color: #1f2937; }
+        .tb-blue   { background: #0ea5e9; color: white; }
+        .tb-gray   { background: #64748b; color: white; }
+        .tb-red    { background: #ef4444; color: white; }
+
+        /* ===== CONTAINER ===== */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+            overflow: hidden;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+        .header h1 { margin: 0 0 8px; font-size: 2em; font-weight: 700; }
+        .header .subtitle { font-size: 1em; opacity: 0.9; margin: 0 0 18px; }
+        .student-badge {
+            position: absolute; top: 14px; right: 14px;
+            background: #fbbf24; color: #1f2937;
+            padding: 6px 14px; border-radius: 20px;
+            font-weight: 700; font-size: 0.8em;
+        }
+        .unsaved-indicator {
+            position: absolute; top: 14px; left: 14px;
+            background: #ef4444; color: white;
+            padding: 6px 14px; border-radius: 20px;
+            font-weight: 700; font-size: 0.8em; display: none;
+        }
+
+        /* ===== STATS ROW ===== */
+        .stats-row {
+            display: flex; flex-wrap: wrap;
+            gap: 12px; justify-content: center;
+        }
+        .stat-card {
+            background: rgba(255,255,255,0.18);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 8px;
+            padding: 10px 20px;
+            text-align: center; min-width: 120px;
+        }
+        .stat-card h3 { font-size: 1.5em; font-weight: 800; margin: 0; }
+        .stat-card p  { font-size: 0.76em; margin: 2px 0 0; opacity: 0.9; }
+
+        /* ===== CUI BANNER ===== */
+        .cui-banner {
+            background: #dc2626;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            font-weight: 700;
+            font-size: 0.88em;
+            letter-spacing: 0.05em;
+        }
+
+        /* ===== INSTRUCTION BOX ===== */
+        .instruction-box {
+            background: #eff6ff;
+            border: 2px dashed #3b82f6;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 20px;
+            font-size: 0.88em;
+            color: #1e40af;
+        }
+        .instruction-box strong { display: block; margin-bottom: 6px; font-size: 1em; }
+        .instruction-box ul { margin: 6px 0 0; padding-left: 20px; }
+        .instruction-box li { margin: 3px 0; }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content { padding: 20px; }
+
+        /* ===== SECTIONS ===== */
+        .section {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            overflow: hidden;
+        }
+        .section-header {
+            background: linear-gradient(135deg, #1e3a8a, #1e40af);
+            color: white;
+            padding: 14px 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1em;
+            font-weight: 700;
+        }
+        .section-header .hdr-btns { display: flex; gap: 8px; }
+        .section-body { padding: 22px; }
+
+        /* ===== COMPANY INFO GRID ===== */
+        .company-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 16px;
+        }
+        .info-card {
+            background: #f8fafc;
+            padding: 14px 16px;
+            border-radius: 8px;
+            border-left: 4px solid #3b82f6;
+        }
+        .info-card h4 {
+            color: #1e3a8a; font-size: 0.82em;
+            font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.05em; margin: 0 0 6px;
+        }
+        .info-card p { margin: 0; font-size: 0.9em; color: #374151; }
+        .info-card .empty-val {
+            color: #9ca3af; font-style: italic; font-size: 0.9em;
+        }
+
+        /* ===== INLINE FIELDS ===== */
+        .inline-field {
+            border: none;
+            border-bottom: 1px dashed #d1d5db;
+            background: transparent;
+            font-family: inherit;
+            font-size: inherit;
+            color: #1f2937;
+            padding: 2px 6px;
+            width: 100%;
+            transition: border-color 0.2s;
+        }
+        .inline-field:focus { outline: none; border-bottom-color: #3b82f6; background: #fefce8; }
+        .inline-field::placeholder { color: #9ca3af; font-style: italic; }
+        .inline-select {
+            border: 1px solid #d1d5db;
+            border-radius: 5px;
+            background: white;
+            font-family: inherit;
+            font-size: inherit;
+            padding: 4px 8px;
+            color: #1f2937;
+            width: 100%;
+        }
+        .inline-select:focus { outline: 2px solid #3b82f6; border-color: transparent; }
+
+        /* ===== COMPLIANCE GRID ===== */
+        .compliance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 14px;
+        }
+        .compliance-item {
+            background: #f8fafc;
+            padding: 14px;
+            border-radius: 8px;
+            border-left: 4px solid;
+            font-size: 0.88em;
+        }
+        .ci-compliant   { border-color: #10b981; }
+        .ci-partial     { border-color: #f59e0b; }
+        .ci-noncompliant{ border-color: #ef4444; }
+        .ci-pending     { border-color: #6b7280; }
+        .compliance-item h4 {
+            color: #1e3a8a; font-size: 0.88em;
+            margin: 0 0 6px; font-weight: 700;
+        }
+        .compliance-item p { margin: 4px 0 0; color: #374151; font-size: 0.85em; }
+        .compliance-status-row { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+
+        /* ===== STATUS DOT ===== */
+        .status-dot {
+            width: 10px; height: 10px;
+            border-radius: 50%; flex-shrink: 0;
+            display: inline-block;
+        }
+        .sd-green  { background: #10b981; }
+        .sd-amber  { background: #f59e0b; }
+        .sd-red    { background: #ef4444; }
+        .sd-gray   { background: #9ca3af; }
+
+        /* ===== STATUS BADGES ===== */
+        .status-badge {
+            padding: 3px 9px; border-radius: 20px;
+            font-size: 0.76em; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.04em;
+            white-space: nowrap;
+        }
+        .sb-active      { background: #d1fae5; color: #065f46; }
+        .sb-inactive    { background: #fee2e2; color: #991b1b; }
+        .sb-maintenance { background: #fef3c7; color: #92400e; }
+
+        /* ===== LOG SOURCES TABLE ===== */
+        .table-wrap { overflow-x: auto; margin-top: 6px; }
+        .log-table {
+            width: 100%; border-collapse: collapse;
+            font-size: 0.86em;
+        }
+        .log-table th {
+            background: #1e3a8a; color: white;
+            padding: 11px 12px; text-align: left;
+            font-weight: 600; font-size: 0.84em;
+            white-space: nowrap;
+        }
+        .log-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e5e7eb;
+            vertical-align: middle;
+        }
+        .log-table tr:nth-child(even) td { background: #f9fafb; }
+        .log-table tr:hover td { background: #eff6ff; }
+        .log-table .source-id {
+            font-weight: 700; color: #1e40af;
+            font-family: monospace; white-space: nowrap;
+        }
+        .log-table .purpose-cell { max-width: 260px; }
+        .empty-table-row td {
+            text-align: center; color: #9ca3af;
+            font-style: italic; padding: 28px;
+        }
+
+        /* ===== EVENT LOG ===== */
+        .event-log {
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 16px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.82em;
+            max-height: 300px;
+            overflow-y: auto;
+            line-height: 1.7;
+        }
+        .evt-timestamp { color: #60a5fa; }
+        .evt-info      { color: #a3e635; }
+        .evt-warn      { color: #fbbf24; }
+        .evt-error     { color: #f87171; }
+        .evt-system    { color: #c084fc; }
+
+        /* ===== ADD EVENT ROW ===== */
+        .add-event-row {
+            display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;
+        }
+        .add-event-row select,
+        .add-event-row input {
+            padding: 7px 12px; border: 1px solid #d1d5db;
+            border-radius: 6px; font-family: inherit; font-size: 0.86em;
+            flex: 1; min-width: 140px;
+        }
+        .add-event-row select:focus,
+        .add-event-row input:focus { outline: 2px solid #3b82f6; border-color: transparent; }
+
+        /* ===== BUTTONS ===== */
+        .action-btn {
+            border: none; padding: 7px 14px; border-radius: 6px;
+            cursor: pointer; font-size: 0.82em; font-weight: 600;
+            transition: filter 0.2s; white-space: nowrap;
+        }
+        .action-btn:hover { filter: brightness(1.1); }
+        .ab-green  { background: #10b981; color: white; }
+        .ab-blue   { background: #3b82f6; color: white; }
+        .ab-amber  { background: #f59e0b; color: #1f2937; }
+        .ab-red    { background: #ef4444; color: white; }
+        .ab-gray   { background: #6b7280; color: white; }
+        .ab-sm { padding: 4px 9px; font-size: 0.76em; }
+
+        /* ===== RETENTION / ANALYSIS SECTION ===== */
+        .retention-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 14px;
+        }
+        .retention-card {
+            background: #f8fafc; border: 1px solid #e2e8f0;
+            border-radius: 8px; padding: 14px;
+            font-size: 0.88em;
+        }
+        .retention-card h4 {
+            color: #1e3a8a; font-size: 0.88em;
+            font-weight: 700; margin: 0 0 10px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #bfdbfe;
+        }
+        .retention-card p { margin: 5px 0; }
+        .retention-card label {
+            font-size: 0.8em; font-weight: 700;
+            color: #6b7280; text-transform: uppercase;
+            letter-spacing: 0.04em; display: block;
+            margin-bottom: 3px; margin-top: 8px;
+        }
+        .retention-card input,
+        .retention-card select,
+        .retention-card textarea {
+            width: 100%; padding: 6px 10px;
+            border: 1px dashed #d1d5db; border-radius: 5px;
+            font-family: inherit; font-size: 0.9em;
+            background: white;
+        }
+        .retention-card textarea { height: 60px; resize: vertical; }
+        .retention-card input:focus,
+        .retention-card select:focus,
+        .retention-card textarea:focus { outline: 2px solid #3b82f6; border-color: transparent; }
+
+        /* ===== MODALS ===== */
+        .modal {
+            display: none; position: fixed;
+            z-index: 2000; left: 0; top: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.55);
+        }
+        .modal-box {
+            background: white; margin: 4% auto;
+            padding: 28px; border-radius: 10px;
+            width: 92%; max-width: 580px;
+            max-height: 88vh; overflow-y: auto;
+            position: relative;
+        }
+        .modal-box h2 { color: #1e3a8a; margin: 0 0 18px; font-size: 1.15em; }
+        .close-modal {
+            position: absolute; top: 12px; right: 16px;
+            color: #9ca3af; font-size: 22px; font-weight: bold;
+            cursor: pointer; line-height: 1;
+        }
+        .close-modal:hover { color: #111; }
+        .mfield { margin-bottom: 14px; }
+        .mfield label { display: block; font-weight: 700; font-size: 0.84em; color: #374151; margin-bottom: 4px; }
+        .mfield input,
+        .mfield select,
+        .mfield textarea {
+            width: 100%; padding: 8px 12px;
+            border: 1px solid #d1d5db; border-radius: 6px;
+            font-family: inherit; font-size: 0.88em;
+        }
+        .mfield textarea { height: 72px; resize: vertical; }
+        .mfield input:focus,
+        .mfield select:focus,
+        .mfield textarea:focus { outline: 2px solid #3b82f6; border-color: transparent; }
+        .mfield .hint { font-size: 0.76em; color: #6b7280; margin-top: 3px; }
+        .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; }
+        .btn-primary   { background: #3b82f6; color: white; border: none; padding: 9px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .btn-secondary { background: #6b7280; color: white; border: none; padding: 9px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .btn-danger-m  { background: #ef4444; color: white; border: none; padding: 9px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .btn-success-m { background: #10b981; color: white; border: none; padding: 9px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed; bottom: 24px; right: 24px;
+            background: #1e3a8a; color: white;
+            padding: 12px 22px; border-radius: 8px;
+            font-size: 0.88em; z-index: 9999;
+            opacity: 0; transform: translateY(10px);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        .toast.show { opacity: 1; transform: translateY(0); }
+        .toast.success { background: #059669; }
+        .toast.error   { background: #dc2626; }
+        .toast.warn    { background: #d97706; }
+
+        /* ===== FOOTER ===== */
+        .almr-footer {
+            background: #f8fafc; padding: 16px 20px;
+            border-top: 1px solid #e5e7eb;
+            text-align: center; color: #6b7280; font-size: 0.84em;
+        }
+
+        /* ===== PRINT ===== */
+        @media print {
+            body { background: white; padding: 0; }
+            .toolbar, .instruction-box, .student-badge, .unsaved-indicator,
+            .action-btn, .add-event-row, .hdr-btns { display: none !important; }
+            .container { box-shadow: none; border-radius: 0; }
+            .event-log { max-height: none; background: #0f172a; }
+            .section { page-break-inside: avoid; }
+        }
+
+        @media (max-width: 768px) {
+            .company-grid { grid-template-columns: 1fr; }
+            .compliance-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== TOOLBAR ===== -->
+<div class="toolbar">
+    <span class="toolbar-title">📋 ALMR Tool — Student Practice</span>
+    <button class="tb-green"  onclick="saveData()">💾 Save</button>
+    <button class="tb-purple" onclick="document.getElementById('fileInput').click()">📂 Load</button>
+    <button class="tb-amber"  onclick="exportJSON()">📤 Export JSON</button>
+    <button class="tb-blue"   onclick="generateReport()">📊 Generate Report</button>
+    <button class="tb-gray"   onclick="window.print()">🖨️ Print / PDF</button>
+    <button class="tb-red"    onclick="openModal('resetModal')">🔄 Reset</button>
+    <input type="file" id="fileInput" accept=".json" style="display:none" onchange="loadFromFile(event)">
+</div>
+
+<!-- ===== CONTAINER ===== -->
+<div class="container">
+
+    <!-- CUI BANNER -->
+    <div class="cui-banner">CONTROLLED UNCLASSIFIED INFORMATION (CUI) — STUDENT PRACTICE TOOL</div>
+
+    <!-- HEADER -->
+    <div class="header">
+        <div class="student-badge">STUDENT PRACTICE TOOL</div>
+        <div class="unsaved-indicator" id="unsavedIndicator">● Unsaved Changes</div>
+        <h1>Audit Log Monitoring Report (ALMR)</h1>
+        <p class="subtitle">CMMC 2.0 Level 2 Compliance — Student Practice Exercise</p>
+        <div class="stats-row">
+            <div class="stat-card"><h3 id="statSources">0</h3><p>Log Sources</p></div>
+            <div class="stat-card"><h3 id="statActive">0</h3><p>Active Sources</p></div>
+            <div class="stat-card"><h3 id="statEvents">0</h3><p>Events Logged</p></div>
+            <div class="stat-card"><h3 id="statCompliant">0/9</h3><p>AU Controls Met</p></div>
+        </div>
+    </div>
+
+    <!-- INSTRUCTION BOX -->
+    <div class="instruction-box">
+        <strong>🎓 Student Instructions</strong>
+        <ul>
+            <li>Start with <strong>Section 1 — Company Overview</strong>: click "Edit" to enter your case study organization's information.</li>
+            <li>In <strong>Section 2 — Compliance Status</strong>: update each AU control's status and description to reflect your organization's implementation.</li>
+            <li>In <strong>Section 3 — Log Sources Inventory</strong>: click <strong>"+ Add Log Source"</strong> to document every system that generates audit logs (target: 15–20 sources). Use IDs like ALMR-001, ALMR-002…</li>
+            <li>In <strong>Section 4 — Log Retention &amp; Analysis</strong>: fill in your organization's specific retention periods, review schedules, and SIEM details.</li>
+            <li>In <strong>Section 5 — Security Event Dashboard</strong>: use "Add Event" to simulate SIEM log entries from your case study scenario.</li>
+            <li>Use <strong>💾 Save</strong> (Ctrl+S) to preserve work, <strong>📊 Generate Report</strong> for a compliance summary, and <strong>🖨️ Print</strong> for your final submission.</li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+
+        <!-- ============================================================
+             SECTION 1: COMPANY OVERVIEW
+        ============================================================ -->
+        <div class="section">
+            <div class="section-header">
+                <span>1. Company Overview</span>
+                <div class="hdr-btns">
+                    <button class="action-btn ab-amber" onclick="openModal('companyModal')">✏️ Edit</button>
+                </div>
+            </div>
+            <div class="section-body">
+                <div class="company-grid">
+                    <div class="info-card">
+                        <h4>Company Name</h4>
+                        <p id="companyName"><span class="empty-val">[Not entered — click Edit]</span></p>
+                    </div>
+                    <div class="info-card">
+                        <h4>Location</h4>
+                        <p id="companyLocation"><span class="empty-val">[Not entered]</span></p>
+                    </div>
+                    <div class="info-card">
+                        <h4>Employee Count</h4>
+                        <p id="employeeCount"><span class="empty-val">[Not entered]</span></p>
+                    </div>
+                    <div class="info-card">
+                        <h4>Primary Business</h4>
+                        <p id="primaryBusiness"><span class="empty-val">[Not entered]</span></p>
+                    </div>
+                    <div class="info-card">
+                        <h4>CMMC Level</h4>
+                        <p id="cmmcLevel"><span class="empty-val">[Not entered]</span></p>
+                    </div>
+                    <div class="info-card">
+                        <h4>Report Date</h4>
+                        <p id="reportDate"><span class="empty-val">[Not entered]</span></p>
+                    </div>
+                    <div class="info-card">
+                        <h4>SIEM Platform</h4>
+                        <p id="siemPlatform"><span class="empty-val">[Not entered]</span></p>
+                    </div>
+                    <div class="info-card">
+                        <h4>Audit Log Retention Period</h4>
+                        <p id="retentionPeriod"><span class="empty-val">[Not entered]</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+             SECTION 2: COMPLIANCE STATUS
+        ============================================================ -->
+        <div class="section">
+            <div class="section-header">
+                <span>2. CMMC 2.0 Audit &amp; Accountability Compliance Status (AU Controls)</span>
+                <div class="hdr-btns">
+                    <button class="action-btn ab-green" onclick="openModal('auControlModal')">✏️ Update Status</button>
+                </div>
+            </div>
+            <div class="section-body">
+                <p style="font-size:0.88em; color:#6b7280; margin-bottom:16px;">Update each control's compliance status and implementation description for your organization. Click "Update Status" to edit all controls at once, or click an individual card to edit it.</p>
+                <div class="compliance-grid" id="complianceGrid">
+                    <!-- Generated by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+             SECTION 3: LOG SOURCES INVENTORY
+        ============================================================ -->
+        <div class="section">
+            <div class="section-header">
+                <span>3. Log Sources Inventory</span>
+                <div class="hdr-btns">
+                    <span style="font-size:0.82em; opacity:0.8;" id="sourceCount">0 sources</span>
+                    <button class="action-btn ab-green" onclick="openAddSource()">+ Add Log Source</button>
+                </div>
+            </div>
+            <div class="section-body">
+                <p style="font-size:0.88em; color:#6b7280; margin-bottom:12px;">Document every system or device that generates security-relevant audit logs in your environment. CMMC Level 2 requires comprehensive coverage of all systems that process, store, or transmit CUI. Target: 15–20 sources minimum.</p>
+                <div class="table-wrap">
+                    <table class="log-table">
+                        <thead>
+                            <tr>
+                                <th>Source ID</th>
+                                <th>System / Device</th>
+                                <th>Log Type</th>
+                                <th>Purpose of Monitoring</th>
+                                <th>Status</th>
+                                <th style="width:100px;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logSourcesBody">
+                            <tr class="empty-table-row">
+                                <td colspan="6">No log sources added yet — click <strong>"+ Add Log Source"</strong> to begin documenting your log inventory.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+             SECTION 4: LOG RETENTION & ANALYSIS
+        ============================================================ -->
+        <div class="section">
+            <div class="section-header">
+                <span>4. Log Retention &amp; Analysis Procedures</span>
+            </div>
+            <div class="section-body">
+                <p style="font-size:0.88em; color:#6b7280; margin-bottom:16px;">Document your organization's specific log retention policies, review schedules, and analysis procedures. All fields are directly editable.</p>
+                <div class="retention-grid">
+
+                    <div class="retention-card">
+                        <h4>📁 Retention Policy</h4>
+                        <label>Minimum Retention Period</label>
+                        <input type="text" id="ret-period" placeholder="e.g., 12 months minimum" oninput="markUnsaved()">
+                        <label>Storage Location</label>
+                        <input type="text" id="ret-storage" placeholder="e.g., SIEM, Azure Log Analytics, NAS" oninput="markUnsaved()">
+                        <label>Archive Method</label>
+                        <input type="text" id="ret-archive" placeholder="e.g., Encrypted cold storage, S3 Glacier" oninput="markUnsaved()">
+                        <label>Regulatory Reference</label>
+                        <input type="text" id="ret-reference" placeholder="e.g., NIST 800-171 §3.3.2, AU.L2-3.3.2" oninput="markUnsaved()">
+                    </div>
+
+                    <div class="retention-card">
+                        <h4>🕐 Review Schedule</h4>
+                        <label>Real-Time Monitoring</label>
+                        <input type="text" id="rev-realtime" placeholder="e.g., SIEM automated correlation — 24/7" oninput="markUnsaved()">
+                        <label>Daily Review</label>
+                        <input type="text" id="rev-daily" placeholder="e.g., Security Analyst reviews SIEM alerts each morning" oninput="markUnsaved()">
+                        <label>Weekly Review</label>
+                        <input type="text" id="rev-weekly" placeholder="e.g., Full log sweep by IT Security team" oninput="markUnsaved()">
+                        <label>Monthly Review</label>
+                        <input type="text" id="rev-monthly" placeholder="e.g., CISO reviews summary report and trend analysis" oninput="markUnsaved()">
+                    </div>
+
+                    <div class="retention-card">
+                        <h4>🔧 SIEM Configuration</h4>
+                        <label>SIEM Platform</label>
+                        <input type="text" id="siem-platform" placeholder="e.g., Splunk, Microsoft Sentinel, ELK Stack" oninput="markUnsaved()">
+                        <label>Log Sources Integrated</label>
+                        <input type="text" id="siem-sources" placeholder="e.g., 20 log sources via syslog/agent" oninput="markUnsaved()">
+                        <label>Alert Rules / Correlation</label>
+                        <textarea id="siem-alerts" placeholder="Describe key SIEM correlation rules and alert thresholds in use…" oninput="markUnsaved()"></textarea>
+                    </div>
+
+                    <div class="retention-card">
+                        <h4>🔒 Audit Log Protection</h4>
+                        <label>Integrity Controls</label>
+                        <input type="text" id="prot-integrity" placeholder="e.g., SHA-256 hashing, write-once storage" oninput="markUnsaved()">
+                        <label>Access Controls</label>
+                        <input type="text" id="prot-access" placeholder="e.g., RBAC — CISO and Security Analyst only" oninput="markUnsaved()">
+                        <label>Encryption</label>
+                        <input type="text" id="prot-encryption" placeholder="e.g., FIPS 140-2 AES-256 at rest and in transit" oninput="markUnsaved()">
+                        <label>Backup / Redundancy</label>
+                        <input type="text" id="prot-backup" placeholder="e.g., Daily encrypted backup to off-site Azure vault" oninput="markUnsaved()">
+                    </div>
+
+                    <div class="retention-card">
+                        <h4>⏰ Time Synchronization</h4>
+                        <label>NTP Source(s)</label>
+                        <input type="text" id="ntp-source" placeholder="e.g., time.nist.gov, pool.ntp.org" oninput="markUnsaved()">
+                        <label>Sync Frequency</label>
+                        <input type="text" id="ntp-freq" placeholder="e.g., Every 64 seconds via NTPv4" oninput="markUnsaved()">
+                        <label>Maximum Drift Allowed</label>
+                        <input type="text" id="ntp-drift" placeholder="e.g., ±500ms alert threshold" oninput="markUnsaved()">
+                        <label>Authoritative Reference</label>
+                        <input type="text" id="ntp-ref" placeholder="e.g., NIST AU.L2-3.3.7 / NIST SP 800-171 §3.3.7" oninput="markUnsaved()">
+                    </div>
+
+                    <div class="retention-card">
+                        <h4>🚨 Incident Response Integration</h4>
+                        <label>Escalation Path</label>
+                        <input type="text" id="ir-escalation" placeholder="e.g., SIEM Alert → Security Analyst → CISO" oninput="markUnsaved()">
+                        <label>Log Preservation on Incident</label>
+                        <textarea id="ir-preservation" placeholder="Describe how logs are preserved and protected when a security incident is declared…" oninput="markUnsaved()"></textarea>
+                        <label>Evidence Retention (Post-Incident)</label>
+                        <input type="text" id="ir-evidence" placeholder="e.g., Retain indefinitely until legal hold lifted" oninput="markUnsaved()">
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+             SECTION 5: SECURITY EVENT DASHBOARD
+        ============================================================ -->
+        <div class="section">
+            <div class="section-header">
+                <span>5. Security Event Dashboard</span>
+                <div class="hdr-btns">
+                    <button class="action-btn ab-gray" onclick="clearEvents()">Clear Log</button>
+                    <button class="action-btn ab-blue" onclick="addSystemEvent('SYSTEM','Event log refreshed')">🔄 Refresh</button>
+                </div>
+            </div>
+            <div class="section-body">
+                <p style="font-size:0.88em; color:#6b7280; margin-bottom:12px;">Simulate security event log entries as they would appear in a SIEM. Add events representative of your case study scenario — include normal operational events, warnings, and security-relevant alerts.</p>
+
+                <div class="event-log" id="eventLog">
+                    <span class="evt-system">System ready — add events below to populate the security event dashboard.</span>
+                </div>
+
+                <div class="add-event-row">
+                    <select id="evtLevel">
+                        <option value="INFO">INFO</option>
+                        <option value="WARNING">WARNING</option>
+                        <option value="ERROR">ERROR</option>
+                        <option value="CRITICAL">CRITICAL</option>
+                    </select>
+                    <select id="evtSource">
+                        <option value="">Select source…</option>
+                        <option value="ALMR-001">ALMR-001: Active Directory</option>
+                        <option value="ALMR-002">ALMR-002: Firewall</option>
+                        <option value="ALMR-003">ALMR-003: IDS</option>
+                        <option value="ALMR-004">ALMR-004: VPN Gateway</option>
+                        <option value="ALMR-005">ALMR-005: Linux Server 1</option>
+                        <option value="ALMR-006">ALMR-006: Linux Server 2</option>
+                        <option value="ALMR-007">ALMR-007: Primary Data Server</option>
+                        <option value="ALMR-008">ALMR-008: Secure File Server</option>
+                        <option value="ALMR-009">ALMR-009: Azure Cloud</option>
+                        <option value="ALMR-010">ALMR-010: SIEM</option>
+                        <option value="ALMR-011">ALMR-011: Email Gateway</option>
+                        <option value="ALMR-012">ALMR-012: Wireless APs</option>
+                        <option value="ALMR-013">ALMR-013: Core Router</option>
+                        <option value="ALMR-014">ALMR-014: Network Switch</option>
+                        <option value="ALMR-015">ALMR-015: Endpoint Protection</option>
+                        <option value="ALMR-016">ALMR-016: Badge Access</option>
+                        <option value="ALMR-017">ALMR-017: Web Proxy</option>
+                        <option value="ALMR-018">ALMR-018: Office 365/Azure AD</option>
+                        <option value="ALMR-019">ALMR-019: Security Camera NVR</option>
+                        <option value="ALMR-020">ALMR-020: SIEM Agent</option>
+                        <option value="CUSTOM">Custom source…</option>
+                    </select>
+                    <input type="text" id="evtMessage" placeholder="Event message / description…">
+                    <button class="action-btn ab-green" onclick="addManualEvent()">+ Add Event</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- EXPORT ROW -->
+        <div style="text-align:center; margin-bottom:20px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+            <button class="action-btn ab-blue" onclick="generateReport()">📊 Generate Compliance Report</button>
+            <button class="action-btn ab-amber" onclick="exportJSON()">📤 Export JSON</button>
+            <button class="action-btn ab-gray" onclick="window.print()">🖨️ Print Full Report</button>
+        </div>
+
+    </div><!-- /main-content -->
+
+    <!-- FOOTER -->
+    <div class="almr-footer">
+        <p>
+            <strong>Document Type:</strong> Audit Log Monitoring Report (ALMR) — CMMC 2.0 Level 2 &nbsp;|&nbsp;
+            <strong>Organization:</strong> <span id="footerOrg">[Enter via Company Overview]</span> &nbsp;|&nbsp;
+            <strong>Generated:</strong> <span id="footerDate"></span>
+        </p>
+        <p style="margin-top:4px; font-style:italic;">This document contains sensitive information and should be handled in accordance with CMMC and NIST SP 800-171 requirements.</p>
+    </div>
+
+</div><!-- /container -->
+
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toast"></div>
+
+<!-- ===== COMPANY EDIT MODAL ===== -->
+<div id="companyModal" class="modal">
+    <div class="modal-box">
+        <span class="close-modal" onclick="closeModal('companyModal')">&times;</span>
+        <h2>Edit Company Overview</h2>
+        <div class="mfield">
+            <label>Company Name *</label>
+            <input type="text" id="m-companyName" placeholder="Full legal organization name">
+        </div>
+        <div class="mfield">
+            <label>Location (City, State)</label>
+            <input type="text" id="m-location" placeholder="e.g., San Antonio, Texas">
+        </div>
+        <div class="mfield">
+            <label>Employee Count</label>
+            <input type="text" id="m-employees" placeholder="e.g., 85 employees">
+        </div>
+        <div class="mfield">
+            <label>Primary Business / DoD Contract Work</label>
+            <textarea id="m-business" placeholder="Describe the organization's primary business and nature of DoD contract work…"></textarea>
+        </div>
+        <div class="mfield">
+            <label>CMMC Level</label>
+            <select id="m-cmmcLevel">
+                <option value="">— Select —</option>
+                <option value="Level 1 - Foundational (FCI)">Level 1 – Foundational (FCI)</option>
+                <option value="Level 2 - Advanced (CUI)">Level 2 – Advanced (CUI)</option>
+                <option value="Level 3 - Expert (CUI+)">Level 3 – Expert (CUI+)</option>
+            </select>
+        </div>
+        <div class="mfield">
+            <label>Report Date</label>
+            <input type="date" id="m-reportDate">
+        </div>
+        <div class="mfield">
+            <label>SIEM Platform</label>
+            <input type="text" id="m-siem" placeholder="e.g., Splunk Enterprise, Microsoft Sentinel">
+        </div>
+        <div class="mfield">
+            <label>Audit Log Retention Period</label>
+            <input type="text" id="m-retention" placeholder="e.g., 12 months minimum (NIST AU.L2-3.3.2)">
+        </div>
+        <div class="modal-actions">
+            <button class="btn-secondary" onclick="closeModal('companyModal')">Cancel</button>
+            <button class="btn-success-m" onclick="saveCompanyInfo()">Save Overview</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== AU CONTROL STATUS MODAL ===== -->
+<div id="auControlModal" class="modal">
+    <div class="modal-box" style="max-width:680px;">
+        <span class="close-modal" onclick="closeModal('auControlModal')">&times;</span>
+        <h2>Update AU Control Compliance Status</h2>
+        <p style="font-size:0.88em; color:#6b7280; margin-bottom:16px;">For each AU control, select the compliance status and enter your organization's implementation description.</p>
+        <div id="auControlFormContent"></div>
+        <div class="modal-actions">
+            <button class="btn-secondary" onclick="closeModal('auControlModal')">Cancel</button>
+            <button class="btn-success-m" onclick="saveAUControls()">Save All Controls</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== LOG SOURCE MODAL ===== -->
+<div id="logSourceModal" class="modal">
+    <div class="modal-box">
+        <span class="close-modal" onclick="closeModal('logSourceModal')">&times;</span>
+        <h2 id="lsModalTitle">Add Log Source</h2>
+        <input type="hidden" id="lsEditIndex" value="-1">
+        <div class="mfield">
+            <label>Source ID *</label>
+            <input type="text" id="ls-id" placeholder="e.g., ALMR-001">
+            <p class="hint">Use sequential ALMR-### format for consistency</p>
+        </div>
+        <div class="mfield">
+            <label>System / Device *</label>
+            <input type="text" id="ls-system" placeholder="e.g., Active Directory Server, Enterprise Firewall">
+        </div>
+        <div class="mfield">
+            <label>Log Type *</label>
+            <input type="text" id="ls-type" placeholder="e.g., Authentication Logs, Firewall Traffic Logs">
+        </div>
+        <div class="mfield">
+            <label>Purpose of Monitoring *</label>
+            <textarea id="ls-purpose" placeholder="Describe specifically what security-relevant information this log source captures and why it is monitored…"></textarea>
+        </div>
+        <div class="mfield">
+            <label>Status</label>
+            <select id="ls-status">
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+                <option value="Maintenance">Maintenance</option>
+            </select>
+        </div>
+        <div class="modal-actions">
+            <button class="btn-secondary" onclick="closeModal('logSourceModal')">Cancel</button>
+            <button class="btn-success-m" onclick="saveLogSource()">Save Log Source</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== REPORT MODAL ===== -->
+<div id="reportModal" class="modal">
+    <div class="modal-box" style="max-width:640px;">
+        <span class="close-modal" onclick="closeModal('reportModal')">&times;</span>
+        <h2>📊 ALMR Compliance Report</h2>
+        <pre id="reportContent" style="white-space:pre-wrap; background:#f8fafc; padding:14px; border-radius:7px; font-size:0.82em; border:1px solid #e2e8f0; max-height:380px; overflow-y:auto;"></pre>
+        <div class="modal-actions">
+            <button class="btn-secondary" onclick="closeModal('reportModal')">Close</button>
+            <button class="btn-primary" onclick="downloadReport()">⬇️ Download Report</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== RESET MODAL ===== -->
+<div id="resetModal" class="modal">
+    <div class="modal-box" style="max-width:420px;">
+        <h2>⚠️ Reset All Data?</h2>
+        <p style="font-size:0.9em;color:#374151;">This will clear all company info, log sources, events, and retention fields. This cannot be undone.</p>
+        <div class="modal-actions">
+            <button class="btn-secondary" onclick="closeModal('resetModal')">Cancel</button>
+            <button class="btn-danger-m" onclick="doReset()">Yes, Reset Everything</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== JAVASCRIPT ===== -->
+<script>
+    // =============================================
+    //  AU CONTROLS DATA
+    // =============================================
+    const AU_CONTROLS = [
+        { id: 'AU.L2-3.3.1', name: 'System Auditing',           desc: 'Create and retain system audit logs to enable monitoring, analysis, investigation, and reporting of unlawful or unauthorized activity.' },
+        { id: 'AU.L2-3.3.2', name: 'Audit Log Retention',       desc: 'Ensure that the actions of individual users can be uniquely traced to those users so they can be held accountable for their actions.' },
+        { id: 'AU.L2-3.3.3', name: 'Event Review',              desc: 'Review and update logged events.' },
+        { id: 'AU.L2-3.3.4', name: 'Audit Failure Alerting',    desc: 'Alert in the event of an audit logging process failure.' },
+        { id: 'AU.L2-3.3.5', name: 'Correlation &amp; Reporting', desc: 'Correlate audit record review, analysis, and reporting processes for investigation and response to indications of unlawful, unauthorized, or unusual activity.' },
+        { id: 'AU.L2-3.3.6', name: 'Audit Reduction &amp; Review', desc: 'Provide audit record reduction and report generation to support on-demand analysis and reporting.' },
+        { id: 'AU.L2-3.3.7', name: 'Time Synchronization',      desc: 'Provide a system capability that compares and synchronizes internal clocks with authoritative sources to generate timestamps.' },
+        { id: 'AU.L2-3.3.8', name: 'Audit Log Protection',      desc: 'Protect audit information and audit tools from unauthorized access, modification, and deletion.' },
+        { id: 'AU.L2-3.3.9', name: 'Non-repudiation',           desc: 'Limit management of audit logging to a subset of privileged users.' }
+    ];
+
+    // =============================================
+    //  STATE
+    // =============================================
+    let companyInfo = { name:'', location:'', employees:'', business:'', cmmcLevel:'', reportDate:'', siem:'', retention:'' };
+    let auControls  = AU_CONTROLS.map(c => ({ ...c, status:'pending', impl:'' }));
+    let logSources  = [];
+    let events      = [];
+    let retentionData = {};
+    let lastReport  = '';
+
+    // =============================================
+    //  INIT
+    // =============================================
+    document.addEventListener('DOMContentLoaded', () => {
+        setFooterDate();
+        renderComplianceGrid();
+        renderAUControlForm();
+
+        const saved = localStorage.getItem('cmmc_almr_tool_v1');
+        if (saved) {
+            try {
+                applyLoadedData(JSON.parse(saved));
+                showToast('Auto-loaded your last saved session.', 'success');
+            } catch(e) {}
+        }
+    });
+
+    function setFooterDate() {
+        document.getElementById('footerDate').textContent =
+            new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+    }
+
+    // =============================================
+    //  COMPANY INFO
+    // =============================================
+    function openModal(id) {
+        if (id === 'companyModal') populateCompanyForm();
+        document.getElementById(id).style.display = 'block';
+    }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+    function populateCompanyForm() {
+        document.getElementById('m-companyName').value  = companyInfo.name;
+        document.getElementById('m-location').value     = companyInfo.location;
+        document.getElementById('m-employees').value    = companyInfo.employees;
+        document.getElementById('m-business').value     = companyInfo.business;
+        document.getElementById('m-cmmcLevel').value    = companyInfo.cmmcLevel;
+        document.getElementById('m-reportDate').value   = companyInfo.reportDate;
+        document.getElementById('m-siem').value         = companyInfo.siem;
+        document.getElementById('m-retention').value    = companyInfo.retention;
+    }
+
+    function saveCompanyInfo() {
+        companyInfo = {
+            name:       document.getElementById('m-companyName').value.trim(),
+            location:   document.getElementById('m-location').value.trim(),
+            employees:  document.getElementById('m-employees').value.trim(),
+            business:   document.getElementById('m-business').value.trim(),
+            cmmcLevel:  document.getElementById('m-cmmcLevel').value,
+            reportDate: document.getElementById('m-reportDate').value,
+            siem:       document.getElementById('m-siem').value.trim(),
+            retention:  document.getElementById('m-retention').value.trim()
+        };
+        if (!companyInfo.name) { showToast('Company name is required.', 'warn'); return; }
+        renderCompanyDisplay();
+        closeModal('companyModal');
+        markUnsaved();
+        addEventEntry('ADMIN', 'Company information updated');
+        showToast('Company info saved ✓', 'success');
+    }
+
+    function renderCompanyDisplay() {
+        const setField = (id, val) => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.innerHTML = val ? esc(val) : '<span class="empty-val">[Not entered]</span>';
+        };
+        setField('companyName',    companyInfo.name);
+        setField('companyLocation',companyInfo.location);
+        setField('employeeCount',  companyInfo.employees);
+        setField('primaryBusiness',companyInfo.business);
+        setField('cmmcLevel',      companyInfo.cmmcLevel);
+        setField('reportDate',     companyInfo.reportDate);
+        setField('siemPlatform',   companyInfo.siem);
+        setField('retentionPeriod',companyInfo.retention);
+        document.getElementById('footerOrg').textContent = companyInfo.name || '[Enter via Company Overview]';
+    }
+
+    // =============================================
+    //  AU CONTROLS
+    // =============================================
+    function renderAUControlForm() {
+        const container = document.getElementById('auControlFormContent');
+        container.innerHTML = auControls.map((ctrl, i) => `
+            <div style="border:1px solid #e2e8f0; border-radius:7px; padding:12px; margin-bottom:10px; background:#f8fafc;">
+                <div style="font-weight:700; color:#1e3a8a; font-size:0.9em; margin-bottom:8px;">${ctrl.id} — ${ctrl.name}</div>
+                <div style="font-size:0.8em; color:#6b7280; margin-bottom:8px;">${ctrl.desc}</div>
+                <div style="display:grid; grid-template-columns:180px 1fr; gap:8px; align-items:start;">
+                    <select id="au-status-${i}" style="padding:6px 10px; border:1px solid #d1d5db; border-radius:5px; font-size:0.85em;">
+                        <option value="pending"      ${ctrl.status==='pending'      ?'selected':''}>⏸ Not Yet Assessed</option>
+                        <option value="compliant"    ${ctrl.status==='compliant'    ?'selected':''}>✅ Compliant</option>
+                        <option value="partial"      ${ctrl.status==='partial'      ?'selected':''}>⚠️ Partially Implemented</option>
+                        <option value="noncompliant" ${ctrl.status==='noncompliant' ?'selected':''}>❌ Non-Compliant</option>
+                    </select>
+                    <input type="text" id="au-impl-${i}" value="${esc(ctrl.impl)}"
+                           placeholder="Describe how this control is implemented in your organization…"
+                           style="padding:6px 10px; border:1px solid #d1d5db; border-radius:5px; font-size:0.85em; width:100%;">
+                </div>
+            </div>`).join('');
+    }
+
+    function saveAUControls() {
+        auControls = auControls.map((ctrl, i) => ({
+            ...ctrl,
+            status: document.getElementById(`au-status-${i}`)?.value || 'pending',
+            impl:   document.getElementById(`au-impl-${i}`)?.value.trim() || ''
+        }));
+        renderComplianceGrid();
+        closeModal('auControlModal');
+        markUnsaved();
+        addEventEntry('ADMIN', 'AU control compliance status updated');
+        showToast('AU control status saved ✓', 'success');
+        updateStats();
+    }
+
+    function renderComplianceGrid() {
+        const grid = document.getElementById('complianceGrid');
+        grid.innerHTML = auControls.map((ctrl, i) => {
+            const cls  = { compliant:'ci-compliant', partial:'ci-partial', noncompliant:'ci-noncompliant', pending:'ci-pending' }[ctrl.status] || 'ci-pending';
+            const dot  = { compliant:'sd-green', partial:'sd-amber', noncompliant:'sd-red', pending:'sd-gray' }[ctrl.status] || 'sd-gray';
+            const lbl  = { compliant:'Compliant', partial:'Partial', noncompliant:'Non-Compliant', pending:'Not Assessed' }[ctrl.status] || 'Not Assessed';
+            return `<div class="compliance-item ${cls}" onclick="openModal('auControlModal')" style="cursor:pointer;" title="Click to edit">
+                <h4>${ctrl.id} — ${ctrl.name}</h4>
+                <div class="compliance-status-row">
+                    <span class="status-dot ${dot}"></span>
+                    <span style="font-weight:700; font-size:0.85em;">${lbl}</span>
+                </div>
+                <p>${ctrl.impl || '<em style="color:#9ca3af;">Click to add implementation description</em>'}</p>
+            </div>`;
+        }).join('');
+    }
+
+    // =============================================
+    //  LOG SOURCES
+    // =============================================
+    function openAddSource() {
+        document.getElementById('lsModalTitle').textContent = 'Add Log Source';
+        document.getElementById('lsEditIndex').value = '-1';
+        ['ls-id','ls-system','ls-type','ls-purpose'].forEach(id => document.getElementById(id).value = '');
+        document.getElementById('ls-status').value = 'Active';
+        // Auto-suggest next ID
+        const nextNum = String(logSources.length + 1).padStart(3, '0');
+        document.getElementById('ls-id').value = `ALMR-${nextNum}`;
+        openModal('logSourceModal');
+    }
+
+    function editLogSource(index) {
+        const src = logSources[index];
+        document.getElementById('lsModalTitle').textContent = `Edit — ${src.id}`;
+        document.getElementById('lsEditIndex').value = index;
+        document.getElementById('ls-id').value      = src.id;
+        document.getElementById('ls-system').value  = src.system;
+        document.getElementById('ls-type').value    = src.type;
+        document.getElementById('ls-purpose').value = src.purpose;
+        document.getElementById('ls-status').value  = src.status;
+        openModal('logSourceModal');
+    }
+
+    function saveLogSource() {
+        const id      = document.getElementById('ls-id').value.trim();
+        const system  = document.getElementById('ls-system').value.trim();
+        const type    = document.getElementById('ls-type').value.trim();
+        const purpose = document.getElementById('ls-purpose').value.trim();
+        const status  = document.getElementById('ls-status').value;
+
+        if (!id || !system || !type || !purpose) {
+            showToast('All fields marked * are required.', 'warn'); return;
+        }
+
+        const src = { id, system, type, purpose, status };
+        const idx = parseInt(document.getElementById('lsEditIndex').value);
+
+        if (idx === -1) {
+            logSources.push(src);
+            addEventEntry('ADMIN', `Log source ${id} added: ${system}`);
+        } else {
+            logSources[idx] = src;
+            addEventEntry('ADMIN', `Log source ${id} updated`);
+        }
+
+        renderLogSources();
+        updateStats();
+        closeModal('logSourceModal');
+        markUnsaved();
+        showToast(idx === -1 ? `Log source ${id} added ✓` : `Log source ${id} updated ✓`, 'success');
+    }
+
+    function deleteLogSource(index) {
+        if (!confirm('Delete this log source?')) return;
+        const id = logSources[index].id;
+        logSources.splice(index, 1);
+        renderLogSources();
+        updateStats();
+        markUnsaved();
+        addEventEntry('ADMIN', `Log source ${id} deleted`);
+        showToast('Log source deleted.', 'error');
+    }
+
+    function renderLogSources() {
+        const tbody = document.getElementById('logSourcesBody');
+        const count = document.getElementById('sourceCount');
+        count.textContent = `${logSources.length} source${logSources.length !== 1 ? 's' : ''}`;
+
+        if (!logSources.length) {
+            tbody.innerHTML = '<tr class="empty-table-row"><td colspan="6">No log sources added yet — click <strong>"+ Add Log Source"</strong> to begin.</td></tr>';
+            return;
+        }
+        tbody.innerHTML = logSources.map((src, i) => {
+            const sbCls = { Active:'sb-active', Inactive:'sb-inactive', Maintenance:'sb-maintenance' }[src.status] || 'sb-inactive';
+            const dotCls= { Active:'sd-green', Inactive:'sd-red', Maintenance:'sd-amber' }[src.status] || 'sd-gray';
+            return `<tr>
+                <td class="source-id">${esc(src.id)}</td>
+                <td>${esc(src.system)}</td>
+                <td>${esc(src.type)}</td>
+                <td class="purpose-cell">${esc(src.purpose)}</td>
+                <td>
+                    <span class="status-dot ${dotCls}" style="margin-right:5px;"></span>
+                    <span class="status-badge ${sbCls}">${esc(src.status)}</span>
+                </td>
+                <td>
+                    <button class="action-btn ab-amber ab-sm" onclick="editLogSource(${i})">Edit</button>
+                    <button class="action-btn ab-red ab-sm" onclick="deleteLogSource(${i})" style="margin-top:3px;">Del</button>
+                </td>
+            </tr>`;
+        }).join('');
+    }
+
+    // =============================================
+    //  EVENT LOG
+    // =============================================
+    function addManualEvent() {
+        const level   = document.getElementById('evtLevel').value;
+        const srcSel  = document.getElementById('evtSource').value;
+        const msg     = document.getElementById('evtMessage').value.trim();
+        if (!msg) { showToast('Enter an event message first.', 'warn'); return; }
+
+        const src = srcSel || 'SYSTEM';
+        addEventEntry(level, `${src} - ${msg}`);
+        document.getElementById('evtMessage').value = '';
+        markUnsaved();
+    }
+
+    function addSystemEvent(level, msg) {
+        addEventEntry(level, msg);
+        markUnsaved();
+    }
+
+    function addEventEntry(level, message) {
+        const ts = new Date().toISOString().replace('T', ' ').substring(0, 19);
+        const entry = { ts, level, message };
+        events.unshift(entry);
+        if (events.length > 50) events = events.slice(0, 50);
+        renderEventLog();
+        updateStats();
+    }
+
+    function renderEventLog() {
+        const log = document.getElementById('eventLog');
+        if (!events.length) {
+            log.innerHTML = '<span class="evt-system">No events logged yet — add events above.</span>';
+            return;
+        }
+        const clsMap = { INFO:'evt-info', WARNING:'evt-warn', ERROR:'evt-error', CRITICAL:'evt-error', SYSTEM:'evt-system', ADMIN:'evt-system' };
+        log.innerHTML = events.map(e =>
+            `<div><span class="evt-timestamp">[${e.ts}]</span> <span class="${clsMap[e.level]||'evt-info'}">${e.level}:</span> ${esc(e.message)}</div>`
+        ).join('');
+    }
+
+    function clearEvents() {
+        if (!confirm('Clear all event log entries?')) return;
+        events = [];
+        renderEventLog();
+        updateStats();
+        markUnsaved();
+    }
+
+    // =============================================
+    //  STATS
+    // =============================================
+    function updateStats() {
+        document.getElementById('statSources').textContent  = logSources.length;
+        document.getElementById('statActive').textContent   = logSources.filter(s => s.status === 'Active').length;
+        document.getElementById('statEvents').textContent   = events.length;
+        const met = auControls.filter(c => c.status === 'compliant').length;
+        document.getElementById('statCompliant').textContent = `${met}/9`;
+    }
+
+    // =============================================
+    //  RETENTION FIELDS
+    // =============================================
+    const RET_FIELDS = ['ret-period','ret-storage','ret-archive','ret-reference',
+                        'rev-realtime','rev-daily','rev-weekly','rev-monthly',
+                        'siem-platform','siem-sources','siem-alerts',
+                        'prot-integrity','prot-access','prot-encryption','prot-backup',
+                        'ntp-source','ntp-freq','ntp-drift','ntp-ref',
+                        'ir-escalation','ir-preservation','ir-evidence'];
+
+    function collectRetentionData() {
+        const d = {};
+        RET_FIELDS.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) d[id] = el.value;
+        });
+        return d;
+    }
+
+    function applyRetentionData(d) {
+        if (!d) return;
+        RET_FIELDS.forEach(id => {
+            const el = document.getElementById(id);
+            if (el && d[id] !== undefined) el.value = d[id];
+        });
+    }
+
+    // =============================================
+    //  COMPLIANCE REPORT
+    // =============================================
+    let reportText = '';
+
+    function generateReport() {
+        const met      = auControls.filter(c => c.status === 'compliant').length;
+        const partial  = auControls.filter(c => c.status === 'partial').length;
+        const noncomp  = auControls.filter(c => c.status === 'noncompliant').length;
+        const pending  = auControls.filter(c => c.status === 'pending').length;
+        const active   = logSources.filter(s => s.status === 'Active').length;
+
+        let r = 'CMMC 2.0 AUDIT LOG MONITORING REPORT (ALMR) — COMPLIANCE SUMMARY\n';
+        r += '='.repeat(60) + '\n';
+        r += `Generated: ${new Date().toLocaleString()}\n`;
+        r += `Organization: ${companyInfo.name || '[Not entered]'}\n`;
+        r += `Location: ${companyInfo.location || '[Not entered]'}\n`;
+        r += `CMMC Level: ${companyInfo.cmmcLevel || '[Not entered]'}\n`;
+        r += `Report Date: ${companyInfo.reportDate || '[Not entered]'}\n`;
+        r += `SIEM Platform: ${companyInfo.siem || '[Not entered]'}\n\n`;
+
+        r += 'LOG SOURCES SUMMARY\n' + '-'.repeat(40) + '\n';
+        r += `  Total Log Sources:  ${logSources.length}\n`;
+        r += `  Active:             ${active}\n`;
+        r += `  Inactive:           ${logSources.filter(s=>s.status==='Inactive').length}\n`;
+        r += `  Maintenance:        ${logSources.filter(s=>s.status==='Maintenance').length}\n\n`;
+
+        r += 'AU CONTROL COMPLIANCE STATUS\n' + '-'.repeat(40) + '\n';
+        r += `  Compliant:          ${met}/9\n`;
+        r += `  Partially Impl.:    ${partial}/9\n`;
+        r += `  Non-Compliant:      ${noncomp}/9\n`;
+        r += `  Not Yet Assessed:   ${pending}/9\n\n`;
+
+        r += 'CONTROL DETAILS\n' + '-'.repeat(40) + '\n';
+        auControls.forEach(ctrl => {
+            const lbl = { compliant:'COMPLIANT', partial:'PARTIAL', noncompliant:'NON-COMPLIANT', pending:'NOT ASSESSED' }[ctrl.status] || 'NOT ASSESSED';
+            r += `  ${ctrl.id} — ${ctrl.name}\n`;
+            r += `    Status: ${lbl}\n`;
+            r += `    Implementation: ${ctrl.impl || '[No description entered]'}\n\n`;
+        });
+
+        r += 'LOG SOURCES INVENTORY\n' + '-'.repeat(40) + '\n';
+        if (logSources.length) {
+            logSources.forEach(src => {
+                r += `  ${src.id}: ${src.system} [${src.status}]\n`;
+                r += `    Type: ${src.type}\n`;
+                r += `    Purpose: ${src.purpose}\n\n`;
+            });
+        } else {
+            r += '  No log sources documented.\n\n';
+        }
+
+        r += 'COMPLIANCE DETERMINATION\n' + '-'.repeat(40) + '\n';
+        if (noncomp > 0) {
+            r += `⚠️  NON-COMPLIANT: ${noncomp} control(s) require immediate remediation.\n`;
+        } else if (partial > 0 || pending > 0) {
+            r += `⚠️  CONDITIONAL: ${partial} partial and ${pending} unassessed control(s) need attention.\n`;
+        } else if (met === 9) {
+            r += '✅ FULLY COMPLIANT: All 9 AU controls are assessed as compliant.\n';
+        }
+        if (!logSources.length) r += '⚠️  WARNING: No log sources documented — comprehensive log inventory is required.\n';
+        if (logSources.length < 10) r += `⚠️  WARNING: Only ${logSources.length} log source(s) documented — target 15-20 for comprehensive coverage.\n`;
+
+        reportText = r;
+        document.getElementById('reportContent').textContent = r;
+        openModal('reportModal');
+        addEventEntry('SYSTEM', 'ALMR compliance report generated');
+    }
+
+    function downloadReport() {
+        if (!reportText) return;
+        const blob = new Blob([reportText], { type: 'text/plain' });
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+        a.download = `ALMR_Report_${new Date().toISOString().split('T')[0]}.txt`;
+        a.click(); URL.revokeObjectURL(a.href);
+        showToast('Report downloaded ✓', 'success');
+    }
+
+    // =============================================
+    //  SAVE / LOAD
+    // =============================================
+    function markUnsaved() { document.getElementById('unsavedIndicator').style.display = 'block'; }
+    function markSaved()   { document.getElementById('unsavedIndicator').style.display = 'none'; }
+
+    function buildSaveObject() {
+        return { companyInfo, auControls, logSources, events, retentionData: collectRetentionData() };
+    }
+
+    function applyLoadedData(d) {
+        if (d.companyInfo) { companyInfo = d.companyInfo; renderCompanyDisplay(); }
+        if (d.auControls)  { auControls  = d.auControls;  renderComplianceGrid(); renderAUControlForm(); }
+        if (d.logSources)  { logSources  = d.logSources;  renderLogSources(); }
+        if (d.events)      { events      = d.events;       renderEventLog(); }
+        if (d.retentionData) applyRetentionData(d.retentionData);
+        updateStats();
+        markSaved();
+    }
+
+    function saveData() {
+        try {
+            localStorage.setItem('cmmc_almr_tool_v1', JSON.stringify(buildSaveObject()));
+            markSaved();
+            showToast('ALMR saved ✓', 'success');
+        } catch(e) {
+            showToast('Save failed — try Export JSON.', 'error');
+        }
+    }
+
+    function exportJSON() {
+        const blob = new Blob([JSON.stringify(buildSaveObject(), null, 2)], { type: 'application/json' });
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+        a.download = `CMMC_ALMR_${new Date().toISOString().split('T')[0]}.json`;
+        a.click(); URL.revokeObjectURL(a.href);
+        addEventEntry('EXPORT', 'ALMR data exported to JSON');
+        showToast('JSON exported ✓', 'success');
+    }
+
+    function loadFromFile(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = e => {
+            try {
+                applyLoadedData(JSON.parse(e.target.result));
+                showToast('File loaded ✓', 'success');
+            } catch(err) { showToast('Error: Invalid JSON file.', 'error'); }
+        };
+        reader.readAsText(file);
+        event.target.value = '';
+    }
+
+    // =============================================
+    //  RESET
+    // =============================================
+    function doReset() {
+        companyInfo = { name:'', location:'', employees:'', business:'', cmmcLevel:'', reportDate:'', siem:'', retention:'' };
+        auControls  = AU_CONTROLS.map(c => ({ ...c, status:'pending', impl:'' }));
+        logSources  = []; events = [];
+        renderCompanyDisplay(); renderComplianceGrid(); renderAUControlForm(); renderLogSources(); renderEventLog();
+        RET_FIELDS.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+        localStorage.removeItem('cmmc_almr_tool_v1');
+        updateStats();
+        closeModal('resetModal');
+        markSaved();
+        showToast('All data reset.', 'error');
+    }
+
+    // =============================================
+    //  MODAL HELPERS
+    // =============================================
+    window.onclick = e => {
+        ['companyModal','auControlModal','logSourceModal','reportModal','resetModal'].forEach(id => {
+            const m = document.getElementById(id);
+            if (e.target === m) m.style.display = 'none';
+        });
+    };
+
+    // =============================================
+    //  UTILITIES
+    // =============================================
+    function esc(s) {
+        return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function showToast(msg, type) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.className = 'toast show ' + (type||'');
+        setTimeout(() => { t.className = 'toast'; }, 3200);
+    }
+
+    // Ctrl+S
+    document.addEventListener('keydown', e => {
+        if ((e.ctrlKey||e.metaKey) && e.key==='s') { e.preventDefault(); saveData(); }
+    });
+
+    // Mark retention fields as unsaved on any input
+    document.addEventListener('input', e => {
+        if (e.target.closest && e.target.closest('.retention-card')) markUnsaved();
+    });
+</script>
+</body>
+</html>
