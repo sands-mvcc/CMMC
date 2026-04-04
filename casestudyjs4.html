@@ -1,0 +1,2130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summit Research Institute — CMMC Level 2 Compliance Case Study</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --navy: #0A2240;
+            --navy-mid: #1A3A5C;
+            --blue: #2E86AB;
+            --blue-light: #5BAFCF;
+            --amber: #F0A500;
+            --amber-light: #F9C946;
+            --red: #C0392B;
+            --green: #27AE60;
+            --green-light: #2ECC71;
+            --yellow: #F39C12;
+            --silver: #E8E8E8;
+            --bg: #F4F6F9;
+            --text: #1C2B3A;
+            --text-muted: #5A7080;
+            --white: #FFFFFF;
+            --shadow: 0 4px 20px rgba(10,34,64,0.12);
+            --shadow-lg: 0 8px 40px rgba(10,34,64,0.2);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+
+        /* ===== ADMIN ===== */
+        .admin-toggle {
+            position: fixed; bottom: 24px; right: 24px;
+            background: var(--amber); color: var(--navy);
+            border: none; padding: 1rem 1.6rem; border-radius: 50px;
+            cursor: pointer; font-weight: 700; font-size: 0.95rem;
+            box-shadow: var(--shadow-lg); z-index: 9999;
+            transition: all 0.3s; letter-spacing: 0.5px;
+        }
+        .admin-toggle:hover { background: var(--amber-light); transform: translateY(-3px); }
+
+        .admin-panel {
+            display: none; position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%; background: rgba(0,0,0,0.85);
+            z-index: 10000; overflow-y: auto;
+        }
+        .admin-panel.active { display: block; }
+        .admin-content {
+            max-width: 950px; margin: 2rem auto;
+            background: white; border-radius: 12px; padding: 2.5rem;
+        }
+        .admin-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 2rem; padding-bottom: 1rem;
+            border-bottom: 3px solid var(--amber);
+        }
+        .admin-header h2 { color: var(--navy); }
+        .admin-close {
+            background: var(--red); color: white; border: none;
+            padding: 0.5rem 1.2rem; border-radius: 6px; cursor: pointer; font-weight: 700;
+        }
+        .admin-section {
+            background: var(--bg); border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem;
+        }
+        .admin-section h3 { color: var(--navy); margin-bottom: 1rem; }
+        .admin-form { display: grid; gap: 0.8rem; margin-bottom: 1rem; }
+        .admin-form input, .admin-form textarea, .admin-form select {
+            width: 100%; padding: 0.7rem; border: 2px solid #dde3ec;
+            border-radius: 6px; font-size: 0.95rem; font-family: inherit;
+        }
+        .admin-form input:focus, .admin-form textarea:focus { outline: none; border-color: var(--blue); }
+        .admin-btn {
+            background: var(--green); color: white; border: none;
+            padding: 0.7rem 1.5rem; border-radius: 6px; cursor: pointer; font-weight: 700;
+        }
+        .admin-btn:hover { background: #219a52; }
+        .admin-btn-danger { background: var(--red); }
+        .admin-btn-danger:hover { background: #a93226; }
+        .admin-list { list-style: none; margin-top: 1rem; }
+        .admin-list-item {
+            background: white; padding: 0.9rem 1rem; margin-bottom: 0.5rem;
+            border-radius: 6px; display: flex; justify-content: space-between;
+            align-items: center; border: 1px solid #dde3ec;
+        }
+        .admin-list-item button {
+            margin-left: 0.5rem; padding: 0.35rem 0.9rem;
+            border: none; border-radius: 5px; cursor: pointer; font-weight: 700;
+        }
+        .btn-edit { background: var(--blue); color: white; }
+        .btn-delete { background: var(--red); color: white; }
+
+        /* ===== HEADER ===== */
+        header {
+            background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+            color: white; padding: 1rem 0;
+            position: sticky; top: 0; z-index: 1000;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.3);
+            border-bottom: 3px solid var(--amber);
+        }
+        .header-content {
+            max-width: 1280px; margin: 0 auto; padding: 0 2rem;
+        }
+        .header-top {
+            display: flex; align-items: center; gap: 1rem; margin-bottom: 0.7rem;
+        }
+        .header-badge {
+            background: var(--amber); color: var(--navy);
+            font-size: 0.7rem; font-weight: 800; padding: 0.2rem 0.6rem;
+            border-radius: 4px; letter-spacing: 1px; text-transform: uppercase;
+        }
+        .site-title { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.3px; }
+        .site-subtitle { font-size: 0.85rem; opacity: 0.75; }
+        nav { background: rgba(255,255,255,0.08); border-radius: 8px; padding: 0.4rem 0.6rem; }
+        nav ul { list-style: none; display: flex; flex-wrap: wrap; gap: 0.3rem; }
+        nav a {
+            color: rgba(255,255,255,0.9); text-decoration: none;
+            padding: 0.4rem 0.9rem; border-radius: 5px; font-weight: 500;
+            font-size: 0.88rem; transition: all 0.2s;
+        }
+        nav a:hover { background: rgba(240,165,0,0.25); color: var(--amber-light); }
+
+        /* ===== HERO ===== */
+        .hero {
+            background: linear-gradient(160deg, var(--navy) 0%, #0D3060 50%, #14406A 100%);
+            padding: 0; overflow: hidden; position: relative;
+        }
+        .hero-svg-container { width: 100%; display: block; }
+        .hero-content-overlay {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            text-align: center; color: white; width: 90%; max-width: 900px;
+            pointer-events: none;
+        }
+        .hero-label {
+            display: inline-block; background: var(--amber); color: var(--navy);
+            font-size: 0.75rem; font-weight: 800; padding: 0.3rem 1rem;
+            border-radius: 20px; letter-spacing: 1.5px; text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+        .hero h1 {
+            font-size: clamp(1.8rem, 4vw, 3rem);
+            font-weight: 800; margin-bottom: 0.8rem; line-height: 1.2;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.4);
+        }
+        .hero p {
+            font-size: clamp(0.95rem, 2vw, 1.15rem);
+            opacity: 0.9; max-width: 700px; margin: 0 auto 1.5rem;
+        }
+        .hero-stats {
+            display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap;
+            pointer-events: all;
+        }
+        .hero-stat {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 0.7rem 1.3rem; border-radius: 10px; text-align: center;
+        }
+        .hero-stat-number { font-size: 1.6rem; font-weight: 800; color: var(--amber); }
+        .hero-stat-label { font-size: 0.75rem; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* ===== ALERT BANNER ===== */
+        .alert-banner {
+            background: linear-gradient(90deg, var(--red), #E74C3C);
+            color: white; padding: 0.8rem 2rem; text-align: center;
+            font-weight: 600; font-size: 0.92rem; letter-spacing: 0.3px;
+        }
+        .alert-banner strong { color: var(--amber-light); }
+
+        /* ===== MAIN CONTAINER ===== */
+        .container { max-width: 1280px; margin: 0 auto; padding: 2rem; }
+
+        section {
+            background: white; border-radius: 12px; padding: 2.5rem;
+            margin-bottom: 2.5rem; box-shadow: var(--shadow);
+        }
+
+        h2 {
+            color: var(--navy); font-size: 1.9rem; font-weight: 800;
+            margin-bottom: 1.2rem; padding-bottom: 0.7rem;
+            border-bottom: 3px solid var(--amber); display: flex;
+            align-items: center; gap: 0.5rem;
+        }
+        h3 { color: var(--navy-mid); font-size: 1.3rem; margin: 1.5rem 0 0.8rem; }
+
+        /* ===== ORG PROFILE ===== */
+        .profile-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1rem; margin: 1.5rem 0;
+        }
+        .profile-card {
+            background: linear-gradient(135deg, #EFF4FA, #E8F0FE);
+            border-radius: 10px; padding: 1.3rem;
+            border-left: 5px solid var(--blue);
+        }
+        .profile-card h4 { color: var(--navy); font-size: 0.8rem; text-transform: uppercase;
+            letter-spacing: 1px; margin-bottom: 0.4rem; }
+        .profile-card .value { color: var(--navy); font-size: 1.1rem; font-weight: 700; }
+        .profile-card .sub { color: var(--text-muted); font-size: 0.85rem; }
+
+        .info-box {
+            background: linear-gradient(135deg, #EFF4FA, #E8F0FE);
+            border-radius: 10px; padding: 1.5rem;
+            border-left: 5px solid var(--blue); margin: 1rem 0;
+        }
+        .info-box a { color: var(--navy); font-weight: 700; text-decoration: none; }
+        .info-box a:hover { text-decoration: underline; }
+
+        /* ===== GRANTS ===== */
+        .grants-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 1.5rem; margin: 1.5rem 0;
+        }
+        .grant-card {
+            border-radius: 12px; padding: 1.8rem; border-top: 5px solid;
+            transition: transform 0.3s, box-shadow 0.3s; position: relative; overflow: hidden;
+        }
+        .grant-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
+        .grant-card.darpa { background: linear-gradient(135deg, #EFF4FA, #E4EEF8); border-color: var(--blue); }
+        .grant-card.onr { background: linear-gradient(135deg, #F0F9F4, #E4F5EC); border-color: var(--green); }
+        .grant-badge {
+            display: inline-block; font-size: 0.7rem; font-weight: 800;
+            padding: 0.2rem 0.7rem; border-radius: 12px; letter-spacing: 1px;
+            text-transform: uppercase; margin-bottom: 0.8rem;
+        }
+        .grant-badge.darpa { background: var(--blue); color: white; }
+        .grant-badge.onr { background: var(--green); color: white; }
+        .grant-card h4 { color: var(--navy); font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .grant-number { color: var(--text-muted); font-size: 0.8rem; font-family: monospace; margin-bottom: 1rem; }
+        .grant-amount { font-size: 1.8rem; font-weight: 800; color: var(--navy); }
+        .grant-meta { display: flex; gap: 1.5rem; margin: 0.8rem 0; flex-wrap: wrap; }
+        .grant-meta-item { font-size: 0.82rem; color: var(--text-muted); }
+        .grant-meta-item strong { color: var(--text); }
+        .cui-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1rem; }
+        .cui-tag {
+            background: rgba(10,34,64,0.08); color: var(--navy);
+            font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.6rem;
+            border-radius: 4px; font-family: monospace;
+        }
+
+        /* ===== FINDINGS ===== */
+        .findings-controls {
+            display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem;
+            align-items: center;
+        }
+        .filter-label { font-weight: 600; color: var(--navy); margin-right: 0.3rem; }
+        .filter-btn {
+            padding: 0.4rem 1rem; border-radius: 20px; border: 2px solid;
+            cursor: pointer; font-weight: 600; font-size: 0.82rem;
+            transition: all 0.2s; background: white;
+        }
+        .filter-btn.all { border-color: var(--navy); color: var(--navy); }
+        .filter-btn.critical { border-color: var(--red); color: var(--red); }
+        .filter-btn.high { border-color: #E67E22; color: #E67E22; }
+        .filter-btn.medium { border-color: var(--yellow); color: var(--yellow); }
+        .filter-btn.active, .filter-btn.all.active { background: var(--navy); color: white; border-color: var(--navy); }
+        .filter-btn.critical.active { background: var(--red); color: white; }
+        .filter-btn.high.active { background: #E67E22; color: white; }
+        .filter-btn.medium.active { background: var(--yellow); color: white; }
+
+        .finding-card {
+            border-radius: 10px; margin-bottom: 1rem; border: 2px solid #dde3ec;
+            overflow: hidden; transition: all 0.3s;
+        }
+        .finding-card:hover { box-shadow: var(--shadow); }
+        .finding-header {
+            padding: 1.1rem 1.5rem; cursor: pointer;
+            display: flex; align-items: center; gap: 1rem;
+            background: #FAFBFD; transition: background 0.2s;
+        }
+        .finding-header:hover { background: #EFF4FA; }
+        .finding-id {
+            font-family: monospace; font-weight: 800; font-size: 0.9rem;
+            color: var(--navy); min-width: 55px;
+        }
+        .severity-badge {
+            font-size: 0.7rem; font-weight: 800; padding: 0.2rem 0.7rem;
+            border-radius: 12px; letter-spacing: 0.8px; text-transform: uppercase;
+            min-width: 72px; text-align: center;
+        }
+        .severity-critical { background: #FDECEA; color: var(--red); border: 1.5px solid var(--red); }
+        .severity-high { background: #FEF3E9; color: #D35400; border: 1.5px solid #E67E22; }
+        .severity-medium { background: #FEFBE9; color: #9A7D0A; border: 1.5px solid var(--yellow); }
+        .finding-title { flex: 1; font-weight: 600; color: var(--text); font-size: 0.95rem; }
+        .finding-domain { font-size: 0.78rem; color: var(--text-muted); font-family: monospace; }
+        .finding-toggle { color: var(--blue); font-size: 1.2rem; transition: transform 0.3s; }
+        .finding-toggle.open { transform: rotate(180deg); }
+
+        .finding-body {
+            display: none; padding: 1.5rem; border-top: 2px solid #EFF4FA;
+            background: white;
+        }
+        .finding-body.open { display: block; }
+        .finding-detail-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem; margin-bottom: 1.5rem;
+        }
+        .finding-detail {
+            background: var(--bg); border-radius: 8px; padding: 1rem;
+        }
+        .finding-detail h5 {
+            font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1px;
+            color: var(--text-muted); margin-bottom: 0.4rem;
+        }
+        .finding-detail p { font-size: 0.9rem; font-weight: 600; color: var(--text); }
+        .finding-desc h5 {
+            font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;
+            color: var(--blue); margin-bottom: 0.5rem; margin-top: 1rem;
+        }
+        .finding-desc p { font-size: 0.9rem; line-height: 1.7; color: var(--text); }
+        .risk-box {
+            background: #FEF2F2; border-left: 4px solid var(--red);
+            border-radius: 6px; padding: 1rem; margin-top: 0.8rem;
+        }
+        .risk-box h5 { color: var(--red); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 1px; }
+        .remediation-box {
+            background: #F0FBF5; border-left: 4px solid var(--green);
+            border-radius: 6px; padding: 1rem; margin-top: 0.8rem;
+        }
+        .remediation-box h5 { color: var(--green); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* ===== COMPLIANCE GAUGE ===== */
+        .gauge-section {
+            background: linear-gradient(135deg, var(--navy), var(--navy-mid));
+            color: white; border-radius: 12px; padding: 2.5rem;
+            margin-bottom: 2.5rem; box-shadow: var(--shadow-lg);
+        }
+        .gauge-section h2 {
+            color: white; border-bottom-color: var(--amber);
+        }
+        .gauge-layout {
+            display: grid; grid-template-columns: auto 1fr; gap: 3rem;
+            align-items: start; margin-top: 1.5rem;
+        }
+        @media (max-width: 768px) { .gauge-layout { grid-template-columns: 1fr; } }
+        .domain-bars { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+        @media (max-width: 600px) { .domain-bars { grid-template-columns: 1fr; } }
+        .domain-bar-item { }
+        .domain-bar-label {
+            display: flex; justify-content: space-between;
+            font-size: 0.78rem; margin-bottom: 0.3rem; opacity: 0.9;
+        }
+        .domain-bar-label span:last-child { font-weight: 700; }
+        .domain-bar-track {
+            height: 8px; background: rgba(255,255,255,0.15);
+            border-radius: 4px; overflow: hidden;
+        }
+        .domain-bar-fill {
+            height: 100%; border-radius: 4px;
+            transition: width 1.5s ease-out;
+        }
+        .toggle-state-btn {
+            background: var(--amber); color: var(--navy);
+            border: none; padding: 0.7rem 1.6rem; border-radius: 25px;
+            cursor: pointer; font-weight: 800; font-size: 0.9rem;
+            margin-top: 1.5rem; transition: all 0.3s; letter-spacing: 0.5px;
+        }
+        .toggle-state-btn:hover { background: var(--amber-light); transform: translateY(-2px); }
+
+        /* ===== ORG DIAGRAM ===== */
+        .org-diagram-container {
+            background: var(--bg); border-radius: 10px; padding: 1.5rem;
+            margin: 1.5rem 0; overflow-x: auto;
+        }
+
+        /* ===== ROADMAP ===== */
+        .roadmap-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem; margin: 1.5rem 0;
+        }
+        .phase-card {
+            border-radius: 12px; padding: 1.8rem; position: relative; overflow: hidden;
+        }
+        .phase-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 5px;
+        }
+        .phase-1 { background: linear-gradient(135deg, #FEF3E9, #FDECEA); }
+        .phase-1::before { background: var(--red); }
+        .phase-2 { background: linear-gradient(135deg, #FEFBE9, #FEF5E0); }
+        .phase-2::before { background: var(--yellow); }
+        .phase-3 { background: linear-gradient(135deg, #F0FBF5, #E8F8F0); }
+        .phase-3::before { background: var(--green); }
+        .phase-number {
+            font-size: 0.7rem; font-weight: 800; text-transform: uppercase;
+            letter-spacing: 1.5px; margin-bottom: 0.5rem;
+        }
+        .phase-1 .phase-number { color: var(--red); }
+        .phase-2 .phase-number { color: #9A7D0A; }
+        .phase-3 .phase-number { color: var(--green); }
+        .phase-card h4 { color: var(--navy); font-size: 1.05rem; margin-bottom: 0.3rem; }
+        .phase-timeline {
+            font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;
+            font-style: italic;
+        }
+        .phase-cost {
+            font-size: 1.4rem; font-weight: 800; color: var(--navy); margin: 1rem 0 0.3rem;
+        }
+        .phase-cost-label { font-size: 0.78rem; color: var(--text-muted); }
+        .phase-card ul { margin-left: 1.2rem; }
+        .phase-card li {
+            font-size: 0.85rem; color: var(--text); margin-bottom: 0.4rem;
+            line-height: 1.5;
+        }
+        .total-cost-box {
+            background: linear-gradient(135deg, var(--navy), var(--navy-mid));
+            color: white; border-radius: 12px; padding: 2rem;
+            display: flex; justify-content: space-around; align-items: center;
+            flex-wrap: wrap; gap: 1.5rem; margin-top: 1.5rem;
+        }
+        .total-cost-item { text-align: center; }
+        .total-cost-number { font-size: 2rem; font-weight: 800; color: var(--amber); }
+        .total-cost-label { font-size: 0.78rem; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* ===== TEAM ===== */
+        .team-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem; margin: 1.5rem 0;
+        }
+        .team-card {
+            border-radius: 12px; padding: 1.8rem;
+            background: linear-gradient(135deg, #EFF4FA, #E8F0FE);
+            border-top: 4px solid var(--blue); transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .team-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+        .team-avatar {
+            width: 64px; height: 64px; border-radius: 50%;
+            background: var(--navy); display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; margin-bottom: 1rem;
+            border: 3px solid var(--amber);
+        }
+        .team-name { font-size: 1.05rem; font-weight: 800; color: var(--navy); }
+        .team-title { font-size: 0.82rem; color: var(--blue); font-weight: 600; margin-bottom: 0.8rem; }
+        .team-bio { font-size: 0.87rem; color: var(--text); line-height: 1.6; }
+
+        /* ===== REGULATORY ===== */
+        .reg-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem; margin: 1.5rem 0;
+        }
+        .reg-card {
+            border-radius: 10px; padding: 1.5rem;
+            border: 2px solid #dde3ec;
+            transition: border-color 0.3s, transform 0.3s;
+        }
+        .reg-card:hover { border-color: var(--blue); transform: translateY(-3px); box-shadow: var(--shadow); }
+        .reg-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+        .reg-card h4 { color: var(--navy); font-size: 1rem; margin-bottom: 0.5rem; }
+        .reg-card p { font-size: 0.87rem; color: var(--text-muted); line-height: 1.6; }
+        .reg-tag {
+            display: inline-block; background: var(--navy); color: white;
+            font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.6rem;
+            border-radius: 4px; margin-bottom: 0.5rem; font-family: monospace;
+        }
+
+        /* ===== COMMUNITY BOARD ===== */
+        .message-board { background: var(--bg); padding: 1.5rem; border-radius: 10px; }
+        .message-form {
+            background: white; padding: 1.5rem; border-radius: 10px; margin-bottom: 1.5rem;
+            border: 2px solid #dde3ec;
+        }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label {
+            display: block; margin-bottom: 0.4rem; font-weight: 600;
+            font-size: 0.88rem; color: var(--text);
+        }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%; padding: 0.7rem; border: 2px solid #dde3ec;
+            border-radius: 6px; font-size: 0.95rem; font-family: inherit;
+            transition: border-color 0.3s;
+        }
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--blue); }
+        .submit-btn {
+            background: var(--blue); color: white; padding: 0.75rem 2rem;
+            border: none; border-radius: 6px; cursor: pointer; font-weight: 700;
+            transition: background 0.3s;
+        }
+        .submit-btn:hover { background: var(--navy); }
+        .message-item {
+            background: white; padding: 1.2rem; margin-bottom: 0.8rem;
+            border-radius: 8px; border: 1px solid #dde3ec;
+        }
+        .message-header { display: flex; justify-content: space-between; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.3rem; }
+        .message-author { font-weight: 700; color: var(--navy); font-size: 0.9rem; }
+        .message-date { color: var(--text-muted); font-size: 0.8rem; }
+        .message-text { font-size: 0.88rem; color: var(--text); }
+
+        /* ===== RESOURCES ===== */
+        .resource-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 1.2rem; margin: 1.5rem 0;
+        }
+        .resource-card {
+            background: white; border: 2px solid #dde3ec; padding: 1.5rem;
+            border-radius: 10px; text-align: center; transition: all 0.3s;
+        }
+        .resource-card:hover { border-color: var(--blue); box-shadow: var(--shadow); transform: translateY(-3px); }
+        .resource-icon { font-size: 2.5rem; margin-bottom: 0.8rem; }
+        .resource-card h4 { color: var(--navy); font-size: 0.95rem; margin-bottom: 0.4rem; }
+        .resource-card p { font-size: 0.82rem; color: var(--text-muted); }
+        .resource-btn {
+            display: inline-block; background: var(--blue); color: white;
+            padding: 0.45rem 1.2rem; border-radius: 5px; text-decoration: none;
+            font-size: 0.82rem; font-weight: 700; margin-top: 0.8rem;
+            transition: background 0.3s;
+        }
+        .resource-btn:hover { background: var(--navy); }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background: var(--navy); color: rgba(255,255,255,0.85);
+            padding: 3rem 0 1.5rem; margin-top: 3rem;
+            border-top: 4px solid var(--amber);
+        }
+        .footer-content {
+            max-width: 1280px; margin: 0 auto; padding: 0 2rem;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+        .footer-section h3 { color: var(--amber); font-size: 0.9rem; text-transform: uppercase;
+            letter-spacing: 1px; margin-bottom: 1rem; }
+        .footer-section a {
+            display: block; color: rgba(255,255,255,0.7); text-decoration: none;
+            margin-bottom: 0.5rem; font-size: 0.88rem; transition: color 0.2s;
+        }
+        .footer-section a:hover { color: var(--amber-light); }
+        .footer-bottom {
+            max-width: 1280px; margin: 2rem auto 0; padding: 1.5rem 2rem 0;
+            border-top: 1px solid rgba(255,255,255,0.1); text-align: center;
+            font-size: 0.8rem; color: rgba(255,255,255,0.4);
+        }
+
+        /* ===== UTILITY ===== */
+        .tag-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 0.5rem 0; }
+        .tag {
+            display: inline-block; font-size: 0.72rem; font-weight: 700;
+            padding: 0.2rem 0.7rem; border-radius: 12px;
+        }
+        .tag-blue { background: #E0F0FF; color: var(--blue); }
+        .tag-red { background: #FDECEA; color: var(--red); }
+        .tag-amber { background: #FEF5E0; color: #9A6200; }
+        .tag-green { background: #E8F8F0; color: var(--green); }
+
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        @media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } }
+
+        .nist-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.85rem; }
+        .nist-table th {
+            background: var(--navy); color: white; padding: 0.7rem 1rem;
+            text-align: left; font-size: 0.78rem; text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .nist-table td { padding: 0.6rem 1rem; border-bottom: 1px solid #dde3ec; }
+        .nist-table tr:hover td { background: var(--bg); }
+        .nist-table tr:last-child td { border-bottom: none; }
+
+        .sprs-box {
+            background: linear-gradient(135deg, #FDECEA, #FEF2F2);
+            border: 2px solid var(--red); border-radius: 10px; padding: 1.5rem;
+            margin: 1rem 0; text-align: center;
+        }
+        .sprs-score { font-size: 3rem; font-weight: 900; color: var(--red); }
+        .sprs-label { font-size: 0.8rem; color: var(--text-muted); }
+        .sprs-submitted { font-size: 1.1rem; font-weight: 700; color: var(--text-muted); }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-in { animation: fadeInUp 0.6s ease-out forwards; }
+    </style>
+</head>
+<body>
+
+<!-- ===== ADMIN TOGGLE ===== -->
+<button class="admin-toggle" onclick="document.getElementById('adminPanel').classList.toggle('active')">
+    &#9881; Admin Panel
+</button>
+
+<!-- ===== ADMIN PANEL ===== -->
+<div class="admin-panel" id="adminPanel">
+    <div class="admin-content">
+        <div class="admin-header">
+            <h2>&#9881; Admin Control Panel — Summit Research Institute</h2>
+            <button class="admin-close" onclick="document.getElementById('adminPanel').classList.remove('active')">✕ Close</button>
+        </div>
+
+        <div class="admin-section">
+            <h3>Add Community Board Message</h3>
+            <div class="admin-form">
+                <input type="text" id="adminAuthor" placeholder="Author Name / Title">
+                <input type="text" id="adminOrg" placeholder="Organization / Role">
+                <textarea id="adminMsg" rows="3" placeholder="Message content..."></textarea>
+            </div>
+            <button class="admin-btn" onclick="adminAddMessage()">Post Message</button>
+        </div>
+
+        <div class="admin-section">
+            <h3>Manage Findings Visibility</h3>
+            <p style="color:var(--text-muted); font-size:0.88rem; margin-bottom:1rem;">Toggle individual findings on/off for presentation mode.</p>
+            <ul class="admin-list" id="adminFindingsList"></ul>
+        </div>
+
+        <div class="admin-section">
+            <h3>Update Compliance Score</h3>
+            <div class="admin-form">
+                <input type="range" id="scoreSlider" min="0" max="110" value="38"
+                    oninput="document.getElementById('scoreDisplay').textContent = Math.round(this.value/1.1)+'%'">
+                <p>Current Score Display: <strong id="scoreDisplay">38%</strong></p>
+            </div>
+            <button class="admin-btn" onclick="updateGaugeScore()">Update Gauge</button>
+        </div>
+
+        <div class="admin-section">
+            <h3>Add Grant</h3>
+            <div class="admin-form">
+                <input type="text" id="newGrantTitle" placeholder="Grant Title">
+                <input type="text" id="newGrantNumber" placeholder="Grant Number">
+                <select id="newGrantAgency">
+                    <option value="DARPA">DARPA</option>
+                    <option value="ONR">ONR</option>
+                    <option value="AFOSR">AFOSR</option>
+                    <option value="ARO">ARO</option>
+                </select>
+                <input type="text" id="newGrantAmount" placeholder="Award Amount (e.g. $2,400,000)">
+            </div>
+            <button class="admin-btn" onclick="adminAddGrant()">Add Grant</button>
+            <ul class="admin-list" id="adminGrantsList"></ul>
+        </div>
+    </div>
+</div>
+
+<!-- ===== HEADER ===== -->
+<header>
+    <div class="header-content">
+        <div class="header-top">
+            <span class="header-badge">DoD Research</span>
+            <div>
+                <div class="site-title">Summit Research Institute</div>
+                <div class="site-subtitle">Pennsylvania State University &bull; CMMC Level 2 Compliance Case Study &bull; State College, PA</div>
+            </div>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#profile">Organization</a></li>
+                <li><a href="#grants">Active Grants</a></li>
+                <li><a href="#findings">CMMC Findings</a></li>
+                <li><a href="#compliance">Compliance Score</a></li>
+                <li><a href="#roadmap">Remediation</a></li>
+                <li><a href="#team">Team</a></li>
+                <li><a href="#regulatory">Regulatory</a></li>
+                <li><a href="#community">Community</a></li>
+                <li><a href="#resources">Resources</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<!-- ===== ALERT ===== -->
+<div class="alert-banner">
+    ⚠ <strong>ACTIVE COMPLIANCE ALERT:</strong> Inaccurate SPRS score (submitted: 110 | actual: −47) — potential False Claims Act exposure. Foreign national access suspension pending deemed export review. Immediate legal counsel engagement recommended.
+</div>
+
+<!-- ===== HERO ===== -->
+<div class="hero" style="position:relative; min-height: 320px;">
+    <!-- SVG IMAGE 1: Hero Banner -->
+    <svg class="hero-svg-container" viewBox="0 0 1200 320" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="display:block; width:100%; max-height:320px;">
+        <defs>
+            <!-- Circuit board pattern -->
+            <pattern id="circuit" width="60" height="60" patternUnits="userSpaceOnUse">
+                <line x1="0" y1="30" x2="60" y2="30" stroke="rgba(46,134,171,0.15)" stroke-width="1"/>
+                <line x1="30" y1="0" x2="30" y2="60" stroke="rgba(46,134,171,0.15)" stroke-width="1"/>
+                <circle cx="30" cy="30" r="2.5" fill="rgba(46,134,171,0.2)"/>
+                <circle cx="0" cy="0" r="1.5" fill="rgba(46,134,171,0.12)"/>
+                <circle cx="60" cy="0" r="1.5" fill="rgba(46,134,171,0.12)"/>
+                <circle cx="0" cy="60" r="1.5" fill="rgba(46,134,171,0.12)"/>
+                <circle cx="60" cy="60" r="1.5" fill="rgba(46,134,171,0.12)"/>
+            </pattern>
+            <linearGradient id="heroBg" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#0A2240"/>
+                <stop offset="50%" style="stop-color:#0D3060"/>
+                <stop offset="100%" style="stop-color:#14406A"/>
+            </linearGradient>
+        </defs>
+        <!-- Background -->
+        <rect width="1200" height="320" fill="url(#heroBg)"/>
+        <rect width="1200" height="320" fill="url(#circuit)"/>
+
+        <!-- LEFT: Autonomous Systems / Drone -->
+        <g transform="translate(160, 160)" opacity="0.85">
+            <!-- Drone body (hexagon) -->
+            <polygon points="0,-28 24,-14 24,14 0,28 -24,14 -24,-14" fill="none" stroke="#2E86AB" stroke-width="2.5"/>
+            <polygon points="0,-18 15,-9 15,9 0,18 -15,9 -15,-9" fill="rgba(46,134,171,0.2)" stroke="#5BAFCF" stroke-width="1.5"/>
+            <!-- Center hub -->
+            <circle cx="0" cy="0" r="7" fill="#2E86AB"/>
+            <circle cx="0" cy="0" r="3" fill="#F0A500"/>
+            <!-- Arms -->
+            <line x1="24" y1="-14" x2="55" y2="-32" stroke="#2E86AB" stroke-width="2"/>
+            <line x1="24" y1="14" x2="55" y2="32" stroke="#2E86AB" stroke-width="2"/>
+            <line x1="-24" y1="-14" x2="-55" y2="-32" stroke="#2E86AB" stroke-width="2"/>
+            <line x1="-24" y1="14" x2="-55" y2="32" stroke="#2E86AB" stroke-width="2"/>
+            <!-- Rotors -->
+            <ellipse cx="55" cy="-32" rx="18" ry="5" fill="none" stroke="#5BAFCF" stroke-width="2" opacity="0.7"/>
+            <ellipse cx="55" cy="32" rx="18" ry="5" fill="none" stroke="#5BAFCF" stroke-width="2" opacity="0.7"/>
+            <ellipse cx="-55" cy="-32" rx="18" ry="5" fill="none" stroke="#5BAFCF" stroke-width="2" opacity="0.7"/>
+            <ellipse cx="-55" cy="32" rx="18" ry="5" fill="none" stroke="#5BAFCF" stroke-width="2" opacity="0.7"/>
+            <!-- Navigation path -->
+            <path d="M 70,0 Q 130,-40 200,-20" fill="none" stroke="#F0A500" stroke-width="1.5" stroke-dasharray="6,4" opacity="0.6"/>
+            <!-- Grid overlay -->
+            <line x1="-90" y1="-70" x2="90" y2="-70" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+            <line x1="-90" y1="-50" x2="90" y2="-50" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+            <line x1="-90" y1="-30" x2="90" y2="-30" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+            <line x1="-90" y1="30" x2="90" y2="30" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+            <line x1="-90" y1="50" x2="90" y2="50" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+            <line x1="-70" y1="-90" x2="-70" y2="90" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+            <line x1="-30" y1="-90" x2="-30" y2="90" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+            <line x1="30" y1="-90" x2="30" y2="90" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+            <line x1="70" y1="-90" x2="70" y2="90" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+            <!-- Security shield -->
+            <g transform="translate(70, -70)">
+                <path d="M0,-14 L12,-8 L12,4 Q12,12 0,16 Q-12,12 -12,4 L-12,-8 Z" fill="rgba(240,165,0,0.8)" stroke="var(--amber)" stroke-width="1.5"/>
+                <text x="0" y="4" text-anchor="middle" fill="white" font-size="10" font-weight="bold">🔒</text>
+            </g>
+        </g>
+
+        <!-- CENTER: Institution identity -->
+        <g transform="translate(600, 160)" text-anchor="middle">
+            <!-- Shield crest -->
+            <path d="M0,-45 L30,-30 L30,10 Q30,35 0,45 Q-30,35 -30,10 L-30,-30 Z"
+                  fill="rgba(240,165,0,0.15)" stroke="#F0A500" stroke-width="2"/>
+            <text x="0" y="-10" fill="#F0A500" font-size="18" font-weight="900" font-family="serif">SRI</text>
+            <line x1="-20" y1="0" x2="20" y2="0" stroke="#F0A500" stroke-width="1.5" opacity="0.6"/>
+            <text x="0" y="15" fill="rgba(240,165,0,0.7)" font-size="7" font-family="sans-serif" letter-spacing="1">EST. 1987</text>
+            <!-- Title text -->
+            <text x="0" y="75" fill="white" font-size="20" font-weight="900" font-family="'Segoe UI', sans-serif" letter-spacing="2">SUMMIT RESEARCH INSTITUTE</text>
+            <text x="0" y="95" fill="rgba(255,255,255,0.65)" font-size="11" font-family="'Segoe UI', sans-serif">Pennsylvania State University &bull; State College, PA</text>
+            <text x="0" y="115" fill="#F0A500" font-size="10" font-weight="700" font-family="'Segoe UI', sans-serif" letter-spacing="1.5">CMMC LEVEL 2 COMPLIANCE ASSESSMENT</text>
+        </g>
+
+        <!-- RIGHT: Materials lattice -->
+        <g transform="translate(1020, 160)" opacity="0.8">
+            <!-- HEA crystal lattice (FCC-like) -->
+            <!-- Outer ring nodes -->
+            <circle cx="0" cy="-70" r="7" fill="#E74C3C"/>
+            <circle cx="60" cy="-35" r="7" fill="#3498DB"/>
+            <circle cx="60" cy="35" r="7" fill="#27AE60"/>
+            <circle cx="0" cy="70" r="7" fill="#9B59B6"/>
+            <circle cx="-60" cy="35" r="7" fill="#F0A500"/>
+            <circle cx="-60" cy="-35" r="7" fill="#1ABC9C"/>
+            <!-- Center -->
+            <circle cx="0" cy="0" r="10" fill="#2E86AB"/>
+            <!-- Bonds outer ring -->
+            <line x1="0" y1="-70" x2="60" y2="-35" stroke="rgba(255,255,255,0.35)" stroke-width="1.5"/>
+            <line x1="60" y1="-35" x2="60" y2="35" stroke="rgba(255,255,255,0.35)" stroke-width="1.5"/>
+            <line x1="60" y1="35" x2="0" y2="70" stroke="rgba(255,255,255,0.35)" stroke-width="1.5"/>
+            <line x1="0" y1="70" x2="-60" y2="35" stroke="rgba(255,255,255,0.35)" stroke-width="1.5"/>
+            <line x1="-60" y1="35" x2="-60" y2="-35" stroke="rgba(255,255,255,0.35)" stroke-width="1.5"/>
+            <line x1="-60" y1="-35" x2="0" y2="-70" stroke="rgba(255,255,255,0.35)" stroke-width="1.5"/>
+            <!-- Bonds to center -->
+            <line x1="0" y1="-70" x2="0" y2="0" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+            <line x1="60" y1="-35" x2="0" y2="0" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+            <line x1="60" y1="35" x2="0" y2="0" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+            <line x1="0" y1="70" x2="0" y2="0" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+            <line x1="-60" y1="35" x2="0" y2="0" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+            <line x1="-60" y1="-35" x2="0" y2="0" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+            <!-- Debye X-ray rings -->
+            <circle cx="0" cy="0" r="90" fill="none" stroke="rgba(91,175,207,0.12)" stroke-width="1.5"/>
+            <circle cx="0" cy="0" r="110" fill="none" stroke="rgba(91,175,207,0.08)" stroke-width="1"/>
+            <!-- Label -->
+            <text x="0" y="105" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="9" font-family="sans-serif">High-Entropy Alloy Lattice</text>
+        </g>
+
+        <!-- Divider lines -->
+        <line x1="390" y1="40" x2="390" y2="280" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+        <line x1="810" y1="40" x2="810" y2="280" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+
+        <!-- Label captions -->
+        <text x="160" y="285" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="9" font-family="sans-serif" letter-spacing="1">AUTONOMOUS SYSTEMS</text>
+        <text x="1020" y="285" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="9" font-family="sans-serif" letter-spacing="1">ADVANCED MATERIALS</text>
+
+        <!-- Amber accent bar at bottom -->
+        <rect x="0" y="314" width="1200" height="6" fill="url(#heroBg)"/>
+        <rect x="450" y="310" width="300" height="4" rx="2" fill="#F0A500" opacity="0.7"/>
+    </svg>
+
+    <!-- Overlay content -->
+    <div class="hero-content-overlay">
+        <div class="hero-label">CMMC Level 2 Compliance Assessment</div>
+        <h1>Summit Research Institute<br>DoD Research Security & Compliance</h1>
+        <p>University-affiliated laboratory conducting DARPA and ONR-funded research on autonomous systems and advanced materials. Handling CUI and export-controlled technical data — 8 active compliance findings requiring immediate remediation.</p>
+        <div class="hero-stats">
+            <div class="hero-stat"><div class="hero-stat-number">8</div><div class="hero-stat-label">CMMC Findings</div></div>
+            <div class="hero-stat"><div class="hero-stat-number">$8.2M</div><div class="hero-stat-label">Annual Funding</div></div>
+            <div class="hero-stat"><div class="hero-stat-number">38%</div><div class="hero-stat-label">Current Compliance</div></div>
+            <div class="hero-stat"><div class="hero-stat-number">3</div><div class="hero-stat-label">Active Grants</div></div>
+            <div class="hero-stat"><div class="hero-stat-number">45+</div><div class="hero-stat-label">Researchers</div></div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== MAIN CONTENT ===== -->
+<div class="container">
+
+    <!-- ===== ORGANIZATION PROFILE ===== -->
+    <section id="profile">
+        <h2>&#127963; Organization Profile</h2>
+        <div class="profile-grid" id="profileGrid">
+            <div class="profile-card">
+                <h4>Institution Type</h4>
+                <div class="value">University-Affiliated DoD Lab</div>
+                <div class="sub">Affiliated with Penn State University</div>
+            </div>
+            <div class="profile-card">
+                <h4>Location</h4>
+                <div class="value">State College, PA</div>
+                <div class="sub">Centre County, Pennsylvania</div>
+            </div>
+            <div class="profile-card">
+                <h4>Annual Funding</h4>
+                <div class="value">~$8.2 Million</div>
+                <div class="sub">DARPA + ONR contract awards</div>
+            </div>
+            <div class="profile-card">
+                <h4>Research Personnel</h4>
+                <div class="value">45 Researchers + Graduate Students</div>
+                <div class="sub">Including post-docs, PhD, and MS candidates</div>
+            </div>
+            <div class="profile-card">
+                <h4>Active Grants</h4>
+                <div class="value">3 Active Awards</div>
+                <div class="sub">2 DARPA &bull; 1 ONR</div>
+            </div>
+            <div class="profile-card">
+                <h4>DoD Oversight</h4>
+                <div class="value">DARPA / ONR</div>
+                <div class="sub">Defense Sciences Office, Information Innovation Office, Materials Science Div.</div>
+            </div>
+            <div class="profile-card">
+                <h4>Research Focus</h4>
+                <div class="value">Autonomous Systems &amp; Advanced Materials</div>
+                <div class="sub">Navigation, HMT, High-Entropy Alloys</div>
+            </div>
+            <div class="profile-card">
+                <h4>Regulatory Exposure</h4>
+                <div class="value">DFARS / CMMC / ITAR / EAR</div>
+                <div class="sub">CUI + Export-controlled technical data</div>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <h3 style="color:var(--navy); margin-top:0;">Why This Case Matters</h3>
+            <p>Summit Research Institute occupies a high-risk compliance intersection: it performs cutting-edge defense research attracting some of the nation's most talented scientists — including foreign nationals — while operating under the legal and cultural norms of a university that prizes openness and collaboration. DFARS 252.204-7012, CMMC 2.0 Level 2, and ITAR/EAR create a strict access-controlled environment that is structurally at odds with academic culture. Eight compliance findings expose the institute — and its parent university — to contract termination, False Claims Act liability, and federal export control enforcement.</p>
+        </div>
+
+        <div class="two-col" style="margin-top:1.5rem;">
+            <div>
+                <h3>Key Compliance Flags</h3>
+                <div class="tag-row">
+                    <span class="tag tag-red">Student CUI Access</span>
+                    <span class="tag tag-red">Foreign National Gap</span>
+                    <span class="tag tag-red">BYOD on CUI Network</span>
+                    <span class="tag tag-red">No Formal SSP</span>
+                    <span class="tag tag-amber">ITAR / EAR Gaps</span>
+                    <span class="tag tag-amber">No Incident Response Plan</span>
+                    <span class="tag tag-amber">Audit Log Deficiencies</span>
+                    <span class="tag tag-amber">No Security Awareness Training</span>
+                </div>
+            </div>
+            <div>
+                <h3>CUI Categories Present</h3>
+                <div class="tag-row">
+                    <span class="tag tag-blue">CUI//CTI</span>
+                    <span class="tag tag-blue">CUI//EXPT</span>
+                    <span class="tag tag-blue">CUI//SP-PRVCY</span>
+                    <span class="tag tag-blue">CUI//NAVSEA</span>
+                    <span class="tag tag-blue">CUI//MFC</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== ACTIVE GRANTS ===== -->
+    <section id="grants">
+        <h2>&#128196; Active Research Grants</h2>
+        <p>Three active DoD-sponsored grants totaling <strong>$8.2M/year</strong> in direct funding. All three involve CUI-designated technical data and are subject to DFARS 252.204-7012. Export-controlled technical data is present under all three awards.</p>
+
+        <div class="grants-grid" id="grantsGrid">
+            <div class="grant-card darpa">
+                <span class="grant-badge darpa">DARPA &bull; DSO</span>
+                <h4>Resilient Autonomous Navigation Under Adversarial Electromagnetic Conditions</h4>
+                <div class="grant-number">DARPA-HR0011-24-C-0142</div>
+                <div class="grant-amount">$3,400,000</div>
+                <div class="grant-meta">
+                    <div class="grant-meta-item"><strong>Period:</strong> Sep 2023 – Aug 2026</div>
+                    <div class="grant-meta-item"><strong>PI:</strong> Dr. M. Hollis</div>
+                </div>
+                <p style="font-size:0.85rem; color:var(--text); margin-top:0.5rem;">Machine learning algorithms for GPS-denied autonomous navigation; adversarial robustness testing; terrain-relative navigation using computer vision and inertial navigation fusion.</p>
+                <div class="cui-tags">
+                    <span class="cui-tag">CUI//CTI</span>
+                    <span class="cui-tag">CUI//EXPT (ECCN 7E994)</span>
+                    <span class="cui-tag">DFARS 252.204-7012</span>
+                    <span class="cui-tag">No FN Access w/o PM Approval</span>
+                </div>
+            </div>
+
+            <div class="grant-card onr">
+                <span class="grant-badge onr">ONR &bull; Materials Science</span>
+                <h4>Multiscale Characterization of High-Entropy Alloy Fatigue Resistance for Naval Structural Applications</h4>
+                <div class="grant-number">N00014-24-1-2847</div>
+                <div class="grant-amount">$2,100,000</div>
+                <div class="grant-meta">
+                    <div class="grant-meta-item"><strong>Period:</strong> Jan 2024 – Jan 2027</div>
+                    <div class="grant-meta-item"><strong>PI:</strong> Prof. K. Asante</div>
+                </div>
+                <p style="font-size:0.85rem; color:var(--text); margin-top:0.5rem;">Fatigue crack initiation and propagation mechanisms in novel high-entropy alloys for shipboard structural components; synchrotron X-ray diffraction; multi-physics simulation.</p>
+                <div class="cui-tags">
+                    <span class="cui-tag">CUI//CTI</span>
+                    <span class="cui-tag">CUI//NAVSEA</span>
+                    <span class="cui-tag">CUI//EXPT (ECCN 1E001)</span>
+                    <span class="cui-tag">No Commercial Cloud</span>
+                </div>
+            </div>
+
+            <div class="grant-card darpa">
+                <span class="grant-badge darpa">DARPA &bull; I2O</span>
+                <h4>Cognitive Load Optimization in Human-Autonomous System Teams for Dynamic Mission Environments</h4>
+                <div class="grant-number">DARPA-HR0011-23-C-0089</div>
+                <div class="grant-amount">$2,700,000</div>
+                <div class="grant-meta">
+                    <div class="grant-meta-item"><strong>Period:</strong> Apr 2023 – Mar 2026</div>
+                    <div class="grant-meta-item"><strong>PI:</strong> Dr. M. Hollis / Prof. K. Asante (Co-I)</div>
+                </div>
+                <p style="font-size:0.85rem; color:var(--text); margin-top:0.5rem;">Adaptive AI systems monitoring human operator cognitive load in real time; dynamic autonomy adjustment in human-machine teams; physiological sensing and unmanned system simulations.</p>
+                <div class="cui-tags">
+                    <span class="cui-tag">CUI//CTI</span>
+                    <span class="cui-tag">CUI//SP-PRVCY</span>
+                    <span class="cui-tag">CUI//EXPT (ECCN 4E001)</span>
+                    <span class="cui-tag">CUI//MFC</span>
+                    <span class="cui-tag">Annual ITAR/EAR Training Req.</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== CMMC FINDINGS ===== -->
+    <section id="findings">
+        <h2>&#128270; CMMC Gap Findings (8 Total)</h2>
+        <p>Assessment conducted by CMMC Registered Practitioner Organization (RPO). All findings mapped to NIST SP 800-171 Rev. 2 and CMMC 2.0 Level 2 practices. Three findings classified as <strong style="color:var(--red)">Critical</strong>.</p>
+
+        <div class="findings-controls">
+            <span class="filter-label">Filter by Severity:</span>
+            <button class="filter-btn all active" onclick="filterFindings('all', this)">All (8)</button>
+            <button class="filter-btn critical" onclick="filterFindings('critical', this)">Critical (3)</button>
+            <button class="filter-btn high" onclick="filterFindings('high', this)">High (3)</button>
+            <button class="filter-btn medium" onclick="filterFindings('medium', this)">Medium (2)</button>
+        </div>
+
+        <div id="findingsContainer">
+            <!-- F-001 -->
+            <div class="finding-card" data-severity="critical">
+                <div class="finding-header" onclick="toggleFinding(this)">
+                    <span class="finding-id">F-001</span>
+                    <span class="severity-badge severity-critical">Critical</span>
+                    <span class="finding-title">Unsecured Graduate Student Access to Controlled Unclassified Information</span>
+                    <span class="finding-domain">AC.1.001 / AC.2.006</span>
+                    <span class="finding-toggle">&#9660;</span>
+                </div>
+                <div class="finding-body">
+                    <div class="finding-detail-grid">
+                        <div class="finding-detail"><h5>Domain</h5><p>Access Control (AC)</p></div>
+                        <div class="finding-detail"><h5>NIST 800-171</h5><p>3.1.1 / 3.1.2</p></div>
+                        <div class="finding-detail"><h5>Effort</h5><p>120–160 hours</p></div>
+                        <div class="finding-detail"><h5>Est. Cost</h5><p>$12,000–$18,000</p></div>
+                        <div class="finding-detail"><h5>Timeline</h5><p>30–45 days</p></div>
+                    </div>
+                    <div class="finding-desc">
+                        <h5>Description</h5>
+                        <p>Graduate students rotating through the autonomous systems lab are granted broad access to shared network drives containing CUI technical data as a matter of operational convenience. No formal need-to-know determination is documented before access is provisioned. Access accounts frequently persist beyond a student's involvement on a specific project. A single shared credential exists for the CUI file share among several graduate students — eliminating all audit trail capability.</p>
+                        <div class="risk-box"><h5>&#9888; Risk</h5><p>Unauthorized disclosure of DARPA-funded CUI could trigger DFARS 252.204-7012 breach notification. Shared credentials prevent forensic attribution. CUI spillage to a student's thesis repository (e.g., university GitLab) constitutes a reportable unauthorized disclosure to the DoD CIO.</p></div>
+                        <div class="remediation-box"><h5>&#10003; Remediation</h5><p>Implement role-based access control (RBAC). Require formal need-to-know determination signed by PI before any graduate student account is provisioned. Enforce individual (non-shared) accounts. Deploy automated account deprovisioning tied to project end dates in the Sponsored Research Office system. Integrate with university identity management for automatic revocation within 24 hours of student separation.</p></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- F-002 -->
+            <div class="finding-card" data-severity="critical">
+                <div class="finding-header" onclick="toggleFinding(this)">
+                    <span class="finding-id">F-002</span>
+                    <span class="severity-badge severity-critical">Critical</span>
+                    <span class="finding-title">Foreign National Access to Export-Controlled Data Without TAA or Deemed Export Determination</span>
+                    <span class="finding-domain">AC.1.001 / PS.2.127</span>
+                    <span class="finding-toggle">&#9660;</span>
+                </div>
+                <div class="finding-body">
+                    <div class="finding-detail-grid">
+                        <div class="finding-detail"><h5>Domain</h5><p>Access Control / Personnel Security</p></div>
+                        <div class="finding-detail"><h5>NIST 800-171</h5><p>3.1.1 / 3.9.1</p></div>
+                        <div class="finding-detail"><h5>Effort</h5><p>200–300 hours</p></div>
+                        <div class="finding-detail"><h5>Est. Cost</h5><p>$35,000–$75,000</p></div>
+                        <div class="finding-detail"><h5>Timeline</h5><p>60–90 days (+ ongoing)</p></div>
+                    </div>
+                    <div class="finding-desc">
+                        <h5>Description</h5>
+                        <p>Three foreign national researchers (two visiting scholars from a non-Five Eyes country; one PhD candidate who is a citizen of an EAR Country Group D:5 nation) are actively conducting research under the DARPA grant involving controlled autonomous systems algorithms. No Technology Control Plan (TCP) is in place. No "deemed export" analysis was conducted. One researcher has direct access to CUI-flagged simulation code for autonomous vehicle navigation.</p>
+                        <div class="risk-box"><h5>&#9888; Risk</h5><p>Releasing export-controlled technology to a foreign national in the U.S. is deemed an export to their country of nationality under EAR (15 CFR 734.13) and ITAR. ITAR violations: civil penalties up to $1.3M per violation; criminal up to $1M and 20 years per violation. Three simultaneous exposure events identified. Voluntary disclosure may be required.</p></div>
+                        <div class="remediation-box"><h5>&#10003; Remediation</h5><p>Immediately suspend foreign national access to export-controlled data pending deemed export review. Develop Technology Control Plans for each active grant. Engage university legal counsel for potential voluntary self-disclosure to BIS/DDTC. For future hires, mandate Export Control Officer clearance before any foreign national is added to a restricted project.</p></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- F-003 -->
+            <div class="finding-card" data-severity="high">
+                <div class="finding-header" onclick="toggleFinding(this)">
+                    <span class="finding-id">F-003</span>
+                    <span class="severity-badge severity-high">High</span>
+                    <span class="finding-title">Unmanaged Personal Devices (BYOD) Accessing CUI Network Without Endpoint Controls</span>
+                    <span class="finding-domain">CM.2.061 / SC.3.177</span>
+                    <span class="finding-toggle">&#9660;</span>
+                </div>
+                <div class="finding-body">
+                    <div class="finding-detail-grid">
+                        <div class="finding-detail"><h5>Domain</h5><p>Configuration Mgmt / Sys. &amp; Comm. Protection</p></div>
+                        <div class="finding-detail"><h5>NIST 800-171</h5><p>3.4.1 / 3.13.1 / 3.13.8</p></div>
+                        <div class="finding-detail"><h5>Effort</h5><p>180–240 hours</p></div>
+                        <div class="finding-detail"><h5>Est. Cost</h5><p>$28,000–$45,000</p></div>
+                        <div class="finding-detail"><h5>Timeline</h5><p>60–90 days</p></div>
+                    </div>
+                    <div class="finding-desc">
+                        <h5>Description</h5>
+                        <p>Researchers and graduate students connect personal laptops, tablets, and phones to the institute's internal "SRI-Research" Wi-Fi network, which also accesses CUI data stores and the DARPA simulation cluster. No NAC solution enforces endpoint compliance. Personal devices have no guaranteed patch level, no required disk encryption, no EDR agent, and are not enrolled in MDM. The "SRI-Research" SSID is not segregated from the CUI processing environment by VLAN or firewall policy.</p>
+                        <div class="risk-box"><h5>&#9888; Risk</h5><p>A single compromised personal device could pivot into the CUI network segment. Stolen or lost personal laptops containing cached CUI require DFARS breach notification within 72 hours. Absence of MDM means the institute cannot remotely wipe CUI from a lost device — an immediate C3PAO assessment failure.</p></div>
+                        <div class="remediation-box"><h5>&#10003; Remediation</h5><p>Create separate CUI enclave VLAN with firewall enforcement. Deploy NAC solution (e.g., Cisco ISE or Aruba ClearPass) enforcing endpoint compliance posture. Require full-disk encryption on all managed endpoints. Prohibit BYOD access to CUI segments via policy and technical enforcement. Provide loaner managed devices for researchers. Create a guest VLAN for personal devices with zero CUI access.</p></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- F-004 -->
+            <div class="finding-card" data-severity="high">
+                <div class="finding-header" onclick="toggleFinding(this)">
+                    <span class="finding-id">F-004</span>
+                    <span class="severity-badge severity-high">High</span>
+                    <span class="finding-title">Inadequate Export Control Compliance Program — No TCP, Incomplete ITAR/EAR Reviews</span>
+                    <span class="finding-domain">RA.2.141 / RA.3.144</span>
+                    <span class="finding-toggle">&#9660;</span>
+                </div>
+                <div class="finding-body">
+                    <div class="finding-detail-grid">
+                        <div class="finding-detail"><h5>Domain</h5><p>Risk Assessment (RA)</p></div>
+                        <div class="finding-detail"><h5>NIST 800-171</h5><p>3.11.1 / 3.11.2</p></div>
+                        <div class="finding-detail"><h5>Effort</h5><p>250–400 hours</p></div>
+                        <div class="finding-detail"><h5>Est. Cost</h5><p>$40,000–$80,000</p></div>
+                        <div class="finding-detail"><h5>Timeline</h5><p>90–180 days</p></div>
+                    </div>
+                    <div class="finding-desc">
+                        <h5>Description</h5>
+                        <p>Summit Research Institute lacks a comprehensive export control compliance program. No item-level ITAR/EAR jurisdiction reviews have been conducted for research outputs across the three active grants. No Technology Control Plans exist. The Export Control Officer allocates approximately 0.1 FTE to SRI. No export control training has been conducted in 24+ months. Personal cloud storage platforms (Dropbox, Google Drive) have not been assessed for EAR/ITAR cloud compliance and are actively in use for research data.</p>
+                        <div class="risk-box"><h5>&#9888; Risk</h5><p>Unreviewed technical data shared at an international conference, uploaded to a non-compliant cloud, or emailed to a foreign collaborator could constitute multiple simultaneous export violations. BIS/DDTC enforcement actions against universities have resulted in multi-million dollar penalties. Personal cloud usage may constitute ongoing undetected violations.</p></div>
+                        <div class="remediation-box"><h5>&#10003; Remediation</h5><p>Conduct immediate export control audit of all three grants. Develop Technology Control Plans. Increase Export Control Officer dedicated time to 0.5 FTE minimum. Deliver mandatory annual export control training. Implement pre-publication review process. Restrict use of non-compliant cloud storage. Subscribe to export control compliance management platform.</p></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- F-005 -->
+            <div class="finding-card" data-severity="critical">
+                <div class="finding-header" onclick="toggleFinding(this)">
+                    <span class="finding-id">F-005</span>
+                    <span class="severity-badge severity-critical">Critical</span>
+                    <span class="finding-title">No Documented System Security Plan (SSP) — Inaccurate SPRS Score Filed</span>
+                    <span class="finding-domain">NIST 800-171 3.12.4</span>
+                    <span class="finding-toggle">&#9660;</span>
+                </div>
+                <div class="finding-body">
+                    <div class="finding-detail-grid">
+                        <div class="finding-detail"><h5>Domain</h5><p>Risk Assessment / Configuration Mgmt</p></div>
+                        <div class="finding-detail"><h5>NIST 800-171</h5><p>3.12.4 (derived)</p></div>
+                        <div class="finding-detail"><h5>Effort</h5><p>300–500 hours</p></div>
+                        <div class="finding-detail"><h5>Est. Cost</h5><p>$55,000–$120,000</p></div>
+                        <div class="finding-detail"><h5>Timeline</h5><p>60–90 days (SSP) / 12 months (C3PAO)</p></div>
+                    </div>
+                    <div class="finding-desc">
+                        <h5>Description</h5>
+                        <p>Summit Research Institute has no System Security Plan (SSP) documenting the CUI environment. There is no defined system boundary, no documentation of which controls are implemented vs. planned, no Plan of Action &amp; Milestones (POA&amp;M), and no basis for the SPRS self-assessment score. The institute submitted an SPRS score of <strong>110 (maximum)</strong> at contract award without a supporting assessment — actual assessed score is <strong>−47</strong>.</p>
+                        <div class="risk-box"><h5>&#9888; Risk</h5><p>An inaccurate SPRS score constitutes a potential <strong>False Claims Act violation with treble damages exposure</strong>. DFARS 252.204-7012(d)(2) requires SSP availability within 30 days of request. Without an SSP, CMMC Level 2 certification is impossible — jeopardizing all contract renewals beginning in the 2025–2027 DoD CMMC phased rollout.</p></div>
+                        <div class="remediation-box"><h5>&#10003; Remediation</h5><p>Retain CMMC RPO immediately for SSP development. Define and document authorization boundary. Assess all 110 NIST SP 800-171 controls. Develop POA&amp;M. Correct SPRS self-assessment score. Engage university legal counsel regarding FCA exposure. Plan for C3PAO third-party assessment before next contract renewal.</p></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- F-006 -->
+            <div class="finding-card" data-severity="high">
+                <div class="finding-header" onclick="toggleFinding(this)">
+                    <span class="finding-id">F-006</span>
+                    <span class="severity-badge severity-high">High</span>
+                    <span class="finding-title">Inadequate Audit Log Collection, Retention, and Review for CUI Systems</span>
+                    <span class="finding-domain">AU.2.041 / AU.2.042</span>
+                    <span class="finding-toggle">&#9660;</span>
+                </div>
+                <div class="finding-body">
+                    <div class="finding-detail-grid">
+                        <div class="finding-detail"><h5>Domain</h5><p>Audit and Accountability (AU)</p></div>
+                        <div class="finding-detail"><h5>NIST 800-171</h5><p>3.3.1 / 3.3.2</p></div>
+                        <div class="finding-detail"><h5>Effort</h5><p>160–220 hours</p></div>
+                        <div class="finding-detail"><h5>Est. Cost</h5><p>$22,000–$40,000</p></div>
+                        <div class="finding-detail"><h5>Timeline</h5><p>60–90 days</p></div>
+                    </div>
+                    <div class="finding-desc">
+                        <h5>Description</h5>
+                        <p>CUI-scoped file servers, research workstations, and VPN gateway are not forwarding logs to a centralized SIEM. Local logs overwrite after 30 days. File access events on CUI shared drives are only logged at the folder level. VPN concentrator logs are reviewed only when a specific incident prompts manual inspection. No log review schedule, no anomaly alerts, and no designated individual responsible for log review.</p>
+                        <div class="risk-box"><h5>&#9888; Risk</h5><p>Without centralized audit logs, the institute cannot detect insider threats, exfiltration, or unauthorized access. DFARS 252.204-7012 requires ability to conduct and report cyber incidents — inability to produce audit logs during a DoD-requested investigation is a serious compliance failure and could be viewed as obstruction.</p></div>
+                        <div class="remediation-box"><h5>&#10003; Remediation</h5><p>Deploy centralized SIEM (e.g., Microsoft Sentinel, Splunk, or MSSP-provided). Configure all CUI-scoped systems with 90-day online / 1-year archive retention. Enable file-level audit logging on CUI repositories. Implement alert rules for high-risk events (bulk download, after-hours access, privilege escalation). Assign ISSO as log review owner with documented schedule.</p></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- F-007 -->
+            <div class="finding-card" data-severity="medium">
+                <div class="finding-header" onclick="toggleFinding(this)">
+                    <span class="finding-id">F-007</span>
+                    <span class="severity-badge severity-medium">Medium</span>
+                    <span class="finding-title">No Formal Cyber Incident Response Plan Meeting DFARS 252.204-7012 Reporting Requirements</span>
+                    <span class="finding-domain">IR.2.092 / IR.2.093</span>
+                    <span class="finding-toggle">&#9660;</span>
+                </div>
+                <div class="finding-body">
+                    <div class="finding-detail-grid">
+                        <div class="finding-detail"><h5>Domain</h5><p>Incident Response (IR)</p></div>
+                        <div class="finding-detail"><h5>NIST 800-171</h5><p>3.6.1 / 3.6.2</p></div>
+                        <div class="finding-detail"><h5>Effort</h5><p>80–120 hours</p></div>
+                        <div class="finding-detail"><h5>Est. Cost</h5><p>$12,000–$22,000</p></div>
+                        <div class="finding-detail"><h5>Timeline</h5><p>45–60 days</p></div>
+                    </div>
+                    <div class="finding-desc">
+                        <h5>Description</h5>
+                        <p>Summit Research Institute has no written Incident Response Plan for CUI cyber incidents. The university's general IT procedure does not address the 72-hour DFARS reporting requirement to DIBNet, does not identify DARPA and ONR contracting officers as notification parties, and has never been exercised for CUI-specific scenarios. A 2023 phishing compromise of a researcher's email was handled entirely through the university helpdesk with no DFARS reporting consideration — and may require retroactive review for reportability.</p>
+                        <div class="risk-box"><h5>&#9888; Risk</h5><p>DFARS 252.204-7012(c) requires cyber incident reporting within 72 hours via dibnet.dod.mil. Failure to report a qualifying incident constitutes breach of contract and can trigger FCA scrutiny. The 2023 phishing incident may require retroactive disclosure to DoD.</p></div>
+                        <div class="remediation-box"><h5>&#10003; Remediation</h5><p>Develop standalone CUI Cyber Incident Response Plan aligned to DFARS 252.204-7012 and NIST SP 800-61. Register SRI on DIBNet portal. Define ISSO, RSO, ECO, PI, and legal counsel roles. Conduct annual tabletop exercise. Retroactively assess 2023 phishing incident for DFARS reporting obligations.</p></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- F-008 -->
+            <div class="finding-card" data-severity="medium">
+                <div class="finding-header" onclick="toggleFinding(this)">
+                    <span class="finding-id">F-008</span>
+                    <span class="severity-badge severity-medium">Medium</span>
+                    <span class="finding-title">No CUI-Specific Security Awareness and Training Program for Laboratory Personnel</span>
+                    <span class="finding-domain">AT.2.056 / AT.2.057</span>
+                    <span class="finding-toggle">&#9660;</span>
+                </div>
+                <div class="finding-body">
+                    <div class="finding-detail-grid">
+                        <div class="finding-detail"><h5>Domain</h5><p>Awareness and Training (AT)</p></div>
+                        <div class="finding-detail"><h5>NIST 800-171</h5><p>3.2.1 / 3.2.2</p></div>
+                        <div class="finding-detail"><h5>Effort</h5><p>80–120 hours</p></div>
+                        <div class="finding-detail"><h5>Est. Cost</h5><p>$8,000–$18,000</p></div>
+                        <div class="finding-detail"><h5>Timeline</h5><p>45–60 days</p></div>
+                    </div>
+                    <div class="finding-desc">
+                        <h5>Description</h5>
+                        <p>Research staff, graduate students, and laboratory administrators receive only the university's standard 30-minute annual IT security awareness training covering phishing, passwords, and FERPA. No CUI handling, DFARS, ITAR/EAR, or DoD contractor obligation training exists. Graduate students are onboarded without information security elements. Users can access CUI systems without completing any relevant training. PIs have not received training on their responsibilities as CUI custodians.</p>
+                        <div class="risk-box"><h5>&#9888; Risk</h5><p>Most CUI breaches in university research originate from unintentional insider actions — emailing CUI to personal accounts, posting controlled code to public GitHub, sharing controlled drafts via Google Docs with international collaborators. Without role-specific training, personnel cannot recognize controlled information or know when to escalate.</p></div>
+                        <div class="remediation-box"><h5>&#10003; Remediation</h5><p>Develop tiered training curriculum: (1) General CUI awareness for all personnel; (2) ITAR/EAR responsibilities for researchers on restricted grants; (3) Role-specific training for ISSO, RSO, ECO; (4) PI-specific briefing on CUI custodian responsibilities. Require training completion before CUI access provisioning. Deploy on LMS with completion tracking. Use CDSE (Center for Development of Security Excellence) free resources as foundation.</p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== COMPLIANCE SCORE ===== -->
+    <section class="gauge-section" id="compliance">
+        <h2>&#128200; Compliance Score &amp; Domain Coverage</h2>
+        <p style="opacity:0.85; margin-bottom:1.5rem;">NIST SP 800-171 self-assessment. 110 practices across 14 domains. SPRS submitted score: <strong style="color:var(--amber-light)">110 (INACCURATE)</strong> &mdash; Actual assessed score: <strong style="color:#E74C3C">−47</strong>.</p>
+
+        <!-- SVG IMAGE 2: Compliance Gauge -->
+        <div style="display:flex; justify-content:center; margin-bottom:1.5rem;">
+            <svg id="complianceGauge" viewBox="0 0 440 260" width="440" style="max-width:100%;" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="gaugeBg" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" style="stop-color:#C0392B; stop-opacity:1"/>
+                        <stop offset="40%" style="stop-color:#F39C12; stop-opacity:1"/>
+                        <stop offset="70%" style="stop-color:#F0A500; stop-opacity:1"/>
+                        <stop offset="100%" style="stop-color:#27AE60; stop-opacity:1"/>
+                    </linearGradient>
+                    <filter id="glow">
+                        <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                        <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                    </filter>
+                </defs>
+
+                <!-- Background arc track (full 180°) -->
+                <path d="M 60,200 A 160,160 0 0,1 380,200" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="28" stroke-linecap="round"/>
+
+                <!-- Red zone: 0-40% -->
+                <path d="M 60,200 A 160,160 0 0,1 160,67" fill="none" stroke="#C0392B" stroke-width="24" stroke-linecap="round" opacity="0.7"/>
+                <!-- Amber zone: 40-70% -->
+                <path d="M 160,67 A 160,160 0 0,1 300,67" fill="none" stroke="#F39C12" stroke-width="24" stroke-linecap="round" opacity="0.7"/>
+                <!-- Green zone: 70-100% -->
+                <path d="M 300,67 A 160,160 0 0,1 380,200" fill="none" stroke="#27AE60" stroke-width="24" stroke-linecap="round" opacity="0.7"/>
+
+                <!-- Actual score arc (38%) -->
+                <path id="gaugeArcFill" d="M 60,200 A 160,160 0 0,1 118,82" fill="none" stroke="#E74C3C" stroke-width="24" stroke-linecap="round" filter="url(#glow)" opacity="0.95"/>
+
+                <!-- Center hub -->
+                <circle cx="220" cy="200" r="18" fill="#1A3A5C" stroke="var(--amber)" stroke-width="2.5"/>
+
+                <!-- Needle -->
+                <g id="gaugeNeedle" transform="rotate(-107, 220, 200)">
+                    <line x1="220" y1="200" x2="220" y2="60" stroke="#F0A500" stroke-width="3.5" stroke-linecap="round"/>
+                    <circle cx="220" cy="200" r="7" fill="#F0A500"/>
+                </g>
+
+                <!-- Score text -->
+                <text id="gaugeScoreText" x="220" y="178" text-anchor="middle" fill="white" font-size="36" font-weight="900" font-family="'Segoe UI', sans-serif">38%</text>
+                <text x="220" y="198" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="11" font-family="sans-serif" letter-spacing="0.5">NIST 800-171 COMPLIANCE</text>
+
+                <!-- Labels -->
+                <text x="52" y="225" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="10">0%</text>
+                <text x="220" y="45" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="10">50%</text>
+                <text x="388" y="225" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="10">100%</text>
+
+                <!-- Zone labels -->
+                <text x="95" y="160" text-anchor="middle" fill="rgba(192,57,43,0.8)" font-size="9" font-weight="700">NON-COMPLIANT</text>
+                <text x="220" y="100" text-anchor="middle" fill="rgba(243,156,18,0.8)" font-size="9" font-weight="700">PARTIAL</text>
+                <text x="345" y="160" text-anchor="middle" fill="rgba(39,174,96,0.8)" font-size="9" font-weight="700">COMPLIANT</text>
+
+                <!-- SPRS info -->
+                <rect x="130" y="215" width="180" height="38" rx="6" fill="rgba(192,57,43,0.2)" stroke="rgba(192,57,43,0.4)" stroke-width="1.5"/>
+                <text x="220" y="231" text-anchor="middle" fill="#E74C3C" font-size="10" font-weight="700">SPRS Filed: 110 (Inaccurate)</text>
+                <text x="220" y="246" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="10">Actual Score: −47 | FCA Exposure</text>
+            </svg>
+        </div>
+
+        <div class="gauge-layout">
+            <div>
+                <button class="toggle-state-btn" onclick="toggleComplianceState()">
+                    &#9654; View Post-Remediation Target (100%)
+                </button>
+            </div>
+            <div>
+                <h3 style="color:white; margin-top:0;">Practice Coverage by Domain</h3>
+                <div class="domain-bars" id="domainBars">
+                    <div class="domain-bar-item">
+                        <div class="domain-bar-label"><span>Access Control (AC)</span><span id="bar-ac">36%</span></div>
+                        <div class="domain-bar-track"><div class="domain-bar-fill" id="fill-ac" style="width:36%; background:var(--red);"></div></div>
+                    </div>
+                    <div class="domain-bar-item">
+                        <div class="domain-bar-label"><span>Awareness &amp; Training (AT)</span><span id="bar-at">17%</span></div>
+                        <div class="domain-bar-track"><div class="domain-bar-fill" id="fill-at" style="width:17%; background:var(--red);"></div></div>
+                    </div>
+                    <div class="domain-bar-item">
+                        <div class="domain-bar-label"><span>Audit &amp; Accountability (AU)</span><span id="bar-au">33%</span></div>
+                        <div class="domain-bar-track"><div class="domain-bar-fill" id="fill-au" style="width:33%; background:var(--red);"></div></div>
+                    </div>
+                    <div class="domain-bar-item">
+                        <div class="domain-bar-label"><span>Config. Management (CM)</span><span id="bar-cm">44%</span></div>
+                        <div class="domain-bar-track"><div class="domain-bar-fill" id="fill-cm" style="width:44%; background:var(--yellow);"></div></div>
+                    </div>
+                    <div class="domain-bar-item">
+                        <div class="domain-bar-label"><span>Ident. &amp; Auth. (IA)</span><span id="bar-ia">64%</span></div>
+                        <div class="domain-bar-track"><div class="domain-bar-fill" id="fill-ia" style="width:64%; background:var(--yellow);"></div></div>
+                    </div>
+                    <div class="domain-bar-item">
+                        <div class="domain-bar-label"><span>Incident Response (IR)</span><span id="bar-ir">17%</span></div>
+                        <div class="domain-bar-track"><div class="domain-bar-fill" id="fill-ir" style="width:17%; background:var(--red);"></div></div>
+                    </div>
+                    <div class="domain-bar-item">
+                        <div class="domain-bar-label"><span>Maintenance (MA)</span><span id="bar-ma">58%</span></div>
+                        <div class="domain-bar-track"><div class="domain-bar-fill" id="fill-ma" style="width:58%; background:var(--yellow);"></div></div>
+                    </div>
+                    <div class="domain-bar-item">
+                        <div class="domain-bar-label"><span>Media Protection (MP)</span><span id="bar-mp">44%</span></div>
+                        <div class="domain-bar-track"><div class="domain-bar-fill" id="fill-mp" style="width:44%; background:var(--yellow);"></div></div>
+                    </div>
+                    <div class="domain-bar-item">
+                        <div class="domain-bar-label"><span>Personnel Security (PS)</span><span id="bar-ps">50%</span></div>
+                        <div class="domain-bar-track"><div class="domain-bar-fill" id="fill-ps" style="width:50%; background:var(--yellow);"></div></div>
+                    </div>
+                    <div class="domain-bar-item">
+                        <div class="domain-bar-label"><span>Physical Protection (PE)</span><span id="bar-pe">75%</span></div>
+                        <div class="domain-bar-track"><div class="domain-bar-fill" id="fill-pe" style="width:75%; background:var(--green);"></div></div>
+                    </div>
+                    <div class="domain-bar-item">
+                        <div class="domain-bar-label"><span>Risk Assessment (RA)</span><span id="bar-ra">17%</span></div>
+                        <div class="domain-bar-track"><div class="domain-bar-fill" id="fill-ra" style="width:17%; background:var(--red);"></div></div>
+                    </div>
+                    <div class="domain-bar-item">
+                        <div class="domain-bar-label"><span>Security Assessment (CA)</span><span id="bar-ca">13%</span></div>
+                        <div class="domain-bar-track"><div class="domain-bar-fill" id="fill-ca" style="width:13%; background:var(--red);"></div></div>
+                    </div>
+                    <div class="domain-bar-item">
+                        <div class="domain-bar-label"><span>Sys. &amp; Comm. Prot. (SC)</span><span id="bar-sc">53%</span></div>
+                        <div class="domain-bar-track"><div class="domain-bar-fill" id="fill-sc" style="width:53%; background:var(--yellow);"></div></div>
+                    </div>
+                    <div class="domain-bar-item">
+                        <div class="domain-bar-label"><span>Sys. &amp; Info. Integrity (SI)</span><span id="bar-si">71%</span></div>
+                        <div class="domain-bar-track"><div class="domain-bar-fill" id="fill-si" style="width:71%; background:var(--green);"></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SPRS Score box -->
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem; margin-top:2rem;">
+            <div style="background:rgba(192,57,43,0.15); border:1.5px solid rgba(192,57,43,0.4); border-radius:10px; padding:1.2rem; text-align:center;">
+                <div style="font-size:2.2rem; font-weight:900; color:#E74C3C;">−47</div>
+                <div style="font-size:0.78rem; opacity:0.7; text-transform:uppercase; letter-spacing:1px;">Actual SPRS Score</div>
+            </div>
+            <div style="background:rgba(240,165,0,0.15); border:1.5px solid rgba(240,165,0,0.4); border-radius:10px; padding:1.2rem; text-align:center;">
+                <div style="font-size:2.2rem; font-weight:900; color:var(--amber);">38%</div>
+                <div style="font-size:0.78rem; opacity:0.7; text-transform:uppercase; letter-spacing:1px;">Practices Implemented</div>
+            </div>
+            <div style="background:rgba(39,174,96,0.15); border:1.5px solid rgba(39,174,96,0.4); border-radius:10px; padding:1.2rem; text-align:center;">
+                <div style="font-size:2.2rem; font-weight:900; color:var(--green-light);">110</div>
+                <div style="font-size:0.78rem; opacity:0.7; text-transform:uppercase; letter-spacing:1px;">SPRS Filed (Inaccurate)</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== ORG SECURITY FRAMEWORK ===== -->
+    <section id="orgframework">
+        <h2>&#127963; Organizational Security Framework</h2>
+        <p>Governance structure showing regulatory environment, university administrative layer, SRI laboratory layer, and the CUI enclave — with policy flow and incident reporting pathways.</p>
+
+        <!-- SVG IMAGE 3: Organizational Security Framework Diagram -->
+        <div class="org-diagram-container">
+            <svg viewBox="0 0 900 620" width="100%" xmlns="http://www.w3.org/2000/svg" style="max-width:900px; display:block; margin:0 auto;">
+                <defs>
+                    <marker id="arrowGreen" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#27AE60"/>
+                    </marker>
+                    <marker id="arrowRed" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#C0392B"/>
+                    </marker>
+                    <marker id="arrowBlue" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+                        <polygon points="10 0, 0 3.5, 10 7" fill="#2E86AB"/>
+                    </marker>
+                    <marker id="arrowBlueR" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#2E86AB"/>
+                    </marker>
+                </defs>
+
+                <!-- LAYER 1: Outer regulatory frame -->
+                <rect x="5" y="5" width="890" height="610" rx="15" fill="none" stroke="#0A2240" stroke-width="3"/>
+                <rect x="5" y="5" width="890" height="35" rx="15" fill="#0A2240"/>
+                <text x="450" y="28" text-anchor="middle" fill="white" font-size="12" font-weight="700" font-family="sans-serif" letter-spacing="1">REGULATORY ENVIRONMENT</text>
+
+                <!-- Regulatory labels around perimeter -->
+                <text x="80" y="55" fill="#0A2240" font-size="9.5" font-weight="700" font-family="monospace">DFARS 252.204-7012</text>
+                <text x="250" y="55" fill="#0A2240" font-size="9.5" font-weight="700" font-family="monospace">NIST SP 800-171</text>
+                <text x="410" y="55" fill="#0A2240" font-size="9.5" font-weight="700" font-family="monospace">CMMC 2.0 Level 2</text>
+                <text x="570" y="55" fill="#0A2240" font-size="9.5" font-weight="700" font-family="monospace">ITAR 22 CFR 120-130</text>
+                <text x="730" y="55" fill="#0A2240" font-size="9.5" font-weight="700" font-family="monospace">EAR 15 CFR 730-774</text>
+
+                <!-- LAYER 2: University administrative layer -->
+                <rect x="30" y="65" width="840" height="130" rx="10" fill="#EAF2FB" stroke="#1A5276" stroke-width="2"/>
+                <text x="450" y="82" text-anchor="middle" fill="#1A5276" font-size="11" font-weight="700" font-family="sans-serif" letter-spacing="0.5">UNIVERSITY ADMINISTRATIVE LAYER — Penn State University</text>
+
+                <!-- Admin boxes -->
+                <rect x="50" y="90" width="145" height="95" rx="7" fill="#1A5276" stroke="#1A5276" stroke-width="1.5"/>
+                <text x="122" y="112" text-anchor="middle" fill="white" font-size="9.5" font-weight="700">VP for Research</text>
+                <text x="122" y="126" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="8.5">Ultimate institutional</text>
+                <text x="122" y="138" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="8.5">research authority</text>
+                <text x="122" y="152" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="8.5">NSPM-33 compliance</text>
+                <text x="122" y="166" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="8.5">Contractor of record</text>
+
+                <rect x="215" y="90" width="145" height="95" rx="7" fill="#1A5276" stroke="#1A5276" stroke-width="1.5"/>
+                <text x="287" y="112" text-anchor="middle" fill="white" font-size="9.5" font-weight="700">Sponsored Research</text>
+                <text x="287" y="124" text-anchor="middle" fill="white" font-size="9.5" font-weight="700">Office (SRO)</text>
+                <text x="287" y="140" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="8.5">Award administration</text>
+                <text x="287" y="152" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="8.5">DFARS flow-down</text>
+                <text x="287" y="164" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="8.5">SPRS submission</text>
+
+                <rect x="380" y="90" width="145" height="95" rx="7" fill="#1A5276" stroke="#1A5276" stroke-width="1.5"/>
+                <text x="452" y="112" text-anchor="middle" fill="white" font-size="9.5" font-weight="700">Export Control</text>
+                <text x="452" y="124" text-anchor="middle" fill="white" font-size="9.5" font-weight="700">Office (ECO)</text>
+                <text x="452" y="140" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="8.5">ITAR / EAR compliance</text>
+                <text x="452" y="152" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="8.5">Deemed export analysis</text>
+                <text x="452" y="164" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="8.5">TCP development</text>
+
+                <rect x="545" y="90" width="145" height="95" rx="7" fill="#1A5276" stroke="#1A5276" stroke-width="1.5"/>
+                <text x="617" y="112" text-anchor="middle" fill="white" font-size="9.5" font-weight="700">University CISO /</text>
+                <text x="617" y="124" text-anchor="middle" fill="white" font-size="9.5" font-weight="700">IT Security</text>
+                <text x="617" y="140" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="8.5">Cybersecurity policy</text>
+                <text x="617" y="152" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="8.5">CUI incident response</text>
+                <text x="617" y="164" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="8.5">CMMC readiness</text>
+
+                <rect x="710" y="90" width="145" height="95" rx="7" fill="#1A5276" stroke="#1A5276" stroke-width="1.5"/>
+                <text x="782" y="112" text-anchor="middle" fill="white" font-size="9.5" font-weight="700">Office of General</text>
+                <text x="782" y="124" text-anchor="middle" fill="white" font-size="9.5" font-weight="700">Counsel</text>
+                <text x="782" y="140" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="8.5">FCA risk assessment</text>
+                <text x="782" y="152" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="8.5">Voluntary disclosures</text>
+                <text x="782" y="164" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="8.5">Contract compliance</text>
+
+                <!-- LAYER 3: SRI Laboratory layer -->
+                <rect x="30" y="210" width="840" height="130" rx="10" fill="#E8F4FA" stroke="#117A8B" stroke-width="2"/>
+                <text x="450" y="227" text-anchor="middle" fill="#117A8B" font-size="11" font-weight="700" font-family="sans-serif" letter-spacing="0.5">SRI LABORATORY LAYER — Summit Research Institute</text>
+
+                <!-- Lab boxes -->
+                <rect x="50" y="235" width="150" height="95" rx="7" fill="#117A8B" stroke="#117A8B" stroke-width="1.5"/>
+                <text x="125" y="257" text-anchor="middle" fill="white" font-size="9.5" font-weight="700">Lab Director</text>
+                <text x="125" y="271" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="9" font-style="italic">Dr. M. Hollis, Ph.D.</text>
+                <text x="125" y="287" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="8.5">Scientific leadership</text>
+                <text x="125" y="299" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="8.5">DoD PM interface</text>
+                <text x="125" y="311" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="8.5">CUI custodian (2 grants)</text>
+                <text x="125" y="323" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="8.5">SPRS disclosure</text>
+
+                <rect x="222" y="235" width="145" height="95" rx="7" fill="#117A8B" stroke="#117A8B" stroke-width="1.5"/>
+                <text x="294" y="257" text-anchor="middle" fill="white" font-size="9.5" font-weight="700">Principal Investigators</text>
+                <text x="294" y="275" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="8.5">4 active PIs</text>
+                <text x="294" y="287" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="8.5">CUI custodian per grant</text>
+                <text x="294" y="299" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="8.5">Access authorization</text>
+                <text x="294" y="311" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="8.5">Research reporting</text>
+
+                <rect x="389" y="235" width="145" height="95" rx="7" fill="#117A8B" stroke="#117A8B" stroke-width="1.5"/>
+                <text x="461" y="257" text-anchor="middle" fill="white" font-size="9.5" font-weight="700">ISSO</text>
+                <text x="461" y="271" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="9" font-style="italic">James Okafor, M.S.</text>
+                <text x="461" y="287" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="8.5">Security controls</text>
+                <text x="461" y="299" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="8.5">SSP / POA&amp;M owner</text>
+                <text x="461" y="311" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="8.5">Log review / SIEM</text>
+                <text x="461" y="323" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="8.5">DIBNet reporting</text>
+
+                <rect x="556" y="235" width="145" height="95" rx="7" fill="#117A8B" stroke="#117A8B" stroke-width="1.5"/>
+                <text x="628" y="257" text-anchor="middle" fill="white" font-size="9.5" font-weight="700">Export Control /</text>
+                <text x="628" y="269" text-anchor="middle" fill="white" font-size="9.5" font-weight="700">Research Security</text>
+                <text x="628" y="283" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="9" font-style="italic">Dr. L. Szymanski, J.D.</text>
+                <text x="628" y="299" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="8.5">TCP development</text>
+                <text x="628" y="311" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="8.5">Voluntary disclosure</text>
+                <text x="628" y="323" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="8.5">FN risk assessment</text>
+
+                <rect x="723" y="235" width="145" height="95" rx="7" fill="#117A8B" stroke="#117A8B" stroke-width="1.5"/>
+                <text x="795" y="257" text-anchor="middle" fill="white" font-size="9.5" font-weight="700">Research Personnel</text>
+                <text x="795" y="275" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="8.5">45 researchers</text>
+                <text x="795" y="287" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="8.5">22 graduate students</text>
+                <text x="795" y="299" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="8.5">CUI handlers</text>
+                <text x="795" y="311" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="8.5">Training required</text>
+
+                <!-- LAYER 4: CUI Enclave (Core) -->
+                <!-- CMMC boundary (dashed amber) -->
+                <rect x="280" y="360" width="340" height="220" rx="10" fill="none" stroke="#F0A500" stroke-width="2.5" stroke-dasharray="10,5"/>
+                <text x="450" y="375" text-anchor="middle" fill="#F0A500" font-size="9.5" font-weight="800" letter-spacing="1">- - - CMMC ASSESSMENT BOUNDARY - - -</text>
+
+                <!-- CUI Enclave box -->
+                <rect x="295" y="380" width="310" height="185" rx="8" fill="#2C3E50" stroke="#F0A500" stroke-width="2"/>
+                <text x="450" y="400" text-anchor="middle" fill="white" font-size="11.5" font-weight="800" letter-spacing="0.5">CUI ENCLAVE</text>
+
+                <!-- System boxes inside enclave -->
+                <rect x="310" y="410" width="120" height="38" rx="5" fill="#1A2C3D" stroke="#2E86AB" stroke-width="1.5"/>
+                <text x="370" y="425" text-anchor="middle" fill="white" font-size="8.5" font-weight="700">CUI File Servers (3)</text>
+                <text x="370" y="438" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="7.5">Windows Server / FIPS</text>
+
+                <rect x="470" y="410" width="120" height="38" rx="5" fill="#1A2C3D" stroke="#2E86AB" stroke-width="1.5"/>
+                <text x="530" y="425" text-anchor="middle" fill="white" font-size="8.5" font-weight="700">HPC Cluster</text>
+                <text x="530" y="438" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="7.5">Linux / DARPA Research</text>
+
+                <rect x="310" y="460" width="120" height="38" rx="5" fill="#1A2C3D" stroke="#2E86AB" stroke-width="1.5"/>
+                <text x="370" y="475" text-anchor="middle" fill="white" font-size="8.5" font-weight="700">Workstations (6)</text>
+                <text x="370" y="488" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="7.5">Windows / macOS managed</text>
+
+                <rect x="470" y="460" width="120" height="38" rx="5" fill="#1A2C3D" stroke="#2E86AB" stroke-width="1.5"/>
+                <text x="530" y="475" text-anchor="middle" fill="white" font-size="8.5" font-weight="700">VPN Gateway</text>
+                <text x="530" y="488" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="7.5">Cisco / FIPS 140-2</text>
+
+                <rect x="390" y="510" width="120" height="38" rx="5" fill="#1A2C3D" stroke="#F0A500" stroke-width="1.5"/>
+                <text x="450" y="525" text-anchor="middle" fill="white" font-size="8.5" font-weight="700">SIEM Platform</text>
+                <text x="450" y="538" text-anchor="middle" fill="rgba(240,165,0,0.8)" font-size="7.5">TO BE DEPLOYED</text>
+
+                <!-- Shield icons on systems -->
+                <text x="420" y="426" font-size="10">🔒</text>
+                <text x="580" y="426" font-size="10">🔒</text>
+                <text x="420" y="476" font-size="10">🔒</text>
+                <text x="580" y="476" font-size="10">🔒</text>
+
+                <!-- DoD Sponsors (left side) -->
+                <rect x="30" y="390" width="120" height="50" rx="7" fill="#0A2240" stroke="#2E86AB" stroke-width="2"/>
+                <text x="90" y="411" text-anchor="middle" fill="white" font-size="10" font-weight="800">DARPA</text>
+                <text x="90" y="425" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="8">Program Manager</text>
+                <text x="90" y="437" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="8">DSO / I2O</text>
+
+                <rect x="30" y="460" width="120" height="50" rx="7" fill="#0A2240" stroke="#27AE60" stroke-width="2"/>
+                <text x="90" y="481" text-anchor="middle" fill="white" font-size="10" font-weight="800">ONR</text>
+                <text x="90" y="495" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="8">Technical Representative</text>
+                <text x="90" y="507" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="8">Materials Science</text>
+
+                <!-- DIBNet (right side) -->
+                <rect x="750" y="420" width="120" height="50" rx="7" fill="#2C3E50" stroke="#C0392B" stroke-width="2"/>
+                <text x="810" y="441" text-anchor="middle" fill="white" font-size="9" font-weight="800">DIBNet Portal</text>
+                <text x="810" y="455" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="7.5">72-hr Incident</text>
+                <text x="810" y="467" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="7.5">Reporting (DFARS)</text>
+
+                <!-- Arrows -->
+                <!-- Policy flow: Admin layer down to Lab layer -->
+                <line x1="290" y1="185" x2="290" y2="235" stroke="#27AE60" stroke-width="2" marker-end="url(#arrowGreen)"/>
+                <line x1="460" y1="185" x2="460" y2="235" stroke="#27AE60" stroke-width="2" marker-end="url(#arrowGreen)"/>
+                <line x1="630" y1="185" x2="630" y2="235" stroke="#27AE60" stroke-width="2" marker-end="url(#arrowGreen)"/>
+
+                <!-- Lab layer down to CUI enclave -->
+                <line x1="450" y1="330" x2="450" y2="380" stroke="#27AE60" stroke-width="2" marker-end="url(#arrowGreen)"/>
+
+                <!-- Reporting arrows up -->
+                <line x1="430" y1="360" x2="180" y2="330" stroke="#C0392B" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowRed)"/>
+
+                <!-- Data flow from sponsors to CUI enclave -->
+                <line x1="150" y1="415" x2="280" y2="445" stroke="#2E86AB" stroke-width="1.5" marker-end="url(#arrowBlueR)"/>
+                <line x1="150" y1="485" x2="280" y2="465" stroke="#2E86AB" stroke-width="1.5" marker-end="url(#arrowBlueR)"/>
+
+                <!-- Incident reporting from enclave to DIBNet -->
+                <line x1="605" y1="460" x2="750" y2="445" stroke="#C0392B" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowRed)"/>
+
+                <!-- Legend -->
+                <line x1="30" y1="590" x2="70" y2="590" stroke="#27AE60" stroke-width="2" marker-end="url(#arrowGreen)"/>
+                <text x="75" y="594" fill="#27AE60" font-size="9" font-family="sans-serif">Policy / Control Flow</text>
+                <line x1="220" y1="590" x2="260" y2="590" stroke="#C0392B" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowRed)"/>
+                <text x="265" y="594" fill="#C0392B" font-size="9" font-family="sans-serif">Incident Reporting</text>
+                <line x1="420" y1="590" x2="460" y2="590" stroke="#2E86AB" stroke-width="1.5" marker-end="url(#arrowBlueR)"/>
+                <text x="465" y="594" fill="#2E86AB" font-size="9" font-family="sans-serif">Grant Data Flow</text>
+                <rect x="620" y="582" width="12" height="12" rx="2" fill="none" stroke="#F0A500" stroke-width="1.5" stroke-dasharray="3,2"/>
+                <text x="636" y="594" fill="#F0A500" font-size="9" font-family="sans-serif">CMMC Assessment Boundary</text>
+            </svg>
+        </div>
+    </section>
+
+    <!-- ===== REMEDIATION ROADMAP ===== -->
+    <section id="roadmap">
+        <h2>&#128506; Remediation Roadmap</h2>
+        <p>Three-phase remediation plan from immediate risk reduction through full CMMC Level 2 certification. Total estimated investment: <strong>$285,000–$470,000</strong> over 12 months.</p>
+
+        <div class="roadmap-grid">
+            <div class="phase-card phase-1">
+                <div class="phase-number">Phase 1 &bull; Days 0–90</div>
+                <h4>Immediate Risk Reduction &amp; Foundation</h4>
+                <div class="phase-timeline">Objective: Stop immediate legal exposure, establish foundational compliance infrastructure.</div>
+                <ul>
+                    <li><strong>Day 1:</strong> Suspend foreign national access to export-controlled data</li>
+                    <li><strong>Days 1–5:</strong> Engage legal counsel for FCA/SPRS exposure</li>
+                    <li><strong>Days 1–14:</strong> Revoke shared CUI credentials; issue individual accounts</li>
+                    <li><strong>Days 1–21:</strong> Engage CMMC RPO for SSP development</li>
+                    <li><strong>Days 14–21:</strong> Register on DIBNet portal</li>
+                    <li><strong>Days 21–30:</strong> Deliver emergency CUI awareness briefing</li>
+                    <li><strong>Days 21–60:</strong> Export control audit of all three grants</li>
+                    <li><strong>Days 30–75:</strong> Complete SSP draft and corrected SPRS score</li>
+                    <li><strong>Days 45–90:</strong> Deploy minimum viable SIEM configuration</li>
+                    <li><strong>Days 45–90:</strong> Publish CUI Incident Response Plan v1.0</li>
+                </ul>
+                <div class="phase-cost">$85K–$140K</div>
+                <div class="phase-cost-label">Estimated Phase 1 Cost</div>
+            </div>
+
+            <div class="phase-card phase-2">
+                <div class="phase-number">Phase 2 &bull; Days 91–180</div>
+                <h4>Core Compliance Implementation</h4>
+                <div class="phase-timeline">Objective: Implement technical controls, complete export control program, achieve defensible posture.</div>
+                <ul>
+                    <li><strong>Days 91–120:</strong> CUI network segmentation; deploy NAC solution</li>
+                    <li><strong>Days 91–150:</strong> Procure and deploy managed endpoint devices; retire BYOD</li>
+                    <li><strong>Days 91–150:</strong> Complete deemed export analyses for all foreign nationals</li>
+                    <li><strong>Days 91–120:</strong> Deliver tiered security awareness training (100% completion)</li>
+                    <li><strong>Days 91–120:</strong> Implement RBAC; complete quarterly access review</li>
+                    <li><strong>Days 91–120:</strong> Finalize Technology Control Plans for all three grants</li>
+                    <li><strong>Days 91–120:</strong> Complete SIEM tuning; implement alert rules</li>
+                    <li><strong>Days 120–150:</strong> Conduct first CUI incident response tabletop exercise</li>
+                    <li><strong>Days 91–150:</strong> CMMC gap assessment (all 110 practices) with RPO</li>
+                    <li><strong>Days 120–180:</strong> Finalize POA&amp;M for all CMMC gaps</li>
+                </ul>
+                <div class="phase-cost">$120K–$200K</div>
+                <div class="phase-cost-label">Estimated Phase 2 Cost</div>
+            </div>
+
+            <div class="phase-card phase-3">
+                <div class="phase-number">Phase 3 &bull; Days 181–365</div>
+                <h4>Full CMMC Level 2 Certification</h4>
+                <div class="phase-timeline">Objective: Close all POA&amp;M items, complete C3PAO pre-assessment, achieve CMMC Level 2 certification.</div>
+                <ul>
+                    <li><strong>Days 181–300:</strong> Address all open POA&amp;M items from Phase 2</li>
+                    <li><strong>Days 181–270:</strong> Implement remaining technical controls (IA hardening, MP, PE)</li>
+                    <li><strong>Days 270–300:</strong> Conduct internal pre-assessment (mock C3PAO audit) with RPO</li>
+                    <li><strong>Days 300–330:</strong> Remediate pre-assessment findings</li>
+                    <li><strong>Days 270–330:</strong> Engage and schedule C3PAO for official assessment</li>
+                    <li><strong>Day 330–365:</strong> C3PAO third-party assessment</li>
+                    <li><strong>Days 300–365:</strong> Establish ongoing compliance program</li>
+                    <li><strong>Days 330–365:</strong> Develop multi-year CMMC maintenance budget</li>
+                    <li><strong>Day 365:</strong> Brief VPR and SRO leadership on compliance posture</li>
+                </ul>
+                <div class="phase-cost">$80K–$130K</div>
+                <div class="phase-cost-label">Estimated Phase 3 Cost</div>
+            </div>
+        </div>
+
+        <div class="total-cost-box">
+            <div class="total-cost-item">
+                <div class="total-cost-number">$285K–$470K</div>
+                <div class="total-cost-label">Total Remediation Investment</div>
+            </div>
+            <div class="total-cost-item">
+                <div class="total-cost-number">12 months</div>
+                <div class="total-cost-label">Full Certification Timeline</div>
+            </div>
+            <div class="total-cost-item">
+                <div class="total-cost-number">$65K–$95K/yr</div>
+                <div class="total-cost-label">Ongoing Annual Compliance Cost</div>
+            </div>
+            <div class="total-cost-item">
+                <div class="total-cost-number">$15.5M–$35.9M</div>
+                <div class="total-cost-label">Maximum Risk Exposure (Non-Compliance)</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== TEAM ===== -->
+    <section id="team">
+        <h2>&#128101; Key Personnel &amp; Stakeholders</h2>
+        <p>Four key stakeholders driving the compliance remediation effort across technical, legal, administrative, and research dimensions.</p>
+
+        <div class="team-grid">
+            <div class="team-card">
+                <div class="team-avatar">&#128300;</div>
+                <div class="team-name">Dr. Margaret Hollis, Ph.D.</div>
+                <div class="team-title">Laboratory Director &amp; Principal Investigator — Autonomous Systems</div>
+                <div class="team-bio">Dr. Hollis has led Summit Research Institute for eleven years, building its reputation as a leading university-affiliated laboratory for autonomous navigation and adaptive control. She holds a Ph.D. in Electrical Engineering from Carnegie Mellon University, has served as PI on nine consecutive DoD grants totaling over $22M, and serves on the DARPA ISAT study group. The recent CMMC assessment has shifted her perspective on compliance requirements from administrative burden to institutional imperative.</div>
+            </div>
+
+            <div class="team-card">
+                <div class="team-avatar">&#128187;</div>
+                <div class="team-name">James Okafor, M.S.</div>
+                <div class="team-title">Information System Security Officer (ISSO) &amp; Research IT Manager</div>
+                <div class="team-bio">James manages all laboratory IT infrastructure as a sole practitioner — network administration, endpoint management, research computing, and DFARS information security compliance. He completed CDSE training, holds CompTIA Security+, and is pursuing CISSP. James identified the inaccurate SPRS score and escalated it to Dr. Hollis and university counsel, effectively initiating the current remediation effort.</div>
+            </div>
+
+            <div class="team-card">
+                <div class="team-avatar">&#9878;</div>
+                <div class="team-name">Dr. Linda Szymanski, J.D., M.S.</div>
+                <div class="team-title">Export Control Officer (Shared Appointment) &amp; Research Security Coordinator</div>
+                <div class="team-bio">Dr. Szymanski came to Penn State after a career in international trade law specializing in ITAR and EAR compliance for defense contractors. Her portfolio covers 800+ active sponsored research projects university-wide, with SRI's three DoD grants among the highest risk profiles. She is leading Technology Control Plan development for all three active grants and coordinating a potential ITAR voluntary self-disclosure under evaluation by university counsel.</div>
+            </div>
+
+            <div class="team-card">
+                <div class="team-avatar">&#128300;</div>
+                <div class="team-name">Prof. Kwame Asante, Ph.D.</div>
+                <div class="team-title">Principal Investigator — Advanced Materials Program &amp; Associate Professor of Materials Science</div>
+                <div class="team-bio">Professor Asante joined Penn State following postdoctoral work at Lawrence Berkeley National Laboratory, developing expertise in synchrotron X-ray diffraction for characterizing metallic alloy microstructure. He is PI for the ONR high-entropy alloy program and co-investigator on the DARPA human-machine teaming grant. He advises five PhD students — three of whom are foreign nationals central to the ongoing export control review — and is cooperating fully with compliance efforts.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== REGULATORY FRAMEWORK ===== -->
+    <section id="regulatory">
+        <h2>&#9878; Regulatory Framework</h2>
+        <p>Five overlapping regulatory regimes govern Summit Research Institute's DoD-sponsored research. Understanding the interaction between these frameworks — particularly where they conflict with academic culture and the Fundamental Research Exclusion — is central to any compliance strategy.</p>
+
+        <div class="reg-grid">
+            <div class="reg-card">
+                <div class="reg-icon">&#128196;</div>
+                <span class="reg-tag">DFARS 252.204-7012</span>
+                <h4>Safeguarding Covered Defense Information</h4>
+                <p>Primary DoD cybersecurity clause. Requires NIST SP 800-171 implementation, 72-hour cyber incident reporting to DIBNet, malicious software submission to DC3, media preservation, subcontractor flow-down, FedRAMP-compliant cloud services, and current SPRS score submission. Non-compliance: contract termination for default, debarment, False Claims Act exposure.</p>
+            </div>
+
+            <div class="reg-card">
+                <div class="reg-icon">&#128272;</div>
+                <span class="reg-tag">CMMC 2.0 Level 2</span>
+                <h4>110 Practices — NIST SP 800-171</h4>
+                <p>CMMC 2.0 (32 CFR Part 170, finalized Dec. 2024) maps directly to NIST SP 800-171 Rev. 2. Level 2 = 110 security practices across 14 domains. Third-party C3PAO certification required for prioritized DoD acquisitions involving CUI. SRI's DARPA and ONR grants are prioritized — third-party certification will be required at next renewal cycle (est. 2025–2027).</p>
+            </div>
+
+            <div class="reg-card">
+                <div class="reg-icon">&#127760;</div>
+                <span class="reg-tag">ITAR 22 CFR 120–130</span>
+                <h4>International Traffic in Arms Regulations</h4>
+                <p>DDTC-administered. Controls export of defense articles, services, and technical data on the U.S. Munitions List (USML). Relevant USML categories: VIII (Aircraft/UAV), XI (Military Electronics), XII (Fire Control/Guidance), XV (Spacecraft). Deemed export applies to foreign nationals. No FRE if publication restrictions or access controls exist. Civil: up to $1.3M/violation. Criminal: up to $1M and 20 years/violation.</p>
+            </div>
+
+            <div class="reg-card">
+                <div class="reg-icon">&#128200;</div>
+                <span class="reg-tag">EAR 15 CFR 730–774</span>
+                <h4>Export Administration Regulations</h4>
+                <p>BIS-administered. Controls dual-use items on the Commerce Control List (CCL). Relevant ECCNs: 7E994 (Autonomous navigation technology), 3E001 (Advanced materials technology), 4E001 (AI/computer technology). Military end-use rule (15 CFR 744.21) may apply even to EAR99 items in SRI's research context. FRE available but invalidated by DFARS access controls present in all SRI grants.</p>
+            </div>
+
+            <div class="reg-card">
+                <div class="reg-icon">&#127979;</div>
+                <span class="reg-tag">Fundamental Research Exclusion</span>
+                <h4>FRE — ITAR 22 CFR 120.11 / EAR 15 CFR 734.8</h4>
+                <p>Frequently misapplied at SRI. FRE exempts university basic/applied research intended for open publication — but only if NO publication restrictions, NO access controls, and NO proprietary constraints exist. Any grant including DFARS 252.204-7012 cannot simultaneously claim FRE, because DFARS itself imposes access controls. All three SRI grants include DFARS → FRE does not apply to any SRI grant.</p>
+            </div>
+
+            <div class="reg-card">
+                <div class="reg-icon">&#128274;</div>
+                <span class="reg-tag">NSPM-33 / Research Security</span>
+                <h4>National Security Presidential Memorandum 33</h4>
+                <p>Post-NSPM-33 and CHIPS Act requirements mandate university research security programs including: Foreign talent risk assessment, conflict of interest/commitment disclosure, cybersecurity programs for CUI, export control integration, research security training, and incident reporting procedures. DoD ONRI and NSF require research security programs for institutions receiving $50M+ in federal research funding — Penn State exceeds this threshold.</p>
+            </div>
+        </div>
+
+        <div style="background:var(--bg); border-radius:10px; padding:1.5rem; margin-top:1.5rem;">
+            <h3 style="margin-top:0;">NIST SP 800-171 Domain Coverage — Full Summary</h3>
+            <table class="nist-table">
+                <thead>
+                    <tr>
+                        <th>Domain</th>
+                        <th>Abbr.</th>
+                        <th>Practices</th>
+                        <th>Implemented</th>
+                        <th>Partial</th>
+                        <th>Not Implemented</th>
+                        <th>Coverage %</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Access Control</td><td>AC</td><td>22</td><td>5</td><td>6</td><td>11</td><td style="color:var(--red); font-weight:700;">36%</td></tr>
+                    <tr><td>Awareness &amp; Training</td><td>AT</td><td>3</td><td>0</td><td>1</td><td>2</td><td style="color:var(--red); font-weight:700;">17%</td></tr>
+                    <tr><td>Audit &amp; Accountability</td><td>AU</td><td>9</td><td>2</td><td>2</td><td>5</td><td style="color:var(--red); font-weight:700;">33%</td></tr>
+                    <tr><td>Configuration Management</td><td>CM</td><td>9</td><td>3</td><td>2</td><td>4</td><td style="color:var(--yellow); font-weight:700;">44%</td></tr>
+                    <tr><td>Identification &amp; Authentication</td><td>IA</td><td>11</td><td>5</td><td>3</td><td>3</td><td style="color:var(--yellow); font-weight:700;">64%</td></tr>
+                    <tr><td>Incident Response</td><td>IR</td><td>3</td><td>0</td><td>1</td><td>2</td><td style="color:var(--red); font-weight:700;">17%</td></tr>
+                    <tr><td>Maintenance</td><td>MA</td><td>6</td><td>3</td><td>1</td><td>2</td><td style="color:var(--yellow); font-weight:700;">58%</td></tr>
+                    <tr><td>Media Protection</td><td>MP</td><td>9</td><td>3</td><td>2</td><td>4</td><td style="color:var(--yellow); font-weight:700;">44%</td></tr>
+                    <tr><td>Personnel Security</td><td>PS</td><td>2</td><td>1</td><td>0</td><td>1</td><td style="color:var(--yellow); font-weight:700;">50%</td></tr>
+                    <tr><td>Physical Protection</td><td>PE</td><td>6</td><td>4</td><td>1</td><td>1</td><td style="color:var(--green); font-weight:700;">75%</td></tr>
+                    <tr><td>Risk Assessment</td><td>RA</td><td>3</td><td>0</td><td>1</td><td>2</td><td style="color:var(--red); font-weight:700;">17%</td></tr>
+                    <tr><td>Security Assessment</td><td>CA</td><td>4</td><td>0</td><td>1</td><td>3</td><td style="color:var(--red); font-weight:700;">13%</td></tr>
+                    <tr><td>System &amp; Comm. Protection</td><td>SC</td><td>16</td><td>7</td><td>2</td><td>7</td><td style="color:var(--yellow); font-weight:700;">53%</td></tr>
+                    <tr><td>System &amp; Info. Integrity</td><td>SI</td><td>7</td><td>4</td><td>1</td><td>2</td><td style="color:var(--green); font-weight:700;">71%</td></tr>
+                    <tr style="background:var(--navy); color:white;">
+                        <td style="color:white; font-weight:700;">TOTAL</td>
+                        <td style="color:white;">—</td>
+                        <td style="color:white; font-weight:700;">110</td>
+                        <td style="color:var(--green-light); font-weight:700;">37</td>
+                        <td style="color:var(--amber-light); font-weight:700;">24</td>
+                        <td style="color:#E74C3C; font-weight:700;">49</td>
+                        <td style="color:#E74C3C; font-weight:700;">38%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ===== COMMUNITY BOARD ===== -->
+    <section id="community">
+        <h2>&#128172; Research Security Community Board</h2>
+        <p>A discussion forum for ISSO officers, export control professionals, research security officers, and DoD-affiliated laboratory staff. Share insights, ask questions, and collaborate on compliance challenges.</p>
+
+        <div class="message-board">
+            <div class="message-form">
+                <h3>Post a Message</h3>
+                <form id="messageForm" onsubmit="submitMessage(event)">
+                    <div class="form-group">
+                        <label for="authorName">Name &amp; Title:</label>
+                        <input type="text" id="authorName" required placeholder="e.g., Dr. Jane Smith, ISSO">
+                    </div>
+                    <div class="form-group">
+                        <label for="institution">Organization / Lab:</label>
+                        <input type="text" id="institution" placeholder="e.g., Lincoln Laboratory, MIT">
+                    </div>
+                    <div class="form-group">
+                        <label for="messageText">Message:</label>
+                        <textarea id="messageText" rows="4" required placeholder="Share a question, insight, or resource related to DoD research security, CMMC, or export control compliance..."></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">Post Message</button>
+                </form>
+            </div>
+
+            <div id="messagesContainer">
+                <h3>Recent Discussions</h3>
+                <div class="message-item">
+                    <div class="message-header">
+                        <span class="message-author">Dr. Sarah Kim — ISSO, Applied Physics Laboratory, Johns Hopkins</span>
+                        <span class="message-date">March 28, 2026</span>
+                    </div>
+                    <p class="message-text">We just completed our CMMC Level 2 C3PAO assessment — happy to share lessons learned. The biggest surprise was how much the assessors focused on SSP boundary definition accuracy. If your boundary is vague, every system becomes "in scope" and you spend half the assessment defending scope instead of demonstrating controls. Define your CUI enclave boundary precisely before you engage a C3PAO.</p>
+                </div>
+                <div class="message-item">
+                    <div class="message-header">
+                        <span class="message-author">Prof. Marcus Webb — Research Security Director, Georgia Tech Research Institute</span>
+                        <span class="message-date">March 24, 2026</span>
+                    </div>
+                    <p class="message-text">Looking for advice on how other DoD-affiliated university labs are handling the CMMC / academic culture tension. Faculty governance is pushing back hard on the RBAC requirement for CUI systems — PIs want to be able to add students themselves without an access review process. Has anyone found a workflow that balances PI autonomy with the formal need-to-know requirement?</p>
+                </div>
+                <div class="message-item">
+                    <div class="message-header">
+                        <span class="message-author">Lt. Col. (Ret.) Amanda Torres — Research Security Consultant</span>
+                        <span class="message-date">March 20, 2026</span>
+                    </div>
+                    <p class="message-text">Reminder that NSPM-33 research security program requirements now include an annual disclosure certification for all personnel on DoD-sponsored grants. DOE and NSF are enforcement leaders on this — DoD is following. If your institution doesn't have a formal COI/COC disclosure process tied to your grant onboarding workflow, you need one before your next DoD audit.</p>
+                </div>
+                <div class="message-item">
+                    <div class="message-header">
+                        <span class="message-author">James Okafor, M.S. — ISSO, Summit Research Institute</span>
+                        <span class="message-date">April 2, 2026</span>
+                    </div>
+                    <p class="message-text">Quick update on our remediation progress: individual CUI accounts are now provisioned for all lab personnel (Day 14 milestone hit). We're working through the foreign national deemed export analysis — three situations under legal review. Most important lesson so far: get your SPRS score corrected BEFORE your next contract renewal conversation. Finding out during a proposal cycle is much worse.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== RESOURCES ===== -->
+    <section id="resources">
+        <h2>&#128218; Resources &amp; References</h2>
+        <p>Key compliance resources for DoD-affiliated university research laboratories pursuing CMMC Level 2 certification and export control compliance.</p>
+
+        <div class="resource-grid">
+            <div class="resource-card">
+                <div class="resource-icon">&#128196;</div>
+                <h4>DFARS 252.204-7012</h4>
+                <p>Full text of the DoD cybersecurity safeguarding clause with CUI and incident reporting requirements</p>
+                <a href="https://www.acquisition.gov/dfars/252.204-7012-safeguarding-covered-defense-information-and-cyber-incident-reporting." class="resource-btn" target="_blank">View Clause</a>
+            </div>
+            <div class="resource-card">
+                <div class="resource-icon">&#128272;</div>
+                <h4>CMMC 2.0 Program</h4>
+                <p>Official DoD CMMC program documentation, rulemaking, and assessment resources</p>
+                <a href="https://www.dodcmmc.mil" class="resource-btn" target="_blank">CMMC Portal</a>
+            </div>
+            <div class="resource-card">
+                <div class="resource-icon">&#128214;</div>
+                <h4>NIST SP 800-171 Rev. 2</h4>
+                <p>Protecting Controlled Unclassified Information in Nonfederal Systems and Organizations</p>
+                <a href="https://csrc.nist.gov/publications/detail/sp/800-171/rev-2/final" class="resource-btn" target="_blank">Download SP</a>
+            </div>
+            <div class="resource-card">
+                <div class="resource-icon">&#127760;</div>
+                <h4>DDTC ITAR Resources</h4>
+                <p>State Department Directorate of Defense Trade Controls — ITAR compliance, USML, licenses</p>
+                <a href="https://www.pmddtc.state.gov/" class="resource-btn" target="_blank">DDTC Portal</a>
+            </div>
+            <div class="resource-card">
+                <div class="resource-icon">&#128200;</div>
+                <h4>BIS / EAR Resources</h4>
+                <p>Bureau of Industry and Security — Commerce Control List, license exceptions, deemed export</p>
+                <a href="https://www.bis.doc.gov" class="resource-btn" target="_blank">BIS Portal</a>
+            </div>
+            <div class="resource-card">
+                <div class="resource-icon">&#127979;</div>
+                <h4>CDSE Training</h4>
+                <p>Center for Development of Security Excellence — free DoD-approved security awareness training</p>
+                <a href="https://www.cdse.edu" class="resource-btn" target="_blank">CDSE Portal</a>
+            </div>
+            <div class="resource-card">
+                <div class="resource-icon">&#128203;</div>
+                <h4>DoD CUI Registry</h4>
+                <p>Official CUI categories, subcategories, markings, and handling requirements</p>
+                <a href="https://www.dodcui.mil" class="resource-btn" target="_blank">CUI Registry</a>
+            </div>
+            <div class="resource-card">
+                <div class="resource-icon">&#128270;</div>
+                <h4>DIBNet Portal</h4>
+                <p>DoD Defense Industrial Base Network — cyber incident reporting, SPRS, contractor portal</p>
+                <a href="https://dibnet.dod.mil" class="resource-btn" target="_blank">DIBNet</a>
+            </div>
+            <div class="resource-card">
+                <div class="resource-icon">&#128193;</div>
+                <h4>NSPM-33 Guidance</h4>
+                <p>OSTP guidance on research security program requirements for federally funded institutions</p>
+                <a href="https://www.whitehouse.gov/wp-content/uploads/2021/01/NSPM-33.pdf" class="resource-btn" target="_blank">NSPM-33</a>
+            </div>
+        </div>
+
+        <div class="info-box" style="margin-top:1.5rem;">
+            <h3 style="color:var(--navy); margin-top:0;">Additional Case Study Resources</h3>
+            <p><strong>CMMC Resources:</strong> <a href="https://sands-mvcc.github.io/CMMC/" target="_blank">https://sands-mvcc.github.io/CMMC/</a></p>
+            <p style="margin-top:0.5rem;"><strong>Related Case Study:</strong> <a href="index.html">AI in Action: NSF ATE Grant Case Study</a></p>
+        </div>
+    </section>
+
+    <!-- ===== CONTACT ===== -->
+    <section id="contact">
+        <h2>&#128222; Contact &amp; Engagement</h2>
+        <div class="team-grid">
+            <div style="background:linear-gradient(135deg,#EFF4FA,#E8F0FE); border-radius:10px; padding:1.5rem; border-left:5px solid var(--blue);">
+                <h4 style="color:var(--navy);">Summit Research Institute</h4>
+                <p style="font-size:0.9rem; color:var(--text-muted);">University-Affiliated DoD Research Laboratory</p>
+                <p style="font-size:0.9rem; margin-top:0.8rem;">110 Technology Center<br>University Park, PA 16802<br>State College, Pennsylvania</p>
+                <p style="margin-top:0.8rem; font-size:0.9rem;"><strong>Affiliation:</strong> Pennsylvania State University<br><strong>Oversight:</strong> DARPA / ONR</p>
+            </div>
+            <div style="background:linear-gradient(135deg,#E8F8F0,#F0FBF5); border-radius:10px; padding:1.5rem; border-left:5px solid var(--green);">
+                <h4 style="color:var(--navy);">CMMC Assessment Contact</h4>
+                <p style="font-size:0.9rem; margin-top:0.8rem;"><strong>ISSO:</strong> James Okafor, M.S.<br>Research IT Manager &amp; ISSO</p>
+                <p style="font-size:0.9rem; margin-top:0.5rem;"><strong>Export Control:</strong> Dr. Linda Szymanski, J.D., M.S.<br>Export Control Officer / Research Security Coordinator<br>Penn State Office of Research</p>
+                <p style="font-size:0.9rem; margin-top:0.5rem; color:var(--text-muted); font-style:italic;">For CMMC RPO engagement or research security collaboration inquiries.</p>
+            </div>
+            <div style="background:linear-gradient(135deg,#FEF5E0,#FEFBE9); border-radius:10px; padding:1.5rem; border-left:5px solid var(--amber);">
+                <h4 style="color:var(--navy);">Compliance Status (Live)</h4>
+                <p style="margin-top:0.8rem;"><strong style="color:var(--red);">SPRS Score (Actual):</strong> −47</p>
+                <p><strong style="color:var(--red);">SPRS Score (Filed):</strong> 110 &#9888;</p>
+                <p style="margin-top:0.5rem;"><strong>Active Findings:</strong> 8 (3 Critical, 3 High, 2 Medium)</p>
+                <p><strong>Remediation Phase:</strong> Phase 1 (Active)</p>
+                <p><strong>Next Milestone:</strong> SSP v1.0 Complete — Day 75</p>
+                <p><strong>C3PAO Target:</strong> Q1 2027</p>
+            </div>
+        </div>
+    </section>
+
+</div><!-- /container -->
+
+<!-- ===== FOOTER ===== -->
+<footer>
+    <div class="footer-content">
+        <div class="footer-section">
+            <h3>Quick Navigation</h3>
+            <a href="#profile">Organization Profile</a>
+            <a href="#grants">Active Grants</a>
+            <a href="#findings">CMMC Findings</a>
+            <a href="#compliance">Compliance Score</a>
+            <a href="#roadmap">Remediation Roadmap</a>
+        </div>
+        <div class="footer-section">
+            <h3>Compliance Resources</h3>
+            <a href="https://www.dodcmmc.mil" target="_blank">CMMC 2.0 Program</a>
+            <a href="https://csrc.nist.gov/publications/detail/sp/800-171/rev-2/final" target="_blank">NIST SP 800-171</a>
+            <a href="https://dibnet.dod.mil" target="_blank">DIBNet Portal</a>
+            <a href="https://www.pmddtc.state.gov/" target="_blank">DDTC / ITAR</a>
+            <a href="https://www.bis.doc.gov" target="_blank">BIS / EAR</a>
+        </div>
+        <div class="footer-section">
+            <h3>Case Study Information</h3>
+            <a href="#team">Key Personnel</a>
+            <a href="#regulatory">Regulatory Framework</a>
+            <a href="#community">Community Board</a>
+            <a href="#resources">Resources</a>
+            <a href="index.html">AI in Action Case Study</a>
+        </div>
+        <div class="footer-section">
+            <h3>Summit Research Institute</h3>
+            <a href="#profile">About SRI</a>
+            <a href="#grants">DARPA / ONR Grants</a>
+            <a href="#contact">Contact Information</a>
+            <a href="#compliance">Compliance Dashboard</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>Summit Research Institute — CMMC Level 2 Compliance Case Study &bull; University-Affiliated DoD Research Laboratory &bull; Pennsylvania State University &bull; State College, PA</p>
+        <p style="margin-top:0.5rem;">This case study is presented for educational and compliance training purposes. All grant numbers and personnel names are fictional constructs based on realistic DoD research laboratory scenarios.</p>
+    </div>
+</footer>
+
+<script>
+    // ===== FINDINGS TOGGLE =====
+    function toggleFinding(header) {
+        const body = header.nextElementSibling;
+        const toggle = header.querySelector('.finding-toggle');
+        body.classList.toggle('open');
+        toggle.classList.toggle('open');
+    }
+
+    // ===== FILTER FINDINGS =====
+    function filterFindings(severity, btn) {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll('.finding-card').forEach(card => {
+            if (severity === 'all' || card.dataset.severity === severity) {
+                card.style.display = '';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+
+    // ===== COMPLIANCE GAUGE TOGGLE =====
+    let complianceState = 'before';
+    const domainData = {
+        before: { ac:36, at:17, au:33, cm:44, ia:64, ir:17, ma:58, mp:44, ps:50, pe:75, ra:17, ca:13, sc:53, si:71, total:38 },
+        after:  { ac:100,at:100,au:100,cm:100,ia:100,ir:100,ma:100,mp:100,ps:100,pe:100,ra:100,ca:100,sc:100,si:100,total:100 }
+    };
+    function toggleComplianceState() {
+        complianceState = complianceState === 'before' ? 'after' : 'before';
+        const data = domainData[complianceState];
+        const btn = document.querySelector('.toggle-state-btn');
+        const scoreText = document.getElementById('gaugeScoreText');
+        if (complianceState === 'after') {
+            btn.textContent = '◀ View Pre-Remediation State (38%)';
+            scoreText.textContent = '100%';
+            scoreText.style.fill = '#2ECC71';
+            updateArc(100);
+        } else {
+            btn.textContent = '▶ View Post-Remediation Target (100%)';
+            scoreText.textContent = '38%';
+            scoreText.style.fill = 'white';
+            updateArc(38);
+        }
+        ['ac','at','au','cm','ia','ir','ma','mp','ps','pe','ra','ca','sc','si'].forEach(domain => {
+            const pct = data[domain];
+            document.getElementById('bar-' + domain).textContent = pct + '%';
+            const fill = document.getElementById('fill-' + domain);
+            fill.style.width = pct + '%';
+            if (pct >= 70) fill.style.background = 'var(--green)';
+            else if (pct >= 40) fill.style.background = 'var(--yellow)';
+            else fill.style.background = 'var(--red)';
+        });
+    }
+
+    function updateArc(pct) {
+        const needle = document.getElementById('gaugeNeedle');
+        // -107 degrees = 0%, +73 degrees = 100% → range = 180 degrees
+        const deg = -107 + (pct / 100) * 180;
+        needle.setAttribute('transform', `rotate(${deg}, 220, 200)`);
+        const arcFill = document.getElementById('gaugeArcFill');
+        // Arc path from M 60,200 sweeping to the appropriate point
+        const angleRad = (deg - 90 + 90) * Math.PI / 180; // needle angle to arc end
+        // Recalculate arc endpoint based on pct
+        const totalAngle = Math.PI; // 180 degrees
+        const startAngle = Math.PI; // starting at left (180 deg from right)
+        const sweepAngle = (pct / 100) * totalAngle;
+        const endAngle = startAngle - sweepAngle;
+        const cx = 220, cy = 200, r = 160;
+        const endX = cx + r * Math.cos(endAngle);
+        const endY = cy + r * Math.sin(endAngle);
+        const largeArc = sweepAngle > Math.PI ? 1 : 0;
+        arcFill.setAttribute('d', `M 60,200 A 160,160 0 ${largeArc},1 ${endX.toFixed(1)},${endY.toFixed(1)}`);
+        arcFill.setAttribute('stroke', pct >= 70 ? '#27AE60' : pct >= 40 ? '#F39C12' : '#E74C3C');
+    }
+
+    // ===== MESSAGE BOARD =====
+    function submitMessage(e) {
+        e.preventDefault();
+        const author = document.getElementById('authorName').value;
+        const org = document.getElementById('institution').value;
+        const text = document.getElementById('messageText').value;
+        const now = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        const container = document.getElementById('messagesContainer');
+        const msgEl = document.createElement('div');
+        msgEl.className = 'message-item';
+        msgEl.innerHTML = `
+            <div class="message-header">
+                <span class="message-author">${escapeHtml(author)}${org ? ' — ' + escapeHtml(org) : ''}</span>
+                <span class="message-date">${now}</span>
+            </div>
+            <p class="message-text">${escapeHtml(text)}</p>`;
+        container.appendChild(msgEl);
+        document.getElementById('messageForm').reset();
+        msgEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function escapeHtml(str) {
+        return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    // ===== ADMIN FUNCTIONS =====
+    function adminAddMessage() {
+        const author = document.getElementById('adminAuthor').value;
+        const org = document.getElementById('adminOrg').value;
+        const text = document.getElementById('adminMsg').value;
+        if (!author || !text) { alert('Please fill in author and message.'); return; }
+        const now = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        const container = document.getElementById('messagesContainer');
+        const msgEl = document.createElement('div');
+        msgEl.className = 'message-item';
+        msgEl.style.borderLeft = '4px solid var(--amber)';
+        msgEl.innerHTML = `
+            <div class="message-header">
+                <span class="message-author">${escapeHtml(author)}${org ? ' — ' + escapeHtml(org) : ''}</span>
+                <span class="message-date">${now}</span>
+            </div>
+            <p class="message-text">${escapeHtml(text)}</p>`;
+        container.insertBefore(msgEl, container.children[1]);
+        document.getElementById('adminAuthor').value = '';
+        document.getElementById('adminOrg').value = '';
+        document.getElementById('adminMsg').value = '';
+        alert('Message posted successfully.');
+    }
+
+    function buildAdminFindingsList() {
+        const list = document.getElementById('adminFindingsList');
+        list.innerHTML = '';
+        document.querySelectorAll('.finding-card').forEach(card => {
+            const title = card.querySelector('.finding-title').textContent;
+            const id = card.querySelector('.finding-id').textContent;
+            const li = document.createElement('li');
+            li.className = 'admin-list-item';
+            li.innerHTML = `<span style="font-size:0.88rem;"><strong>${id}</strong> — ${title.substring(0,50)}...</span>
+                <button class="btn-edit" onclick="toggleFindingVisibility('${id}')">Toggle</button>`;
+            list.appendChild(li);
+        });
+    }
+
+    function toggleFindingVisibility(id) {
+        document.querySelectorAll('.finding-card').forEach(card => {
+            if (card.querySelector('.finding-id').textContent === id) {
+                card.style.display = card.style.display === 'none' ? '' : 'none';
+            }
+        });
+    }
+
+    function adminAddGrant() {
+        const title = document.getElementById('newGrantTitle').value;
+        const number = document.getElementById('newGrantNumber').value;
+        const agency = document.getElementById('newGrantAgency').value;
+        const amount = document.getElementById('newGrantAmount').value;
+        if (!title) { alert('Please enter a grant title.'); return; }
+        const grid = document.getElementById('grantsGrid');
+        const card = document.createElement('div');
+        const cls = agency === 'ONR' ? 'onr' : 'darpa';
+        card.className = `grant-card ${cls}`;
+        card.innerHTML = `
+            <span class="grant-badge ${cls}">${agency}</span>
+            <h4>${escapeHtml(title)}</h4>
+            <div class="grant-number">${escapeHtml(number)}</div>
+            <div class="grant-amount">${escapeHtml(amount)}</div>
+            <p style="font-size:0.85rem; color:var(--text); margin-top:0.5rem;">New grant added via Admin Panel.</p>`;
+        grid.appendChild(card);
+        const adminList = document.getElementById('adminGrantsList');
+        const li = document.createElement('li');
+        li.className = 'admin-list-item';
+        li.innerHTML = `<span>${escapeHtml(title)} — ${agency}</span>
+            <button class="btn-delete" onclick="this.closest('li').remove()">Remove</button>`;
+        adminList.appendChild(li);
+        document.getElementById('newGrantTitle').value = '';
+        document.getElementById('newGrantNumber').value = '';
+        document.getElementById('newGrantAmount').value = '';
+        alert('Grant added successfully.');
+    }
+
+    function updateGaugeScore() {
+        const val = parseInt(document.getElementById('scoreSlider').value);
+        const pct = Math.round(val / 1.1);
+        document.getElementById('gaugeScoreText').textContent = pct + '%';
+        updateArc(pct);
+    }
+
+    // ===== INIT =====
+    document.addEventListener('DOMContentLoaded', function() {
+        buildAdminFindingsList();
+        // Animate the gauge needle on load
+        setTimeout(() => updateArc(38), 300);
+    });
+</script>
+</body>
+</html>
