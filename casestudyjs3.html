@@ -1,0 +1,412 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Keystone Aerospace LLC — CMMC Case Study</title>
+  <style>
+    :root{--navy:#0d1b2a;--navy2:#1b3a5c;--accent:#1e90ff;--gold:#f0a500;--bg:#f6f8fa}
+    body{font-family:Inter,Segoe UI,Arial; margin:0; background:var(--bg); color:#111}
+    header{background:linear-gradient(90deg,var(--navy),var(--navy2));color:#fff;padding:12px 18px;display:flex;align-items:center;justify-content:space-between}
+    header h1{font-size:18px;margin:0}
+    .toolbar{display:flex;gap:8px}
+    button{background:var(--accent);border:none;color:#fff;padding:8px 12px;border-radius:6px;cursor:pointer}
+    button.secondary{background:#ffffff22}
+    main{display:flex;flex-direction:column;padding:16px;gap:12px}
+
+    .tabs{display:flex;gap:6px;flex-wrap:wrap}
+    .tabs button{background:#ffffff11;color:#fff;padding:8px 10px;border-radius:6px}
+    /* left side navigation */
+    .sideNav{width:220px;min-height:380px;padding:12px;background:linear-gradient(180deg,var(--navy2),var(--navy));color:#fff;position:sticky;top:78px}
+    .sideNav h3{color:#fff;font-size:14px}
+    .sideNav .navList{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+    .sideNav button{background:transparent;color:#fff;border:0;text-align:left;padding:8px 10px;border-radius:6px;cursor:pointer}
+    .sideNav button:hover{background:rgba(255,255,255,0.04)}
+    .sideNav button.active{background:var(--accent);color:#001}
+    .container{display:flex;gap:16px;align-items:flex-start}
+    .left{flex:1}
+    .right{width:420px}
+
+    .card{background:#fff;border-radius:8px;padding:12px;box-shadow:0 2px 6px rgba(13,27,42,0.08)}
+    .card h2{margin:0 0 8px 0;font-size:16px}
+    .collapsible{cursor:pointer}
+    .hidden{display:none}
+
+    <!doctype html>
+    <html lang="en">
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <title>Keystone Aerospace LLC — CMMC Case Study</title>
+      <style>
+        :root{--navy:#0d1b2a;--navy2:#1b3a5c;--accent:#1e90ff;--gold:#f0a500;--bg:#f3f6f8;--card:#ffffff}
+        html,body{height:100%;margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:#072031}
+        /* Top header */
+        .topbar{background:linear-gradient(90deg,var(--navy),var(--navy2));color:#fff;padding:10px 18px;display:flex;align-items:center;justify-content:space-between}
+        .brand{display:flex;align-items:center;gap:12px}
+        .brand img{height:44px;border-radius:6px}
+        .brand h1{font-size:18px;margin:0}
+        .toolbar{display:flex;gap:8px}
+        .btn{background:var(--accent);border:none;color:#fff;padding:8px 12px;border-radius:6px;cursor:pointer}
+        .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.12)}
+
+        /* layout */
+        .wrap{display:flex;min-height:calc(100vh - 64px)}
+        .side{width:220px;background:linear-gradient(180deg,var(--navy2),var(--navy));color:#fff;padding:16px;box-sizing:border-box}
+        .side h3{margin:0 0 8px 0;color:#fff}
+        .navbtn{display:block;background:transparent;color:#cfe9ff;border:0;padding:8px 10px;text-align:left;width:100%;border-radius:6px;cursor:pointer;margin-bottom:6px}
+        .navbtn.active{background:var(--accent);color:#002644}
+        .content{flex:1;padding:18px;box-sizing:border-box}
+
+        /* cards */
+        .card{background:var(--card);border-radius:8px;padding:14px;margin-bottom:12px;box-shadow:0 6px 14px rgba(13,27,42,0.06)}
+        .card h2{margin:0 0 8px 0;font-size:16px;color:var(--navy2)}
+        .card .meta{font-size:13px;color:#445c6b;margin-bottom:8px}
+        .flex-row{display:flex;gap:12px}
+        .rightcol{width:320px}
+
+        table{width:100%;border-collapse:collapse;font-size:13px}
+        th,td{padding:8px;border-bottom:1px solid #eef3f6;text-align:left}
+        thead th{background:#fbfdff}
+
+        .img-btn{background:var(--gold);color:#000;padding:6px 8px;border-radius:6px;border:0;cursor:pointer}
+
+        /* Image viewer */
+        #imgPanel{position:fixed;display:none;z-index:9999;background:#000;padding:8px;border-radius:8px;box-shadow:0 10px 30px rgba(0,0,0,0.6)}
+        #imgPanel img{max-width:760px;max-height:78vh;display:block}
+        #imgPanel .close{position:absolute;right:8px;top:8px;background:#fff;color:#000;border-radius:4px;padding:4px;border:0}
+
+        /* responsive */
+        @media (max-width:980px){.side{display:none}.wrap{flex-direction:column}.rightcol{width:auto}}
+
+        @media print{.topbar,.side,.btn{display:none}.card{box-shadow:none}*{print-color-adjust:exact}}
+      </style>
+    </head>
+    <body>
+      <div class="topbar">
+        <div class="brand">
+          <img src="keystone_hq.png" alt="Keystone HQ">
+          <div>
+            <h1 contentEditable="false" data-edit-id="org_name">Keystone Aerospace LLC</h1>
+            <div style="font-size:12px;opacity:0.85" contentEditable="false" data-edit-id="org_tag">Aerospace & Aircraft — Wichita, KS</div>
+          </div>
+        </div>
+        <div class="toolbar">
+          <button id="editToggle" class="btn">Enable Edit</button>
+          <button id="saveBtn" class="btn ghost">Save</button>
+          <button id="resetBtn" class="btn ghost">Reset</button>
+          <button id="printTab" class="btn ghost">Print Tab</button>
+          <button id="printAll" class="btn ghost">Print All</button>
+        </div>
+      </div>
+
+      <div class="wrap">
+        <aside class="side">
+          <h3>Sections</h3>
+          <div>
+            <button class="navbtn" data-tab="overview">Overview</button>
+            <button class="navbtn" data-tab="itenv">IT Environment</button>
+            <button class="navbtn" data-tab="netarch">Network Architecture</button>
+            <button class="navbtn" data-tab="dataflow">CUI Data Flows</button>
+            <button class="navbtn" data-tab="gaps">Security Gaps</button>
+            <button class="navbtn" data-tab="vendors">Vendor & 3rd-Party Risk</button>
+            <button class="navbtn" data-tab="domains">CMMC Domain Assessment</button>
+            <button class="navbtn" data-tab="poam">POA&M</button>
+            <button class="navbtn" data-tab="ssp">SSP Summary</button>
+            <button class="navbtn" data-tab="auditlog">Audit Evidence Log</button>
+            <button class="navbtn" data-tab="injects">Scenario Injects</button>
+          </div>
+        </aside>
+
+        <main class="content">
+          <div id="overview" class="card tabPanel">
+            <h2>Overview</h2>
+            <div class="meta">Company profile, mission, contracts summary and key facts</div>
+            <div class="flex-row">
+              <div style="flex:1">
+                <p contentEditable="false" data-edit-id="profile_mission"><strong>Company:</strong> Keystone Aerospace LLC (CAGE: 6KZ12). Keystone designs, manufactures, and integrates avionics, flight controls, and sustainment services for fixed-wing military platforms. Founded 1998. Headquarters: Wichita, KS; Secondary sites: Huntsville, AL; San Diego, CA.</p>
+                <p contentEditable="false" data-edit-id="profile_facts"><strong>Employees:</strong> 14,563 | <strong>Annual Revenue:</strong> $240M | <strong>Active Contracts:</strong> 23.</p>
+
+                <h3>Primary Products & Services</h3>
+                <ul>
+                  <li contentEditable="false" data-edit-id="prod_1">Flight-control actuators & servo systems</li>
+                  <li contentEditable="false" data-edit-id="prod_2">Avionics integration & mission computing</li>
+                  <li contentEditable="false" data-edit-id="prod_3">Airframe structural components & sustainment</li>
+                  <li contentEditable="false" data-edit-id="prod_4">Systems engineering and field support</li>
+                </ul>
+
+                <h3>Export Controls & CUI Categories</h3>
+                <p contentEditable="false" data-edit-id="export_controls">ITAR: Defense articles related to flight controls and avionics; EAR: dual-use electronics (ECCN 3A991). Licensing required for international transfer; DSP-5/TAA likely for some suppliers.</p>
+                <p contentEditable data-edit-id="cui_categories">Mapped categories from active contracts: Technical Data — c_001,c_004,c_007,c_010,c_014,c_019; Export Controlled Tech Data — c_002,c_005,c_008,c_014,c_018; Maintenance Records — c_003,c_009,c_015,c_020; Operational Data & PII — c_012; Proprietary Manufacturing Data — c_013; SBOM & Builds — c_019; Research Data — c_021.</p>
+
+                <h3>Contracts (sample)</h3>
+                <table>
+                  <thead><tr><th>Contract #</th><th>Prime</th><th>Description</th><th>CUI</th><th>Export</th></tr></thead>
+                  <tbody id="contractList">
+                    <tr><td contentEditable="false" data-edit-id="c_001">W56-FA-2001</td><td contentEditable="false" data-edit-id="cprime_001">USAF</td><td contentEditable="false" data-edit-id="cdesc_001">Flight Control Computer Integration & Test</td><td contentEditable="false" data-edit-id="ccui_001">CUI: Technical Data</td><td contentEditable="false" data-edit-id="cexp_001">ITAR</td></tr>
+                    <tr><td contentEditable="false" data-edit-id="c_002">N00019-21-C-3001</td><td contentEditable="false" data-edit-id="cprime_002">USN</td><td contentEditable="false" data-edit-id="cdesc_002">Avionics Mission Computer Subsystems</td><td contentEditable="false" data-edit-id="ccui_002">CUI: Export Controlled Tech Data</td><td contentEditable="false" data-edit-id="cexp_002">ITAR / ECCN 3A991</td></tr>
+                    <tr><td contentEditable="false" data-edit-id="c_003">FA8650-24-C-0050</td><td contentEditable="false" data-edit-id="cprime_003">AFLCMC</td><td contentEditable="false" data-edit-id="cdesc_003">Sustainment & Field Service Support for legacy control surfaces</td><td contentEditable="false" data-edit-id="ccui_003">CUI: Maintenance Records</td><td contentEditable="false" data-edit-id="cexp_003">EAR</td></tr>
+                    <tr><td contentEditable data-edit-id="c_004">W91CRB-25-C-1100</td><td contentEditable data-edit-id="cprime_004">US Army</td><td contentEditable data-edit-id="cdesc_004">Flight control actuator prototype supply</td><td contentEditable data-edit-id="ccui_004">CUI: Technical Data</td><td contentEditable data-edit-id="cexp_004">ITAR</td></tr>
+                    <tr><td contentEditable data-edit-id="c_005">HQ0147-22-D-2001</td><td contentEditable data-edit-id="cprime_005">DARPA</td><td contentEditable data-edit-id="cdesc_005">Avionics experimental mission computer integration</td><td contentEditable data-edit-id="ccui_005">CUI: Export Controlled Tech Data</td><td contentEditable data-edit-id="cexp_005">ITAR / ECCN 3A991</td></tr>
+                    <tr><td contentEditable data-edit-id="c_006">FA8620-23-C-4002</td><td contentEditable data-edit-id="cprime_006">AFLCMC</td><td contentEditable data-edit-id="cdesc_006">Mission computer sustainment and patch management</td><td contentEditable data-edit-id="ccui_006">CUI: Maintenance Records / Technical</td><td contentEditable data-edit-id="cexp_006">EAR</td></tr>
+                    <tr><td contentEditable data-edit-id="c_007">N68335-22-C-9004</td><td contentEditable data-edit-id="cprime_007">USN</td><td contentEditable data-edit-id="cdesc_007">Integration of sensor-fusion modules</td><td contentEditable data-edit-id="ccui_007">CUI: Technical Data / Proprietary</td><td contentEditable data-edit-id="cexp_007">ITAR / ECCN 3A991</td></tr>
+                    <tr><td contentEditable data-edit-id="c_008">FA8219-25-D-0001</td><td contentEditable data-edit-id="cprime_008">SOCOM</td><td contentEditable data-edit-id="cdesc_008">Special mission avionics retrofit kits</td><td contentEditable data-edit-id="ccui_008">CUI: Export Controlled Tech Data</td><td contentEditable data-edit-id="cexp_008">ITAR</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="rightcol">
+                <div class="card">
+                  <img src="keystone_hq.jpg" alt="HQ" style="width:100%;border-radius:6px;object-fit:cover">
+                  <p style="font-size:12px;margin:8px 0 0 0">Position: upper-left</p>
+                  <button class="img-btn" data-img="keystone_hq.jpg">View Image</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="itenv" class="card tabPanel hidden">
+            <h2>IT Environment</h2>
+            <div class="meta">Asset inventory, systems, cloud/on-prem split</div>
+            <div class="flex-row">
+              <div style="flex:1">
+                <h3>Asset Inventory</h3>
+                <table>
+                  <thead><tr><th>Asset ID</th><th>Name</th><th>Type</th><th>Owner</th><th>Location</th><th>Sensitivity</th></tr></thead>
+                  <tbody>
+                    <tr><td contentEditable="false" data-edit-id="a_001">AS-0001</td><td contentEditable="false" data-edit-id="a_name_001">Prod ADSP Build Server</td><td contentEditable="false" data-edit-id="a_type_001">Server (On-prem)</td><td contentEditable="false" data-edit-id="a_owner_001">Engineering IT</td><td contentEditable="false" data-edit-id="a_loc_001">Wichita, Data Center</td><td contentEditable="false" data-edit-id="a_sens_001">CUI: Technical</td></tr>
+                    <tr><td contentEditable="false" data-edit-id="a_002">AS-0102</td><td contentEditable="false" data-edit-id="a_name_002">Design Workstations</td><td contentEditable="false" data-edit-id="a_type_002">Endpoint</td><td contentEditable="false" data-edit-id="a_owner_002">Aero Eng</td><td contentEditable="false" data-edit-id="a_loc_002">Huntsville Lab</td><td contentEditable="false" data-edit-id="a_sens_002">CUI: Technical</td></tr>
+                    <tr><td contentEditable="false" data-edit-id="a_003">AS-0203</td><td contentEditable="false" data-edit-id="a_name_003">ERP / Finance</td><td contentEditable="false" data-edit-id="a_type_003">SaaS (Cloud)</td><td contentEditable="false" data-edit-id="a_owner_003">Finance</td><td contentEditable="false" data-edit-id="a_loc_003">Cloud (US)</td><td contentEditable="false" data-edit-id="a_sens_003">PII / Sensitive</td></tr>
+                  </tbody>
+                </table>
+
+                <h3>Systems & Services</h3>
+                <ul>
+                  <li contentEditable="false" data-edit-id="sys_1">On-prem VMware cluster hosting build/test environments (Wichita)</li>
+                  <li contentEditable="false" data-edit-id="sys_2">Azure Gov tenancy for subcontractor collaboration</li>
+                  <li contentEditable="false" data-edit-id="sys_3">Enterprise SSO (SAML) with AD</li>
+                  <li contentEditable="false" data-edit-id="sys_4">SIEM: Elastic Stack (90-day retention)</li>
+                </ul>
+
+                <h3>Network & Infrastructure Details</h3>
+                <ul>
+                  <li contentEditable data-edit-id="net_vlans">Internal VLANs: 12 (Prod, R&D, Finance, Labs, DMZ, DevOps/CI, Test, Guest, Mgmt, Voice, IoT, Backup)</li>
+                  <li contentEditable data-edit-id="net_vpn">VPN Networks: 3 — site-to-site IPSec (Wichita & Huntsville & San Diego), secure client VPN for remote engineers (MFA), and a partner/prime VPN with strict ACLs.</li>
+                  <li contentEditable data-edit-id="backups">Backup Systems: Veeam-based on-prem backups with encrypted tape vault; nightly replication to Azure Gov snapshots; immutable backup retention for CUI snapshots (1 year).</li>
+                  <li contentEditable data-edit-id="wireless">Wireless: Corporate 802.1X SSID for staff (enterprise certs), separate Guest SSID on Guest VLAN with captive portal; enterprise APs (Aruba/Cisco) centrally managed.</li>
+                  <li contentEditable data-edit-id="switches">Switches & Access: Cisco Catalyst core (9500) and Catalyst 9300 access switches; distribution switches with PoE for APs and edge aggregation; dedicated management VLAN.</li>
+                  <li contentEditable data-edit-id="routers">Routers: Router at each site (Cisco ISR series) terminating site VPNs, providing routing (OSPF/BGP as needed) and QoS for critical links.</li>
+                  <li contentEditable data-edit-id="firewalls">Firewalls: Palo Alto PA-5220 pair (HA) at primary sites; Palo Alto PA-3220 at smaller locations; NGFW rules with IDS/IPS and SSL inspection.</li>
+                  <li contentEditable data-edit-id="soc">SOC: Internal SOC (Security Ops) monitoring via Elastic Stack, 24x5 alerting with an on-call rotation and playbooks for DFARS/NIST reporting and incident escalation.</li>
+                  <li contentEditable data-edit-id="servers">Servers: ~60 virtual servers across sites (build/test ~20, app/web ~10, DB cluster ~6, AD/auth ~4, file/storage/backup ~8, SIEM collectors ~4, management/dev ~8).</li>
+                  <li contentEditable data-edit-id="email_sys">Email Systems: Microsoft 365 (Exchange Online) with DLP, conditional access and M365 Defender; on-prem mail gateways used for partner transfer controls and archival.</li>
+                </ul>
+              </div>
+
+              <div class="rightcol">
+                <div class="card">
+                  <img src="keystone_net.jpg" alt="Network" style="width:100%;border-radius:6px;object-fit:cover">
+                  <p style="font-size:12px;margin:8px 0 0 0">Position: upper-right</p>
+                  <button class="img-btn" data-img="keystone_net.jpg">View Image</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="netarch" class="card tabPanel hidden">
+            <h2>Network Architecture</h2>
+            <p contentEditable data-edit-id="net_overview">Keystone operates a segmented network with VLANs for Production, R&D, Finance and an isolated DMZ. Site-to-site IPSec VPNs connect Wichita, Huntsville and San Diego. NGFWs enforce segmentation and a jump host model supports partner access. Backups replicate to encrypted off-site vaults and Azure Gov snapshots.</p>
+            <h3>Design notes</h3>
+            <ul>
+              <li contentEditable data-edit-id="net_1">VLANs: 10 Prod, 20 R&D, 30 Finance, 40 Labs</li>
+              <li contentEditable data-edit-id="net_2">DMZ for partner portal with strict ACLs and transfer jump hosts</li>
+              <li contentEditable data-edit-id="net_3">Subnets: /22 site clusters, /24 per VLAN</li>
+              <li contentEditable data-edit-id="net_4">Firewalls: Palo Alto NGFWs with HA</li>
+            </ul>
+          </div>
+
+          <div id="dataflow" class="card tabPanel hidden">
+            <h2>CUI Data Flows</h2>
+            <p contentEditable data-edit-id="df_overview">CUI is received via secure prime portals (SFTP), partner web uploads, and controlled email channels with DLP. CUI is staged in the DMZ portal, transferred to on-prem build servers, processed by engineers, and archived to Azure Gov storage. Exports require licensing.</p>
+            <h3>Marking & Resting Points</h3>
+            <ol>
+              <li contentEditable data-edit-id="df_1">DMZ partner portal (staging)</li>
+              <li contentEditable data-edit-id="df_2">ADSP Build Server (processing)</li>
+              <li contentEditable data-edit-id="df_3">Azure Gov archive (resting)</li>
+            </ol>
+            <div class="card" style="margin-top:8px">
+              <img src="keystone_flow.jpg" alt="Flow" style="width:100%;border-radius:6px;object-fit:cover">
+              <p style="font-size:12px;margin:8px 0 0 0">CUI Data Flow</p>
+              <button class="img-btn" data-img="keystone_flow.jpg">View Image</button>
+            </div>
+          </div>
+
+          <div id="gaps" class="card tabPanel hidden">
+            <h2>Security Gaps</h2>
+            <p>Findings (prioritized):</p>
+            <table>
+              <thead><tr><th>Practice ID</th><th>Finding</th><th>Severity</th><th>Affected System</th></tr></thead>
+              <tbody>
+                <tr><td contentEditable data-edit-id="f_001">AC-3 / 3.1.5</td><td contentEditable data-edit-id="fdesc_001">Missing RBAC on engineering build server; shared generic accounts</td><td contentEditable data-edit-id="fsev_001">High</td><td contentEditable data-edit-id="fsys_001">ADSP Build Server</td></tr>
+                <tr><td contentEditable data-edit-id="f_002">AU-2 / 3.3.1</td><td contentEditable data-edit-id="fdesc_002">Logging not forwarding critical CUI events to SIEM</td><td contentEditable data-edit-id="fsev_002">High</td><td contentEditable data-edit-id="fsys_002">SIEM / Build Servers</td></tr>
+                <tr><td contentEditable data-edit-id="f_003">CM-2 / 3.4.2</td><td contentEditable data-edit-id="fdesc_003">Baseline configs not enforced on R&D workstations</td><td contentEditable data-edit-id="fsev_003">Medium</td><td contentEditable data-edit-id="fsys_003">Huntsville Workstations</td></tr>
+                <tr><td contentEditable data-edit-id="f_004">MA-2 / 3.7.1</td><td contentEditable data-edit-id="fdesc_004">Maintenance tracking lacks time-bound vendor access</td><td contentEditable data-edit-id="fsev_004">Medium</td><td contentEditable data-edit-id="fsys_004">Vendor Remote Access</td></tr>
+                <tr><td contentEditable data-edit-id="f_005">IA-5 / 3.5.3</td><td contentEditable data-edit-id="fdesc_005">Privileged remote logins not enforced with MFA</td><td contentEditable data-edit-id="fsev_005">High</td><td contentEditable data-edit-id="fsys_005">VPN & Jump Hosts</td></tr>
+                <tr><td contentEditable data-edit-id="f_006">MP-4 / 3.8.3</td><td contentEditable data-edit-id="fdesc_006">Removable media controls are procedural only</td><td contentEditable data-edit-id="fsev_006">Low</td><td contentEditable data-edit-id="fsys_006">Workstations / Labs</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div id="vendors" class="card tabPanel hidden">
+            <h2>Vendor & Third-Party Risk</h2>
+            <table>
+              <thead><tr><th>Supplier</th><th>Services</th><th>Access Type</th><th>SCRM Status</th></tr></thead>
+              <tbody>
+                <tr><td contentEditable data-edit-id="s_1">AeroParts LLC</td><td contentEditable data-edit-id="s_srv_1">Structural subassemblies</td><td contentEditable data-edit-id="s_acc_1">Physical shipments, portal uploads</td><td contentEditable data-edit-id="s_scrm_1">Level 2 (partial)</td></tr>
+                <tr><td contentEditable data-edit-id="s_2">NavSys Inc</td><td contentEditable data-edit-id="s_srv_2">Avionics sensors</td><td contentEditable data-edit-id="s_acc_2">SFTP drops</td><td contentEditable data-edit-id="s_scrm_2">Onboarding (PCL pending)</td></tr>
+                <tr><td contentEditable data-edit-id="s_3">CloudGov Solutions</td><td contentEditable data-edit-id="s_srv_3">Azure Gov tenancy</td><td contentEditable data-edit-id="s_acc_3">Cloud IAM roles</td><td contentEditable data-edit-id="s_scrm_3">Assessment completed</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div id="domains" class="card tabPanel hidden">
+            <h2>CMMC Domain Assessment</h2>
+            <p>Ratings: Compliant / Partial / Non-Compliant</p>
+            <table>
+              <thead><tr><th>Domain</th><th>Rating</th><th>Notes</th></tr></thead>
+              <tbody>
+                <tr><td>Access Control</td><td contentEditable data-edit-id="dom_ac">Partial</td><td contentEditable data-edit-id="dom_ac_n">RBAC gaps on build servers; MFA partial</td></tr>
+                <tr><td>Asset Management</td><td contentEditable data-edit-id="dom_am">Compliant</td><td contentEditable data-edit-id="dom_am_n">Inventory maintained</td></tr>
+                <tr><td>Audit & Accountability</td><td contentEditable data-edit-id="dom_au">Partial</td><td contentEditable data-edit-id="dom_au_n">Logging gaps for CUI</td></tr>
+                <tr><td>Configuration Management</td><td contentEditable data-edit-id="dom_cm">Partial</td><td contentEditable data-edit-id="dom_cm_n">Baseline enforcement limited to prod</td></tr>
+                <tr><td>Identification & Authentication</td><td contentEditable data-edit-id="dom_ia">Partial</td><td contentEditable data-edit-id="dom_ia_n">Privileged MFA not enforced</td></tr>
+                <tr><td>Incident Response</td><td contentEditable data-edit-id="dom_ir">Partial</td><td contentEditable data-edit-id="dom_ir_n">Plan exists; tabletop not executed</td></tr>
+                <tr><td>Maintenance</td><td contentEditable data-edit-id="dom_ma">Partial</td><td contentEditable data-edit-id="dom_ma_n">Vendor access controls procedural</td></tr>
+                <tr><td>Media Protection</td><td contentEditable data-edit-id="dom_mp">Partial</td><td contentEditable data-edit-id="dom_mp_n">Removable media controls weak</td></tr>
+                <tr><td>Security Assessment</td><td contentEditable data-edit-id="dom_ca">Partial</td><td contentEditable data-edit-id="dom_ca_n">Assessment cadence; artifacts missing</td></tr>
+                <tr><td>System & Comm Protection</td><td contentEditable data-edit-id="dom_sc">Partial</td><td contentEditable data-edit-id="dom_sc_n">Segmentation present; enforcement gaps</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div id="poam" class="card tabPanel hidden">
+            <h2>POA&M</h2>
+            <table>
+              <thead><tr><th>Finding</th><th>Action</th><th>Owner</th><th>Target Date</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td contentEditable data-edit-id="p_f_001">AC-3: RBAC missing on build server</td><td contentEditable data-edit-id="p_a_001">Implement RBAC, remove shared accounts, enforce least privilege</td><td contentEditable data-edit-id="p_o_001">Dir. Engineering IT</td><td contentEditable data-edit-id="p_t_001">2026-07-31</td><td contentEditable data-edit-id="p_s_001">Open</td></tr>
+                <tr><td contentEditable data-edit-id="p_f_002">AU-2: Logging gaps</td><td contentEditable data-edit-id="p_a_002">Configure audit forwarding for CUI events to SIEM, increase retention</td><td contentEditable data-edit-id="p_o_002">Security Ops</td><td contentEditable data-edit-id="p_t_002">2026-06-15</td><td contentEditable data-edit-id="p_s_002">Open</td></tr>
+                <tr><td contentEditable data-edit-id="p_f_003">IA-5: MFA not enforced for privileged remote logins</td><td contentEditable data-edit-id="p_a_003">Extend MFA to privileged accounts and VPN jump hosts</td><td contentEditable data-edit-id="p_o_003">IT Ops</td><td contentEditable data-edit-id="p_t_003">2026-05-30</td><td contentEditable data-edit-id="p_s_003">Open</td></tr>
+                <tr><td contentEditable data-edit-id="p_f_004">CM-2: Baseline configs not enforced</td><td contentEditable data-edit-id="p_a_004">Deploy config mgmt tool, enforce golden images for R&D</td><td contentEditable data-edit-id="p_o_004">Config Mgmt Lead</td><td contentEditable data-edit-id="p_t_004">2026-08-15</td><td contentEditable data-edit-id="p_s_004">Open</td></tr>
+                <tr><td contentEditable data-edit-id="p_f_005">MA-2: Maintenance tracking & vendor access</td><td contentEditable data-edit-id="p_a_005">Introduce time-bound vendor accounts and session recording</td><td contentEditable data-edit-id="p_o_005">Ops Manager</td><td contentEditable data-edit-id="p_t_005">2026-07-01</td><td contentEditable data-edit-id="p_s_005">Open</td></tr>
+                <tr><td contentEditable data-edit-id="p_f_006">MP-4: Removable media controls lacking technical enforcement</td><td contentEditable data-edit-id="p_a_006">Implement USB control software and enforce encryption</td><td contentEditable data-edit-id="p_o_006">Endpoint Security Lead</td><td contentEditable data-edit-id="p_t_006">2026-06-30</td><td contentEditable data-edit-id="p_s_006">Open</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div id="ssp" class="card tabPanel hidden">
+            <h2>SSP Summary</h2>
+            <p contentEditable data-edit-id="ssp_boundary">System Boundary: CUI resides on ADSP Build Server, Azure Gov storage, and select engineer workstations. Boundary includes NGFWs, SSO identity provider, SIEM, and transfer jump hosts.</p>
+            <h3>SSP Evidence Checklist</h3>
+            <p contentEditable data-edit-id="ssp_evidence">Artifacts: system boundary diagram, network topology, asset inventory, RBAC matrix, SIEM config, backup details, baselines, vulnerability scans, vendor logs, policies, training records, IR plan, POA&M.</p>
+          </div>
+
+          <div id="auditlog" class="card tabPanel hidden">
+            <h2>Audit Evidence Log</h2>
+            <table>
+              <thead><tr><th>Finding</th><th>Evidence</th></tr></thead>
+              <tbody>
+                <tr><td>AC-3</td><td contentEditable data-edit-id="e_ac">Account lists, RBAC policy, AD exports, interview with Dir Eng IT</td></tr>
+                <tr><td>AU-2</td><td contentEditable data-edit-id="e_au">SIEM config, forwarder settings, sample logs showing CUI access</td></tr>
+                <tr><td>CM-2</td><td contentEditable data-edit-id="e_cm">Baseline configs, image manifests, software inventory reports</td></tr>
+                <tr><td>MA-2</td><td contentEditable data-edit-id="e_ma">Maintenance tickets, vendor session logs, temporary account rosters</td></tr>
+                <tr><td>MP-4</td><td contentEditable data-edit-id="e_mp">Removable media policy, DLP logs, USB allowlist</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div id="injects" class="card tabPanel hidden">
+            <h2>Scenario Injects</h2>
+            <ol>
+              <li contentEditable data-edit-id="inj_1">USN Prime submits encrypted dataset; unmarked files observed on R&D workstation — trace flow and update POA&M.</li>
+              <li contentEditable data-edit-id="inj_2">Vendor requests emergency remote maintenance without SCRM attestation — decide controls and evidence.</li>
+              <li contentEditable data-edit-id="inj_3">SIEM detects exfil pattern from engineer workstation to unknown IP — triage and notify prime per DFARS.</li>
+              <li contentEditable data-edit-id="inj_4">Auditor finds unlabeled Azure Gov storage container — reconcile and remediate.</li>
+            </ol>
+          </div>
+
+        </main>
+      </div>
+
+      <!-- image viewer -->
+      <div id="imgPanel">
+        <button class="close" title="Close">X</button>
+        <img id="panelImg" src="" alt="Image">
+      </div>
+
+      <script>
+      (function(){
+        const STORAGE_KEY = 'KAL_case_study_edits_v1';
+
+        // nav
+        const navBtns = document.querySelectorAll('.navbtn');
+        function setActive(btn){ navBtns.forEach(b=>b.classList.remove('active')); if(btn) btn.classList.add('active'); }
+        function showTab(id){ document.querySelectorAll('.tabPanel').forEach(p=>p.classList.add('hidden')); const el=document.getElementById(id); if(el) el.classList.remove('hidden'); window.location.hash = id; }
+        navBtns.forEach(b=>b.addEventListener('click', ()=>{ showTab(b.dataset.tab); setActive(b); }));
+        // initial
+        const start = window.location.hash ? window.location.hash.replace('#','') : 'overview';
+        showTab(start);
+        const startBtn = document.querySelector('.navbtn[data-tab="'+start+'"]'); setActive(startBtn);
+
+        // edit/save/reset
+        let editMode=false;
+        const editToggle = document.getElementById('editToggle');
+        const saveBtn = document.getElementById('saveBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        editToggle.addEventListener('click', toggleEdit);
+        saveBtn.addEventListener('click', saveEdits);
+        resetBtn.addEventListener('click', resetEdits);
+        function toggleEdit(){ editMode = !editMode; document.querySelectorAll('[data-edit-id]').forEach(el=>el.contentEditable = editMode); editToggle.textContent = editMode? 'Disable Edit':'Enable Edit'; }
+        document.querySelectorAll('[data-edit-id]').forEach(el=>el.contentEditable = false);
+
+        // persistence
+        function collectEdits(){ const nodes=document.querySelectorAll('[data-edit-id]'); const d={}; nodes.forEach(n=>d[n.dataset.editId]=n.innerHTML); return d }
+        function applyEdits(d){ if(!d) return; Object.entries(d).forEach(([k,v])=>{ const n=document.querySelector('[data-edit-id="'+k+'"]'); if(n) n.innerHTML = v; }); }
+        function saveEdits(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(collectEdits())); alert('Saved edits locally'); }
+        function loadEdits(){ const raw = localStorage.getItem(STORAGE_KEY); if(raw){ try{ applyEdits(JSON.parse(raw)); }catch(e){} } }
+        function resetEdits(){ if(confirm('Reset all edits to original loaded content?')){ localStorage.removeItem(STORAGE_KEY); location.reload(); } }
+        loadEdits();
+
+        // print
+        window.printCurrentTab = function(){ window.print(); }
+        window.printAll = function(){ window.print(); }
+        document.getElementById('printTab').addEventListener('click', ()=> printCurrentTab());
+        document.getElementById('printAll').addEventListener('click', ()=> printAll());
+
+        // image viewer
+        const imgBtns = document.querySelectorAll('.img-btn');
+        const imgPanel = document.getElementById('imgPanel');
+        const panelImg = document.getElementById('panelImg');
+        const closeBtn = imgPanel.querySelector('.close');
+        imgBtns.forEach(b=>b.addEventListener('click', ()=> toggleImg(b.dataset.img)));
+        closeBtn.addEventListener('click', ()=>{ imgPanel.style.display='none'; panelImg.src=''; });
+        window.toggleImg = function(src){ panelImg.style.display='block'; panelImg.style.left='60px'; panelImg.style.top='60px'; panelImg.querySelector('img') && (panelImg.querySelector('img').src = src); panelImg.querySelector('img').alt = src; panelImg.style.cursor = 'move'; }
+
+        // make imgPanel draggable
+        let drag=false, dx=0, dy=0;
+        imgPanel.addEventListener('mousedown', function(e){ drag=true; dx = e.clientX - imgPanel.offsetLeft; dy = e.clientY - imgPanel.offsetTop; });
+        document.addEventListener('mouseup', ()=> drag=false);
+        document.addEventListener('mousemove', (e)=>{ if(!drag) return; imgPanel.style.left = (e.clientX - dx) + 'px'; imgPanel.style.top = (e.clientY - dy) + 'px'; });
+
+        // keyboard save (Cmd/Ctrl+S)
+        document.addEventListener('keydown', (e)=>{ if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='s'){ e.preventDefault(); saveEdits(); } });
+
+        // expose API
+        window.__caseStudy = { saveEdits, loadEdits, collectEdits };
+
+      })();
+      </script>
+    </body>
+    </html>
+
