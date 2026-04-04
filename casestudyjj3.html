@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMMC Level 2 Audit Training — Patriot Field Rations, Inc.</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .active-tab { border-left: 4px solid #1e40af; background-color: #f1f5f9; color: #1e40af; }
+        .metric-card { border-left: 4px solid #3b82f6; }
+        .gap-highlight { border-left: 4px solid #ef4444; background-color: #fef2f2; }
+        .contract-header { background-color: #1e3a8a; color: white; }
+        details summary::-webkit-details-marker { display:none; }
+        details > summary { list-style: none; }
+        .diagram-container { background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 0.5rem; padding: 1.5rem; margin-bottom: 2rem; overflow-x: auto; }
+        .diagram-label { font-weight: bold; color: #1e3a8a; margin-bottom: 0.5rem; display: block; border-bottom: 2px solid #e5e7eb; padding-bottom: 0.25rem; }
+        .diagram-caption { font-size: 0.875rem; color: #4b5563; font-style: italic; margin-top: 1rem; text-align: center; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900 font-sans leading-normal">
+
+    <!-- Header Section -->
+    <header class="bg-slate-900 text-white p-6 shadow-md">
+        <div class="max-auto flex flex-col md:flex-row justify-between items-start md:items-center">
+            <div>
+                <h1 class="text-2xl font-bold tracking-tight">CMMC Level 2 Audit Training</h1>
+                <p class="text-blue-400 text-lg">Patriot Field Rations, Inc. (PFRI)</p>
+            </div>
+            <div class="mt-4 md:mt-0 text-xs text-right text-red-500 font-bold italic max-w-xs">
+                This training scenario is entirely fictitious and created for educational purposes only. Any resemblance to real organizations, contracts, or individuals is coincidental.
+            </div>
+        </div>
+    </header>
+
+    <!-- Summary Panel / Metrics -->
+    <section class="bg-white border-b border-gray-200 p-6">
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            <div class="metric-card p-3 bg-gray-50">
+                <span class="block text-xs uppercase text-gray-500 font-bold">Company</span>
+                <span class="text-sm font-semibold">Patriot Field Rations, Inc.</span>
+            </div>
+            <div class="metric-card p-3 bg-gray-50">
+                <span class="block text-xs uppercase text-gray-500 font-bold">Industry</span>
+                <span class="text-sm font-semibold">Operational Rations</span>
+            </div>
+            <div class="metric-card p-3 bg-gray-50">
+                <span class="block text-xs uppercase text-gray-500 font-bold">Headquarters</span>
+                <span class="text-sm font-semibold">Cedar Ridge, Ohio</span>
+            </div>
+            <div class="metric-card p-3 bg-gray-50">
+                <span class="block text-xs uppercase text-gray-500 font-bold">Employees</span>
+                <span class="text-sm font-semibold">180 Total</span>
+            </div>
+            <div class="metric-card p-3 bg-gray-50">
+                <span class="block text-xs uppercase text-gray-500 font-bold">Target Level</span>
+                <span class="text-sm font-semibold">CMMC Level 2</span>
+            </div>
+            <div class="metric-card p-3 bg-gray-50">
+                <span class="block text-xs uppercase text-gray-500 font-bold">Seeded Gaps</span>
+                <span class="text-sm font-semibold text-red-600">14 Identified</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content with Sidebar Navigation -->
+    <main class="flex flex-col md:flex-row min-h-screen">
+        
+        <!-- Sidebar Navigation -->
+        <nav class="w-full md:w-64 bg-white border-r border-gray-200">
+            <ul class="py-4 space-y-1">
+                <li><button onclick="showTab('overview')" class="tab-btn w-full text-left px-6 py-3 text-sm font-medium hover:bg-gray-100 transition-colors active-tab" id="btn-overview">🏢 Overview</button></li>
+                <li><button onclick="showTab('contracts')" class="tab-btn w-full text-left px-6 py-3 text-sm font-medium hover:bg-gray-100 transition-colors" id="btn-contracts">📋 Contracts</button></li>
+                <li><button onclick="showTab('organization')" class="tab-btn w-full text-left px-6 py-3 text-sm font-medium hover:bg-gray-100 transition-colors" id="btn-organization">👥 Organization</button></li>
+                <li><button onclick="showTab('it-environment')" class="tab-btn w-full text-left px-6 py-3 text-sm font-medium hover:bg-gray-100 transition-colors" id="btn-it-environment">🖥 IT Environment</button></li>
+                <li><button onclick="showTab('diagrams')" class="tab-btn w-full text-left px-6 py-3 text-sm font-medium hover:bg-gray-100 transition-colors" id="btn-diagrams">🌐 Network Diagrams</button></li>
+                <li><button onclick="showTab('security-posture')" class="tab-btn w-full text-left px-6 py-3 text-sm font-medium hover:bg-gray-100 transition-colors" id="btn-security-posture">🛡 Security Posture</button></li>
+                <li><button onclick="showTab('policies')" class="tab-btn w-full text-left px-6 py-3 text-sm font-medium hover:bg-gray-100 transition-colors" id="btn-policies">📘 Policies & Procedures</button></li>
+                <li><button onclick="showTab('personnel')" class="tab-btn w-full text-left px-6 py-3 text-sm font-medium hover:bg-gray-100 transition-colors" id="btn-personnel">🔑 Personnel & Training</button></li>
+                <li><button onclick="showTab('physical')" class="tab-btn w-full text-left px-6 py-3 text-sm font-medium hover:bg-gray-100 transition-colors" id="btn-physical">🏛 Physical Security</button></li>
+                <li><button onclick="showTab('incidents')" class="tab-btn w-full text-left px-6 py-3 text-sm font-medium hover:bg-gray-100 transition-colors" id="btn-incidents">🚨 Incidents & Risks</button></li>
+                <li><button onclick="showTab('supply-chain')" class="tab-btn w-full text-left px-6 py-3 text-sm font-medium hover:bg-gray-100 transition-colors" id="btn-supply-chain">🔗 Supply Chain</button></li>
+                <li><button onclick="showTab('audit-docs')" class="tab-btn w-full text-left px-6 py-3 text-sm font-medium hover:bg-gray-100 transition-colors" id="btn-audit-docs">📂 Audit Documents</button></li>
+                <li class="pt-4 border-t border-gray-100"><button onclick="showTab('instructor')" class="tab-btn w-full text-left px-6 py-3 text-sm font-bold text-blue-700 hover:bg-blue-50 transition-colors" id="btn-instructor">🎓 Instructor Guide</button></li>
+            </ul>
+        </nav>
+
+        <!-- Content Area -->
+        <div class="flex-1 p-8 overflow-y-auto">
+            
+            <!-- Tab: Overview -->
+            <div id="overview" class="tab-content active space-y-6">
+                <h2 class="text-2xl font-bold border-b pb-2">Company Overview</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-lg font-bold text-blue-800 mb-2 underline">Company Profile</h3>
+                        <ul class="space-y-2 text-sm">
+                            <li><strong>Legal Name:</strong> Patriot Field Rations, Inc. (PFRI)</li>
+                            <li><strong>Year Founded:</strong> 1994</li>
+                            <li><strong>Headquarters:</strong> 2400 Mission Ridge Parkway, Cedar Ridge, OH 45101</li>
+                            <li><strong>Ownership:</strong> Privately held, majority employee-owned (ESOP)</li>
+                            <li><strong>CAGE Code:</strong> 9X7P3</li>
+                            <li><strong>UEI:</strong> N9KJQLF6P2L5</li>
+                            <li><strong>Primary NAICS:</strong> 311999 – All Other Miscellaneous Food Manufacturing</li>
+                            <li><strong>Secondary NAICS:</strong> 311612 – Meat Processed from Carcasses</li>
+                        </ul>
+                    </div>
+                    <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                        <h3 class="text-lg font-bold text-blue-800 mb-2 italic">Mission Statement</h3>
+                        <p class="text-sm italic text-gray-700">"Patriot Field Rations, Inc. delivers mission-ready, shelf-stable rations that help U.S. and allied forces perform at their best in any environment, backed by uncompromising quality, safety, and cybersecurity across our global supply chain."</p>
+                    </div>
+                </div>
+
+                <h3 class="text-xl font-bold mt-8 mb-4">Facilities</h3>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="bg-white p-4 shadow-sm border rounded">
+                        <h4 class="font-bold text-blue-700">Headquarters & Administrative Center</h4>
+                        <p class="text-xs text-gray-500 mb-2">Cedar Ridge, OH</p>
+                        <p class="text-sm"><strong>Functions:</strong> Executive leadership, HR, Finance, Contracts, IT, Cybersecurity & Compliance, R&D/Menu Development, QA, Program Management.</p>
+                        <p class="text-sm mt-2 font-semibold">IT Footprint:</p>
+                        <ul class="list-disc ml-5 text-sm">
+                            <li>Corporate network core, primary data center, collaboration platforms, contract systems.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-4 shadow-sm border rounded">
+                        <h4 class="font-bold text-blue-700">Patriot Production Plant</h4>
+                        <p class="text-xs text-gray-500 mb-2">Patriot, WV</p>
+                        <p class="text-sm"><strong>Functions:</strong> Large-scale cooking, retort processing, packaging, assembly of MRE components and full meal bags.</p>
+                        <p class="text-sm mt-2 font-semibold">Handles:</p>
+                        <ul class="list-disc ml-5 text-sm">
+                            <li>Detailed recipes, nutritional formulas, packaging specifications (CUI).</li>
+                        </ul>
+                        <p class="text-sm mt-2"><strong>IT Footprint:</strong> MES, RationSpec terminals, QA lab systems, production workstations.</p>
+                    </div>
+                    <div class="bg-white p-4 shadow-sm border rounded">
+                        <h4 class="font-bold text-blue-700">Liberty Distribution Center</h4>
+                        <p class="text-xs text-gray-500 mb-2">Liberty Junction, KY</p>
+                        <p class="text-sm"><strong>Functions:</strong> Warehousing, staging, distribution of finished MRE cases to DLA depots and FEMA staging sites.</p>
+                        <p class="text-sm mt-2 font-semibold">Handles:</p>
+                        <ul class="list-disc ml-5 text-sm">
+                            <li>Shipping manifests, pallet-level traceability, routing instructions (CUI).</li>
+                        </ul>
+                        <p class="text-sm mt-2"><strong>IT Footprint:</strong> WMS, RF scanners, shipping label printers, thin clients.</p>
+                    </div>
+                </div>
+
+                <div class="mt-8 p-4 bg-yellow-50 border border-yellow-200 rounded">
+                    <h3 class="font-bold text-yellow-800">In-scope for CMMC Level 2</h3>
+                    <p class="text-sm">All three facilities are in-scope because PFRI’s DoD contracts involve Controlled Unclassified Information (CUI) flowing through engineering, contracts, and logistics systems. Students should identify where CUI is concentrated: HQ engineering/contract systems, plant recipe/spec systems, and logistics data at distribution.</p>
+                </div>
+            </div>
+
+            <!-- Tab: Contracts -->
+            <div id="contracts" class="tab-content space-y-8">
+                <h2 class="text-2xl font-bold border-b pb-2">Active DoD Contracts</h2>
+
+                <!-- Contract 1 -->
+                <div class="bg-white border rounded shadow-sm overflow-hidden">
+                    <div class="contract-header p-4 flex justify-between items-center">
+                        <h3 class="font-bold">Contract 1: Individual Operational Ration Packs – Theater Performance</h3>
+                        <span class="bg-red-500 px-3 py-1 text-xs rounded-full font-bold">CMMC LEVEL 2</span>
+                    </div>
+                    <div class="p-6 space-y-4 text-sm">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div><strong>Contract ID:</strong> W91RAT-24-C-0037</div>
+                            <div><strong>Ceiling Value:</strong> $410,000,000</div>
+                            <div><strong>Customer:</strong> ACC, DLA Troop Support</div>
+                            <div><strong>Period:</strong> Jan 1, 2024 – Dec 31, 2026 (+2 options)</div>
+                        </div>
+                        <p><strong>Description:</strong> Supply of 2.4 million MRE cases; customization of menus and nutritional profiles under Army/DLA specifications.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                            <div class="bg-gray-50 p-3 border rounded">
+                                <p class="font-bold text-xs uppercase text-gray-500">Data Types</p>
+                                <ul class="list-disc ml-4 mt-1">
+                                    <li><strong>FCI:</strong> Pricing, schedules, metrics.</li>
+                                    <li><strong>CUI:</strong> Menu formulations, nutritional performance data, packaging design, shipping profiles.</li>
+                                </ul>
+                            </div>
+                            <div class="bg-blue-50 p-3 border border-blue-100 rounded">
+                                <p class="font-bold text-xs uppercase text-blue-500">Cyber Requirements</p>
+                                <p>DFARS 252.204-7021; C3PAO assessment required by end of 2027.</p>
+                            </div>
+                        </div>
+                        <div class="gap-highlight p-4 rounded mt-4">
+                            <p class="font-bold text-red-700">Seeded Issue (Boundary/Data Location):</p>
+                            <p>A 2022 pre-award prototype phase used a generic commercial cloud platform (“ShareSpace”). Not all folders migrated to GovCloud; a subset of early CUI-labeled documents remains in the legacy ShareSpace tenant.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contract 2 -->
+                <div id="contract-2" class="bg-white border rounded shadow-sm overflow-hidden">
+                    <div class="contract-header p-4 flex justify-between items-center">
+                        <h3 class="font-bold">Contract 2: Humanitarian Daily Ration Variant – Pork-Free</h3>
+                        <span class="bg-red-500 px-3 py-1 text-xs rounded-full font-bold">CMMC LEVEL 2</span>
+                    </div>
+                    <div class="p-6 space-y-4 text-sm">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div><strong>Contract ID:</strong> SPE3S1-25-D-HDR1</div>
+                            <div><strong>Ceiling Value:</strong> $220,000,000</div>
+                            <div><strong>Customer:</strong> DLA Troop Support</div>
+                            <div><strong>Period:</strong> Nov 1, 2025 – Oct 31, 2030 (IDIQ)</div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                            <div class="bg-gray-50 p-3 border rounded">
+                                <p class="font-bold text-xs uppercase text-gray-500">CUI Details</p>
+                                <p>Shipment profiles, contingency stockpiling locations, technical packaging indicators tested under gov protocols.</p>
+                            </div>
+                            <div class="bg-blue-50 p-3 border border-blue-100 rounded">
+                                <p class="font-bold text-xs uppercase text-blue-500">DLA Terms</p>
+                                <p>Maintain SPRS score; provide SSP/POA&M evidence on request.</p>
+                            </div>
+                        </div>
+                        <div class="gap-highlight p-4 rounded mt-4">
+                            <p class="font-bold text-red-700">Seeded Issue (Data Handling):</p>
+                            <p>Shipment manifests generated through a third-party NGO platform; staff occasionally email sensitive destination data to that partner via regular corporate email instead of the secured enclave.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contract 3 -->
+                <div class="bg-white border rounded shadow-sm overflow-hidden">
+                    <div class="bg-gray-600 text-white p-4 flex justify-between items-center">
+                        <h3 class="font-bold">Contract 3: Training and Garrison Rations</h3>
+                        <span class="bg-green-500 px-3 py-1 text-xs rounded-full font-bold">CMMC LEVEL 1</span>
+                    </div>
+                    <div class="p-6 space-y-4 text-sm">
+                        <p><strong>Role:</strong> Subcontractor to a large food distribution prime. <strong>Value:</strong> $65,000,000 share. <strong>Data:</strong> FCI only.</p>
+                        <div class="gap-highlight p-4 rounded mt-4">
+                            <p class="font-bold text-red-700">Seeded Issue (Scoping):</p>
+                            <p>Internal documentation in RationSpec system does not clearly label which records are FCI-only vs. CUI-involved, creating confusion in scoping the Level 2 environment.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Organization -->
+            <div id="organization" class="tab-content space-y-6">
+                <h2 class="text-2xl font-bold border-b pb-2">Organizational Structure</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-lg font-bold text-blue-800 mb-3">Executive Leadership</h3>
+                        <ul class="space-y-1 text-sm bg-white p-4 border rounded">
+                            <li><strong>CEO:</strong> Laura McKenna</li>
+                            <li><strong>COO:</strong> Marcus Riley</li>
+                            <li><strong>CFO:</strong> Ellen Zhou</li>
+                            <li><strong>CIO:</strong> David Hernandez</li>
+                            <li><strong>CISO / Director GRC:</strong> Priya Nair</li>
+                            <li><strong>VP Operations:</strong> Tom Garland</li>
+                            <li><strong>QA & Regulatory Director:</strong> Dr. Nina Patel</li>
+                            <li><strong>HR Director:</strong> Richard Lawson</li>
+                            <li><strong>Contracts Director:</strong> Hannah Schultz</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-blue-800 mb-3">Key Departments</h3>
+                        <ul class="text-sm space-y-2">
+                            <li><span class="font-bold">Operations:</span> Production, maintenance, operators, shipping/receiving.</li>
+                            <li><span class="font-bold">QA & Regulatory:</span> Inspectors, lab techs, compliance specialists.</li>
+                            <li><span class="font-bold">R&D / Menu Dev:</span> Food scientists, packaging engineers.</li>
+                            <li><span class="font-bold">IT & Cyber:</span> Infrastructure, GRC, Security Engineers.</li>
+                            <li><span class="font-bold">Logistics:</span> Planners, dock schedulers.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mt-8">
+                    <h3 class="text-xl font-bold mb-4">Role–CUI Exposure Summary</h3>
+                    <table class="w-full text-sm border-collapse border border-gray-200">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="border p-2 text-left">Exposure Level</th>
+                                <th class="border p-2 text-left">Roles / Departments</th>
+                                <th class="border p-2 text-left">Data Types</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="border p-2 font-bold text-red-600">High</td>
+                                <td class="border p-2">R&D, Menu Dev, Packaging Engineering, Contracts, GRC, IT Admins</td>
+                                <td class="border p-2">Recipes, mission-profiles, contract mods, audit logs, GovCloud CUI</td>
+                            </tr>
+                            <tr>
+                                <td class="border p-2 font-bold text-orange-500">Moderate</td>
+                                <td class="border p-2">QA, Logistics Planners</td>
+                                <td class="border p-2">Technical specs, test protocols, shipping profiles</td>
+                            </tr>
+                            <tr>
+                                <td class="border p-2 font-bold text-green-600">Low/FCI</td>
+                                <td class="border p-2">Operations, Finance, Warehouse Clerks</td>
+                                <td class="border p-2">Purchase orders, generic ops data</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="gap-highlight p-4 rounded mt-4">
+                    <h3 class="font-bold text-red-700">Seeded Organizational Gaps (AC-2, AC-6)</h3>
+                    <ul class="list-disc ml-5 text-sm mt-2">
+                        <li>HR role catalog differs from Active Directory groups; job titles like “Senior Menu Engineer” do not map cleanly to access profiles.</li>
+                        <li>Plant Maintenance Supervisor has legacy local admin access on production workstations and is misclassified as “Production Engineer” in one access group.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Tab: IT Environment -->
+            <div id="it-environment" class="tab-content space-y-6">
+                <h2 class="text-2xl font-bold border-b pb-2">IT Environment & Infrastructure</h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-gray-50 p-4 border rounded">
+                        <h4 class="font-bold text-blue-900">Corporate Segment</h4>
+                        <p class="text-xs">10.20.0.0/22</p>
+                        <p class="text-sm mt-1">HQ Workstations, Servers, GovCloud Access.</p>
+                    </div>
+                    <div class="bg-gray-50 p-4 border rounded">
+                        <h4 class="font-bold text-blue-900">Plant Segment</h4>
+                        <p class="text-xs">10.30.0.0/22</p>
+                        <p class="text-sm mt-1">MES, RationSpec, Engineering, OT-adjacent systems.</p>
+                    </div>
+                    <div class="bg-gray-50 p-4 border rounded">
+                        <h4 class="font-bold text-blue-900">Distribution Segment</h4>
+                        <p class="text-xs">10.40.0.0/23</p>
+                        <p class="text-sm mt-1">WMS, RF Scanners, Thin Clients.</p>
+                    </div>
+                </div>
+
+                <h3 class="text-xl font-bold mt-8 mb-4">Critical Systems & Servers</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-xs text-left border-collapse">
+                        <thead>
+                            <tr class="bg-blue-900 text-white">
+                                <th class="p-2 border border-blue-800">Hostname</th>
+                                <th class="p-2 border border-blue-800">OS / Application</th>
+                                <th class="p-2 border border-blue-800">Function / Data</th>
+                                <th class="p-2 border border-blue-800">Notes / Issues</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white">
+                            <tr>
+                                <td class="p-2 border font-mono">DC1 / DC2</td>
+                                <td class="p-2 border">Win Server 2019 / AD</td>
+                                <td class="p-2 border">Identity, DNS; Indirect CUI</td>
+                                <td class="p-2 border">Domain controllers for HQ and Plant.</td>
+                            </tr>
+                            <tr class="bg-gray-50">
+                                <td class="p-2 border font-mono">MES01</td>
+                                <td class="p-2 border">Win Server 2019 / ProdFlow</td>
+                                <td class="p-2 border">Manufacturing execution, work orders.</td>
+                                <td class="p-2 border text-red-600 font-semibold">Patching 45 days behind.</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 border font-mono font-bold">RSPC01</td>
+                                <td class="p-2 border">Win Server 2019 / RationSpec</td>
+                                <td class="p-2 border">Recipes, CUI nutritional formulas.</td>
+                                <td class="p-2 border text-red-600 font-semibold">Patching 45 days behind.</td>
+                            </tr>
+                            <tr class="bg-gray-50">
+                                <td class="p-2 border font-mono">FILEENG01</td>
+                                <td class="p-2 border">Win Server 2016</td>
+                                <td class="p-2 border">CUI Engineering drawings, artwork.</td>
+                                <td class="p-2 border text-red-600">SMBv1 active. No patch in 120 days.</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 border font-mono font-bold">GOVCLOUD</td>
+                                <td class="p-2 border">SaaS / GovCloud Suite</td>
+                                <td class="p-2 border">Email, Document library, SSP/POA&M.</td>
+                                <td class="p-2 border">Primary CUI repository.</td>
+                            </tr>
+                            <tr class="bg-gray-50">
+                                <td class="p-2 border font-mono">LEGACYSTOR</td>
+                                <td class="p-2 border">Commercial Cloud</td>
+                                <td class="p-2 border">Old Contract 1 specs (Residual CUI).</td>
+                                <td class="p-2 border text-red-600">Accounts still active; not in enclave.</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 border font-mono">WMS01</td>
+                                <td class="p-2 border">Win Server 2012 R2</td>
+                                <td class="p-2 border">Inventory, manifests (Some CUI).</td>
+                                <td class="p-2 border text-red-600">End-of-Support OS; High Vuln findings.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                    <div class="bg-white p-4 border rounded shadow-sm">
+                        <h4 class="font-bold border-b pb-2 mb-2">Endpoint Inventory</h4>
+                        <ul class="text-sm space-y-1">
+                            <li><strong>HQ:</strong> 70 Win 11 laptops/desktops (Mixed use).</li>
+                            <li><strong>Plant:</strong> 80 Win 10 workstations (MES terminals), 10 Engineering laptops.</li>
+                            <li><strong>Distribution:</strong> 30 thin clients, 25 Handheld RF Scanners (Android).</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-4 border rounded shadow-sm">
+                        <h4 class="font-bold border-b pb-2 mb-2">Security Stack</h4>
+                        <ul class="text-sm space-y-1">
+                            <li><strong>Endpoint:</strong> Protection Suite X on all Windows.</li>
+                            <li><strong>Vulnerability:</strong> VulnSight (Monthly server, Quarterly WS).</li>
+                            <li><strong>SIEM:</strong> LogWatch (Aggregates HQ/DC; 14d local only for Plant).</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="gap-highlight p-4 rounded mt-4">
+                    <h3 class="font-bold text-red-700">Seeded IT Weaknesses (CM, RA, SI)</h3>
+                    <ul class="list-disc ml-5 text-sm mt-2">
+                        <li>10 engineering laptops routinely leave the network, missing scan and backup windows.</li>
+                        <li>RF Scanners are not centrally managed; asset records are incomplete.</li>
+                        <li>QA Lab instruments run Windows 7 Embedded with limited patching.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Tab: Network Diagrams -->
+            <div id="diagrams" class="tab-content space-y-6">
+                <h2 class="text-2xl font-bold border-b pb-2">Network Diagrams (Reference Architecture)</h2>
+                
+                <p class="text-sm text-gray-700 bg-blue-50 p-4 border border-blue-100 rounded">
+                    These network diagrams illustrate how Patriot Field Rations, Inc. has structured its enterprise network, defined a CUI enclave, and segmented key systems across the Headquarters, Patriot Production Plant, and Liberty Distribution Center. In real CMMC assessments, diagrams like these are used to validate system boundaries, identify CUI data flows, and support System Security Plan documentation. Use Figures 1–3 alongside the IT Environment tab as you complete the SSP, Asset Inventory, SAR, POA&M, and related CMMC documents.
+                </p>
+
+                <!-- Diagram 1: High-Level Topology -->
+                <div class="diagram-container">
+                    <span class="diagram-label">Figure 1: High-Level Enterprise Network Topology</span>
+                    <svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg" class="w-full h-auto border bg-slate-50">
+                        <!-- Enclave Boundary Shading -->
+                        <path d="M420,160 L780,160 L780,550 L580,550 L580,350 L420,350 Z" fill="#eff6ff" stroke="#3b82f6" stroke-dasharray="5,5" stroke-opacity="0.5" />
+                        <text x="600" y="580" fill="#1e40af" font-size="12" font-weight="bold">CUI Enclave Boundary</text>
+
+                        <!-- HQ Box -->
+                        <rect x="20" y="80" width="280" height="420" rx="10" fill="white" stroke="#1e40af" stroke-width="2" />
+                        <text x="35" y="105" font-weight="bold" fill="#1e3a8a">Headquarters – Cedar Ridge, OH</text>
+                        <text x="35" y="125" font-size="10" fill="#64748b">Corporate Network: 10.20.0.0/22</text>
+                        
+                        <!-- HQ Elements -->
+                        <rect x="40" y="150" width="240" height="60" rx="5" fill="#f8fafc" stroke="#cbd5e1" />
+                        <text x="50" y="185" font-size="11">User LAN – HQ Workstations & Laptops</text>
+                        
+                        <rect x="40" y="220" width="240" height="150" rx="5" fill="#f1f5f9" stroke="#cbd5e1" />
+                        <text x="50" y="240" font-size="11" font-weight="bold">Server LAN – HQ Data Center</text>
+                        <g transform="translate(50,250)">
+                            <rect width="220" height="25" fill="#1e40af" rx="3" />
+                            <text x="10" y="17" fill="white" font-size="10">DC1 (Win Server 2019)</text>
+                        </g>
+                        <g transform="translate(50,285)">
+                            <rect width="220" height="25" fill="#e11d48" rx="3" />
+                            <text x="10" y="17" fill="white" font-size="10">FILEENG01 (Win Server 2016)</text>
+                        </g>
+                        <g transform="translate(50,320)">
+                            <rect width="220" height="25" fill="#1e40af" rx="3" />
+                            <text x="10" y="17" fill="white" font-size="10">BACKUP01 (Win Server 2019)</text>
+                        </g>
+
+                        <rect x="40" y="380" width="240" height="40" rx="5" fill="#334155" />
+                        <text x="50" y="405" fill="white" font-size="11">Perimeter Firewall & Web Filter</text>
+                        
+                        <rect x="40" y="430" width="240" height="40" rx="5" fill="#475569" />
+                        <text x="50" y="455" fill="white" font-size="11">VPN Endpoint – HQ IPsec Gateway</text>
+
+                        <!-- Plant Box -->
+                        <rect x="450" y="20" width="300" height="280" rx="10" fill="white" stroke="#1e40af" stroke-width="2" />
+                        <text x="465" y="45" font-weight="bold" fill="#1e3a8a">Patriot Production Plant – Patriot, WV</text>
+                        <text x="465" y="60" font-size="10" fill="#64748b">Plant Network: 10.30.0.0/22</text>
+                        
+                        <rect x="470" y="80" width="260" height="50" rx="5" fill="#f8fafc" stroke="#cbd5e1" />
+                        <text x="480" y="110" font-size="11">User LAN – Plant Supervisors & Eng.</text>
+                        
+                        <rect x="470" y="140" width="260" height="80" rx="5" fill="#f1f5f9" stroke="#cbd5e1" />
+                        <text x="480" y="160" font-size="11" font-weight="bold">Server LAN – Plant Systems</text>
+                        <text x="480" y="180" font-size="10">MES01 – ProdFlow MES Server</text>
+                        <text x="480" y="200" font-size="10" font-weight="bold">RSPC01 – RationSpec App Server</text>
+
+                        <rect x="470" y="230" width="120" height="40" rx="5" fill="#475569" />
+                        <text x="475" y="255" fill="white" font-size="10">Plant IPsec Gateway</text>
+                        
+                        <rect x="610" y="230" width="120" height="40" rx="5" fill="#94a3b8" />
+                        <text x="615" y="255" fill="white" font-size="10">Internet (Backup Only)</text>
+
+                        <!-- Distribution Box -->
+                        <rect x="450" y="320" width="300" height="230" rx="10" fill="white" stroke="#1e40af" stroke-width="2" />
+                        <text x="465" y="345" font-weight="bold" fill="#1e3a8a">Liberty Distribution Center – KY</text>
+                        <text x="465" y="360" font-size="10" fill="#64748b">Warehouse Network: 10.40.0.0/23</text>
+                        
+                        <rect x="470" y="380" width="260" height="40" rx="5" fill="#f1f5f9" stroke="#cbd5e1" />
+                        <text x="480" y="405" font-size="11">WMS01 – Warehouse Management Sys</text>
+                        
+                        <rect x="470" y="430" width="260" height="40" rx="5" fill="#f8fafc" stroke="#cbd5e1" />
+                        <text x="480" y="455" font-size="11">RF Scanners & Label Printers</text>
+                        
+                        <rect x="470" y="480" width="260" height="40" rx="5" fill="#475569" />
+                        <text x="480" y="505" fill="white" font-size="11">Distribution IPsec Gateway</text>
+
+                        <!-- Cloud/External -->
+                        <rect x="320" y="10" width="110" height="60" rx="10" fill="#0f172a" />
+                        <text x="330" y="35" fill="white" font-size="9" font-weight="bold">GovCloud Suite</text>
+                        <text x="330" y="50" fill="#94a3b8" font-size="8">CUI/FCI Library</text>
+
+                        <rect x="320" y="500" width="110" height="60" rx="10" fill="#0f172a" />
+                        <text x="330" y="525" fill="white" font-size="9" font-weight="bold">LogWatch SIEM</text>
+                        <text x="330" y="540" fill="#94a3b8" font-size="8">Central Analytics</text>
+
+                        <rect x="10" y="520" width="140" height="60" rx="5" fill="white" stroke="#ef4444" stroke-width="2" />
+                        <text x="20" y="540" fill="#b91c1c" font-size="10" font-weight="bold">LEGACYSTOR</text>
+                        <text x="20" y="555" fill="#b91c1c" font-size="8">ShareSpace (Gap)</text>
+
+                        <!-- Connections -->
+                        <path d="M300,450 L470,250" stroke="#1e293b" stroke-width="2" fill="none" stroke-dasharray="5,5" />
+                        <text x="310" y="340" fill="#1e293b" font-size="10" transform="rotate(-40, 310, 340)">IPsec Tunnel HQ-Plant</text>
+                        
+                        <path d="M300,450 L470,500" stroke="#1e293b" stroke-width="2" fill="none" stroke-dasharray="5,5" />
+                        <text x="310" y="485" fill="#1e293b" font-size="10" transform="rotate(15, 310, 485)">IPsec HQ-Dist</text>
+
+                        <path d="M160,150 L320,40" stroke="#94a3b8" stroke-width="1" fill="none" marker-end="url(#arrow)" />
+                        <path d="M280,390 L320,530" stroke="#94a3b8" stroke-width="1" fill="none" />
+                        
+                        <!-- Legend -->
+                        <rect x="630" y="440" width="160" height="150" fill="white" stroke="#cbd5e1" rx="5" />
+                        <text x="640" y="460" font-size="11" font-weight="bold">Legend</text>
+                        <rect x="640" y="475" width="10" height="10" fill="#1e40af" /> <text x="655" y="485" font-size="10">Site Network</text>
+                        <rect x="640" y="495" width="10" height="10" fill="#475569" /> <text x="655" y="505" font-size="10">Server/Gateway</text>
+                        <path d="M640,515 L650,515 L650,525 L640,525 Z" fill="#eff6ff" stroke="#3b82f6" /> <text x="655" y="525" font-size="10">CUI Enclave</text>
+                        <path d="M645,535 L650,545 L640,545 Z" fill="#ef4444" /> <text x="655" y="545" font-size="10">Known Gap</text>
+                    </svg>
+                    <p class="diagram-caption">Figure 1 – High-level enterprise topology showing HQ, Patriot Production Plant, and Liberty Distribution Center networks, site-to-site VPNs, internet egress points, and the CUI enclave boundary.</p>
+                </div>
+
+                <!-- Diagram 2: Logical Architecture -->
+                <div class="diagram-container">
+                    <span class="diagram-label">Figure 2: CUI Enclave Logical Architecture</span>
+                    <svg viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg" class="w-full h-auto border bg-white">
+                        <!-- Enclave Outer Box -->
+                        <rect x="230" y="80" width="340" height="340" rx="15" fill="#f8fafc" stroke="#3b82f6" stroke-width="3" stroke-dasharray="10,5" />
+                        <text x="250" y="110" fill="#1e40af" font-weight="bold" font-size="14">CUI Enclave (CMMC Level 2)</text>
+
+                        <!-- User Groups (Left) -->
+                        <g transform="translate(20, 100)">
+                            <rect width="180" height="300" rx="10" fill="#f1f5f9" stroke="#94a3b8" />
+                            <text x="10" y="25" font-weight="bold" font-size="12">User Roles</text>
+                            <text x="15" y="60" font-size="11">R&D / Menu Engineers</text>
+                            <text x="15" y="100" font-size="11">Packaging Engineers</text>
+                            <text x="15" y="140" font-size="11">Contracts & Analysts</text>
+                            <text x="15" y="180" font-size="11">QA & Regulatory Staff</text>
+                            <text x="15" y="220" font-size="11" font-weight="bold" fill="#1e3a8a">IT Administrators</text>
+                        </g>
+
+                        <!-- Application Layer (Center) -->
+                        <g transform="translate(250, 130)">
+                            <rect width="300" height="270" rx="10" fill="white" stroke="#3b82f6" />
+                            <text x="10" y="20" font-weight="bold" font-size="11">Application & Data Layer</text>
+                            
+                            <rect x="10" y="40" width="280" height="35" rx="5" fill="#1e40af" />
+                            <text x="20" y="62" fill="white" font-size="10">RSPC01 – RationSpec (Recipes/Specs)</text>
+                            
+                            <rect x="10" y="85" width="280" height="35" rx="5" fill="#1e40af" />
+                            <text x="20" y="107" fill="white" font-size="10">FILEENG01 – Eng. File Server (TDPs)</text>
+                            
+                            <rect x="10" y="130" width="280" height="35" rx="5" fill="#475569" />
+                            <text x="20" y="152" fill="white" font-size="10">MES01 – ProdFlow MES (CUI Loads)</text>
+                            
+                            <rect x="10" y="175" width="280" height="35" rx="5" fill="#475569" />
+                            <text x="20" y="197" fill="white" font-size="10">WMS01 – Warehouse Mgmt (CUI-Linked)</text>
+                            
+                            <rect x="10" y="220" width="280" height="35" rx="5" fill="#0f172a" />
+                            <text x="20" y="242" fill="white" font-size="10">GovCloud – CUI Document Library</text>
+                        </g>
+
+                        <!-- Security Controls (Right) -->
+                        <g transform="translate(600, 100)">
+                            <rect width="180" height="300" rx="10" fill="#ecfdf5" stroke="#10b981" />
+                            <text x="10" y="25" font-weight="bold" font-size="12">Security Controls</text>
+                            
+                            <rect x="10" y="50" width="160" height="40" rx="5" fill="white" stroke="#10b981" />
+                            <text x="15" y="75" font-size="9">MFA & Conditional Access</text>
+
+                            <rect x="10" y="110" width="160" height="40" rx="5" fill="white" stroke="#10b981" />
+                            <text x="15" y="135" font-size="9">Perimeter Firewalls</text>
+
+                            <rect x="10" y="170" width="160" height="40" rx="5" fill="white" stroke="#10b981" />
+                            <text x="15" y="195" font-size="9">Endpoint Protection Suite X</text>
+
+                            <rect x="10" y="230" width="160" height="40" rx="5" fill="white" stroke="#10b981" />
+                            <text x="15" y="255" font-size="9">LogWatch SIEM</text>
+                        </g>
+
+                        <!-- Legacy Callout -->
+                        <rect x="20" y="10" width="200" height="60" rx="10" fill="#fef2f2" stroke="#ef4444" />
+                        <text x="30" y="30" fill="#b91c1c" font-weight="bold" font-size="10">LEGACYSTOR (ShareSpace)</text>
+                        <text x="30" y="45" fill="#b91c1c" font-size="8">Residual CUI – Out of Scope</text>
+                        <text x="30" y="55" fill="#b91c1c" font-size="8">Migration Gap / Risk Item</text>
+                        <path d="M100,70 L100,100" stroke="#ef4444" stroke-dasharray="2,2" />
+
+                        <!-- Arrows -->
+                        <path d="M200,150 L245,160" stroke="#3b82f6" stroke-width="1.5" />
+                        <path d="M555,200 L595,200" stroke="#10b981" stroke-width="1.5" />
+                    </svg>
+                    <p class="diagram-caption">Figure 2 – Logical CUI enclave architecture, including in-scope applications, data stores, user roles, security controls, and legacy out-of-scope cloud storage hosting residual CUI.</p>
+                </div>
+
+                <!-- Diagram 3: Plant Detail -->
+                <div class="diagram-container">
+                    <span class="diagram-label">Figure 3: Patriot Production Plant Network Detail</span>
+                    <svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg" class="w-full h-auto border bg-white">
+                        <!-- Plant Site Boundary -->
+                        <rect x="20" y="50" width="760" height="520" rx="20" fill="#f8fafc" stroke="#1e40af" stroke-width="2" />
+                        <text x="40" y="80" font-weight="bold" fill="#1e3a8a" font-size="18">Patriot Production Plant – Patriot, WV</text>
+                        <text x="40" y="100" font-size="12" fill="#64748b">Plant Network: 10.30.0.0/22</text>
+
+                        <!-- VLAN 1 -->
+                        <rect x="50" y="140" width="340" height="150" rx="10" fill="white" stroke="#94a3b8" />
+                        <text x="60" y="165" font-weight="bold" font-size="13">Plant User VLAN – Eng. & Supervisors</text>
+                        <text x="60" y="180" font-size="10" fill="#64748b">Subnet: 10.30.10.0/24</text>
+                        <text x="70" y="210" font-size="11">ENG-WS-01..10 (Workstations)</text>
+                        <text x="70" y="235" font-size="11">SUP-WS-01..15 (Supervisors)</text>
+                        <text x="70" y="265" font-size="9" fill="#b91c1c" font-weight="bold">⚠ Laptops miss scan windows</text>
+
+                        <!-- VLAN 2 -->
+                        <rect x="410" y="140" width="340" height="150" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2" />
+                        <text x="420" y="165" font-weight="bold" font-size="13">MES/RationSpec Server VLAN</text>
+                        <text x="420" y="180" font-size="10" fill="#64748b">Subnet: 10.30.20.0/24</text>
+                        <rect x="430" y="195" width="300" height="30" fill="#1e40af" rx="5" />
+                        <text x="440" y="215" fill="white" font-size="10">MES01 – ProdFlow MES Server</text>
+                        <rect x="430" y="235" width="300" height="30" fill="#1e40af" rx="5" />
+                        <text x="440" y="255" fill="white" font-size="10">RSPC01 – RationSpec Application Server</text>
+                        <text x="610" y="278" font-size="9" fill="#b91c1c" font-weight="bold">⚠ Patching 45d behind</text>
+
+                        <!-- VLAN 3 -->
+                        <rect x="50" y="320" width="340" height="150" rx="10" fill="white" stroke="#94a3b8" />
+                        <text x="60" y="345" font-weight="bold" font-size="13">QA Lab VLAN</text>
+                        <text x="60" y="360" font-size="10" fill="#64748b">Subnet: 10.30.30.0/24</text>
+                        <text x="70" y="390" font-size="11">QA-LAB-01..05 (Windows 7 Embedded)</text>
+                        <text x="70" y="415" font-size="10" fill="#4b5563">Limited patch windows; CUI data flow.</text>
+                        <text x="70" y="445" font-size="9" fill="#b91c1c" font-weight="bold">⚠ Local logs only (Gap)</text>
+
+                        <!-- VLAN 4 -->
+                        <rect x="410" y="320" width="340" height="150" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-dasharray="5,5" />
+                        <text x="420" y="345" font-weight="bold" font-size="13" fill="#94a3b8">Production/OT VLAN</text>
+                        <text x="420" y="370" font-size="11" fill="#94a3b8">Production Line Systems (OT)</text>
+                        <text x="420" y="390" font-size="10" fill="#94a3b8">Isolated via segment firewalls.</text>
+
+                        <!-- Connectivity -->
+                        <rect x="325" y="490" width="150" height="50" rx="10" fill="#334155" />
+                        <text x="340" y="520" fill="white" font-size="12" font-weight="bold">Plant Firewall</text>
+                        <path d="M400,540 L400,570" stroke="#334155" stroke-width="2" />
+                        <text x="410" y="565" font-size="11" font-weight="bold">VPN Tunnel to HQ</text>
+
+                        <path d="M730,210 L780,210 L780,520 L475,520" stroke="#94a3b8" fill="none" stroke-dasharray="2,2" />
+                        <text x="650" y="515" font-size="9" fill="#64748b">Logs -> SIEM</text>
+                    </svg>
+                    <p class="diagram-caption">Figure 3 – Patriot Production Plant network detail, illustrating internal VLANs, key servers, CUI data flows, and logging/patching focal points relevant to the CMMC Level 2 assessment.</p>
+                </div>
+            </div>
+
+            <!-- Tab: Security Posture -->
+            <div id="security-posture" class="tab-content space-y-6">
+                <h2 class="text-2xl font-bold border-b pb-2">Security Posture & Compliance Status</h2>
+                
+                <div class="flex items-center space-x-6 bg-white p-6 rounded border">
+                    <div class="text-center px-4">
+                        <span class="block text-4xl font-bold text-red-600">-38</span>
+                        <span class="text-xs uppercase font-bold text-gray-500">Current SPRS Score</span>
+                    </div>
+                    <div class="flex-1 grid grid-cols-3 gap-4 text-center">
+                        <div><span class="block text-xl font-bold">76</span><span class="text-xs">Implemented</span></div>
+                        <div><span class="block text-xl font-bold text-orange-500">18</span><span class="text-xs">Partial</span></div>
+                        <div><span class="block text-xl font-bold text-red-500">16</span><span class="text-xs">Not Implemented</span></div>
+                    </div>
+                </div>
+
+                <h3 class="text-xl font-bold mt-8">CMMC / NIST 800-171 Gaps by Family</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="gap-highlight p-4 rounded text-sm">
+                        <p class="font-bold text-blue-900">Access Control (AC)</p>
+                        <ul class="list-disc ml-5">
+                            <li>Role inconsistencies (AC-2/6).</li>
+                            <li>External remote access for some engineers not locked to enclave (AC-17).</li>
+                        </ul>
+                    </div>
+                    <div class="gap-highlight p-4 rounded text-sm">
+                        <p class="font-bold text-blue-900">Audit & Accountability (AU)</p>
+                        <p>Plant MES and WMS do not send logs to SIEM; 14-day local retention only (AU-2/6).</p>
+                    </div>
+                    <div class="gap-highlight p-4 rounded text-sm">
+                        <p class="font-bold text-blue-900">Config Mgmt & Media Prot (CM/MP)</p>
+                        <ul class="list-disc ml-5">
+                            <li>Baselines exist but legacy deviations undocumented (CM-2/6).</li>
+                            <li>Media disposal for QA backup DVDs/USBs is informal (MP-6).</li>
+                        </ul>
+                    </div>
+                    <div class="gap-highlight p-4 rounded text-sm">
+                        <p class="font-bold text-blue-900">Physical & Risk (PE/RA)</p>
+                        <ul class="list-disc ml-5">
+                            <li>Distribution Center badge system managed by landlord (PE-3).</li>
+                            <li>Vuln findings not consistently tied to risk ratings/POA&M (RA-3).</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Policies & Procedures -->
+            <div id="policies" class="tab-content space-y-6">
+                <h2 class="text-2xl font-bold border-b pb-2">Policies & Procedures</h2>
+                
+                <p class="text-sm text-gray-700 bg-blue-50 p-4 border border-blue-100 rounded">
+                    Use this section to understand how Patriot Field Rations, Inc. has documented key cybersecurity policies and procedures. As you complete the SSP, POA&M, SAR, and other CMMC documents, reference these excerpts to justify your control descriptions and identify where practice diverges from policy.
+                </p>
+
+                <div class="space-y-4">
+                    <!-- AC Policy -->
+                    <details class="bg-white border border-gray-200 rounded shadow-sm group">
+                        <summary class="flex justify-between items-center p-4 cursor-pointer hover:bg-gray-50 transition-colors font-bold text-blue-800">
+                            <span>Access Control Policy (ACP)</span>
+                            <span class="text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+                        </summary>
+                        <div class="p-6 border-t border-gray-100 space-y-4 text-sm">
+                            <p class="italic text-gray-600">Defines how Patriot Field Rations, Inc. manages user identities, roles, and access rights to systems that process FCI and CUI.</p>
+                            <div class="bg-gray-50 p-4 border-l-4 border-blue-600 rounded">
+                                <p class="mb-2">Patriot Field Rations, Inc. maintains a risk-based access control program to ensure that only authorized individuals are granted access to information systems and data commensurate with their job responsibilities. Access to systems that store or process Controlled Unclassified Information (CUI) is explicitly limited to users whose roles require such access.</p>
+                                <p class="mb-2">User accounts are provisioned based on HR-approved roles and are granted least-privilege access to domain, application, and data resources. All access requests must be documented via an approved access request form and authorized by the user’s manager and the system owner.</p>
+                                <p class="mb-2">Access to CUI systems (including RationSpec, the Engineering File Server, and the GovCloud Collaboration Suite CUI library) requires multifactor authentication (MFA), strong passwords, and alignment with defined access control groups. Administrative access is restricted to designated IT personnel and is reviewed at least quarterly.</p>
+                                <p>When personnel change roles or leave the company, HR notifies IT within one business day. IT disables or adjusts accounts in line with the updated role. Periodic access reviews are conducted semi-annually to verify that all users have appropriate access rights.</p>
+                            </div>
+                            <p class="font-semibold text-xs uppercase text-gray-500 pt-2">Related Documents:</p>
+                            <p>– System Security Plan (SSP) – <a href="https://sands-mvcc.github.io/CMMC/ssp.html" class="text-blue-600 underline">📄 Open SSP</a> · <a href="https://sands-mvcc.github.io/CMMC/SSP_tool.html" class="text-blue-600 underline">🛠️ SSP Tool</a></p>
+                            <p>– Access Control Matrix – <a href="https://sands-mvcc.github.io/CMMC/acm.html" class="text-blue-600 underline">📄 Open ACM</a> · <a href="https://sands-mvcc.github.io/CMMC/ACM_tool.html" class="text-blue-600 underline">🛠️ ACM Tool</a></p>
+                        </div>
+                    </details>
+
+                    <!-- IRP Policy -->
+                    <details class="bg-white border border-gray-200 rounded shadow-sm group">
+                        <summary class="flex justify-between items-center p-4 cursor-pointer hover:bg-gray-50 transition-colors font-bold text-blue-800">
+                            <span>Incident Response Plan (IRP) Overview</span>
+                            <span class="text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+                        </summary>
+                        <div class="p-6 border-t border-gray-100 space-y-4 text-sm">
+                            <p class="italic text-gray-600">Summarizes how Patriot Field Rations, Inc. prepares for, detects, responds to, and recovers from cybersecurity incidents affecting in-scope systems.</p>
+                            <div class="bg-gray-50 p-4 border-l-4 border-blue-600 rounded">
+                                <p class="mb-2">Patriot Field Rations, Inc. maintains a formal Incident Response Plan (IRP) covering all systems in scope for CMMC Level 2. The plan defines clear phases of incident handling: Preparation, Identification, Containment, Eradication, Recovery, and Lessons Learned.</p>
+                                <p class="mb-2">The Cybersecurity & Compliance team serves as the core incident response team (IRT), supported by IT infrastructure, application owners, HR, Legal, and Communications as needed. All employees are required to promptly report suspected security incidents to the Service Desk or Security Operations Center (SOC).</p>
+                                <p class="mb-2">For systems containing CUI, incident responders must assess potential loss of confidentiality, integrity, or availability and, when warranted, initiate notifications to affected stakeholders and government points of contact in accordance with contract requirements. Significant incidents are documented in an incident record that captures root cause, impact, response actions, and corrective actions.</p>
+                                <p>The IRP is reviewed at least annually and after major incidents. Tabletop exercises are conducted at least once per year to validate the plan and train staff in their roles and responsibilities.</p>
+                            </div>
+                            <p class="font-semibold text-xs uppercase text-gray-500 pt-2">Related Documents:</p>
+                            <p>– Incident Response Plan – <a href="https://sands-mvcc.github.io/CMMC/irp.html" class="text-blue-600 underline">📄 Open IRP</a> · <a href="https://sands-mvcc.github.io/CMMC/IRP_tool.html" class="text-blue-600 underline">🛠️ IRP Tool</a></p>
+                            <p>– Security Assessment Report – <a href="https://sands-mvcc.github.io/CMMC/sar.html" class="text-blue-600 underline">📄 Open SAR</a> · <a href="https://sands-mvcc.github.io/CMMC/SAR_tool.html" class="text-blue-600 underline">🛠️ SAR Tool</a></p>
+                        </div>
+                    </details>
+
+                    <!-- CM Policy -->
+                    <details class="bg-white border border-gray-200 rounded shadow-sm group">
+                        <summary class="flex justify-between items-center p-4 cursor-pointer hover:bg-gray-50 transition-colors font-bold text-blue-800">
+                            <span>Configuration Management Policy (CMP)</span>
+                            <span class="text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+                        </summary>
+                        <div class="p-6 border-t border-gray-100 space-y-4 text-sm">
+                            <p class="italic text-gray-600">Describes how Patriot Field Rations, Inc. manages changes to systems, configurations, and baselines.</p>
+                            <div class="bg-gray-50 p-4 border-l-4 border-blue-600 rounded">
+                                <p class="mb-2">Patriot Field Rations, Inc. enforces a formal configuration management policy to ensure that systems are deployed, maintained, and modified in a controlled manner. All in-scope servers, workstations, and network devices must adhere to approved configuration baselines aligned with company standards and applicable industry benchmarks.</p>
+                                <p class="mb-2">Proposed changes to production systems are documented in change requests that describe the business justification, technical approach, risk assessment, testing plan, and back-out plan. Normal changes are reviewed and approved by the Change Advisory Board (CAB), which includes representatives from IT, Cybersecurity & Compliance, and affected business units.</p>
+                                <p class="mb-2">Emergency changes are permitted when necessary to address critical vulnerabilities or system outages but must be documented and reviewed retrospectively at the next CAB meeting. Unapproved or undocumented changes to in-scope systems are prohibited.</p>
+                                <p>Configuration baselines and system inventories are reviewed periodically to verify that deployed systems match approved configurations, and deviations are either remediated or formally documented as exceptions.</p>
+                            </div>
+                            <p class="font-semibold text-xs uppercase text-gray-500 pt-2">Related Documents:</p>
+                            <p>– Configuration Management Plan – <a href="https://sands-mvcc.github.io/CMMC/cmp.html" class="text-blue-600 underline">📄 Open CMP</a> · <a href="https://sands-mvcc.github.io/CMMC/CMP_tool.html" class="text-blue-600 underline">🛠️ CMP Tool</a></p>
+                            <p>– Asset Inventory & Categorization – <a href="https://sands-mvcc.github.io/CMMC/asset.html" class="text-blue-600 underline">📄 Open Asset Inventory</a> · <a href="https://sands-mvcc.github.io/CMMC/Asset_tool.html" class="text-blue-600 underline">🛠️ Asset Tool</a></p>
+                            <p>– Maintenance Report – <a href="https://sands-mvcc.github.io/CMMC/maintenance.html" class="text-blue-600 underline">📄 Open Maintenance</a> · <a href="https://sands-mvcc.github.io/CMMC/Maintenance_tool.html" class="text-blue-600 underline">🛠️ Maintenance Tool</a></p>
+                        </div>
+                    </details>
+
+                    <!-- ALMS Policy -->
+                    <details class="bg-white border border-gray-200 rounded shadow-sm group">
+                        <summary class="flex justify-between items-center p-4 cursor-pointer hover:bg-gray-50 transition-colors font-bold text-blue-800">
+                            <span>Audit Logging & Monitoring Standard (ALMS)</span>
+                            <span class="text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+                        </summary>
+                        <div class="p-6 border-t border-gray-100 space-y-4 text-sm">
+                            <p class="italic text-gray-600">Defines logging, monitoring, and review requirements for systems supporting CMMC Level 2.</p>
+                            <div class="bg-gray-50 p-4 border-l-4 border-blue-600 rounded">
+                                <p class="mb-2">Patriot Field Rations, Inc. requires security-relevant events from in-scope systems to be logged, protected, and regularly reviewed. Critical infrastructure components, domain controllers, servers hosting CUI, and perimeter security devices are configured to forward logs to the centralized LogWatch SIEM platform.</p>
+                                <p class="mb-2">Logged events include user authentication attempts, administrative actions, configuration changes, access to sensitive data repositories, and security alerts generated by endpoint and network protection tools. Log data is retained for a minimum of 12 months, with at least 90 days readily available online for analysis.</p>
+                                <p class="mb-2">The Cybersecurity & Compliance team reviews SIEM alerts daily and produces a summary of notable events on at least a weekly basis. Higher-risk alerts, such as repeated failed logins or anomalous login locations for privileged accounts, are investigated promptly according to the Incident Response Plan.</p>
+                                <p>Systems that cannot currently forward logs to the SIEM must store logs locally with appropriate protections and retention. These gaps are tracked as part of the POA&M until fully addressed.</p>
+                            </div>
+                            <p class="font-semibold text-xs uppercase text-gray-500 pt-2">Related Documents:</p>
+                            <p>– Audit Log & Monitoring Report – <a href="https://sands-mvcc.github.io/CMMC/almr.html" class="text-blue-600 underline">📄 Open ALMR</a> · <a href="https://sands-mvcc.github.io/CMMC/ALMR_tool.html" class="text-blue-600 underline">🛠️ ALMR Tool</a></p>
+                            <p>– Security Assessment Report – <a href="https://sands-mvcc.github.io/CMMC/sar.html" class="text-blue-600 underline">📄 Open SAR</a> · <a href="https://sands-mvcc.github.io/CMMC/SAR_tool.html" class="text-blue-600 underline">🛠️ SAR Tool</a></p>
+                        </div>
+                    </details>
+
+                    <!-- VSSP Policy -->
+                    <details class="bg-white border border-gray-200 rounded shadow-sm group">
+                        <summary class="flex justify-between items-center p-4 cursor-pointer hover:bg-gray-50 transition-colors font-bold text-blue-800">
+                            <span>Vendor & Supply Chain Security Policy (VSSP)</span>
+                            <span class="text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+                        </summary>
+                        <div class="p-6 border-t border-gray-100 space-y-4 text-sm">
+                            <p class="italic text-gray-600">Establishes security expectations for suppliers and partners that support operational rations and related IT services.</p>
+                            <div class="bg-gray-50 p-4 border-l-4 border-blue-600 rounded">
+                                <p class="mb-2">Patriot Field Rations, Inc. recognizes that suppliers and logistics partners play a critical role in securely delivering rations to government customers. The Vendor & Supply Chain Security Policy sets minimum security requirements for third parties that process, store, or transmit the company’s data, including CUI related to contracts, specifications, and shipments.</p>
+                                <p class="mb-2">Suppliers handling CUI or providing critical IT or logistics services must complete a security assessment questionnaire and provide evidence of appropriate controls, such as multi-factor authentication, patch management, and incident response capabilities. Where applicable, contracts must include clauses requiring adherence to CMMC requirements and prompt notification of security incidents.</p>
+                                <p class="mb-2">Vendor risk is assessed based on the sensitivity of shared data and the criticality of services. High-risk suppliers are reviewed at least annually. Unresolved high-risk findings may result in mitigation plans, contractual remedies, or consideration of alternate suppliers.</p>
+                                <p>Information sharing with suppliers is limited to the minimum necessary to fulfill contractual obligations, and the use of unauthorized cloud services or consumer-grade collaboration tools for CUI is prohibited.</p>
+                            </div>
+                            <p class="font-semibold text-xs uppercase text-gray-500 pt-2">Related Documents:</p>
+                            <p>– System Security Plan (SSP) – <a href="https://sands-mvcc.github.io/CMMC/ssp.html" class="text-blue-600 underline">📄 Open SSP</a> · <a href="https://sands-mvcc.github.io/CMMC/SSP_tool.html" class="text-blue-600 underline">🛠️ SSP Tool</a></p>
+                            <p>– Plan of Action & Milestones – <a href="https://sands-mvcc.github.io/CMMC/POAM.html" class="text-blue-600 underline">📄 Open POA&M</a> · <a href="https://sands-mvcc.github.io/CMMC/POAM_tool.html" class="text-blue-600 underline">🛠️ POA&M Tool</a></p>
+                            <p>– Security Assessment Report – <a href="https://sands-mvcc.github.io/CMMC/sar.html" class="text-blue-600 underline">📄 Open SAR</a> · <a href="https://sands-mvcc.github.io/CMMC/SAR_tool.html" class="text-blue-600 underline">🛠️ SAR Tool</a></p>
+                        </div>
+                    </details>
+                </div>
+            </div>
+
+            <!-- Tab: Personnel -->
+            <div id="personnel" class="tab-content space-y-6">
+                <h2 class="text-2xl font-bold border-b pb-2">Personnel & Training Metrics</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-blue-50 p-4 border rounded text-center">
+                        <p class="text-3xl font-bold">180</p>
+                        <p class="text-sm font-bold">Total Staff</p>
+                    </div>
+                    <div class="bg-green-50 p-4 border rounded text-center">
+                        <p class="text-3xl font-bold">93%</p>
+                        <p class="text-sm font-bold">Total Completion</p>
+                    </div>
+                    <div class="bg-red-50 p-4 border rounded text-center">
+                        <p class="text-3xl font-bold">16</p>
+                        <p class="text-sm font-bold text-red-600">Overdue Staff</p>
+                    </div>
+                </div>
+
+                <h3 class="text-xl font-bold mt-8">Department Training Breakdown</h3>
+                <div class="bg-white border rounded">
+                    <div class="p-2 border-b grid grid-cols-2 text-sm font-bold bg-gray-50">
+                        <span>Department</span>
+                        <span class="text-right">Completion Rate</span>
+                    </div>
+                    <div class="p-2 border-b grid grid-cols-2 text-sm"><span>IT & Cybersecurity</span><span class="text-right text-green-600 font-bold">100%</span></div>
+                    <div class="p-2 border-b grid grid-cols-2 text-sm"><span>Contracts & Program Mgmt</span><span class="text-right">95%</span></div>
+                    <div class="p-2 border-b grid grid-cols-2 text-sm"><span>R&D / Menu Development</span><span class="text-right">92%</span></div>
+                    <div class="p-2 border-b grid grid-cols-2 text-sm"><span>QA / Regulatory</span><span class="text-right">90%</span></div>
+                    <div class="p-2 border-b grid grid-cols-2 text-sm"><span>Plant Operations</span><span class="text-right">91%</span></div>
+                    <div class="p-2 grid grid-cols-2 text-sm"><span>Distribution Operations</span><span class="text-right text-orange-600 font-bold">86%</span></div>
+                </div>
+
+                <div class="gap-highlight p-4 rounded mt-6">
+                    <h3 class="font-bold text-red-700">Seeded Training Gaps</h3>
+                    <ul class="list-disc ml-5 text-sm mt-2">
+                        <li>5 engineers, 3 warehouse supervisors, and 8 line leads overdue for CUI refresher.</li>
+                        <li>Materials reference "Future CMMC" and lack final 2.0 rule or DLA-specific 2025 timelines.</li>
+                        <li>No formal process to remove access for users >60 days overdue on training.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Tab: Physical -->
+            <div id="physical" class="tab-content space-y-6">
+                <h2 class="text-2xl font-bold border-b pb-2">Physical Security</h2>
+                
+                <div class="space-y-6">
+                    <div class="bg-white p-4 border rounded">
+                        <h3 class="font-bold text-blue-800">HQ Physical Controls</h3>
+                        <p class="text-sm mt-1">Multi-tenant building, PFRI occupies 2 floors. Badge access, visitor sign-in, reception, CCTV in hallways, locked server room with restricted access group.</p>
+                        <p class="text-xs text-red-600 mt-2 font-bold font-mono">ISSUE: 4 recorded tailgating incidents in last year; no consistent follow-up.</p>
+                    </div>
+                    <div class="bg-white p-4 border rounded">
+                        <h3 class="font-bold text-blue-800">Plant Physical Controls</h3>
+                        <p class="text-sm mt-1">Standalone fenced facility, guard booth at gates during business hours, exterior badge readers, interior camera coverage in select areas, secure QA lab.</p>
+                        <div class="gap-highlight p-3 rounded mt-2 text-xs">
+                            <p class="font-bold">ISSUE:</p>
+                            <p>Document storage room near maintenance shop contains historical QA binders and USBs with test data; not inventoried or processed under media destruction policy.</p>
+                        </div>
+                    </div>
+                    <div class="bg-white p-4 border rounded">
+                        <h3 class="font-bold text-blue-800">Distribution Center Controls</h3>
+                        <p class="text-sm mt-1">Leased warehouse, shared perimeter security with landlord, PFRI interior badge readers, CCTV at dock doors.</p>
+                        <p class="text-xs text-red-600 mt-2 font-bold font-mono">ISSUE: Landlord manages badge system; PFRI cannot audit or export access logs independently.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Incidents -->
+            <div id="incidents" class="tab-content space-y-8">
+                <h2 class="text-2xl font-bold border-b pb-2">Incidents & Risk Register</h2>
+
+                <div class="space-y-4">
+                    <h3 class="text-lg font-bold">Incident History (24-Month Window)</h3>
+                    
+                    <div class="border-l-4 border-orange-400 bg-white p-4 shadow-sm">
+                        <p class="text-xs font-bold text-gray-500 uppercase">Aug 14, 2025 - Medium Severity</p>
+                        <p class="font-bold">Phishing Credential Compromise (Contract Manager)</p>
+                        <p class="text-sm mt-1">Clicked spoofed login; attacker accessed GovCloud email for 45 mins. Mailbox contained CUI attachments. Reported as potential exposure.</p>
+                    </div>
+
+                    <div class="border-l-4 border-blue-400 bg-white p-4 shadow-sm">
+                        <p class="text-xs font-bold text-gray-500 uppercase">Mar 5, 2025 - Near-Miss</p>
+                        <p class="font-bold">Misaddressed Shipment Manifest</p>
+                        <p class="text-sm mt-1">Shipping clerk almost emailed manifest with sensitive destination codes to wrong customer; caught by supervisor. Highlights lack of DLP.</p>
+                    </div>
+
+                    <div class="border-l-4 border-green-400 bg-white p-4 shadow-sm">
+                        <p class="text-xs font-bold text-gray-500 uppercase">Oct 22, 2024 - Low Severity</p>
+                        <p class="font-bold">Malware on Warehouse Workstation</p>
+                        <p class="text-sm mt-1">Personal USB usage detected/blocked by endpoint protection. No CUI present on workstation.</p>
+                    </div>
+                </div>
+
+                <h3 class="text-lg font-bold mt-8">Risk Register Snapshot</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-xs text-left border-collapse">
+                        <thead>
+                            <tr class="bg-gray-800 text-white">
+                                <th class="p-2 border">ID</th>
+                                <th class="p-2 border">Risk Description</th>
+                                <th class="p-2 border">Likelihood</th>
+                                <th class="p-2 border">Impact</th>
+                                <th class="p-2 border">Mitigation Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white">
+                            <tr>
+                                <td class="p-2 border">R1</td>
+                                <td class="p-2 border">Legacy OS on WMS01 Server</td>
+                                <td class="p-2 border">Medium</td>
+                                <td class="p-2 border text-red-600 font-bold">High</td>
+                                <td class="p-2 border">Upgrade scheduled Q4 2026; monitoring only.</td>
+                            </tr>
+                            <tr class="bg-gray-50">
+                                <td class="p-2 border">R2</td>
+                                <td class="p-2 border">Residual CUI on LEGACYSTOR</td>
+                                <td class="p-2 border">Medium</td>
+                                <td class="p-2 border text-red-600 font-bold">High</td>
+                                <td class="p-2 border">Discovery/migration in progress (90 days target).</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 border">R3</td>
+                                <td class="p-2 border">Incomplete Supplier Security Assessments</td>
+                                <td class="p-2 border">High</td>
+                                <td class="p-2 border">Medium</td>
+                                <td class="p-2 border">Checklist drafted; not yet rolled out.</td>
+                            </tr>
+                            <tr class="bg-gray-50">
+                                <td class="p-2 border">R4</td>
+                                <td class="p-2 border">Training Non-compliance (Whse Supervisors)</td>
+                                <td class="p-2 border">Medium</td>
+                                <td class="p-2 border text-orange-600 font-bold">Medium</td>
+                                <td class="p-2 border">Adding to perf reviews; not yet enforced.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab: Supply Chain -->
+            <div id="supply-chain" class="tab-content space-y-6">
+                <h2 class="text-2xl font-bold border-b pb-2">Supply Chain Management</h2>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="bg-white p-4 border rounded">
+                        <h3 class="font-bold text-blue-800 border-b pb-1 mb-3">Critical Upstream Suppliers</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <h4 class="font-bold text-sm">Frontier Nutripack Solutions, LLC</h4>
+                                <p class="text-xs">Freeze-dried components & packaging films.</p>
+                                <p class="text-sm mt-1"><strong>Status:</strong> Level 1 self-attested. No CMMC roadmap.</p>
+                                <p class="text-xs italic text-orange-700">Shares: Packaging specs for theater-specific menus (CUI).</p>
+                            </div>
+                            <div class="pt-2 border-t">
+                                <h4 class="font-bold text-sm">Liberty Tactical Logistics Services (LTLS)</h4>
+                                <p class="text-xs">3PL provider for overflow warehousing.</p>
+                                <p class="text-sm mt-1"><strong>Status:</strong> Claims "CMMC Readiness" but no assessment. No MFA on TMS.</p>
+                                <p class="text-xs italic text-orange-700">Shares: Routing guides, mission destination codes (CUI).</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 p-4 border rounded">
+                        <h3 class="font-bold text-blue-800 border-b pb-1 mb-3">Policy State</h3>
+                        <p class="text-sm">VRM Policy requires initial questionnaires and annual reviews for high-risk suppliers.</p>
+                        <div class="gap-highlight p-3 rounded mt-4 text-xs font-bold text-red-800">
+                            <p>SUPPLY CHAIN GAPS:</p>
+                            <ul class="list-disc ml-4 mt-1 font-normal">
+                                <li>Not all CUI suppliers included in central risk register.</li>
+                                <li>No contractual requirement for suppliers to maintain specific CMMC levels.</li>
+                                <li>PFRI does not regularly request/review SPRS scores from subcontractors.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Audit Documents -->
+            <div id="audit-docs" class="tab-content space-y-6">
+                <h2 class="text-2xl font-bold border-b pb-2">Audit Documents & Student Tools</h2>
+                <p class="text-sm">Use the buttons below to access your working audit documents. Re-reference the case narrative tabs to complete them.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="p-4 bg-white border shadow-sm rounded">
+                        <h4 class="font-bold text-blue-700">System Security Plan (SSP)</h4>
+                        <p class="text-xs text-gray-500 mb-4 font-mono">Use: Overview, Contracts, IT Env tabs.</p>
+                        <button class="bg-blue-600 text-white text-sm px-4 py-2 rounded hover:bg-blue-700">Open SSP Tool</button>
+                    </div>
+                    <div class="p-4 bg-white border shadow-sm rounded">
+                        <h4 class="font-bold text-blue-700">POA&M</h4>
+                        <p class="text-xs text-gray-500 mb-4 font-mono">Use: All Seeded Gaps (14 total).</p>
+                        <button class="bg-blue-600 text-white text-sm px-4 py-2 rounded hover:bg-blue-700">Open POA&M Form</button>
+                    </div>
+                    <div class="p-4 bg-white border shadow-sm rounded">
+                        <h4 class="font-bold text-blue-700">Asset Inventory</h4>
+                        <p class="text-xs text-gray-500 mb-4 font-mono">Use: IT Environment Tab.</p>
+                        <button class="bg-blue-600 text-white text-sm px-4 py-2 rounded hover:bg-blue-700">Open Asset Sheet</button>
+                    </div>
+                    <div class="p-4 bg-white border shadow-sm rounded">
+                        <h4 class="font-bold text-blue-700">Access Control Matrix</h4>
+                        <p class="text-xs text-gray-500 mb-4 font-mono">Use: Organization & Personnel tabs.</p>
+                        <button class="bg-blue-600 text-white text-sm px-4 py-2 rounded hover:bg-blue-700">Build Matrix</button>
+                    </div>
+                    <div class="p-4 bg-white border shadow-sm rounded">
+                        <h4 class="font-bold text-blue-700">Incident Response (IRP)</h4>
+                        <p class="text-xs text-gray-500 mb-4 font-mono">Use: Incident Narratives.</p>
+                        <button class="bg-blue-600 text-white text-sm px-4 py-2 rounded hover:bg-blue-700">Validate IRP</button>
+                    </div>
+                    <div class="p-4 bg-white border shadow-sm rounded">
+                        <h4 class="font-bold text-blue-700">Audit Log Record (ALMR)</h4>
+                        <p class="text-xs text-gray-500 mb-4 font-mono">Use: SIEM vs Local details.</p>
+                        <button class="bg-blue-600 text-white text-sm px-4 py-2 rounded hover:bg-blue-700">Review Logging</button>
+                    </div>
+                </div>
+
+                <div class="mt-8 p-6 bg-gray-50 border rounded text-sm space-y-4">
+                    <h3 class="font-bold">Student Workflow Instructions</h3>
+                    <ul class="list-decimal ml-5 space-y-2">
+                        <li><strong>Scoping:</strong> Use Overview and IT Environment to define the Level 2 boundary.</li>
+                        <li><strong>Gap Analysis:</strong> Extract all 14 seeded gaps to build the POA&M.</li>
+                        <li><strong>ACM:</strong> Map HR roles from Organization to the access types in IT Environment.</li>
+                        <li><strong>VSR/CMP:</strong> Use patch timelines and WMS/FILEENG01 findings for configuration management reports.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Tab: Instructor Guide -->
+            <div id="instructor" class="tab-content space-y-8">
+                <h2 class="text-2xl font-bold border-b pb-2 text-blue-800">Instructor Guide: Patriot Field Rations Case Study</h2>
+                
+                <div>
+                    <h3 class="font-bold text-lg mb-2">Learning Objectives</h3>
+                    <ul class="list-disc ml-5 text-sm space-y-1">
+                        <li>Identify CUI and FCI flows in an operational rations environment.</li>
+                        <li>Scope a CMMC Level 2 assessment boundary across multiple sites.</li>
+                        <li>Translate narrative case information into formal SSP, POA&M, SAR, and IRP documents.</li>
+                        <li>Evaluate supply chain and vulnerability management practices using CMMC language.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-lg mb-2">Suggested Mission Sequence</h3>
+                    <div class="space-y-4">
+                        <div class="p-4 bg-white border rounded">
+                            <p class="font-bold text-blue-700">Mission 1 – Scoping and CUI Identification</p>
+                            <p class="text-sm">Map out facilities, contracts, and systems in-scope for Level 2.</p>
+                        </div>
+                        <div class="p-4 bg-white border rounded">
+                            <p class="font-bold text-blue-700">Mission 2 – Assets and Access Control</p>
+                            <p class="text-sm">Build Asset Inventory and Access Control Matrix from IT and Org tabs.</p>
+                        </div>
+                        <div class="p-4 bg-white border rounded">
+                            <p class="font-bold text-blue-700">Mission 3 – Gap Analysis & POA&M</p>
+                            <p class="text-sm">Identify all 14 seeded gaps and create POA&M entries.</p>
+                        </div>
+                        <div class="p-4 bg-white border rounded">
+                            <p class="font-bold text-blue-700">Mission 4 – Incident Response</p>
+                            <p class="text-sm">Critique and refine the IRP based on the credential compromise and malware events.</p>
+                        </div>
+                        <div class="p-4 bg-white border rounded">
+                            <p class="font-bold text-blue-700">Mission 5 – SAR and SPRS Score</p>
+                            <p class="text-sm">Produce a SAR and justify the final -38 score.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-yellow-50 p-4 border border-yellow-200 rounded">
+                    <h3 class="font-bold text-yellow-800 mb-2">Instructor Hints (High-Level)</h3>
+                    <p class="text-sm italic">"Focus on the 'hidden' CUI in Contract 1 and 2. Key findings should revolve around the legacy cloud (LEGACYSTOR), the unpatched engineering file server (FILEENG01), and the WMS system nearing EOL. Ensure students don't miss the logging gaps in the WV and KY facilities where data is stored locally."</p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        function showTab(tabId) {
+            // Hide all contents
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+
+            // Remove active style from all buttons
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active-tab'));
+
+            // Show target content
+            document.getElementById(tabId).classList.add('active');
+
+            // Add active style to button
+            document.getElementById('btn-' + tabId).classList.add('active-tab');
+            
+            // Scroll to top of content area
+            document.querySelector('.flex-1').scrollTop = 0;
+        }
+    </script>
+</body>
+</html>
