@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -108,9 +109,10 @@
         /* Interactive Elements */
         .editable:focus { background: #fff9c4; outline: none; padding: 2px; }
         .btn-group { margin-bottom: 20px; }
-        .action-btn { background: var(--primary-green); color: white; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; }
+        .action-btn { background: var(--primary-green); color: white; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; margin-left: 10px; text-decoration: none; display: inline-block;}
         .action-btn:hover { background: var(--accent-black); }
 
+        /* Print Styles */
         @media print {
             nav, .btn-group, header button { display: none; }
             .tab-content { display: block !important; page-break-after: always; }
@@ -157,6 +159,8 @@
         <h2>Company Profile</h2>
         <div class="callout">
             <p class="editable">Atlas Systems Group (ASG) is a premier DoD IT services contractor. We specialize in providing managed help desk, SOC-as-a-Service, and enterprise-level IT infrastructure support to federal civilian and defense agencies. Our architecture is "Cloud-First," leveraging IL4/IL5 Azure Government environments for all CUI processing.</p>
+            <p class="editable">Founded in 2014, ASG has experienced rapid growth, expanding from a boutique consultancy to a trusted prime contractor. This trajectory is built on our unyielding commitment to security and reliability, earning us a high reputation within the Defense Industrial Base (DIB). Federal partners rely on ASG not just for steady-state operations, but for our proactive approach to threat manageemnt in the complex cloud enclaves we manage.</p>
+            <p class="editable">This deep technical expertise has positioned ASG as the 'specialized response team' for the government. We are frequently called in on difficult technical situations, ranging from forensic analysis of sophisticated cloud intrusions to rapidly engineering secure, compliant infrastructure for urgent mission requirements. When standard IT solutions fail or are deemed too slow, the DoD looks to Atlas to restore integrity and secure sensitive data.</p>
         </div>
 
         <h3>Key Metrics</h3>
@@ -194,6 +198,13 @@
                     <td>CUI//INDICATOR (Threat Intel)</td>
                     <td>7012, 252.204-21</td>
                 </tr>
+                <tr>
+                    <td>N68335-25-C-0114</td>
+                    <td>Naval Intelligence (NAS)</td>
+                    <td>Prime</td>
+                    <td>CUI//SP-CTI (Technical Solutions Install)</td>
+                    <td>7012, 7019, 7020, 7021 (L2)</td>
+                </tr>
             </tbody>
         </table>
     </div>
@@ -228,6 +239,11 @@
 
     <div id="tab-it" class="tab-content">
         <h2>Network & Infrastructure</h2>
+        
+        <div class="btn-group" style="margin-bottom: 20px;">
+            <a href="atlas-vlan-diagram.jpeg" target="_blank" class="action-btn">🗺️ View Network Diagram (Full Size)</a>
+        </div>
+
         <div class="callout">
             <strong>Hybrid Architecture:</strong> Arlington HQ (Site-to-Site VPN) ⟷ Azure Government (Entra ID).
         </div>
@@ -252,6 +268,12 @@
 
     <div id="tab-physical" class="tab-content">
         <h2>Physical Security Controls</h2>
+        
+        <div style="text-align: center; margin: 20px 0;">
+            <img src="atlas-security.jpeg" alt="Internal Security at Atlas" style="max-width: 100%; height: auto; border: 3px solid var(--border);">
+            <p><i>Internal Security View - Arlington HQ</i></p>
+        </div>
+
         <div class="callout">
             <strong>Arlington HQ:</strong> 4th Floor Multi-tenant Office. Interior "CUI Enclave" construction.
         </div>
@@ -281,6 +303,24 @@
             <tr><td>INC-26-02</td><td>Feb 02</td><td>Mimikatz alert on analyst Cloud PC.</td><td>Informal triage (no formal IR report).</td></tr>
             <tr><td>INC-26-03</td><td>Mar 12</td><td>4GB upload to personal Dropbox.</td><td><strong>Closed as "False Positive" by J. Wu.</strong></td></tr>
         </table>
+
+        <h3>Risk Management Experience & Priority Highlights</h3>
+        <div class="callout">
+            <ul style="margin: 0;">
+                <li><strong>1. Proactive Risk Register Integration:</strong> ASG maintains a dynamic Risk Register where identified gaps (e.g., RA-01) automatically feed into the Plan of Action & Milestones (POA&M) for senior leadership review and resource allocation.</li>
+                <li><strong>2. Hybrid Architecture Foresight:</strong> Recognizing cloud responsibility, ASG specifically segmented the Arlington S2S VPN tunnel (VLAN 20) to prevent on-premises general network contamination from impacting the primary CUI enclave in Azure Gov.</li>
+                <li><strong>3. Vendor Supply Chain Validation:</strong> ASG pioneered a CUI flow-down audit for NAS technical solutions, requiring all tier-two installation partners to produce NIST 800-171 self-assessments prior to contract flow-down.</li>
+                <li><strong>4. Zero Trust Identity Architecture:</strong> CISO David Chen prioritized the migration of all CUI-access accounts from standard AD to Azure Entra ID to enforce device compliance checks (managed device state) prior to VPN establishment.</li>
+                <li><strong>5. Automated Sentinel Sentinel Response (SOAR):</strong> SOC Manager Sarah Jenkins developed a custom SOAR playbook that immediately locks a Windows 365 Cloud PC if Mimikatz is detected (e.g., INC-26-02) and creates an automated forensic task ticket for analysts.</li>
+                <li><strong>6. Tabletop Exercise Realism:</strong> ASG utilizes simulated 'difficult technical situations' for quarterly tablestops, such as forensically analyzing a fictional 'DHS dashboard compromise' to test the IRP beyond general awareness scenarios.</li>
+                <li><strong>7. Physical/Network Dual Validation:</strong> Physical Security Mgr Robert Smith coordinates weekly with the SOC to validate that all remote admin sessions mapped in NetBox match authorized badged entries to the Arlington HQ.</li>
+                <li><strong>8. CUI Marking Automation:</strong> ASG engineered a custom M365 script that automatically marks any document containing Navy-specific contract numbers as CUI//CTI, significantly reducing manual error in technical document classification.</li>
+                <li><strong>9. Privilege Separation Mandate:</strong> CEO Sarah Vance personally approved the migration to Privilege Identity Management (PIM) for Global Admins, eliminating standing 'Always-On' administrative access to the Azure Gov tenant.</li>
+                <li><strong>10. Insider Threat Phishing:</strong> Monthly internal phishing exercises (monthly simulations) have reduced the SOC click rate by 50%, with users who fail standard tests automatically enrolled in remedial CUI Handling v1 training.</li>
+                <li><strong>11. Forensic Integrity Protocol:</strong> All SOC analysts use distinct forensic accounts for incident triage, ensuring that investigation logs cannot be overwritten or altered by standard administrative credentials.</li>
+                <li><strong>12. CMMC Level 2 as Priority:</strong> Recognizing the upcoming N68335 NAS requirements, David Chen prioritized the full close-out of GAP-01 (Shared Admins) over the end-of-life router replacement (RA-02), demonstrating proper security-based risk prioritized.</li>
+            </ul>
+        </div>
 
         <h3>Risk Register Highlights</h3>
         <div class="finding high">
