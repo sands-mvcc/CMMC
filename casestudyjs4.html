@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -572,6 +573,128 @@
             to { opacity: 1; transform: translateY(0); }
         }
         .animate-in { animation: fadeInUp 0.6s ease-out forwards; }
+
+        /* ===== EDIT TOOLBAR ===== */
+        #editToolbar {
+            position: sticky; top: 0; z-index: 1100;
+            background: linear-gradient(90deg, #0A2240 0%, #1A3A5C 100%);
+            border-bottom: 3px solid #F0A500;
+            padding: 0.5rem 1.5rem;
+            display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.35);
+        }
+        #editToolbar .tb-label {
+            color: rgba(255,255,255,0.5); font-size: 0.7rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1.5px; margin-right: 0.3rem;
+        }
+        #editToolbar .tb-sep {
+            width: 1px; height: 26px; background: rgba(255,255,255,0.18); margin: 0 0.4rem;
+        }
+        .tb-btn {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            padding: 0.42rem 1rem; border-radius: 6px; border: 1.5px solid transparent;
+            cursor: pointer; font-size: 0.82rem; font-weight: 700; transition: all 0.2s;
+            font-family: inherit; line-height: 1;
+        }
+        .tb-btn-edit   { background: rgba(240,165,0,0.15); color: #F9C946; border-color: rgba(240,165,0,0.35); }
+        .tb-btn-edit:hover,  .tb-btn-edit.active   { background: #F0A500; color: #0A2240; border-color: #F0A500; }
+        .tb-btn-delete { background: rgba(192,57,43,0.15); color: #E57373; border-color: rgba(192,57,43,0.35); }
+        .tb-btn-delete:hover, .tb-btn-delete.active { background: #C0392B; color: white; border-color: #C0392B; }
+        .tb-btn-add    { background: rgba(39,174,96,0.15); color: #6FCF97; border-color: rgba(39,174,96,0.35); }
+        .tb-btn-add:hover { background: #27AE60; color: white; border-color: #27AE60; }
+        .tb-btn-export { background: rgba(46,134,171,0.15); color: #7DD3F0; border-color: rgba(46,134,171,0.35); }
+        .tb-btn-export:hover { background: #2E86AB; color: white; border-color: #2E86AB; }
+        .tb-btn-reset  { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.7); border-color: rgba(255,255,255,0.2); }
+        .tb-btn-reset:hover { background: rgba(255,255,255,0.18); color: white; }
+        .tb-btn-print  { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.7); border-color: rgba(255,255,255,0.2); }
+        .tb-btn-print:hover { background: rgba(255,255,255,0.18); color: white; }
+
+        /* Edit mode — highlight editable zones */
+        body.edit-mode [contenteditable="true"] {
+            outline: 2px dashed rgba(240,165,0,0.6);
+            border-radius: 4px; min-height: 1em;
+            background: rgba(240,165,0,0.04) !important;
+        }
+        body.edit-mode [contenteditable="true"]:focus {
+            outline: 2px solid #F0A500;
+            background: rgba(240,165,0,0.08) !important;
+        }
+        body.edit-mode [contenteditable="true"]:empty::before {
+            content: attr(data-placeholder); color: rgba(0,0,0,0.3); font-style: italic;
+        }
+        .edit-mode-badge {
+            display: none; background: #F0A500; color: #0A2240;
+            font-size: 0.65rem; font-weight: 800; padding: 0.15rem 0.5rem;
+            border-radius: 10px; letter-spacing: 0.5px; text-transform: uppercase;
+        }
+        body.edit-mode .edit-mode-badge { display: inline-block; }
+
+        /* Delete mode — delete buttons */
+        .delete-btn {
+            display: none; position: absolute; top: 6px; right: 6px;
+            background: #C0392B; color: white; border: none;
+            width: 24px; height: 24px; border-radius: 50%;
+            cursor: pointer; font-size: 13px; font-weight: 900;
+            line-height: 24px; text-align: center; z-index: 50;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3); transition: all 0.2s;
+        }
+        .delete-btn:hover { background: #922B21; transform: scale(1.15); }
+        body.delete-mode .deletable { position: relative; }
+        body.delete-mode .deletable .delete-btn { display: block; }
+        body.delete-mode .deletable:hover { outline: 2px solid #C0392B; border-radius: 8px; }
+
+        /* Add Item modal */
+        #addModal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); z-index: 11000; overflow-y: auto;
+        }
+        #addModal.open { display: flex; align-items: flex-start; justify-content: center; padding: 2rem; }
+        #addModalContent {
+            background: white; border-radius: 14px; padding: 2rem;
+            width: 100%; max-width: 620px; box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            margin-top: 2rem;
+        }
+        #addModalContent h2 {
+            color: var(--navy); font-size: 1.4rem; border-bottom: 3px solid var(--amber);
+            padding-bottom: 0.6rem; margin-bottom: 1.2rem;
+        }
+        .add-type-tabs {
+            display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1.5rem;
+        }
+        .add-tab {
+            padding: 0.4rem 1rem; border-radius: 20px; border: 2px solid #dde3ec;
+            cursor: pointer; font-weight: 600; font-size: 0.82rem; background: white;
+            color: var(--text-muted); transition: all 0.2s;
+        }
+        .add-tab.active { background: var(--navy); color: white; border-color: var(--navy); }
+        .add-form-panel { display: none; }
+        .add-form-panel.active { display: block; }
+        .add-form-panel .form-group { margin-bottom: 0.9rem; }
+        .add-form-panel .form-group label { font-size: 0.82rem; font-weight: 600; display: block; margin-bottom: 0.3rem; }
+        .add-form-panel .form-group input,
+        .add-form-panel .form-group textarea,
+        .add-form-panel .form-group select {
+            width: 100%; padding: 0.65rem; border: 2px solid #dde3ec;
+            border-radius: 6px; font-size: 0.9rem; font-family: inherit;
+        }
+        .add-form-panel .form-group input:focus,
+        .add-form-panel .form-group textarea:focus { outline: none; border-color: var(--blue); }
+        .add-modal-footer { display: flex; justify-content: flex-end; gap: 0.6rem; margin-top: 1.2rem; }
+        .add-cancel { background: #f1f3f5; color: var(--text); border: none; padding: 0.6rem 1.3rem; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .add-save { background: var(--navy); color: white; border: none; padding: 0.6rem 1.6rem; border-radius: 6px; cursor: pointer; font-weight: 700; }
+        .add-save:hover { background: var(--blue); }
+
+        /* ===== PRINT STYLES ===== */
+        @media print {
+            #editToolbar, .admin-toggle, .admin-panel, #addModal,
+            .findings-controls, .toggle-state-btn { display: none !important; }
+            header { position: relative !important; }
+            body { background: white !important; }
+            section, .gauge-section { box-shadow: none !important; break-inside: avoid; }
+            .finding-body { display: block !important; }
+            footer { break-before: page; }
+            a[href]::after { content: none !important; }
+        }
     </style>
 </head>
 <body>
@@ -630,6 +753,87 @@
             </div>
             <button class="admin-btn" onclick="adminAddGrant()">Add Grant</button>
             <ul class="admin-list" id="adminGrantsList"></ul>
+        </div>
+    </div>
+</div>
+
+<!-- ===== EDIT TOOLBAR ===== -->
+<div id="editToolbar">
+    <span class="tb-label">Page Tools</span>
+    <span class="edit-mode-badge">&#9998; Editing</span>
+    <div class="tb-sep"></div>
+    <button class="tb-btn tb-btn-edit" id="editModeBtn" onclick="toggleEditMode()">&#9998; Edit Mode</button>
+    <button class="tb-btn tb-btn-delete" id="deleteModeBtn" onclick="toggleDeleteMode()">&#128465; Delete Mode</button>
+    <div class="tb-sep"></div>
+    <button class="tb-btn tb-btn-add" onclick="openAddModal()">&#43; Add Item</button>
+    <div class="tb-sep"></div>
+    <button class="tb-btn tb-btn-export" onclick="exportHTML()">&#8659; Export HTML</button>
+    <button class="tb-btn tb-btn-reset" onclick="resetPage()">&#8635; Reset</button>
+    <button class="tb-btn tb-btn-print" onclick="printPage()">&#128424; Print</button>
+</div>
+
+<!-- ===== ADD ITEM MODAL ===== -->
+<div id="addModal">
+    <div id="addModalContent">
+        <h2>&#43; Add New Item</h2>
+        <div class="add-type-tabs">
+            <button class="add-tab active" onclick="switchAddTab('finding', this)">CMMC Finding</button>
+            <button class="add-tab" onclick="switchAddTab('grant', this)">Grant</button>
+            <button class="add-tab" onclick="switchAddTab('team', this)">Team Member</button>
+            <button class="add-tab" onclick="switchAddTab('message', this)">Board Message</button>
+            <button class="add-tab" onclick="switchAddTab('section', this)">Custom Section</button>
+        </div>
+
+        <!-- Finding panel -->
+        <div class="add-form-panel active" id="addPanel-finding">
+            <div class="form-group"><label>Finding ID (e.g. F-009)</label><input id="nf-id" placeholder="F-009"></div>
+            <div class="form-group"><label>Severity</label>
+                <select id="nf-sev"><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select></div>
+            <div class="form-group"><label>Title</label><input id="nf-title" placeholder="Finding title..."></div>
+            <div class="form-group"><label>CMMC Practice (e.g. AC.1.001)</label><input id="nf-domain" placeholder="AC.1.001"></div>
+            <div class="form-group"><label>Description</label><textarea id="nf-desc" rows="3" placeholder="Describe the gap..."></textarea></div>
+            <div class="form-group"><label>Risk</label><textarea id="nf-risk" rows="2" placeholder="Describe the risk..."></textarea></div>
+            <div class="form-group"><label>Remediation</label><textarea id="nf-remed" rows="2" placeholder="Remediation steps..."></textarea></div>
+            <div class="form-group"><label>Est. Cost Range</label><input id="nf-cost" placeholder="$10,000–$20,000"></div>
+            <div class="form-group"><label>Timeline</label><input id="nf-time" placeholder="30–60 days"></div>
+        </div>
+
+        <!-- Grant panel -->
+        <div class="add-form-panel" id="addPanel-grant">
+            <div class="form-group"><label>Agency</label>
+                <select id="ng-agency"><option>DARPA</option><option>ONR</option><option>AFOSR</option><option>ARO</option><option>NSF</option><option>AFRL</option></select></div>
+            <div class="form-group"><label>Grant Title</label><input id="ng-title" placeholder="Full grant title..."></div>
+            <div class="form-group"><label>Grant Number</label><input id="ng-num" placeholder="e.g. DARPA-HR0011-25-C-0XXX"></div>
+            <div class="form-group"><label>Award Amount</label><input id="ng-amount" placeholder="$2,500,000"></div>
+            <div class="form-group"><label>Period of Performance</label><input id="ng-period" placeholder="Oct 2024 – Sep 2027"></div>
+            <div class="form-group"><label>Research Area / Description</label><textarea id="ng-desc" rows="3" placeholder="Research focus..."></textarea></div>
+            <div class="form-group"><label>PI Name</label><input id="ng-pi" placeholder="Dr. Name, Title"></div>
+        </div>
+
+        <!-- Team panel -->
+        <div class="add-form-panel" id="addPanel-team">
+            <div class="form-group"><label>Name &amp; Credentials</label><input id="nt-name" placeholder="Dr. Jane Smith, Ph.D."></div>
+            <div class="form-group"><label>Title / Role</label><input id="nt-title" placeholder="Role at SRI..."></div>
+            <div class="form-group"><label>Avatar Emoji</label><input id="nt-avatar" placeholder="e.g. 🔬 or 💻" value="👤"></div>
+            <div class="form-group"><label>Bio</label><textarea id="nt-bio" rows="4" placeholder="2–3 sentence bio..."></textarea></div>
+        </div>
+
+        <!-- Message panel -->
+        <div class="add-form-panel" id="addPanel-message">
+            <div class="form-group"><label>Author Name &amp; Title</label><input id="nm-author" placeholder="Dr. Name, Role"></div>
+            <div class="form-group"><label>Organization</label><input id="nm-org" placeholder="Institution / Lab"></div>
+            <div class="form-group"><label>Message</label><textarea id="nm-msg" rows="4" placeholder="Message content..."></textarea></div>
+        </div>
+
+        <!-- Custom section panel -->
+        <div class="add-form-panel" id="addPanel-section">
+            <div class="form-group"><label>Section Title</label><input id="ns-title" placeholder="Section heading..."></div>
+            <div class="form-group"><label>Content</label><textarea id="ns-content" rows="6" placeholder="Section content (HTML supported)..."></textarea></div>
+        </div>
+
+        <div class="add-modal-footer">
+            <button class="add-cancel" onclick="closeAddModal()">Cancel</button>
+            <button class="add-save" onclick="saveAddItem()">&#43; Add Item</button>
         </div>
     </div>
 </div>
@@ -2122,9 +2326,315 @@
     // ===== INIT =====
     document.addEventListener('DOMContentLoaded', function() {
         buildAdminFindingsList();
-        // Animate the gauge needle on load
         setTimeout(() => updateArc(38), 300);
+        // Snapshot original HTML for reset
+        window._originalHTML = document.documentElement.outerHTML;
+        // Add delete buttons to all deletable elements
+        addDeleteButtons();
     });
+
+    // ===== EDIT MODE =====
+    let editModeOn = false;
+    const editableSelectors = [
+        '.profile-card .value', '.profile-card .sub',
+        '.grant-card h4', '.grant-card .grant-number', '.grant-card .grant-amount',
+        '.grant-card p', '.grant-meta-item',
+        '.finding-title', '.finding-desc p', '.risk-box p', '.remediation-box p',
+        '.finding-detail p',
+        'h2', 'h3', 'h4',
+        'section > p', '.info-box p', '.info-box h3',
+        '.team-name', '.team-title', '.team-bio',
+        '.reg-card h4', '.reg-card p',
+        '.phase-card h4', '.phase-card .phase-timeline',
+        '.phase-card li', '.phase-cost',
+        '.message-text', '.message-author',
+        '.hero h1', '.hero p',
+        '.alert-banner',
+        '.total-cost-number',
+        'footer .footer-section h3', 'footer .footer-section a',
+        '.footer-bottom p'
+    ];
+
+    function toggleEditMode() {
+        editModeOn = !editModeOn;
+        const btn = document.getElementById('editModeBtn');
+        const body = document.body;
+        if (editModeOn) {
+            body.classList.add('edit-mode');
+            btn.classList.add('active');
+            btn.textContent = '✓ Done Editing';
+            editableSelectors.forEach(sel => {
+                document.querySelectorAll(sel).forEach(el => {
+                    // Don't make SVG elements or buttons editable
+                    if (el.closest('svg') || el.tagName === 'BUTTON' || el.tagName === 'A') return;
+                    el.contentEditable = 'true';
+                    el.setAttribute('data-placeholder', 'Click to edit...');
+                });
+            });
+            showNotification('✏️ Edit Mode ON — click any text to edit it', 'amber');
+        } else {
+            body.classList.remove('edit-mode');
+            btn.classList.remove('active');
+            btn.textContent = '✏ Edit Mode';
+            document.querySelectorAll('[contenteditable="true"]').forEach(el => {
+                el.contentEditable = 'false';
+            });
+            showNotification('✓ Edits saved to page', 'green');
+        }
+    }
+
+    // ===== DELETE MODE =====
+    let deleteModeOn = false;
+    function toggleDeleteMode() {
+        deleteModeOn = !deleteModeOn;
+        const btn = document.getElementById('deleteModeBtn');
+        if (deleteModeOn) {
+            document.body.classList.add('delete-mode');
+            btn.classList.add('active');
+            btn.textContent = '✓ Done Deleting';
+            showNotification('🗑️ Delete Mode ON — click ✕ on any item to remove it', 'red');
+        } else {
+            document.body.classList.remove('delete-mode');
+            btn.classList.remove('active');
+            btn.textContent = '🗑 Delete Mode';
+            showNotification('Delete Mode OFF', 'green');
+        }
+    }
+
+    function addDeleteButtons() {
+        const deletableClasses = [
+            '.profile-card', '.grant-card', '.finding-card',
+            '.team-card', '.reg-card', '.message-item',
+            '.phase-card', '.resource-card', 'section'
+        ];
+        deletableClasses.forEach(sel => {
+            document.querySelectorAll(sel).forEach(el => {
+                if (el.querySelector('.delete-btn')) return; // already has one
+                el.classList.add('deletable');
+                const btn = document.createElement('button');
+                btn.className = 'delete-btn';
+                btn.textContent = '✕';
+                btn.title = 'Delete this item';
+                btn.onclick = function(e) {
+                    e.stopPropagation();
+                    if (confirm('Delete this item?')) {
+                        el.style.transition = 'opacity 0.3s, transform 0.3s';
+                        el.style.opacity = '0';
+                        el.style.transform = 'scale(0.95)';
+                        setTimeout(() => el.remove(), 300);
+                    }
+                };
+                el.appendChild(btn);
+            });
+        });
+    }
+
+    // ===== ADD ITEM MODAL =====
+    let currentAddTab = 'finding';
+    function openAddModal() {
+        document.getElementById('addModal').classList.add('open');
+    }
+    function closeAddModal() {
+        document.getElementById('addModal').classList.remove('open');
+    }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAddModal(); });
+    document.getElementById('addModal').addEventListener('click', function(e) {
+        if (e.target === this) closeAddModal();
+    });
+
+    function switchAddTab(type, btn) {
+        currentAddTab = type;
+        document.querySelectorAll('.add-tab').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll('.add-form-panel').forEach(p => p.classList.remove('active'));
+        document.getElementById('addPanel-' + type).classList.add('active');
+    }
+
+    function saveAddItem() {
+        switch(currentAddTab) {
+            case 'finding':   addFinding(); break;
+            case 'grant':     addGrant(); break;
+            case 'team':      addTeamMember(); break;
+            case 'message':   addBoardMessage(); break;
+            case 'section':   addCustomSection(); break;
+        }
+    }
+
+    function addFinding() {
+        const id    = document.getElementById('nf-id').value || 'F-NEW';
+        const sev   = document.getElementById('nf-sev').value;
+        const title = document.getElementById('nf-title').value;
+        const dom   = document.getElementById('nf-domain').value;
+        const desc  = document.getElementById('nf-desc').value;
+        const risk  = document.getElementById('nf-risk').value;
+        const remed = document.getElementById('nf-remed').value;
+        const cost  = document.getElementById('nf-cost').value;
+        const time  = document.getElementById('nf-time').value;
+        if (!title) { alert('Please enter a finding title.'); return; }
+        const sevLabel = sev.charAt(0).toUpperCase() + sev.slice(1);
+        const card = document.createElement('div');
+        card.className = 'finding-card deletable';
+        card.dataset.severity = sev;
+        card.innerHTML = `
+            <div class="finding-header" onclick="toggleFinding(this)">
+                <span class="finding-id">${escapeHtml(id)}</span>
+                <span class="severity-badge severity-${sev}">${sevLabel}</span>
+                <span class="finding-title">${escapeHtml(title)}</span>
+                <span class="finding-domain">${escapeHtml(dom)}</span>
+                <span class="finding-toggle">&#9660;</span>
+            </div>
+            <div class="finding-body">
+                <div class="finding-detail-grid">
+                    <div class="finding-detail"><h5>Est. Cost</h5><p>${escapeHtml(cost||'TBD')}</p></div>
+                    <div class="finding-detail"><h5>Timeline</h5><p>${escapeHtml(time||'TBD')}</p></div>
+                </div>
+                <div class="finding-desc">
+                    <h5>Description</h5><p>${escapeHtml(desc)}</p>
+                    ${risk ? `<div class="risk-box"><h5>⚠ Risk</h5><p>${escapeHtml(risk)}</p></div>` : ''}
+                    ${remed ? `<div class="remediation-box"><h5>✓ Remediation</h5><p>${escapeHtml(remed)}</p></div>` : ''}
+                </div>
+            </div>
+            <button class="delete-btn" onclick="if(confirm('Delete?')){this.closest('.finding-card').remove()}">✕</button>`;
+        document.getElementById('findingsContainer').appendChild(card);
+        closeAddModal();
+        showNotification('Finding ' + id + ' added', 'green');
+        buildAdminFindingsList();
+    }
+
+    function addGrant() {
+        const agency  = document.getElementById('ng-agency').value;
+        const title   = document.getElementById('ng-title').value;
+        const num     = document.getElementById('ng-num').value;
+        const amount  = document.getElementById('ng-amount').value;
+        const period  = document.getElementById('ng-period').value;
+        const desc    = document.getElementById('ng-desc').value;
+        const pi      = document.getElementById('ng-pi').value;
+        if (!title) { alert('Please enter a grant title.'); return; }
+        const cls = agency === 'ONR' ? 'onr' : 'darpa';
+        const card = document.createElement('div');
+        card.className = `grant-card ${cls} deletable`;
+        card.innerHTML = `
+            <span class="grant-badge ${cls}">${escapeHtml(agency)}</span>
+            <h4>${escapeHtml(title)}</h4>
+            <div class="grant-number">${escapeHtml(num)}</div>
+            <div class="grant-amount">${escapeHtml(amount)}</div>
+            <div class="grant-meta">
+                <div class="grant-meta-item"><strong>Period:</strong> ${escapeHtml(period)}</div>
+                <div class="grant-meta-item"><strong>PI:</strong> ${escapeHtml(pi)}</div>
+            </div>
+            <p style="font-size:0.85rem;color:var(--text);margin-top:0.5rem;">${escapeHtml(desc)}</p>
+            <button class="delete-btn" onclick="if(confirm('Delete?')){this.closest('.grant-card').remove()}">✕</button>`;
+        document.getElementById('grantsGrid').appendChild(card);
+        closeAddModal();
+        showNotification('Grant added', 'green');
+    }
+
+    function addTeamMember() {
+        const name   = document.getElementById('nt-name').value;
+        const title  = document.getElementById('nt-title').value;
+        const avatar = document.getElementById('nt-avatar').value || '👤';
+        const bio    = document.getElementById('nt-bio').value;
+        if (!name) { alert('Please enter a name.'); return; }
+        const card = document.createElement('div');
+        card.className = 'team-card deletable';
+        card.innerHTML = `
+            <div class="team-avatar">${avatar}</div>
+            <div class="team-name">${escapeHtml(name)}</div>
+            <div class="team-title">${escapeHtml(title)}</div>
+            <div class="team-bio">${escapeHtml(bio)}</div>
+            <button class="delete-btn" onclick="if(confirm('Delete?')){this.closest('.team-card').remove()}">✕</button>`;
+        document.querySelector('.team-grid').appendChild(card);
+        closeAddModal();
+        showNotification('Team member added', 'green');
+    }
+
+    function addBoardMessage() {
+        const author = document.getElementById('nm-author').value;
+        const org    = document.getElementById('nm-org').value;
+        const msg    = document.getElementById('nm-msg').value;
+        if (!msg) { alert('Please enter a message.'); return; }
+        const now = new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+        const container = document.getElementById('messagesContainer');
+        const item = document.createElement('div');
+        item.className = 'message-item deletable';
+        item.innerHTML = `
+            <div class="message-header">
+                <span class="message-author">${escapeHtml(author)}${org?' — '+escapeHtml(org):''}</span>
+                <span class="message-date">${now}</span>
+            </div>
+            <p class="message-text">${escapeHtml(msg)}</p>
+            <button class="delete-btn" onclick="if(confirm('Delete?')){this.closest('.message-item').remove()}">✕</button>`;
+        container.appendChild(item);
+        closeAddModal();
+        showNotification('Message posted', 'green');
+    }
+
+    function addCustomSection() {
+        const title   = document.getElementById('ns-title').value || 'New Section';
+        const content = document.getElementById('ns-content').value;
+        const sec = document.createElement('section');
+        sec.className = 'deletable';
+        sec.innerHTML = `
+            <h2>${escapeHtml(title)}</h2>
+            <div>${content}</div>
+            <button class="delete-btn" onclick="if(confirm('Delete this section?')){this.closest('section').remove()}">✕</button>`;
+        document.querySelector('.container').appendChild(sec);
+        closeAddModal();
+        sec.scrollIntoView({ behavior: 'smooth' });
+        showNotification('Section "' + title + '" added', 'green');
+    }
+
+    // ===== EXPORT =====
+    function exportHTML() {
+        // Temporarily disable edit/delete modes for clean export
+        const wasEdit = editModeOn, wasDelete = deleteModeOn;
+        if (wasEdit) { editModeOn = false; document.body.classList.remove('edit-mode'); document.querySelectorAll('[contenteditable]').forEach(e => e.removeAttribute('contenteditable')); }
+        if (wasDelete) { deleteModeOn = false; document.body.classList.remove('delete-mode'); }
+
+        const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+        const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'summit-research-institute-' + new Date().toISOString().slice(0,10) + '.html';
+        a.click();
+        URL.revokeObjectURL(url);
+
+        // Restore modes
+        if (wasEdit) toggleEditMode();
+        if (wasDelete) toggleDeleteMode();
+        showNotification('✓ HTML file downloaded', 'blue');
+    }
+
+    // ===== RESET =====
+    function resetPage() {
+        if (!confirm('Reset the entire page to its original state? All edits, additions, and deletions will be lost.')) return;
+        document.open();
+        document.write(window._originalHTML);
+        document.close();
+    }
+
+    // ===== PRINT =====
+    function printPage() {
+        window.print();
+    }
+
+    // ===== NOTIFICATION TOAST =====
+    function showNotification(msg, type) {
+        const existing = document.getElementById('toast-notif');
+        if (existing) existing.remove();
+        const colors = { amber:'#F0A500', green:'#27AE60', red:'#C0392B', blue:'#2E86AB' };
+        const toast = document.createElement('div');
+        toast.id = 'toast-notif';
+        toast.style.cssText = `position:fixed;bottom:80px;left:50%;transform:translateX(-50%);
+            background:${colors[type]||colors.green};color:${type==='amber'?'#0A2240':'white'};
+            padding:0.6rem 1.6rem;border-radius:25px;font-weight:700;font-size:0.85rem;
+            z-index:99999;box-shadow:0 4px 16px rgba(0,0,0,0.25);
+            animation:fadeInUp 0.3s ease;pointer-events:none;`;
+        toast.textContent = msg;
+        document.body.appendChild(toast);
+        setTimeout(() => { toast.style.opacity='0'; toast.style.transition='opacity 0.4s'; setTimeout(()=>toast.remove(),400); }, 2800);
+    }
 </script>
 </body>
 </html>
