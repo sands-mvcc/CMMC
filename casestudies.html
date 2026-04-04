@@ -1,425 +1,494 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Atlas Systems Group | CMMC Level 2 Case Study</title>
-    <style>
-        :root {
-            --primary-green: #2e7d32;
-            --accent-black: #000000;
-            --white: #ffffff;
-            --light-gray: #f4f4f4;
-            --border: #dddddd;
-            --warning: #ff9800;
-            --critical: #d32f2f;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CMMC Training Case Studies | CMMC 2.0 Portal</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(135deg,#0d1b2a 0%,#1b3a5c 100%);min-height:100vh;color:#333;}
+  a{text-decoration:none;color:inherit;}
+  .container{max-width:1200px;margin:0 auto;padding:2rem;}
 
-        body {
-            font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
-            background-color: var(--white);
-            color: var(--accent-black);
-            margin: 0;
-            padding: 0;
-            line-height: 1.6;
-        }
+  .back-nav{margin-bottom:1.5rem;}
+  .back-nav a{color:rgba(255,255,255,.8);font-size:.88rem;font-weight:600;display:inline-flex;align-items:center;gap:.4rem;padding:.4rem .9rem;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:20px;transition:all .2s;}
+  .back-nav a:hover{background:rgba(255,255,255,.2);color:#fff;}
 
-        /* Header & Branding */
-        header {
-            border-bottom: 5px solid var(--primary-green);
-            padding: 20px 50px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--white);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
+  /* Header */
+  .header{text-align:center;margin-bottom:2rem;padding:2.5rem 2rem;background:rgba(255,255,255,.97);border-radius:18px;box-shadow:0 12px 40px rgba(0,0,0,.25);position:relative;overflow:hidden;}
+  .header::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,#0d1b2a,#1e90ff,#f0a500,#2ecc71,#1e90ff);}
+  .page-label{display:inline-block;background:#e8f0fa;color:#0d1b2a;font-size:.8rem;font-weight:700;padding:.3rem .8rem;border-radius:20px;margin-bottom:.75rem;border:1px solid #b0c8e8;}
+  .header h1{font-size:2.5rem;color:#0d1b2a;margin-bottom:.4rem;font-weight:800;}
+  .header h1 span{color:#1e90ff;}
+  .header .subtitle{color:#555;font-size:1rem;max-width:680px;margin:.5rem auto 1.5rem;}
+  .header-stats{display:flex;justify-content:center;gap:2.5rem;flex-wrap:wrap;margin-top:1.2rem;}
+  .hstat .snum{font-size:2rem;font-weight:800;color:#0d1b2a;}
+  .hstat .slbl{font-size:.75rem;color:#666;text-transform:uppercase;letter-spacing:.06em;}
 
-        .logo-container { display: flex; align-items: center; gap: 20px; }
-        .logo-sq { width: 60px; height: 60px; background: var(--accent-black); color: var(--primary-green); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 24px; border: 2px solid var(--primary-green); }
-        
-        .header-text h1 { margin: 0; font-size: 22px; text-transform: uppercase; letter-spacing: 2px; }
-        .header-text p { margin: 0; color: var(--primary-green); font-weight: bold; font-size: 14px; }
+  /* Purpose box */
+  .purpose-box{display:flex;gap:1.2rem;background:rgba(255,255,255,.97);border-radius:14px;padding:1.5rem;margin-bottom:2rem;box-shadow:0 6px 20px rgba(0,0,0,.12);border-left:5px solid #f0a500;align-items:flex-start;}
+  .picon{font-size:2rem;flex-shrink:0;}
+  .purpose-box h3{font-size:1rem;color:#0d1b2a;margin-bottom:.4rem;font-weight:700;}
+  .purpose-box p{color:#555;font-size:.88rem;line-height:1.65;}
 
-        /* Navigation */
-        nav {
-            background: var(--accent-black);
-            display: flex;
-            padding: 0 50px;
-            overflow-x: auto;
-            border-bottom: 2px solid var(--primary-green);
-        }
+  /* Contractor types section */
+  .dib-section{background:rgba(255,255,255,.97);border-radius:14px;padding:1.75rem;margin-bottom:2rem;box-shadow:0 6px 20px rgba(0,0,0,.12);}
+  .dib-section-hdr{margin-bottom:1rem;}
+  .dib-section-hdr h3{font-size:1rem;color:#0d1b2a;font-weight:700;margin-bottom:.45rem;}
+  .dib-section-hdr p{font-size:.85rem;color:#555;line-height:1.65;}
+  .dib-value-box{background:#f0f6ff;border:1px solid #b0c8e8;border-radius:10px;padding:1rem 1.25rem;margin-bottom:1.25rem;font-size:.85rem;color:#1e3a5f;line-height:1.65;}
+  .dib-value-box strong{color:#0d1b2a;}
+  .dib-chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:.65rem;}
+  .dib-chip{background:linear-gradient(135deg,#0d1b2a,#1b3a5c);border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:.75rem 1rem;color:#fff;display:flex;align-items:center;gap:.6rem;cursor:pointer;transition:all .2s;font-size:.84rem;font-weight:600;text-align:left;width:100%;}
+  .dib-chip:hover{background:linear-gradient(135deg,#1e3a6b,#1e90ff);transform:translateY(-2px);box-shadow:0 5px 16px rgba(30,144,255,.3);border-color:#1e90ff;}
+  .dib-chip-icon{font-size:1.3rem;flex-shrink:0;}
+  .dib-chip-arrow{margin-left:auto;opacity:.55;font-size:.75rem;}
 
-        .nav-item {
-            color: white;
-            padding: 15px 25px;
-            text-decoration: none;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            border-right: 1px solid #333;
-            transition: 0.3s;
-            white-space: nowrap;
-        }
+  /* Contractor modal */
+  .ctr-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:2000;align-items:center;justify-content:center;padding:1rem;}
+  .ctr-overlay.show{display:flex;}
+  .ctr-box{background:#fff;border-radius:18px;max-width:700px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,0,.4);animation:ctrIn .2s ease;}
+  @keyframes ctrIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+  .ctr-header{padding:1.5rem 1.75rem 1rem;border-bottom:2px solid #e2e8f0;position:sticky;top:0;background:#fff;border-radius:18px 18px 0 0;z-index:1;}
+  .ctr-hdr-top{display:flex;align-items:center;gap:1rem;justify-content:space-between;}
+  .ctr-icon-badge{font-size:2rem;width:58px;height:58px;background:linear-gradient(135deg,#0d1b2a,#1e90ff);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .ctr-title{flex:1;}
+  .ctr-title h2{font-size:1.2rem;font-weight:800;color:#0d1b2a;margin-bottom:.15rem;}
+  .ctr-title p{font-size:.8rem;color:#64748b;}
+  .ctr-close{background:none;border:none;font-size:1.4rem;color:#94a3b8;cursor:pointer;padding:.2rem;line-height:1;transition:color .15s;}
+  .ctr-close:hover{color:#0d1b2a;}
+  .ctr-body{padding:1.25rem 1.75rem 1.75rem;}
+  .ctr-body h3{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#64748b;margin-bottom:.55rem;padding-bottom:.3rem;border-bottom:1px solid #e2e8f0;}
+  .ctr-body p{font-size:.9rem;color:#334155;line-height:1.7;margin-bottom:1rem;}
+  .ctr-examples{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem;}
+  .ctr-ex{background:#e8f0fa;color:#0d1b2a;font-size:.76rem;font-weight:700;padding:.22rem .65rem;border-radius:20px;border:1px solid #b0c8e8;}
+  .ctr-cmmc-box{background:#fef3c7;border:1px solid #fcd34d;border-radius:10px;padding:.9rem 1.1rem;font-size:.85rem;color:#7c4a00;line-height:1.6;}
+  .ctr-cmmc-box strong{color:#0d1b2a;}
+  @media(max-width:640px){
+    .ctr-box{border-radius:12px;}
+    .dib-chips{grid-template-columns:1fr 1fr;}
+  }
 
-        .nav-item:hover, .nav-item.active { background: var(--primary-green); color: white; }
+  /* Section label */
+  .section-label{color:rgba(255,255,255,.8);font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:.9rem;}
 
-        /* Main Content */
-        .container { max-width: 1300px; margin: 30px auto; padding: 0 40px; }
-        
-        .tab-content { display: none; animation: slideUp 0.4s ease-out; }
-        .tab-content.active { display: block; }
+  /* Case cards grid */
+  .cases-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1.5rem;margin-bottom:2rem;}
+  .case-card{background:rgba(255,255,255,.97);border-radius:15px;box-shadow:0 8px 25px rgba(0,0,0,.14);overflow:hidden;transition:all .3s;display:flex;flex-direction:column;}
+  .case-card:hover{transform:translateY(-5px);box-shadow:0 18px 45px rgba(0,0,0,.22);}
+  .case-card-top{height:7px;}
+  .case-card-body{padding:1.5rem;flex:1;display:flex;flex-direction:column;}
+  .case-sector{display:inline-flex;align-items:center;gap:.4rem;font-size:.73rem;font-weight:700;padding:.2rem .6rem;border-radius:12px;margin-bottom:.7rem;}
+  .case-org-icon{font-size:2rem;margin-bottom:.5rem;}
+  .case-card-body h3{font-size:1.1rem;font-weight:800;color:#0d1b2a;margin-bottom:.3rem;}
+  .case-card-body .case-desc{font-size:.85rem;color:#555;line-height:1.55;margin-bottom:.8rem;}
+  .case-facts{display:grid;grid-template-columns:1fr 1fr;gap:.3rem .6rem;margin-bottom:.9rem;}
+  .fact{font-size:.77rem;color:#444;}
+  .fact span{font-weight:700;color:#0d1b2a;}
+  .case-tags{display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:1rem;}
+  .ctag{font-size:.7rem;font-weight:700;padding:.15rem .5rem;border-radius:8px;}
+  .case-btn{display:block;text-align:center;background:linear-gradient(135deg,#0d1b2a,#2e4a6b);color:#fff;font-size:.85rem;font-weight:700;padding:.6rem 1rem;border-radius:25px;transition:all .2s;margin-top:auto;box-shadow:0 3px 10px rgba(13,27,42,.25);}
+  .case-btn:hover{background:linear-gradient(135deg,#1e90ff,#2e4a6b);box-shadow:0 5px 15px rgba(30,144,255,.35);}
+  .case-btn.featured{background:linear-gradient(135deg,#1e3a6b,#1e90ff);}
+  .case-btn.featured:hover{background:linear-gradient(135deg,#1e90ff,#2ecc71);}
 
-        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  /* Footer */
+  .footer{text-align:center;padding:2rem;background:rgba(255,255,255,.08);border-radius:15px;color:rgba(255,255,255,.85);margin-top:2rem;border:1px solid rgba(255,255,255,.12);}
+  .footer p{margin-bottom:.4rem;font-size:.87rem;}
+  .version-badge{display:inline-block;background:rgba(255,255,255,.15);color:#fff;padding:.25rem .8rem;border-radius:20px;font-size:.78rem;font-weight:600;margin-top:.8rem;}
 
-        /* Dashboard/Hero Stats */
-        .hero-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }
-        .stat-card { border: 1px solid var(--border); padding: 20px; text-align: center; border-bottom: 4px solid var(--primary-green); }
-        .stat-card h3 { margin: 0; color: var(--primary-green); font-size: 28px; }
-        .stat-card p { margin: 5px 0 0; font-size: 12px; font-weight: bold; text-transform: uppercase; }
-
-        /* Typography & Layout */
-        h2 { border-left: 5px solid var(--primary-green); padding-left: 15px; text-transform: uppercase; font-size: 20px; margin-top: 40px; }
-        .callout { background: var(--light-gray); border-left: 5px solid var(--accent-black); padding: 20px; margin: 20px 0; }
-        
-        table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
-        th { background: var(--light-gray); text-align: left; padding: 12px; border-bottom: 2px solid var(--primary-green); }
-        td { padding: 12px; border-bottom: 1px solid var(--border); }
-        tr:hover { background-color: #fcfcfc; }
-
-        /* Specific Component: Findings/Gaps */
-        .finding { border: 1px solid var(--border); margin-bottom: 10px; }
-        .finding-header { padding: 15px; background: var(--light-gray); cursor: pointer; display: flex; justify-content: space-between; font-weight: bold; align-items: center; }
-        .finding-body { padding: 20px; display: none; border-top: 1px solid var(--border); background: #fff; }
-        .finding.crit { border-left: 10px solid var(--accent-black); }
-        .finding.high { border-left: 10px solid var(--critical); }
-        .tag { padding: 2px 8px; font-size: 10px; color: white; text-transform: uppercase; border-radius: 3px; }
-        .tag-crit { background: black; }
-        .tag-high { background: var(--critical); }
-
-        /* Personnel Grid */
-        .people-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-        .person-card { border: 1px solid var(--border); padding: 15px; display: flex; gap: 15px; align-items: center; }
-        .person-avatar { width: 50px; height: 50px; background: #eee; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--primary-green); border: 1px solid var(--primary-green); }
-
-        /* Interactive Elements */
-        .editable:focus { background: #fff9c4; outline: none; padding: 2px; }
-        .btn-group { margin-bottom: 20px; }
-        .action-btn { background: var(--primary-green); color: white; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; margin-left: 10px; text-decoration: none; display: inline-block;}
-        .action-btn:hover { background: var(--accent-black); }
-
-        /* Print Styles */
-        @media print {
-            nav, .btn-group, header button { display: none; }
-            .tab-content { display: block !important; page-break-after: always; }
-            header { position: static; border-bottom: 2px solid black; }
-        }
-    </style>
+  @media(max-width:640px){
+    .container{padding:1rem;}
+    .cases-grid{grid-template-columns:1fr;}
+    .header h1{font-size:1.8rem;}
+    .header-stats{gap:1.5rem;}
+    .prog-label{width:140px;}
+  }
+</style>
 </head>
 <body>
-
-<header>
-    <div class="logo-container">
-        <div class="logo-sq">ASG</div>
-        <div class="header-text">
-            <h1>Atlas Systems Group, LLC</h1>
-            <p>CMMC 2.0 Level 2 Audit Scenario</p>
-        </div>
-    </div>
-    <div class="btn-group">
-        <button class="action-btn" onclick="window.print()">🖨 Print Case Study</button>
-        <button class="action-btn" id="editToggle" onclick="toggleEdit()">✏ Enable Edit Mode</button>
-    </div>
-</header>
-
-<nav>
-    <div class="nav-item active" onclick="showTab('tab-overview', this)">🏢 Overview</div>
-    <div class="nav-item" onclick="showTab('tab-contracts', this)">📋 Contracts</div>
-    <div class="nav-item" onclick="showTab('tab-people', this)">👥 Personnel</div>
-    <div class="nav-item" onclick="showTab('tab-it', this)">🖥 IT & Cloud</div>
-    <div class="nav-item" onclick="showTab('tab-physical', this)">🏛 Physical Security</div>
-    <div class="nav-item" onclick="showTab('tab-risk', this)">🚨 Risk & Incidents</div>
-    <div class="nav-item" onclick="showTab('tab-findings', this)">📂 Audit Gaps (7)</div>
-</nav>
-
 <div class="container">
 
-    <div id="tab-overview" class="tab-content active">
-        <div class="hero-grid">
-            <div class="stat-card"><h3>85</h3><p>Employees</p></div>
-            <div class="stat-card"><h3>$19M</h3><p>FY25 Revenue</p></div>
-            <div class="stat-card"><h3>Azure Gov</h3><p>Primary Cloud</p></div>
-            <div class="stat-card"><h3>Arlington</h3><p>HQ Location</p></div>
-        </div>
-        
-        <h2>Company Profile</h2>
-        <div class="callout">
-            <p class="editable">Atlas Systems Group (ASG) is a premier DoD IT services contractor. We specialize in providing managed help desk, SOC-as-a-Service, and enterprise-level IT infrastructure support to federal civilian and defense agencies. Our architecture is "Cloud-First," leveraging IL4/IL5 Azure Government environments for all CUI processing.</p>
-            <p class="editable">Founded in 2014, ASG has experienced rapid growth, expanding from a boutique consultancy to a trusted prime contractor. This trajectory is built on our unyielding commitment to security and reliability, earning us a high reputation within the Defense Industrial Base (DIB). Federal partners rely on ASG not just for steady-state operations, but for our proactive approach to threat manageemnt in the complex cloud enclaves we manage.</p>
-            <p class="editable">This deep technical expertise has positioned ASG as the 'specialized response team' for the government. We are frequently called in on difficult technical situations, ranging from forensic analysis of sophisticated cloud intrusions to rapidly engineering secure, compliant infrastructure for urgent mission requirements. When standard IT solutions fail or are deemed too slow, the DoD looks to Atlas to restore integrity and secure sensitive data.</p>
-        </div>
+  <div class="back-nav"><a href="index.html">← Back to CMMC Portal Home</a></div>
 
-        <h3>Key Metrics</h3>
-        <table>
-            <tr><th>Legal Name</th><td class="editable">Atlas Systems Group, LLC</td><th>CAGE Code</th><td class="editable">8V9L1</td></tr>
-            <tr><th>UEI Number</th><td class="editable">ASG2026UEI102</td><th>Founded</th><td class="editable">2014</td></tr>
-            <tr><th>NAICS</th><td class="editable">541513, 541519</td><th>Ownership</th><td class="editable">Privately Held</td></tr>
-        </table>
+  <!-- Header -->
+  <div class="header">
+    <div class="page-label">🛡 CMMC 2.0 Training Portal</div>
+    <h1>CMMC Training <span>Case Studies</span></h1>
+    <p class="subtitle">Sector-specific fictional DoD contractors with realistic IT environments, CUI data flows, network diagrams, and CMMC gaps — designed for hands-on Level 2 assessment practice.</p>
+    <div class="header-stats">
+      <div class="hstat"><div class="snum">8</div><div class="slbl">Available Now</div></div>
+      <div class="hstat"><div class="snum">8</div><div class="slbl">DIB Sectors</div></div>
+      <div class="hstat"><div class="snum">14</div><div class="slbl">Domains Covered</div></div>
+      <div class="hstat"><div class="snum">9</div><div class="slbl">Audit Doc Types</div></div>
+    </div>
+  </div>
+
+  <!-- Purpose box -->
+  <div class="purpose-box">
+    <div class="picon">🎓</div>
+    <div>
+      <h3>How to Use These Case Studies</h3>
+      <p>Each case study presents a fully developed fictional DoD contractor in a specific Defense Industrial Base sector. Students receive a complete organizational profile, IT asset inventory, network architecture, CUI data flow diagram, security control gaps, vendor relationships, and a CMMC domain assessment. Exercises ask students to validate compliance posture, map findings to specific NIST SP 800-171 practice IDs, produce one of nine standard audit documents, and work through scenario injects that simulate realistic audit findings. Each case study can be used independently or combined for cross-sector comparison exercises.</p>
+    </div>
+  </div>
+
+  <!-- Types of DoD Contractors -->
+  <div class="dib-section">
+    <div class="dib-section-hdr">
+      <h3>🏗 Types of DoD Contractors — Defense Industrial Base (DIB)</h3>
+      <p>The Defense Industrial Base spans over 80,000 companies across virtually every economic sector. CMMC applies to any organization that processes, stores, or transmits Federal Contract Information (FCI) or Controlled Unclassified Information (CUI) on behalf of the Department of Defense — regardless of size or industry. Click any category below to explore what these contractors do and how CUI and CMMC obligations arise in their work.</p>
+    </div>
+    <div class="dib-value-box">
+      <strong>Why Case Studies?</strong> — CMMC compliance is not a checkbox exercise — it requires applying abstract cybersecurity principles to concrete, operational environments. Case studies bridge that gap by immersing students in a real-world organizational context: a specific business, a network, a set of contracts, and a collection of people making imperfect security decisions. Rather than simply reciting NIST SP 800-171 control requirements, students must <em>identify</em> which controls apply, <em>assess</em> whether they are implemented, <em>document</em> findings using professional audit tools, and <em>recommend</em> remediation — exactly as a C3PAO assessor would. Sector diversity across these case studies ensures that students encounter the full breadth of CUI environments: manufacturing floors, cloud-native IT providers, university labs, logistics warehouses, embedded firmware shops, and biodefense facilities. Each sector presents distinct risk patterns, regulatory overlaps (ITAR, EAR, HIPAA), and technical configurations that demand situational judgment — not rote memorization.
+    </div>
+    <div class="dib-chips">
+      <button class="dib-chip" onclick="openCtr('FC')"><span class="dib-chip-icon">🏭</span>Facilities &amp; Construction<span class="dib-chip-arrow">›</span></button>
+      <button class="dib-chip" onclick="openCtr('WA')"><span class="dib-chip-icon">💥</span>Weapons &amp; Ammunition<span class="dib-chip-arrow">›</span></button>
+      <button class="dib-chip" onclick="openCtr('AA')"><span class="dib-chip-icon">✈</span>Aerospace &amp; Aircraft<span class="dib-chip-arrow">›</span></button>
+      <button class="dib-chip" onclick="openCtr('PT')"><span class="dib-chip-icon">🔬</span>Professional &amp; Technical Svcs<span class="dib-chip-arrow">›</span></button>
+      <button class="dib-chip" onclick="openCtr('LT')"><span class="dib-chip-icon">📦</span>Logistics &amp; Transportation<span class="dib-chip-arrow">›</span></button>
+      <button class="dib-chip" onclick="openCtr('ST')"><span class="dib-chip-icon">🖥</span>Smart Tech &amp; Embedded Systems<span class="dib-chip-arrow">›</span></button>
+      <button class="dib-chip" onclick="openCtr('TU')"><span class="dib-chip-icon">👔</span>Textiles &amp; Uniforms<span class="dib-chip-arrow">›</span></button>
+      <button class="dib-chip" onclick="openCtr('ME')"><span class="dib-chip-icon">🧬</span>Medical Services &amp; Equipment<span class="dib-chip-arrow">›</span></button>
+    </div>
+  </div>
+
+  <!-- Contractor Type Modal -->
+  <div id="ctr-modal" class="ctr-overlay" onclick="if(event.target===this)closeCtr()">
+    <div class="ctr-box">
+      <div class="ctr-header">
+        <div class="ctr-hdr-top">
+          <div class="ctr-icon-badge" id="ctr-icon">🏭</div>
+          <div class="ctr-title">
+            <h2 id="ctr-name">Facilities &amp; Construction</h2>
+            <p id="ctr-sub">DoD Contractor Category</p>
+          </div>
+          <button class="ctr-close" onclick="closeCtr()">✕</button>
+        </div>
+      </div>
+      <div class="ctr-body">
+        <h3>Category Overview</h3>
+        <p id="ctr-overview"></p>
+        <h3>Products &amp; Services</h3>
+        <p id="ctr-products"></p>
+        <h3>Representative Examples</h3>
+        <div class="ctr-examples" id="ctr-examples"></div>
+        <h3>CMMC &amp; CUI Considerations</h3>
+        <div class="ctr-cmmc-box" id="ctr-cmmc"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cards -->
+  <div class="section-label">Available Now — All 8 Sectors</div>
+  <div class="cases-grid">
+
+    <!-- 1: Meridian -->
+    <div class="case-card">
+      <div class="case-card-top" style="background:linear-gradient(90deg,#0d1b2a,#1e90ff,#f0a500)"></div>
+      <div class="case-card-body">
+        <div class="case-sector" style="background:#e8f0fa;color:#0d1b2a;">🏭 Defense Manufacturing</div>
+        <div class="case-org-icon">🏢</div>
+        <h3>Meridian Precision Defense Systems, Inc.</h3>
+        <p class="case-desc">Mid-size DoD subcontractor manufacturing actuator housing assemblies and providing UAV systems integration support. Holds three active DoD contracts across Army, Air Force, and NAVAIR. Operates two sites in Dayton OH and Huntsville AL.</p>
+        <div class="case-facts">
+          <div class="fact"><span>Employees:</span> 147</div>
+          <div class="fact"><span>Revenue:</span> ~$31M</div>
+          <div class="fact"><span>Contracts:</span> 3 Active</div>
+          <div class="fact"><span>CMMC Gap:</span> 8 Findings</div>
+          <div class="fact"><span>Sites:</span> Dayton OH + Huntsville AL</div>
+          <div class="fact"><span>CAGE Code:</span> 7RK42</div>
+        </div>
+        <div class="case-tags">
+          <span class="ctag" style="background:#dbeafe;color:#1e3a5f">ITAR / EAR</span>
+          <span class="ctag" style="background:#fee2e2;color:#7f1d1d">No VPN MFA</span>
+          <span class="ctag" style="background:#fef3c7;color:#7c4a00">No SCRM</span>
+          <span class="ctag" style="background:#fee2e2;color:#7f1d1d">Stale Accounts</span>
+          <span class="ctag" style="background:#d1fae5;color:#064e3b">9 Audit Documents</span>
+          <span class="ctag" style="background:#e8f0fa;color:#0d1b2a">Edit &amp; Print</span>
+        </div>
+        <a href="casestudyjs1.html" class="case-btn featured">Open Full Interactive Case Study →</a>
+      </div>
     </div>
 
-    <div id="tab-contracts" class="tab-content">
-        <h2>Active Federal Contracts</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Contract #</th>
-                    <th>Agency</th>
-                    <th>Role</th>
-                    <th>CUI Category</th>
-                    <th>Clauses</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>N00039-24-C-0012</td>
-                    <td>Navy NAVWAR</td>
-                    <td>Prime</td>
-                    <td>CUI//CTI (Network Topology)</td>
-                    <td>7012, 7019, 7020</td>
-                </tr>
-                <tr>
-                    <td>DHS-SUB-8812</td>
-                    <td>CISA (via GDIT)</td>
-                    <td>Sub</td>
-                    <td>CUI//INDICATOR (Threat Intel)</td>
-                    <td>7012, 252.204-21</td>
-                </tr>
-                <tr>
-                    <td>N68335-25-C-0114</td>
-                    <td>Naval Intelligence (NAS)</td>
-                    <td>Prime</td>
-                    <td>CUI//SP-CTI (Technical Solutions Install)</td>
-                    <td>7012, 7019, 7020, 7021 (L2)</td>
-                </tr>
-            </tbody>
-        </table>
+    <!-- 2: Atlas -->
+    <div class="case-card">
+      <div class="case-card-top" style="background:linear-gradient(90deg,#1e3a6b,#1e90ff,#17c3ce)"></div>
+      <div class="case-card-body">
+        <div class="case-sector" style="background:#dbeafe;color:#1e3a5f;">💻 IT Services &amp; Cyber</div>
+        <div class="case-org-icon">🖥</div>
+        <h3>Atlas Systems Group, LLC</h3>
+        <p class="case-desc">DoD IT services contractor providing managed help desk, SOC-as-a-service, and enterprise IT support to multiple federal agencies. All CUI processed in Azure Government. 85 employees, Arlington VA.</p>
+        <div class="case-facts">
+          <div class="fact"><span>Employees:</span> 85</div>
+          <div class="fact"><span>Revenue:</span> ~$19M</div>
+          <div class="fact"><span>Contracts:</span> 2 Active</div>
+          <div class="fact"><span>CMMC Gap:</span> 7 Findings</div>
+          <div class="fact"><span>Location:</span> Arlington, VA</div>
+          <div class="fact"><span>Cloud:</span> Azure Gov</div>
+        </div>
+        <div class="case-tags">
+          <span class="ctag" style="background:#fee2e2;color:#7f1d1d">Shared Admin Accounts</span>
+          <span class="ctag" style="background:#fef3c7;color:#7c4a00">Cloud Misconfiguration</span>
+          <span class="ctag" style="background:#fee2e2;color:#7f1d1d">No IR Testing</span>
+          <span class="ctag" style="background:#dbeafe;color:#1e3a5f">SOC / MDR</span>
+          <span class="ctag" style="background:#fef3c7;color:#7c4a00">Software Supply Chain</span>
+        </div>
+        <a href="casestudyjs1.html" class="case-btn">Open Case Study →</a>
+      </div>
     </div>
 
-    <div id="tab-people" class="tab-content">
-        <h2>Key Personnel & Roles</h2>
-        <div class="people-grid">
-            <div class="person-card"><div class="person-avatar">SV</div><div><strong>Sarah Vance</strong><br><small>CEO / Authorizing Official (AO)</small></div></div>
-            <div class="person-card"><div class="person-avatar">DC</div><div><strong>David Chen</strong><br><small>CTO & CISO (Audit POC)</small></div></div>
-            <div class="person-card"><div class="person-avatar">ER</div><div><strong>Elena Rodriguez</strong><br><small>Lead Cloud Architect (Global Admin)</small></div></div>
-            <div class="person-card"><div class="person-avatar">RS</div><div><strong>Robert Smith</strong><br><small>Facilities Mgr (Physical Sec)</small></div></div>
-            <div class="person-card"><div class="person-avatar">MT</div><div><strong>Marcus Thorne</strong><br><small>HR Director</small></div></div>
-            <div class="person-card"><div class="person-avatar">PK</div><div><strong>Priya Kapur</strong><br><small>Contracts Manager</small></div></div>
-            <div class="person-card"><div class="person-avatar">JW</div><div><strong>James "Jimmy" Wu</strong><br><small>Junior SysAdmin (No SAT Training)</small></div></div>
-            <div class="person-card"><div class="person-avatar">SJ</div><div><strong>Sarah Jenkins</strong><br><small>SOC Manager</small></div></div>
-            <div class="person-card"><div class="person-avatar">KO</div><div><strong>Kevin O’Malley</strong><br><small>Lead SOC Analyst</small></div></div>
-            <div class="person-card"><div class="person-avatar">LZ</div><div><strong>Linda Zhao</strong><br><small>Project Manager (DHS)</small></div></div>
-            <div class="person-card"><div class="person-avatar">TB</div><div><strong>Tom Baker</strong><br><small>Field Engineer (Remote VPN)</small></div></div>
-            <div class="person-card"><div class="person-avatar">JV</div><div><strong>Janet Vance</strong><br><small>Admin (Shared Password User)</small></div></div>
-            <div class="person-card"><div class="person-avatar">AV</div><div><strong>Dr. Aris Varma</strong><br><small>Consultant (1099 - Full VPN)</small></div></div>
-            <div class="person-card"><div class="person-avatar">SG</div><div><strong>Security Guard</strong><br><small>Contract Night Shift</small></div></div>
+    <!-- 3: Keystone -->
+    <div class="case-card">
+      <div class="case-card-top" style="background:linear-gradient(90deg,#7c3a00,#c05621,#f0a500)"></div>
+      <div class="case-card-body">
+        <div class="case-sector" style="background:#fef3c7;color:#7c4a00;">✈ Aerospace &amp; Aviation</div>
+        <div class="case-org-icon">✈</div>
+        <h3>Keystone Aerospace LLC</h3>
+        <p class="case-desc">Precision aerospace component manufacturer producing structural airframe parts and avionics housings for DoD prime contractors. Heavy ITAR exposure. 320 employees across two Kansas facilities.</p>
+        <div class="case-facts">
+          <div class="fact"><span>Employees:</span> 320</div>
+          <div class="fact"><span>Revenue:</span> ~$64M</div>
+          <div class="fact"><span>Contracts:</span> 3 Active</div>
+          <div class="fact"><span>CMMC Gap:</span> 7 Findings</div>
+          <div class="fact"><span>Location:</span> Wichita, KS</div>
+          <div class="fact"><span>CAGE Code:</span> 4MX71</div>
         </div>
-
-        <h3>Security Training Status</h3>
-        <table>
-            <tr><th>Employee</th><th>Module</th><th>Date</th><th>Status</th></tr>
-            <tr><td>David Chen</td><td>Advanced CMMC Prep</td><td>Jan 2026</td><td>Pass</td></tr>
-            <tr><td>James Wu</td><td>CUI Handling v1</td><td>--</td><td style="color:red; font-weight:bold;">OVERDUE</td></tr>
-            <tr><td>Linda Zhao</td><td>CUI Marking</td><td>Mar 2026</td><td>Pass</td></tr>
-        </table>
+        <div class="case-tags">
+          <span class="ctag" style="background:#fee2e2;color:#7f1d1d">Legacy ERP w/ CUI</span>
+          <span class="ctag" style="background:#fef3c7;color:#7c4a00">No MFA (Engineering)</span>
+          <span class="ctag" style="background:#fee2e2;color:#7f1d1d">Unencrypted Supplier Email</span>
+          <span class="ctag" style="background:#dbeafe;color:#1e3a5f">ITAR / 22 CFR 121</span>
+          <span class="ctag" style="background:#fef3c7;color:#7c4a00">Media Sanitization Gap</span>
+        </div>
+        <a href="casestudyjs3.html" class="case-btn">Open Case Study →</a>
+      </div>
     </div>
 
-    <div id="tab-it" class="tab-content">
-        <h2>Network & Infrastructure</h2>
-        
-        <div class="btn-group" style="margin-bottom: 20px;">
-            <a href="atlas-vlan-diagram.jpeg" target="_blank" class="action-btn">🗺️ View Network Diagram (Full Size)</a>
+    <!-- 4: Summit -->
+    <div class="case-card">
+      <div class="case-card-top" style="background:linear-gradient(90deg,#4a148c,#7b1fa2,#ab47bc)"></div>
+      <div class="case-card-body">
+        <div class="case-sector" style="background:#f3e5f5;color:#4a148c;">🔬 Research Institution</div>
+        <div class="case-org-icon">🔬</div>
+        <h3>Summit Research Institute</h3>
+        <p class="case-desc">University-affiliated DoD research laboratory performing DARPA and ONR-funded research on autonomous systems and advanced materials. Handles CUI and export-controlled technical data. 45 researchers plus graduate students.</p>
+        <div class="case-facts">
+          <div class="fact"><span>Researchers:</span> 45 + students</div>
+          <div class="fact"><span>Funding:</span> ~$8.2M/yr</div>
+          <div class="fact"><span>Grants:</span> 3 Active</div>
+          <div class="fact"><span>CMMC Gap:</span> 8 Findings</div>
+          <div class="fact"><span>Location:</span> State College, PA</div>
+          <div class="fact"><span>Oversight:</span> DARPA / ONR</div>
         </div>
-
-        <div class="callout">
-            <strong>Hybrid Architecture:</strong> Arlington HQ (Site-to-Site VPN) ⟷ Azure Government (Entra ID).
+        <div class="case-tags">
+          <span class="ctag" style="background:#fee2e2;color:#7f1d1d">Student CUI Access</span>
+          <span class="ctag" style="background:#fee2e2;color:#7f1d1d">Foreign National Gap</span>
+          <span class="ctag" style="background:#fef3c7;color:#7c4a00">BYOD on CUI Network</span>
+          <span class="ctag" style="background:#dbeafe;color:#1e3a5f">ITAR / EAR</span>
+          <span class="ctag" style="background:#fef3c7;color:#7c4a00">No Formal SSP</span>
         </div>
-
-        <h3>VLAN Configuration</h3>
-        <table>
-            <tr><th>VLAN</th><th>Name</th><th>Purpose</th><th>Scope</th></tr>
-            <tr><td>10</td><td>CORP-MGMT</td><td>Exec & HR Traffic</td><td>In-Scope</td></tr>
-            <tr><td>20</td><td>SOC-OPS</td><td>Monitoring & SIEM feeds</td><td>In-Scope</td></tr>
-            <tr><td>30</td><td>LAB-DEV</td><td>Test environment</td><td>Out-of-Scope</td></tr>
-            <tr><td>99</td><td>GUEST</td><td>Internet only (Visitors)</td><td>Out-of-Scope</td></tr>
-        </table>
-
-        <h3>Hardware Inventory</h3>
-        <ul>
-            <li><strong>Firewalls:</strong> 2x FortiGate 100F (HA Cluster) at Arlington; Azure Firewall Premium in Cloud.</li>
-            <li><strong>Switches:</strong> 4x Cisco Catalyst 9300 (48-port) managed switches.</li>
-            <li><strong>Wireless:</strong> 6x Aruba AP-515 Access Points (WPA3-Enterprise).</li>
-            <li><strong>Sensors:</strong> 2x Security Onion IDS Nodes (Port Mirroring Core Switch).</li>
-        </ul>
+        <a href="casestudyjs4.html" class="case-btn">Open Case Study →</a>
+      </div>
     </div>
 
-    <div id="tab-physical" class="tab-content">
-        <h2>Physical Security Controls</h2>
-        
-        <div style="text-align: center; margin: 20px 0;">
-            <img src="atlas-security.jpeg" alt="Internal Security at Atlas" style="max-width: 100%; height: auto; border: 3px solid var(--border);">
-            <p><i>Internal Security View - Arlington HQ</i></p>
+    <!-- 5: Fortis -->
+    <div class="case-card">
+      <div class="case-card-top" style="background:linear-gradient(90deg,#1a5c35,#28a745,#56d07a)"></div>
+      <div class="case-card-body">
+        <div class="case-sector" style="background:#d1fae5;color:#064e3b;">📦 Defense Logistics</div>
+        <div class="case-org-icon">📦</div>
+        <h3>Fortis Defense Logistics, Inc.</h3>
+        <p class="case-desc">Defense supply chain and warehouse management contractor operating logistics support contracts for Army and Marine Corps. Manages controlled inventory tracking and shipment documentation containing CUI. Jacksonville FL headquarters.</p>
+        <div class="case-facts">
+          <div class="fact"><span>Employees:</span> 210</div>
+          <div class="fact"><span>Revenue:</span> ~$38M</div>
+          <div class="fact"><span>Contracts:</span> 2 Active</div>
+          <div class="fact"><span>CMMC Gap:</span> 6 Findings</div>
+          <div class="fact"><span>Location:</span> Jacksonville, FL</div>
+          <div class="fact"><span>CAGE Code:</span> 8FP33</div>
         </div>
-
-        <div class="callout">
-            <strong>Arlington HQ:</strong> 4th Floor Multi-tenant Office. Interior "CUI Enclave" construction.
+        <div class="case-tags">
+          <span class="ctag" style="background:#fee2e2;color:#7f1d1d">WMS on Flat Network</span>
+          <span class="ctag" style="background:#fef3c7;color:#7c4a00">No Audit Logs (WMS)</span>
+          <span class="ctag" style="background:#fee2e2;color:#7f1d1d">Contractor Access Unmanaged</span>
+          <span class="ctag" style="background:#dbeafe;color:#1e3a5f">CUI in Shipment Docs</span>
+          <span class="ctag" style="background:#fef3c7;color:#7c4a00">Paper CUI Unprotected</span>
         </div>
-        
-        <h3>Infrastructure Controls</h3>
-        <ul>
-            <li><strong>Electronic Entry:</strong> HID iCLASS SE Badge Readers (S2 NetBox Controller).</li>
-            <li><strong>Secure Server Room:</strong> Slab-to-slab partitioned walls with security mesh drop-ceilings.</li>
-            <li><strong>SOC Visibility:</strong> Frosted privacy film on all "Fishbowl" glass walls.</li>
-            <li><strong>CCTV:</strong> 8x Verkada IP Cameras. 30-day cloud retention.</li>
-        </ul>
-
-        <h3>Audit Evidence — Visitor Logs</h3>
-        <table>
-            <tr><th>Date</th><th>Visitor Name</th><th>Purpose</th><th>Escort Name</th></tr>
-            <tr><td>Mar 01</td><td>John Doe (Verizon)</td><td>ISP Repair</td><td>Robert Smith</td></tr>
-            <tr><td>Mar 03</td><td>HVAC Tech (Building)</td><td>Unit Repair</td><td style="color:red; font-weight:bold;">[BLANK]</td></tr>
-        </table>
+        <a href="casestudyjj1.html" class="case-btn">Open Case Study →</a>
+      </div>
     </div>
 
-    <div id="tab-risk" class="tab-content">
-        <h2>Incident Response & Risk Register</h2>
-        
-        <h3>Recent Incidents (Logged in Sentinel)</h3>
-        <table>
-            <tr><th>ID</th><th>Date</th><th>Description</th><th>Action Taken</th></tr>
-            <tr><td>INC-26-02</td><td>Feb 02</td><td>Mimikatz alert on analyst Cloud PC.</td><td>Informal triage (no formal IR report).</td></tr>
-            <tr><td>INC-26-03</td><td>Mar 12</td><td>4GB upload to personal Dropbox.</td><td><strong>Closed as "False Positive" by J. Wu.</strong></td></tr>
-        </table>
-
-        <h3>Risk Management Experience & Priority Highlights</h3>
-        <div class="callout">
-            <ul style="margin: 0;">
-                <li><strong>1. Proactive Risk Register Integration:</strong> ASG maintains a dynamic Risk Register where identified gaps (e.g., RA-01) automatically feed into the Plan of Action & Milestones (POA&M) for senior leadership review and resource allocation.</li>
-                <li><strong>2. Hybrid Architecture Foresight:</strong> Recognizing cloud responsibility, ASG specifically segmented the Arlington S2S VPN tunnel (VLAN 20) to prevent on-premises general network contamination from impacting the primary CUI enclave in Azure Gov.</li>
-                <li><strong>3. Vendor Supply Chain Validation:</strong> ASG pioneered a CUI flow-down audit for NAS technical solutions, requiring all tier-two installation partners to produce NIST 800-171 self-assessments prior to contract flow-down.</li>
-                <li><strong>4. Zero Trust Identity Architecture:</strong> CISO David Chen prioritized the migration of all CUI-access accounts from standard AD to Azure Entra ID to enforce device compliance checks (managed device state) prior to VPN establishment.</li>
-                <li><strong>5. Automated Sentinel Sentinel Response (SOAR):</strong> SOC Manager Sarah Jenkins developed a custom SOAR playbook that immediately locks a Windows 365 Cloud PC if Mimikatz is detected (e.g., INC-26-02) and creates an automated forensic task ticket for analysts.</li>
-                <li><strong>6. Tabletop Exercise Realism:</strong> ASG utilizes simulated 'difficult technical situations' for quarterly tablestops, such as forensically analyzing a fictional 'DHS dashboard compromise' to test the IRP beyond general awareness scenarios.</li>
-                <li><strong>7. Physical/Network Dual Validation:</strong> Physical Security Mgr Robert Smith coordinates weekly with the SOC to validate that all remote admin sessions mapped in NetBox match authorized badged entries to the Arlington HQ.</li>
-                <li><strong>8. CUI Marking Automation:</strong> ASG engineered a custom M365 script that automatically marks any document containing Navy-specific contract numbers as CUI//CTI, significantly reducing manual error in technical document classification.</li>
-                <li><strong>9. Privilege Separation Mandate:</strong> CEO Sarah Vance personally approved the migration to Privilege Identity Management (PIM) for Global Admins, eliminating standing 'Always-On' administrative access to the Azure Gov tenant.</li>
-                <li><strong>10. Insider Threat Phishing:</strong> Monthly internal phishing exercises (monthly simulations) have reduced the SOC click rate by 50%, with users who fail standard tests automatically enrolled in remedial CUI Handling v1 training.</li>
-                <li><strong>11. Forensic Integrity Protocol:</strong> All SOC analysts use distinct forensic accounts for incident triage, ensuring that investigation logs cannot be overwritten or altered by standard administrative credentials.</li>
-                <li><strong>12. CMMC Level 2 as Priority:</strong> Recognizing the upcoming N68335 NAS requirements, David Chen prioritized the full close-out of GAP-01 (Shared Admins) over the end-of-life router replacement (RA-02), demonstrating proper security-based risk prioritized.</li>
-            </ul>
+    <!-- 6: Vector -->
+    <div class="case-card">
+      <div class="case-card-top" style="background:linear-gradient(90deg,#0d4f6c,#0288d1,#26c6da)"></div>
+      <div class="case-card-body">
+        <div class="case-sector" style="background:#e1f5fe;color:#01579b;">🖥 Embedded Systems</div>
+        <div class="case-org-icon">💾</div>
+        <h3>Vector Embedded Systems, Inc.</h3>
+        <p class="case-desc">Embedded software and firmware developer producing safety-critical control code for naval weapons system components. Small but highly technical contractor with CI/CD pipeline, open-source dependencies, and serious CMMC obligations. San Diego CA.</p>
+        <div class="case-facts">
+          <div class="fact"><span>Employees:</span> 60</div>
+          <div class="fact"><span>Revenue:</span> ~$12M</div>
+          <div class="fact"><span>Contracts:</span> 2 Active</div>
+          <div class="fact"><span>CMMC Gap:</span> 7 Findings</div>
+          <div class="fact"><span>Location:</span> San Diego, CA</div>
+          <div class="fact"><span>CAGE Code:</span> 9VE14</div>
         </div>
-
-        <h3>Risk Register Highlights</h3>
-        <div class="finding high">
-            <div class="finding-header">RA-01: Shared Admin Accounts</div>
-            <div class="finding-body" style="display:block">Engineers share one global admin account. Likelihood: High | Impact: High. Mitigation: Delayed due to operations.</div>
+        <div class="case-tags">
+          <span class="ctag" style="background:#fee2e2;color:#7f1d1d">Unsecured Code Repo</span>
+          <span class="ctag" style="background:#fef3c7;color:#7c4a00">No SBOM / SCRM</span>
+          <span class="ctag" style="background:#fee2e2;color:#7f1d1d">Dev Laptops w/ CUI, No MDM</span>
+          <span class="ctag" style="background:#dbeafe;color:#1e3a5f">Firmware / Safety-Critical</span>
+          <span class="ctag" style="background:#fef3c7;color:#7c4a00">CI/CD Pipeline Unsecured</span>
         </div>
+        <a href="casestudyjj2.html" class="case-btn">Open Case Study →</a>
+      </div>
     </div>
 
-    <div id="tab-findings" class="tab-content">
-        <h2>Seeded Audit Findings (Audit Prep)</h2>
-        <p>Students must identify these 7 findings within the data sets provided.</p>
-
-        <div class="finding crit">
-            <div class="finding-header" onclick="toggleFinding(this)">GAP-01: Shared Admin Credentials <span class="tag tag-crit">Critical</span></div>
-            <div class="finding-body">
-                <strong>Requirement:</strong> AC.L2-3.1.1, 3.1.2.<br>
-                <strong>Finding:</strong> Shared global admin usage prevents non-repudiation and violates separation of duties.
-            </div>
+    <!-- 7: Coastal -->
+    <div class="case-card">
+      <div class="case-card-top" style="background:linear-gradient(90deg,#374151,#6b7280,#9ca3af)"></div>
+      <div class="case-card-body">
+        <div class="case-sector" style="background:#f3f4f6;color:#1f2937;">📋 Management Consulting</div>
+        <div class="case-org-icon">💼</div>
+        <h3>Coastal Defense Consulting Group</h3>
+        <p class="case-desc">DoD management consulting firm providing acquisition support, program management, and policy advisory services to OSD and military departments. Primarily a knowledge-work business — CUI lives in documents, email, and SharePoint. McLean VA.</p>
+        <div class="case-facts">
+          <div class="fact"><span>Employees:</span> 38</div>
+          <div class="fact"><span>Revenue:</span> ~$9M</div>
+          <div class="fact"><span>Contracts:</span> 3 Active</div>
+          <div class="fact"><span>CMMC Gap:</span> 7 Findings</div>
+          <div class="fact"><span>Location:</span> McLean, VA</div>
+          <div class="fact"><span>CAGE Code:</span> 5CG82</div>
         </div>
-
-        <div class="finding high">
-            <div class="finding-header" onclick="toggleFinding(this)">GAP-02: Cloud Misconfiguration <span class="tag tag-high">High</span></div>
-            <div class="finding-body">
-                <strong>Requirement:</strong> SC.L1-3.13.1.<br>
-                <strong>Finding:</strong> Azure Blob Storage "Contract_Technical_Data" found with Public Read access enabled.
-            </div>
+        <div class="case-tags">
+          <span class="ctag" style="background:#fee2e2;color:#7f1d1d">CUI in Unencrypted Email</span>
+          <span class="ctag" style="background:#fef3c7;color:#7c4a00">No VPN Enforcement (Home)</span>
+          <span class="ctag" style="background:#fee2e2;color:#7f1d1d">DMS Not in SSP Scope</span>
+          <span class="ctag" style="background:#dbeafe;color:#1e3a5f">High Turnover Staff</span>
+          <span class="ctag" style="background:#fef3c7;color:#7c4a00">Slow Offboarding</span>
         </div>
-
-        <div class="finding high">
-            <div class="finding-header" onclick="toggleFinding(this)">GAP-03: No IR Testing <span class="tag tag-high">High</span></div>
-            <div class="finding-body">
-                <strong>Requirement:</strong> IR.L2-3.6.3.<br>
-                <strong>Finding:</strong> IRP is stale (2023) with no evidence of tabletop exercises in last 12 months.
-            </div>
-        </div>
-
-        <div class="finding high">
-            <div class="finding-header" onclick="toggleFinding(this)">GAP-04: Supply Chain Risk <span class="tag tag-high">High</span></div>
-            <div class="finding-body">
-                <strong>Requirement:</strong> SR.L2-3.17.1.<br>
-                <strong>Finding:</strong> No security assessment performed for third-party RMM tool used on CUI enclave.
-            </div>
-        </div>
-
-        <div class="finding high">
-            <div class="finding-header" onclick="toggleFinding(this)">GAP-05: Shadow IT / Unmanaged Assets <span class="tag tag-high">High</span></div>
-            <div class="finding-body">
-                <strong>Requirement:</strong> CM.L2-3.4.1.<br>
-                <strong>Finding:</strong> Analysts using personal MacBooks to access CUI via browser sessions.
-            </div>
-        </div>
-
-        <div class="finding high">
-            <div class="finding-header" onclick="toggleFinding(this)">GAP-06: Failed Audit Log Review <span class="tag tag-high">High</span></div>
-            <div class="finding-body">
-                <strong>Requirement:</strong> AU.L2-3.3.3.<br>
-                <strong>Finding:</strong> Weekly log reviews not signed since Nov 2025; INC-26-03 closed improperly.
-            </div>
-        </div>
-
-        <div class="finding crit">
-            <div class="finding-header" onclick="toggleFinding(this)">GAP-07: Physical Media Control <span class="tag tag-crit">Critical</span></div>
-            <div class="finding-body">
-                <strong>Requirement:</strong> MP.L2-3.8.7.<br>
-                <strong>Finding:</strong> Unlocked shred bin containing CUI diagrams in common hallway.
-            </div>
-        </div>
+        <a href="casestudyjj3.html" class="case-btn">Open Case Study →</a>
+      </div>
     </div>
+
+    <!-- 8: Apex -->
+    <div class="case-card">
+      <div class="case-card-top" style="background:linear-gradient(90deg,#7f1d1d,#b91c1c,#ef4444)"></div>
+      <div class="case-card-body">
+        <div class="case-sector" style="background:#fee2e2;color:#7f1d1d;">🧬 BioDefense Research</div>
+        <div class="case-org-icon">🧬</div>
+        <h3>Apex BioDefense Laboratories, Inc.</h3>
+        <p class="case-desc">Biodefense research contractor performing BARDA and DoD-funded medical countermeasure development. Operates BSL-2 and BSL-3 laboratory facilities with separate IT and OT environments. Handles CUI, export-controlled biological research, and personnel data. Frederick MD.</p>
+        <div class="case-facts">
+          <div class="fact"><span>Employees:</span> 95</div>
+          <div class="fact"><span>Revenue:</span> ~$22M</div>
+          <div class="fact"><span>Contracts:</span> 2 Active</div>
+          <div class="fact"><span>CMMC Gap:</span> 8 Findings</div>
+          <div class="fact"><span>Location:</span> Frederick, MD</div>
+          <div class="fact"><span>CAGE Code:</span> 6AB95</div>
+        </div>
+        <div class="case-tags">
+          <span class="ctag" style="background:#fee2e2;color:#7f1d1d">CUI on Open Network</span>
+          <span class="ctag" style="background:#fef3c7;color:#7c4a00">Intl. Collaborators w/ CUI</span>
+          <span class="ctag" style="background:#fee2e2;color:#7f1d1d">BYOD Researchers</span>
+          <span class="ctag" style="background:#dbeafe;color:#1e3a5f">BSL-3 / EAR</span>
+          <span class="ctag" style="background:#fef3c7;color:#7c4a00">No CUI Marking Process</span>
+        </div>
+        <a href="casestudyjj4.html" class="case-btn">Open Case Study →</a>
+      </div>
+    </div>
+
+  </div><!-- /cases-grid -->
+
+  <div class="footer">
+    <p><strong>CMMC 2.0 Training Portal — Case Study Library</strong></p>
+    <p>CMMC Level 2 | NIST SP 800-171 Rev 2 | Defense Industrial Base Training Scenarios</p>
+    <p style="margin-top:.5rem;font-size:.8rem;opacity:.7">All case study organizations, personnel, contract numbers, and data are entirely fictional and created for educational use only. Any resemblance to real organizations is coincidental.</p>
+    <span class="version-badge">🏫 Case Study Library | April 2026</span>
+  </div>
 
 </div>
 
 <script>
-    function showTab(tabId, el) {
-        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-        document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-        document.getElementById(tabId).classList.add('active');
-        el.classList.add('active');
-    }
+const CTR = {
+  FC:{
+    icon:'🏭', name:'Facilities & Construction',
+    overview:'Facilities and construction contractors form the physical backbone of U.S. military readiness. They design, build, maintain, and operate the installations, ranges, laboratories, and infrastructure that house military personnel, equipment, and operations worldwide — from domestic bases to overseas contingency locations.',
+    products:'Services include base operations support (BOS), military construction (MILCON), design-build projects, civil engineering, environmental remediation, utility systems management, facilities maintenance, rapid-deployment temporary structures, ranges and training facilities construction, and real property management. Contractors may also operate power plants, water treatment systems, and airfield pavement at military installations.',
+    examples:['MILCON Projects','Base Ops Support (BOS)','Airfield Construction','Range & Training Facilities','Civil Engineering','Environmental Remediation','Utility Operations','Temporary Expeditionary Structures'],
+    cmmc:'<strong>CMMC Exposure:</strong> Facilities contractors routinely receive CUI in the form of base master plans, security vulnerability assessments, explosive safety site plans, and critical infrastructure design drawings. Operations personnel may handle controlled information via facility management systems, work order software, and access control databases. CMMC Level 2 applies when CUI appears in contract deliverables, design documents, or operational data systems.'
+  },
+  WA:{
+    icon:'💥', name:'Weapons & Ammunition',
+    overview:'Weapons and ammunition contractors develop, manufacture, integrate, and sustain the kinetic and directed-energy systems that form the core of U.S. warfighting capability. This sector spans everything from individual soldier ammunition to intercontinental ballistic missiles and represents some of the most sensitive and export-controlled technology in the DoD supply chain.',
+    products:'Products include small arms ammunition, artillery shells, rockets, guided missiles (tactical and strategic), torpedoes, mines, bombs, mortar systems, infantry weapons, directed-energy weapons, counter-drone systems, electronic warfare payloads, explosive ordnance, and warhead assemblies. Services include life-cycle sustainment, demilitarization, stockpile reliability testing, and systems integration for weapons platforms.',
+    examples:['Guided Missiles & Torpedoes','Artillery & Mortar Rounds','Small Arms Ammunition','Electronic Warfare Systems','Counter-UAS Weapons','Directed Energy','Warhead Integration','Explosive Ordnance Disposal (EOD)'],
+    cmmc:'<strong>CMMC Exposure:</strong> Weapons contractors handle some of the most sensitive CUI categories, including ITAR-controlled technical data (22 CFR Parts 120–130), propellant formulations, fuze design specifications, and weapons system performance parameters. Nearly all CUI in this sector falls under CTI (Controlled Technical Information). DFARS 252.204-7012 and CMMC Level 2 are baseline requirements; many programs require Level 3 (NIST SP 800-172) given the critical nature of the technology.'
+  },
+  AA:{
+    icon:'✈', name:'Aerospace & Aircraft',
+    overview:'Aerospace and aircraft contractors design, build, integrate, and sustain the airborne platforms that project U.S. air, space, and maritime power. This sector encompasses prime integrators of complete aircraft as well as the vast network of Tier 1–4 subcontractors supplying engines, avionics, structural components, and mission systems.',
+    products:'Products include fighter aircraft, strategic bombers, transport aircraft, helicopters, unmanned aerial systems (UAS/drones), missiles, satellite systems, launch vehicles, engine systems, airframes, avionics suites, flight control software, radar systems, electro-optical/infrared (EO/IR) sensors, and aircraft sustainment services. Many contractors specialize in subsystem components — airframe structures, landing gear, hydraulics, or navigation systems — as Tier 2/3 suppliers to prime integrators.',
+    examples:['Fighter Jets & Bombers','Military Helicopters','UAS / Drone Systems','Satellite & Space Launch','Jet Engines & Propulsion','Avionics & Flight Control','Radar & EO/IR Sensors','MRO (Maintenance, Repair, Overhaul)'],
+    cmmc:'<strong>CMMC Exposure:</strong> Aerospace contractors are among the most CMMC-intensive in the DIB. CUI includes airworthiness certifications, flight test data, system performance specifications, radar cross-section data, electronic warfare parameters, and export-controlled technical drawings under ITAR (22 CFR 121 — USML). CMMC Level 2 (110 practices) applies broadly; prime integrators and critical subsystem suppliers are often candidates for Level 3 assessment.'
+  },
+  PT:{
+    icon:'🔬', name:'Professional & Technical Services',
+    overview:'Professional and technical services contractors provide the intellectual and specialized expertise that DoD requires to manage complex acquisition programs, develop policy, conduct scientific research, and maintain operational readiness. This sector is defined by knowledge work — CUI lives in documents, presentations, databases, emails, and cloud collaboration tools rather than physical products.',
+    products:'Services include defense acquisition consulting, program management support, systems engineering and technical assistance (SETA), independent verification and validation (IV&V), scientific research (basic, applied, and advanced technology development), policy analysis, modeling and simulation, training and education services, software development, cybersecurity consulting, intelligence analysis support, and financial management advisory services.',
+    examples:['SETA / Program Management','Systems Engineering (SE)','Scientific R&D (DARPA/ONR)','IV&V and Test & Evaluation','Cybersecurity Consulting','Policy & Acquisition Advisory','Modeling & Simulation','Software Engineering'],
+    cmmc:'<strong>CMMC Exposure:</strong> Professional and technical services contractors often underestimate their CMMC obligations because they produce no physical product. However, CUI pervades their work: controlled technical information in R&D reports, acquisition-sensitive program data, export-controlled research results, budget and cost data, personally identifiable information (PII), and operational security details. CMMC Level 2 applies broadly; research institutions with export-controlled data may face EAR/ITAR overlay requirements.'
+  },
+  LT:{
+    icon:'📦', name:'Logistics & Transportation Services',
+    overview:'Defense logistics and transportation contractors sustain military operations by managing the movement, storage, distribution, and accountability of equipment, supplies, fuel, and munitions across the global defense supply chain. Without reliable logistics, no weapon system can be fielded or sustained — making this sector a critical but often underrecognized component of national security.',
+    products:'Services include defense supply chain management, warehouse and inventory operations, ammunition storage and distribution, fuel supply and petroleum operations, transportation management (air, sea, ground, intermodal), freight forwarding, base supply support, pre-positioned stock management, defense logistics software (WMS/TMS), maintenance parts kitting, and humanitarian assistance logistics support.',
+    examples:['Supply Chain Management','Ammunition Storage & Distribution','Fuel Supply (DFSP Operations)','Freight & Transportation Mgmt','Warehouse Operations (WMS)','Pre-Positioned Equipment','Base Supply Support','MRO Parts & Kitting'],
+    cmmc:'<strong>CMMC Exposure:</strong> Logistics contractors handle CUI in shipment documentation, inventory systems, transportation plans, munitions accountability records, and controlled storage manifests. WMS and TMS platforms may process CUI alongside commercial data, creating boundary ambiguity. Common gaps include unprotected paper CUI on warehouse floors, contractor access to inventory systems without adequate authentication, and audit logging gaps in operational technology environments. CMMC Level 2 applies when CUI appears in logistics systems or documentation.'
+  },
+  ST:{
+    icon:'🖥', name:'Smart Technologies & Embedded Systems',
+    overview:'Smart technology and embedded systems contractors design and produce the sensors, radios, processors, and surveillance equipment that give U.S. forces information dominance on the modern battlefield. These contractors operate at the intersection of hardware and software, often producing safety-critical systems where a firmware flaw can have life-or-death consequences.',
+    products:'Products include radar systems (air surveillance, ground-based, shipborne), electronic warfare (EW) systems and jammers, software-defined radios (SDR), command and control (C2) systems, Intelligence, Surveillance and Reconnaissance (ISR) sensors, satellite communications (SATCOM) terminals, GPS receivers, unmanned ground and maritime vehicles, cybersecurity hardware, night-vision and thermal imaging devices, and embedded control systems for weapons platforms.',
+    examples:['Radar & Sensor Systems','Electronic Warfare / Jammers','Software-Defined Radios (SDR)','ISR / SIGINT Platforms','SATCOM Terminals','Embedded Firmware Development','Night Vision & EO/IR Sensors','C2 Software & Hardware'],
+    cmmc:'<strong>CMMC Exposure:</strong> Embedded systems contractors frequently handle CTI (Controlled Technical Information) embedded in firmware source code, hardware design files (FPGA bitstreams, PCB schematics), RF parameter specifications, and classified interface control documents. Software supply chain risk is acute — open-source components and third-party libraries in firmware create SCRM obligations. CMMC Level 2 is mandatory; programs involving classified systems or critical safety functions frequently require additional controls under DoD Instruction 8510.01 (RMF).'
+  },
+  TU:{
+    icon:'👔', name:'Textiles & Uniforms',
+    overview:'Textile and uniform contractors supply the personal equipment and material goods that equip, clothe, and shelter U.S. military personnel. While this sector may seem distant from cybersecurity concerns, it is fully subject to CMMC when contracts include design specifications for specialized protective equipment, pattern data for camouflage systems, or other technical information that adversaries could exploit.',
+    products:'Products include military uniforms (ACU, NWU, ABU patterns), combat boots and footwear, load-bearing equipment and tactical gear, ballistic helmets and body armor, flame-resistant clothing (FRC), camouflage netting and concealment systems, sleeping bags and field equipment, tent systems and expeditionary shelters, military bedding and linens, parachutes and aircrew survival equipment, and specialized protective clothing for chemical/biological environments.',
+    examples:['Military Uniforms & ACU/NWU','Body Armor & Ballistic Helmets','Flame-Resistant Clothing (FRC)','Combat Boots & Footwear','Tactical Gear & Load-Bearing Equip','Camouflage & Concealment Systems','Parachutes & Aircrew Survival Gear','Chemical/Biological Protective Clothing'],
+    cmmc:'<strong>CMMC Exposure:</strong> Textile contractors may handle CUI in the form of controlled camouflage pattern specifications (e.g., MultiCam/OCP pattern data), body armor ballistic performance testing data, specifications for chemical/biological protective garments, and design data for specialized aircrew survival equipment. Buy American Act (BAA) and Berry Amendment compliance data may also be sensitive. CMMC Level 1 applies to all FCI; CMMC Level 2 applies when contracts include CUI in technical specifications or testing documentation.'
+  },
+  ME:{
+    icon:'🧬', name:'Medical Services & Equipment',
+    overview:'Medical services and equipment contractors support the health, survivability, and medical readiness of U.S. military personnel worldwide. This sector blends traditional healthcare obligations (HIPAA) with defense-specific regulations (CMMC, ITAR for dual-use biological research, and export controls under EAR for pharmaceuticals). It is one of the most regulatory-dense sectors in the DIB.',
+    products:'Products and services include military pharmaceuticals and medical countermeasures, field medical equipment and trauma kits (IFAK), surgical instruments and hospital equipment, blood products and transfusion systems, chemical and biological defense medical products (CHEMPACK, antidotes), telemedicine platforms, medical information systems (MIS/EHR), biodefense research and vaccine development, occupational health services, dental and mental health services, and combat casualty care training systems.',
+    examples:['Pharmaceuticals & Vaccines','Medical Countermeasures (MCM)','Field Medical Kits (IFAK)','Biodefense R&D (BARDA/DARPA)','Combat Medical Equipment','Military Telemedicine Platforms','Medical Information Systems (EHR)','Chemical/Bio Defense Products'],
+    cmmc:'<strong>CMMC Exposure:</strong> Medical contractors operate at the intersection of CMMC and HIPAA. CUI categories include health information (CTI-HLTH), personally identifiable information (PII), pharmaceutical formulation data, biodefense research data under EAR/ITAR export controls, and clinical trial data. Electronic Health Record (EHR) and medical information systems may process CUI alongside PHI, creating complex scoping decisions. BARDA and DARPA contractors conducting biodefense research frequently handle dual-use biological research subject to additional federal oversight.'
+  }
+};
 
-    function toggleFinding(header) {
-        const body = header.nextElementSibling;
-        body.style.display = (body.style.display === 'block') ? 'none' : 'block';
-    }
-
-    let editMode = false;
-    function toggleEdit() {
-        editMode = !editMode;
-        const btn = document.getElementById('editToggle');
-        const editables = document.querySelectorAll('.editable');
-        if (editMode) {
-            btn.innerHTML = "💾 Save Scenario";
-            btn.style.background = "#000";
-            editables.forEach(e => e.contentEditable = "true");
-        } else {
-            btn.innerHTML = "✏ Enable Edit Mode";
-            btn.style.background = "var(--primary-green)";
-            editables.forEach(e => e.contentEditable = "false");
-        }
-    }
+function openCtr(id){
+  const d=CTR[id];
+  if(!d)return;
+  document.getElementById('ctr-icon').textContent=d.icon;
+  document.getElementById('ctr-name').textContent=d.name;
+  document.getElementById('ctr-overview').textContent=d.overview;
+  document.getElementById('ctr-products').textContent=d.products;
+  document.getElementById('ctr-examples').innerHTML=d.examples.map(e=>`<span class="ctr-ex">${e}</span>`).join('');
+  document.getElementById('ctr-cmmc').innerHTML=d.cmmc;
+  document.getElementById('ctr-modal').classList.add('show');
+  document.body.style.overflow='hidden';
+}
+function closeCtr(){
+  document.getElementById('ctr-modal').classList.remove('show');
+  document.body.style.overflow='';
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeCtr();});
 </script>
-
 </body>
 </html>
