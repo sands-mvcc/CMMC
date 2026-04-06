@@ -27,7 +27,7 @@
 </head>
 <body class="flex h-screen overflow-hidden">
 
-    <!-- Sidebar: Standardized order -->
+    <!-- Sidebar -->
     <aside class="w-72 bg-white flex flex-col shrink-0 shadow-xl z-20 border-r border-slate-200">
         <div class="p-6 border-b border-slate-100 bg-slate-50">
             <h1 class="text-lg font-black text-slate-900 leading-tight tracking-tighter">Apex BioDefense</h1>
@@ -46,15 +46,13 @@
             <button onclick="showTab('incidents')" class="sidebar-link w-full text-left px-6 py-3 hover:bg-slate-50 flex items-center gap-3" id="btn-incidents">🚨 Incidents & Risks</button>
             <button onclick="showTab('supply')" class="sidebar-link w-full text-left px-6 py-3 hover:bg-slate-50 flex items-center gap-3" id="btn-supply">🔗 Supply Chain</button>
             <button onclick="showTab('artifacts')" class="sidebar-link w-full text-left px-6 py-3 hover:bg-slate-50 flex items-center gap-3" id="btn-artifacts">📂 Audit Documents</button>
+            <button onclick="showTab('guide')" class="sidebar-link w-full text-left px-6 py-3 hover:bg-slate-50 flex items-center gap-3" id="btn-guide">🎓 Instructor Guide</button>
         </nav>
-        <div class="p-6 border-t border-slate-100 bg-slate-50">
-            <button onclick="showTab('guide')" class="w-full text-left py-3 text-blue-600 hover:text-blue-800 transition-colors font-black text-sm flex items-center gap-3" id="btn-guide">🎓 Instructor Guide</button>
-        </div>
     </aside>
 
     <!-- Main Content Wrapper -->
     <main class="flex-1 flex flex-col h-full overflow-hidden bg-slate-50">
-        <!-- Global Header: Verbatim Fictitious Scenario Disclaimer -->
+        <!-- Global Header -->
         <header class="h-14 bg-white border-b border-slate-200 flex items-center px-8 shrink-0 shadow-sm z-10">
             <p class="text-[11px] text-red-600 font-black italic uppercase tracking-tight">
                 ⚠ This case study is entirely fictitious and created for educational purposes only. Any resemblance to real organizations, contracts, or individuals is coincidental.
@@ -64,7 +62,7 @@
         <!-- Workspace Container -->
         <div class="flex-1 overflow-y-auto p-8">
             
-            <!-- Global Metrics Row (Standardized JJ3 Style) -->
+            <!-- Global Metrics Row -->
             <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
                 <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 metric-card">
                     <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Employees</p>
@@ -107,7 +105,7 @@
                                 <li>• CAGE Code: 6AB95</li>
                                 <li>• CMMC Target Level: 2</li>
                             </ul>
-                            <div class="p-6 bg-blue-50 border border-blue-100 rounded-2xl text-xs text-blue-800 leading-relaxed font-semibold shadow-inner">
+                            <div class="p-6 bg-blue-50 border border-blue-100 rounded-2xl text-xs text-blue-800 font-semibold shadow-inner">
                                 SCOPING NOTE: Apex handles Controlled Unclassified Information (CUI), export‑controlled biological technical data, and sensitive personnel records. The assessment boundary includes specific segmented enclaves in the Frederick labs and the GovBio cloud tenant.
                             </div>
                         </div>
@@ -177,7 +175,7 @@
                                     <p><strong>Period:</strong> 1/15/2024 – 1/14/2028</p>
                                     <p><strong>Value:</strong> ~$65M</p>
                                     <p><strong>Data context:</strong> CUI (threat info, dose-response); EAR (technical data on agents and assays).</p>
-                                    <p><strong>CMMC Req:</strong> CMMC 2.0 Level 2 before Exercising Option 1; accurate SPRS scoring required.</p>
+                                    <p><strong>CMMC Req:</strong> CMMC 2.0 Level 2 target; accurate SPRS scoring required.</p>
                                 </div>
                                 <div class="gap-highlight !mt-0">
                                     <span class="gap-tag">Seeded Issues (Gap #2, #6, #7)</span>
@@ -195,7 +193,16 @@
                         <div>
                             <h3 class="text-xs font-black text-blue-800 mb-6 uppercase tracking-widest border-b pb-2">4.1 Leadership List</h3>
                             <ul class="space-y-2 text-sm text-slate-700 font-semibold italic">
-                                <li>CEO – Dr. Elena Vargas</li><li>COO – Mark Chen</li><li>CFO – Priya Desai</li><li>CIO – Thomas Gallagher</li><li>CISO – Rachel Alvarez</li><li>VP Discovery Research – Dr. Sanjay Kulkarni</li><li>VP High‑Containment Programs – Dr. Caroline Fischer</li><li>Director Clinical Operations – Maria Lopez</li><li>Director Quality & Regulatory Affairs – Dr. Aaron Cho</li><li>Director HR & Talent – Linda McGrath</li>
+                                <li>CEO – Dr. Elena Vargas</li>
+                                <li>COO – Mark Chen</li>
+                                <li>CFO – Priya Desai</li>
+                                <li>CIO – Thomas Gallagher</li>
+                                <li>CISO – Rachel Alvarez</li>
+                                <li>VP Discovery Research – Dr. Sanjay Kulkarni</li>
+                                <li>VP High‑Containment Programs – Dr. Caroline Fischer</li>
+                                <li>Director Clinical Operations – Maria Lopez</li>
+                                <li>Director Quality & Regulatory Affairs – Dr. Aaron Cho</li>
+                                <li>Director HR & Talent – Linda McGrath</li>
                             </ul>
                         </div>
                         <div>
@@ -218,9 +225,9 @@
                     </div>
                 </div>
 
-                <!-- 4. IT Environment (Verbatim 1.1-1.4 & 12 SERVER LIST) -->
+                <!-- 4. IT Environment (FULL VERBATIM 1.1–1.3 & 12 SERVER LIST) -->
                 <div id="it-env" class="tab-content p-12">
-                    <h2 class="text-3xl font-black text-slate-900 mb-10 border-b-2 border-slate-100 pb-4">Full technical Infrastructure</h2>
+                    <h2 class="text-3xl font-black text-slate-900 mb-10 border-b-2 border-slate-100 pb-4">Full Technical Infrastructure</h2>
                     
                     <section class="mb-12">
                         <h3 class="text-xs font-black text-blue-800 mb-6 uppercase tracking-widest">1.1 CUI enclave design and segmentation</h3>
@@ -246,7 +253,7 @@
                         </div>
                     </section>
 
-                    <h3 class="text-xs font-black text-blue-800 mb-6 uppercase tracking-widest">1.2 VLAN and Subnet Detail (Verbatim)</h3>
+                    <h3 class="text-xs font-black text-blue-800 mb-6 uppercase tracking-widest">1.2 VLAN and Subnet Detail</h3>
                     <div class="grid md:grid-cols-3 gap-8 mb-12 text-[11px] font-black uppercase tracking-tighter">
                         <div class="bg-white p-6 border-2 border-slate-100 rounded-2xl shadow-sm">
                             <p class="text-slate-900 mb-3 border-b pb-2">Corporate HQ (10.50.0.0/22)</p>
@@ -295,7 +302,7 @@
                         </table>
                     </div>
 
-                    <h3 class="text-xs font-black text-blue-800 mb-6 uppercase tracking-widest">1.3 Verbatim Firewall rules</h3>
+                    <h3 class="text-xs font-black text-blue-800 mb-6 uppercase tracking-widest">1.3 Firewall rules</h3>
                     <div class="technical-box text-[11px] leading-relaxed italic text-slate-700 font-medium">
                         <p><strong>Rule 1:</strong> Only <strong>Apex-CUI-Endpoints</strong> (identified by certificate and device group) may initiate connections to enclave VLAN segments (10.50.20.0/24, 10.60.20.0/24, 10.70.20.0/24) on defined ports (SMB/445, HTTPS/443, SQL/1433).</p>
                         <p class="mt-4"><strong>Rule 2:</strong> All other internal traffic to Enclave VLANs is <strong>DENIED BY DEFAULT</strong> and triggers a SIEM high‑priority alert.</p>
@@ -304,7 +311,7 @@
                     </div>
                 </div>
 
-                <!-- 5. Network Diagrams (FULL VERBATIM SVGS) -->
+                <!-- 5. Network Diagrams (FULL COORDINATES RESTORED) -->
                 <div id="diagrams" class="tab-content p-12">
                     <h2 class="text-3xl font-black text-slate-900 mb-10 border-b-2 border-slate-100 pb-4 uppercase tracking-tighter">Infrastructure Diagrams</h2>
                     
@@ -362,25 +369,96 @@
                     </div>
                 </div>
 
-                <!-- 6. Posture -->
+                <!-- 6. Posture (FULL DASHBOARD) -->
                 <div id="posture" class="tab-content p-12">
-                    <h2 class="text-3xl font-black text-slate-900 mb-8 border-b-2 border-slate-100 pb-4">Security Assessment</h2>
+                    <h2 class="text-3xl font-black text-slate-900 mb-8 border-b-2 border-slate-100 pb-4">Security Posture Dashboard</h2>
                     <div class="grid grid-cols-4 gap-6 mb-12">
                         <div class="bg-slate-900 text-white p-10 rounded-3xl text-center shadow-2xl">
-                            <p class="text-6xl font-black text-red-500">-42</p><p class="text-[11px] uppercase font-black tracking-widest mt-4 text-slate-400">Feb 2026 Score</p>
+                            <p class="text-6xl font-black text-red-500">-42</p>
+                            <p class="text-[11px] uppercase font-black tracking-widest mt-4 text-slate-400">Feb 2026 SPRS Score</p>
                         </div>
                         <div class="p-10 border-4 border-slate-50 rounded-3xl text-center flex flex-col justify-center italic text-sm font-bold">72 Met | 20 Partial | 18 Not Met</div>
                     </div>
-
-                    <h3 class="text-xs font-black text-blue-800 mb-6 uppercase tracking-widest border-l-4 border-blue-600 pl-6">1.4 Logging and Monitoring Architecture (Verbatim)</h3>
-                    <div class="technical-box text-[12px] leading-relaxed space-y-8 bg-slate-50 italic font-medium shadow-inner">
-                        <p><strong>SIEM01 Aggregation:</strong> Receives Security logs from CORP‑DC01, BIO‑DC01, CUI‑FS01, LIMS01, HC‑DB01; Firewall management logs from HQ NGFW and internal segmentation firewalls; API exports from GovBio Cloud.</p>
-                        <p><strong>Retention:</strong> 12 months total (archival); 90 days online for immediate query and correlation.</p>
-                        <div class="bg-red-50 p-6 border border-red-100 rounded-2xl font-bold text-red-900 leading-relaxed">
-                            <p class="font-black text-red-800 uppercase text-[10px] mb-2 tracking-widest underline decoration-red-300 not-italic italic">Logging Gaps (AU-2/6):</p>
-                            Several lab instruments and older acquisition systems in BSL‑3 only log locally (14 days), not integrated into SIEM. BYOD access events are only partially visible (VPN logs see devices, but endpoint‑level telemetry is missing).
+                    <section class="mb-12">
+                        <h3 class="text-xs font-black text-blue-800 mb-6 uppercase tracking-widest border-l-4 border-blue-600 pl-6">A. Control Implementation Summary</h3>
+                        <div class="grid lg:grid-cols-2 gap-10">
+                            <div class="overflow-hidden border border-slate-200 rounded-2xl shadow-sm">
+                                <table class="w-full text-left text-[11px]">
+                                    <thead><tr><th>Family</th><th>Implemented</th><th>Partial</th><th>Not</th></tr></thead>
+                                    <tbody class="font-medium italic">
+                                        <tr><td>AC – Access Control</td><td>14</td><td>5</td><td>3</td></tr>
+                                        <tr><td>AU – Audit & Accountability</td><td>7</td><td>1</td><td>1</td></tr>
+                                        <tr><td>CM – Configuration Management</td><td>11</td><td>3</td><td>1</td></tr>
+                                        <tr><td>IA – Identification & Auth</td><td>10</td><td>1</td><td>0</td></tr>
+                                        <tr><td>IR – Incident Response</td><td>6</td><td>1</td><td>0</td></tr>
+                                        <tr><td>MP – Media Protection</td><td>5</td><td>2</td><td>1</td></tr>
+                                        <tr><td>PE – Physical Protection</td><td>5</td><td>1</td><td>0</td></tr>
+                                        <tr><td>RA – Risk Assessment</td><td>3</td><td>0</td><td>0</td></tr>
+                                        <tr><td>SC – System & Communications</td><td>11</td><td>3</td><td>2</td></tr>
+                                        <tr><td>SI – System & Information Integrity</td><td>8</td><td>1</td><td>1</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="space-y-4">
+                                <p class="text-[10px] font-black uppercase text-slate-400 mb-2">Compliance Detail</p>
+                                <div class="space-y-3">
+                                    <div class="flex items-center gap-4 text-[10px] font-bold">
+                                        <span class="w-8">AC</span>
+                                        <div class="flex-1 h-3 flex rounded-full overflow-hidden bg-slate-100">
+                                            <div style="width: 63%" class="bg-blue-600"></div><div style="width: 23%" class="bg-blue-300"></div><div style="width: 14%" class="bg-red-500"></div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-4 text-[10px] font-bold">
+                                        <span class="w-8">SC</span>
+                                        <div class="flex-1 h-3 flex rounded-full overflow-hidden bg-slate-100">
+                                            <div style="width: 68%" class="bg-blue-600"></div><div style="width: 19%" class="bg-blue-300"></div><div style="width: 13%" class="bg-red-500"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="text-xs text-slate-500 italic mt-4 leading-relaxed font-medium">
+                                    Apex’s strongest families are IA, RA, and IR, where most practices are fully implemented and documented. Weakest areas include AC, MP, and SC due to legacy access models, incomplete media handling, and inconsistent network segmentation between production environments and the CUI enclave.
+                                </p>
+                            </div>
                         </div>
-                    </div>
+                    </section>
+                    <section class="mb-12">
+                        <h3 class="text-xs font-black text-blue-800 mb-6 uppercase tracking-widest border-l-4 border-blue-600 pl-6">B. Maturity Indicators (Process vs. Ad‑hoc)</h3>
+                        <div class="p-8 bg-blue-900 text-white rounded-3xl shadow-xl">
+                            <ul class="space-y-4 text-xs font-medium italic">
+                                <li>• <strong>Documented but ad‑hoc:</strong> Many Apex controls (e.g., account reviews, firewall rule reviews) exist as written procedures but are performed inconsistently or not evidenced for every quarter.</li>
+                                <li>• <strong>Tooling without governance:</strong> Security tools (EDR, SIEM, vulnerability scanner) are deployed, but there is no formal process to review dashboards, track tickets, and feed issues into the POA&M.</li>
+                                <li>• <strong>Partial automation:</strong> Account provisioning ties into HR for new hires, but de‑provisioning and role change mapping to CUI access are still manual and error‑prone.</li>
+                                <li>• <strong>Evidence gaps:</strong> Some controls are implemented technically but lack clear artifacts for assessors (screenshots, change tickets, meeting minutes), which will impact the SAR/assessment.</li>
+                            </ul>
+                        </div>
+                    </section>
+                    <section class="mb-12">
+                        <h3 class="text-xs font-black text-blue-800 mb-6 uppercase tracking-widest border-l-4 border-blue-600 pl-6">C. Risk‑Weighted Gap Summary</h3>
+                        <div class="grid lg:grid-cols-2 gap-10">
+                            <div class="overflow-hidden border border-slate-200 rounded-2xl shadow-sm">
+                                <table class="w-full text-left text-[11px]">
+                                    <thead><tr><th>Tier</th><th>Count</th><th>Example issues</th></tr></thead>
+                                    <tbody class="font-medium italic">
+                                        <tr class="bg-red-50"><td><span class="font-black text-red-600">High</span></td><td>4</td><td>BYOD CUI access, legacy servers with CUI & vulns</td></tr>
+                                        <tr class="bg-orange-50"><td><span class="font-black text-orange-600">Med</span></td><td>8</td><td>Stale access, partial logging, incomplete training</td></tr>
+                                        <tr class="bg-slate-50"><td><span class="font-black text-slate-500">Low</span></td><td>5</td><td>Minor policy mis‑alignments, naming inconsistencies</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p class="text-xs text-slate-600 leading-relaxed font-medium italic">
+                                High‑tier items must have clear POA&M entries with short‑term milestones before any formal assessment. Medium‑tier items can be scheduled across 6–12 months, provided Apex can show credible planning and progress tracking.
+                            </p>
+                        </div>
+                    </section>
+                    <section class="mb-12">
+                        <h3 class="text-xs font-black text-blue-800 mb-6 uppercase tracking-widest border-l-4 border-blue-600 pl-6">D. Evidence Readiness Checklist</h3>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="p-5 bg-white border border-slate-100 rounded-2xl shadow-sm flex items-center gap-4 text-xs italic font-bold"><span>✓</span> <span>SSP alignment: No shadow systems.</span></div>
+                            <div class="p-5 bg-white border border-slate-100 rounded-2xl shadow-sm flex items-center gap-4 text-xs italic font-bold"><span>✓</span> <span>POA&M structure: Linking to NIST 800-171.</span></div>
+                            <div class="p-5 bg-white border border-slate-100 rounded-2xl shadow-sm flex items-center gap-4 text-xs italic font-bold"><span>✓</span> <span>Log coverage: 6–12 months for key systems.</span></div>
+                            <div class="p-5 bg-white border border-slate-100 rounded-2xl shadow-sm flex items-center gap-4 text-xs italic font-bold"><span>✓</span> <span>Training evidence: Attendance/completion reports.</span></div>
+                        </div>
+                    </section>
                 </div>
 
                 <!-- 7. Policies (FULL VERBATIM 2.1 - 2.5 RESTORED) -->
@@ -389,10 +467,10 @@
                     <div class="space-y-8">
                         <details class="group border border-slate-200 rounded-2xl overflow-hidden bg-slate-50 shadow-sm" open>
                             <summary class="p-6 font-black text-slate-800 cursor-pointer flex justify-between items-center group-hover:bg-slate-100 transition-colors uppercase tracking-widest text-[12px]">2.1 CUI Identification, Marking, and Handling Standard</summary>
-                            <div class="p-12 policy-text border-t border-slate-100 bg-white font-medium">
+                            <div class="p-12 policy-text border-t border-slate-100 bg-white font-medium text-sm">
                                 <p class="mb-6">Apex BioDefense Laboratories, Inc. maintains a Controlled Unclassified Information (CUI) Identification and Handling Standard that applies to all systems and personnel supporting BARDA and DoD contracts. All documents, datasets, and collaboration spaces containing CUI must be clearly designated so that users can distinguish CUI from non‑CUI materials.</p>
                                 <p class="mb-6">At a minimum, electronic and paper documents that contain CUI must be marked with the banner “CUI” in the header and footer and include a designation indicator on the first page, such as “CUI//Apex BioDefense” or “CUI//DoD”. Where relevant, category and limited dissemination markings (for example, “CUI//SP-BIO//NOFORN”) must be applied in accordance with the applicable CUI registry and contractual guidance.</p>
-                                <p class="mb-6 text-red-800 italic underline decoration-red-200 underline-offset-4 font-black uppercase tracking-tighter">Prior to sharing information with external collaborators, the information owner must ensure that the content has been properly marked, that the recipient is authorized to receive the CUI, and that the information is transmitted using approved channels (for example, the GovBio CUI collaboration tenant). Legacy repositories such as the BioShare Legacy environment are not authorized for CUI and must be fully remediated.</p>
+                                <p class="mb-6 text-red-800 italic underline decoration-red-200 underline-offset-4 font-black uppercase tracking-tighter">Prior to sharing information with external collaborators, the information owner must ensure that the content has been properly marked, that the recipient is authorized to receive the CUI, and that the information is transmitted using approved channels (for example, the GovBio CUI collaboration tenant). Legacy repositories such as the BioShare Legacy environment are not authorized for CUI and must be fully remediated; any suspected CUI discovered in those locations must be reported to Information Security & Compliance for triage and remediation.</p>
                                 <div class="text-[11px] font-black text-blue-600 uppercase border-t pt-6 tracking-widest flex gap-6">
                                     <span>Related Artifacts: <a href="https://sands-mvcc.github.io/CMMC/ssp.html" target="_blank" class="underline hover:text-blue-800">SSP</a> | <a href="https://sands-mvcc.github.io/CMMC/poam.html" target="_blank" class="underline hover:text-blue-800">POA&M</a></span>
                                 </div>
@@ -400,84 +478,212 @@
                         </details>
                         <details class="group border border-slate-200 rounded-2xl overflow-hidden bg-slate-50 shadow-sm">
                             <summary class="p-6 font-black text-slate-800 cursor-pointer flex justify-between items-center group-hover:bg-slate-100 transition-colors uppercase tracking-widest text-[12px]">2.2 BYOD & Remote Access Standard (AC.L2‑3.1.18-aligned)</summary>
-                            <div class="p-12 policy-text border-t border-slate-100 bg-white font-medium leading-loose">
-                                <p class="mb-6">Apex BioDefense permits limited use of personally owned devices (BYOD) to access corporate resources under strict controls. Personally owned devices are <strong>never authorized</strong> to store CUI locally, and access to CUI must occur only through approved secure applications and remote access mechanisms.</p>
-                                <p class="mb-6 italic">BYOD devices that access CUI must, at a minimum, meet the following requirements: enrollment in the corporate mobile/endpoint management solution; full‑disk encryption using FIPS‑validated modules where available; enforced screen lock and inactivity timeout; malware protection; and the ability for Apex to remotely wipe corporate data containers in the event of loss, theft, or compromise.</p>
-                                <p>Access to the GovBio Cloud Collaboration CUI libraries and CUI application portals from BYOD devices must occur through a hardened, containerized workspace or virtual desktop environment that logically separates corporate data from personal data on the device. Split tunneling is prohibited for connections that access CUI; all traffic from the CUI container must be routed through Apex’s VPN gateway or secure access solution for inspection and logging.</p>
+                            <div class="p-12 policy-text border-t border-slate-100 bg-white font-medium leading-loose text-sm">
+                                <p class="mb-6">Apex BioDefense permits limited use of personally owned devices (BYOD) to access corporate resources under strict controls. Personally owned devices are <strong>never authorized</strong> to store CUI locally, and access to CUI must occur only through approved secure applications and remote access mechanisms. BYOD devices that access CUI must, at a minimum, meet the following requirements: enrollment in the corporate mobile/endpoint management solution; full‑disk encryption using FIPS‑validated modules where available; enforced screen lock and inactivity timeout; malware protection; and the ability for Apex to remotely wipe corporate data containers in the event of loss, theft, or compromise. If a device cannot meet these requirements, it may not be used to access CUI.</p>
+                                <p class="text-sm">Access to the GovBio Cloud Collaboration CUI libraries and CUI application portals from BYOD devices must occur through a hardened, containerized workspace or virtual desktop environment that logically separates corporate data from personal data on the device. Split tunneling is prohibited for connections that access CUI; all traffic from the CUI container must be routed through Apex’s VPN gateway or secure access solution for inspection and logging.</p>
                             </div>
                         </details>
                         <details class="group border border-slate-200 rounded-2xl overflow-hidden bg-slate-50 shadow-sm">
                             <summary class="p-6 font-black text-slate-800 cursor-pointer flex justify-between items-center group-hover:bg-slate-100 transition-colors uppercase tracking-widest text-[12px]">2.3 CUI Enclave and Network Security Policy</summary>
-                            <div class="p-12 policy-text border-t border-slate-100 bg-white leading-relaxed">
+                            <div class="p-12 policy-text border-t border-slate-100 bg-white leading-relaxed text-sm">
                                 <p class="mb-6">Apex BioDefense maintains a logically segmented CUI enclave to reduce the scope of its CMMC Level 2 assessment while ensuring robust protection of CUI. The enclave consists of dedicated VLANs, hardened servers, and an associated cloud tenant that collectively host CUI‑bearing systems such as CUI‑FS01, LIMS01, HC‑DB01, selected lab workstations, and GovBio CUI document libraries.</p>
-                                <p class="mb-6 font-black text-red-900 bg-red-50 p-4 border rounded-xl">Network segmentation is enforced using firewalls and access control lists that implement a deny‑all, permit‑by‑exception model. Only authorized endpoints and user accounts may communicate with enclave systems, and those communications must use approved protocols and ports.</p>
-                                <p class="mb-6 font-bold">All enclave systems must be hardened according to Apex’s baseline configuration standards, including timely application of security patches, disabling of unnecessary services, and enforcement of strong authentication mechanisms (such as multifactor authentication for privileged and remote access).</p>
+                                <p class="mb-6 font-black text-red-900 bg-red-50 p-4 border rounded-xl">Network segmentation is enforced using firewalls and access control lists that implement a deny‑all, permit‑by‑exception model. Only authorized endpoints and user accounts may communicate with enclave systems, and those communications must use approved protocols and ports. Enclave systems do not host public‑facing services, and all outbound connections are restricted to approved update services, security tooling, and the GovBio tenant.</p>
+                                <p class="mb-6 font-bold">All enclave systems must be hardened according to Apex’s baseline configuration standards, including timely application of security patches, disabling of unnecessary services, and enforcement of strong authentication mechanisms (such as multifactor authentication for privileged and remote access). Deviations from baseline configurations must be documented, risk‑assessed, and approved through the configuration management process.</p>
                                 <p class="italic">Enclave traffic is continuously monitored. System logs, firewall logs, and authentication events from enclave systems are forwarded to SIEM01 for correlation and alerting. Systems that cannot currently forward logs must have documented compensating controls and a remediation plan tracked in the Plan of Action and Milestones (POA&M).</p>
                             </div>
                         </details>
                         <details class="group border border-slate-200 rounded-2xl overflow-hidden bg-slate-50 shadow-sm">
                             <summary class="p-6 font-black text-slate-800 cursor-pointer flex justify-between items-center group-hover:bg-slate-100 transition-colors uppercase tracking-widest text-[12px]">2.4 Access Control & Role Management Policy</summary>
-                            <div class="p-12 policy-text border-t border-slate-100 bg-white">
+                            <div class="p-12 policy-text border-t border-slate-100 bg-white text-sm">
                                 <p class="mb-6 italic">Access to Apex BioDefense information systems is granted on the principle of least privilege and is based on job function, project assignment, and required access to CUI. HR, line management, and IT jointly maintain a role catalog that defines which Active Directory groups and application roles correspond to each job role, with special emphasis on roles that work in BSL‑2 and BSL‑3 laboratories.</p>
-                                <p class="mb-6 font-black text-slate-900 border-t pt-4">Access reviews are performed at least semi‑annually for all CUI‑related groups, including BSL3‑Data‑Editors, CUI‑Researchers, and privileged admin groups. Reviews verify that only current, authorized staff retain access, and that users who have changed roles (for example, moving from BSL‑3 research into non‑lab functions) are removed from specialized groups.</p>
+                                <p class="mb-6">Users requiring access to CUI systems (for example, CUI‑FS01, LIMS01, HC‑DB01, and CUI libraries in GovBio) must have an approved access request that documents business justification and is authorized by the user’s manager and the system owner. Access requests must reference the specific contract(s) under which CUI will be handled. Administrative and privileged access requires additional approval from Information Security & Compliance.</p>
+                                <p class="font-black text-slate-900 border-t pt-4">Access reviews are performed at least semi‑annually for all CUI‑related groups, including BSL3‑Data‑Editors, CUI‑Researchers, and privileged admin groups. Reviews verify that only current, authorized staff retain access, and that users who have changed roles (for example, moving from BSL‑3 research into non‑lab functions) are removed from specialized groups. Any discrepancies identified during reviews must be tracked to closure as part of the POA&M.</p>
                             </div>
                         </details>
                         <details class="group border border-slate-200 rounded-2xl overflow-hidden bg-slate-50 shadow-sm">
-                            <summary class="p-6 font-black text-slate-800 cursor-pointer flex justify-between items-center group-hover:bg-slate-100 transition-colors uppercase tracking-widest text-[12px]">2.5 Incident Response Procedures for CUI/EAR Data</summary>
-                            <div class="p-12 policy-text border-t border-slate-100 bg-white font-black leading-relaxed italic text-slate-600">
+                            <summary class="p-6 font-black text-slate-800 cursor-pointer flex justify-between items-center group-hover:bg-slate-100 transition-colors uppercase tracking-widest text-[12px]">2.5 Incident Response Procedures for CUI & EAR Data</summary>
+                            <div class="p-12 policy-text border-t border-slate-100 bg-white font-black leading-relaxed italic text-slate-600 text-sm">
                                 <p class="mb-6">Apex BioDefense’s Incident Response Plan (IRP) includes specific procedures for incidents involving CUI and export‑controlled biological data. When a suspected incident involves CUI or EAR‑controlled information, the Incident Response Team (IRT) must quickly assess whether confidentiality, integrity, or availability of the data may have been affected, and whether any unauthorized foreign access has occurred.</p>
-                                <p class="mb-6">The IRT must preserve relevant logs (for example, from SIEM01, GovBio audit logs, VPN‑GW01, endpoint security tools) and capture forensic artifacts as appropriate. For DoD contracts, the IRT must determine whether the event triggers DFARS‑related reporting requirements and coordinate with Contracts and Legal to notify the appropriate points of contact within required timeframes.</p>
+                                <p class="mb-6">The IRT must preserve relevant logs (for example, from SIEM01, GovBio audit logs, VPN‑GW01, endpoint security tools) and capture forensic artifacts as appropriate. If the incident involves data shared with international collaborators, the IRT must review cross‑border data flows and access logs for external accounts, including any guest accounts in the GovBio tenant.</p>
+                                <p>For DoD contracts, the IRT must determine whether the event triggers DFARS‑related reporting requirements and coordinate with Contracts and Legal to notify the appropriate points of contact within required timeframes. For BARDA contracts, the IRT must follow any incident reporting guidance in the contract or associated security addenda. Lessons learned and corrective actions must be documented and linked to POA&M entries.</p>
                             </div>
                         </details>
                     </div>
                 </div>
 
-                <!-- 8. Personnel -->
+                <!-- 8. Personnel & Training (FULL DASHBOARD) -->
                 <div id="personnel" class="tab-content p-12">
-                    <h2 class="text-3xl font-black text-slate-900 mb-8 border-b-2 border-slate-100 pb-4">Personnel & Training</h2>
-                    <div class="grid md:grid-cols-3 gap-8 mb-12 text-center text-xs font-black uppercase tracking-widest text-slate-400">
-                        <div class="p-10 bg-slate-50 border border-slate-200 rounded-3xl shadow-sm"><p class="text-5xl text-slate-800 mb-1">40</p>HQ Staff</div>
-                        <div class="p-10 bg-slate-50 border border-slate-200 rounded-3xl shadow-sm"><p class="text-5xl text-slate-800 mb-1">35</p>Discovery Lab</div>
-                        <div class="p-10 bg-slate-50 border border-slate-200 rounded-3xl shadow-sm"><p class="text-5xl text-slate-800 mb-1">20</p>Annex Staff</div>
+                    <h2 class="text-3xl font-black text-slate-900 mb-8 border-b-2 border-slate-100 pb-6 uppercase tracking-tighter">Personnel & Training</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-10 text-center">
+                        <div class="p-4 bg-white border border-slate-200 rounded-xl shadow-sm"><p class="text-[9px] font-black text-slate-400 uppercase mb-1">Overall Awareness</p><p class="text-xl font-black text-slate-800">92%</p></div>
+                        <div class="p-4 bg-white border border-slate-200 rounded-xl shadow-sm"><p class="text-[9px] font-black text-slate-400 uppercase mb-1">CUI Completion</p><p class="text-xl font-black text-slate-800">84%</p></div>
+                        <div class="p-4 bg-white border border-slate-200 rounded-xl shadow-sm"><p class="text-[9px] font-black text-slate-400 uppercase mb-1">Role-Based (Admin)</p><p class="text-xl font-black text-blue-600">100%</p></div>
+                        <div class="p-4 bg-white border border-slate-200 rounded-xl shadow-sm"><p class="text-[9px] font-black text-slate-400 uppercase mb-1">Insider Threat</p><p class="text-xl font-black text-slate-800">88%</p></div>
+                        <div class="p-4 bg-white border border-slate-200 rounded-xl shadow-sm"><p class="text-[9px] font-black text-slate-400 uppercase mb-1">Hire to Train (Avg)</p><p class="text-xl font-black text-slate-800">21d</p></div>
                     </div>
-                    <div class="bg-blue-900 text-white p-12 rounded-3xl shadow-2xl flex justify-between items-center mb-10">
-                        <div><p class="text-xs uppercase font-black text-blue-300 tracking-tighter mb-1">Overall CUI Training Pass Rate</p><p class="text-7xl font-black tracking-tighter">91%</p></div>
-                        <div class="text-right text-[11px] opacity-75 italic max-w-sm leading-relaxed font-bold">PIs and key collaborators currently 60 days overdue on CUI modules (Gap #11). The system lacks automatic suspension triggers for training delinquency.</div>
-                    </div>
+                    <section class="mb-12">
+                        <h3 class="text-xs font-black text-blue-800 mb-6 uppercase tracking-widest border-l-4 border-blue-600 pl-6">Training Program Overview</h3>
+                        <div class="grid lg:grid-cols-2 gap-10">
+                            <div class="p-8 bg-slate-50 border border-slate-200 rounded-2xl italic font-medium text-sm text-slate-600 leading-relaxed">
+                                <p class="mb-4 text-slate-900 font-bold not-italic underline decoration-blue-300 underline-offset-4">Training Types (Mapped to CMMC AT):</p>
+                                <ul class="space-y-3 list-disc list-inside">
+                                    <li><strong>General Security Awareness (AT.L2‑3.2.1):</strong> Annual refresher, mandatory for all staff. Covers phishing, passwords, and incident reporting.</li>
+                                    <li><strong>CUI Handling Training:</strong> Initial + annual refresher for CUI users. Aligned to DoD Mandatory CUI Training content.</li>
+                                    <li><strong>Role‑Based Security Training (AT.L2‑3.2.2):</strong> Targeted paths for IT admins, system owners, and program managers.</li>
+                                    <li><strong>Insider Threat Awareness (AT.L2‑3.2.3):</strong> Short annual module on indicators and reporting.</li>
+                                </ul>
+                            </div>
+                            <div class="p-8 bg-white border border-slate-200 rounded-2xl shadow-inner text-sm italic font-medium text-slate-600 leading-relaxed">
+                                <p class="mb-4 text-slate-900 font-bold not-italic underline decoration-blue-300 underline-offset-4">Delivery Methods:</p>
+                                <ul class="space-y-3 list-disc list-inside">
+                                    <li>LMS‑hosted e‑learning modules (SCORM) for awareness and CUI handling.</li>
+                                    <li>Quarterly live sessions / brown‑bags for role‑based content and Q&A.</li>
+                                    <li>Just‑in‑time job aids (PDFs/Teams) for CUI marking and reporting.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="mb-12">
+                        <h3 class="text-xs font-black text-blue-800 mb-6 uppercase tracking-widest border-l-4 border-blue-600 pl-6">Role‑Based Training Matrix</h3>
+                        <div class="overflow-hidden border border-slate-200 rounded-2xl shadow-md">
+                            <table class="w-full text-left text-[10px]">
+                                <thead><tr><th>Role</th><th>CUI Exp</th><th>Modules</th><th>Frequency</th><th>Evidence</th></tr></thead>
+                                <tbody class="font-medium italic">
+                                    <tr><td>Program Manager</td><td>High</td><td>Awareness, CUI, Role-Based (PM), Insider</td><td>Annual</td><td>LMS records, workshops</td></tr>
+                                    <tr><td>Senior Analyst</td><td>High</td><td>Awareness, CUI, Insider Threat</td><td>Annual</td><td>LMS records, quiz scores</td></tr>
+                                    <tr><td>Junior Analyst</td><td>Mod</td><td>Awareness, CUI Basics, Insider Threat</td><td>Annual</td><td>LMS records</td></tr>
+                                    <tr><td>IT Administrator</td><td>High</td><td>Awareness, CUI, Role-Based (Admin), IR/Logging</td><td>Annual</td><td>Certs (Sec+), labs</td></tr>
+                                    <tr><td>HR / Finance</td><td>Low</td><td>Awareness, Insider, Targeted CUI</td><td>Annual</td><td>LMS records, policy ack</td></tr>
+                                    <tr><td>Executives</td><td>Mod</td><td>Executive CUI Briefing, Insider Threat</td><td>Annual</td><td>Briefing slides</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                    <section class="mb-12">
+                        <h3 class="text-xs font-black text-blue-800 mb-6 uppercase tracking-widest border-l-4 border-blue-600 pl-6">Training‑Related Gaps (Seeded Findings)</h3>
+                        <div class="p-8 border-2 border-red-200 bg-red-50/50 rounded-3xl space-y-4 text-sm font-bold italic text-red-900 leading-relaxed">
+                            <ul class="space-y-3">
+                                <li>• <strong>Access before training:</strong> Apex sometimes grants CUI repository access before training is complete; no automated enforcement prevents this.</li>
+                                <li>• <strong>Subcontractor coverage:</strong> Records for 1099 consultants are incomplete; some rely on generic briefings.</li>
+                                <li>• <strong>Static content:</strong> Core training modules updated infrequently; lack current CMMC 2.0 language or Apex enclave diagrams.</li>
+                                <li>• <strong>Weak linkage to roles:</strong> Matrix is not consistently used during annual access reviews or performance planning.</li>
+                                <li>• <strong>Limited metrics:</strong> Apex lacks metrics on training effectiveness (e.g., quiz scores by topic).</li>
+                            </ul>
+                        </div>
+                    </section>
                 </div>
 
-                <!-- 9. Physical -->
+                <!-- 9. Physical Security (FULL DASHBOARD) -->
                 <div id="physical" class="tab-content p-12">
-                    <h2 class="text-3xl font-black text-slate-900 mb-8 border-b-2 border-slate-100 pb-4 uppercase tracking-tighter">Physical Security</h2>
-                    <div class="grid md:grid-cols-3 gap-8 mb-12 text-[11px] leading-loose text-slate-700 font-bold italic">
-                        <div class="p-8 border border-slate-200 rounded-2xl bg-white shadow-sm">HQ Site: Badge access, visitor logs, CCTV coverage, locked server room with restricted group access.</div>
-                        <div class="p-8 border border-slate-200 rounded-2xl bg-white shadow-sm">Discovery Lab: Badge + PIN entry requirement, inventory controls for lab hardware, internal cameras.</div>
-                        <div class="p-8 border border-slate-200 rounded-2xl bg-white shadow-sm">Annex BSL-3: Mantrap entry, badge + biometric, negative pressure monitoring, secure agent storage.</div>
-                    </div>
-                    <div class="gap-highlight"><span class="gap-tag">Physical Gap #12</span><p class="text-sm italic text-red-900 leading-relaxed font-black uppercase tracking-tighter">Landlord-managed Annex exterior badge system provides monthly PDF summaries only. Real-time alerting for unauthorized entry attempts is missing. Multiple tailgating incidents documented in Discovery labs without formal CAPA.</p></div>
+                    <h2 class="text-3xl font-black text-slate-900 mb-8 border-b-2 border-slate-100 pb-6 uppercase tracking-tighter">Physical Security</h2>
+                    <p class="text-sm italic font-medium leading-relaxed text-slate-600 mb-8 px-6">Apex maintains multiple facilities: headquarters, production/lab sites, and project offices. Each implements layered physical controls consistent with NIST SP 800-171 Physical Protection (PE) requirements.</p>
+                    <section class="mb-12">
+                        <h3 class="text-xs font-black text-blue-800 mb-6 uppercase tracking-widest border-l-4 border-blue-600 pl-6">Physical Controls by Site</h3>
+                        <div class="overflow-hidden border border-slate-200 rounded-2xl shadow-md">
+                            <table class="w-full text-left text-[11px]">
+                                <thead><tr><th>Site</th><th>CUI</th><th>Access Controls</th><th>Monitoring</th><th>Media Controls</th></tr></thead>
+                                <tbody class="font-medium italic">
+                                    <tr><td>HQ – Main Office</td><td>Yes</td><td>Badge readers (Bldg/Suite), keys for server room</td><td>CCTV, Motion Sensors</td><td>Locked cabinets, shred bins</td></tr>
+                                    <tr class="bg-slate-50/50"><td>Operations / Lab</td><td>Ltd</td><td>Badge + PIN for lab door, escorted visitors</td><td>Corridor cameras, alarms</td><td>Locked media cabs, clean-desk</td></tr>
+                                    <tr><td>Small Project Office</td><td>Yes</td><td>Landlord badges, mechanical suite lock</td><td>Building security</td><td>Locked file drawers</td></tr>
+                                    <tr class="bg-slate-50/50"><td>Remote / Home</td><td>Yes</td><td>User-managed locks; dedicated workspace policy</td><td>N/A</td><td>Procedural shredding</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                    <section class="mb-12">
+                        <h3 class="text-xs font-black text-blue-800 mb-6 uppercase tracking-widest border-l-4 border-blue-600 pl-6">Physical Security Metrics</h3>
+                        <div class="grid grid-cols-4 gap-4 mb-6">
+                            <div class="p-4 bg-white border border-slate-200 rounded-xl shadow-sm text-center font-black"><p class="text-2xl">~180</p><p class="text-[9px] uppercase">Daily swipes (HQ)</p></div>
+                            <div class="p-4 bg-white border border-slate-200 rounded-xl shadow-sm text-center font-black"><p class="text-2xl">9</p><p class="text-[9px] uppercase">CUI storage bins</p></div>
+                            <div class="p-4 bg-white border border-slate-200 rounded-xl shadow-sm text-center font-black text-red-600"><p class="text-2xl">5</p><p class="text-[9px] uppercase">Tailgating events</p></div>
+                            <div class="p-4 bg-white border border-slate-200 rounded-xl shadow-sm text-center font-black"><p class="text-2xl">42</p><p class="text-[9px] uppercase">Visitor entries</p></div>
+                        </div>
+                        <div class="p-8 border-2 border-red-200 bg-red-50/50 rounded-3xl text-sm font-bold italic text-red-900 leading-relaxed">
+                            <p class="mb-2 underline uppercase tracking-widest text-xs">Seeded Finding (Gap #12):</p>
+                            Reliance on landlord-managed badge/CCTV at project offices with limited independent visibility into logs or retention. Physical CUI in legacy HQ paper storage not included in current media inventory.
+                        </div>
+                    </section>
                 </div>
 
-                <!-- 10. Incidents -->
+                <!-- 10. Incidents & Risks (FULL DASHBOARD) -->
                 <div id="incidents" class="tab-content p-12">
-                    <h2 class="text-3xl font-black text-slate-900 mb-8 border-b-2 border-slate-100 pb-4 uppercase tracking-widest">Incidents & Risk Register</h2>
-                    <div class="space-y-8 mb-12 italic text-xs text-slate-700 font-black leading-relaxed tracking-tight">
-                        <div class="p-8 bg-red-50 border-l-8 border-red-500 rounded-2xl shadow-md">June 2025 Breach: Phishing & mailbox compromise (bioinformatics analyst). OneDrive access obtained by foreign IP. CUI protocol likely exposed. 72-hour reporting triggered for DoD; failed for Commerce (EAR).</div>
-                        <div class="p-8 bg-orange-50 border-l-8 border-orange-500 rounded-2xl shadow-md">Nov 2024 Event: Misconfigured CUI library permissions set to "All-Employees" for 3 weeks during migration. Discovery made during semi-annual audit.</div>
-                    </div>
+                    <h2 class="text-3xl font-black text-slate-900 mb-8 border-b-2 border-slate-100 pb-6 uppercase tracking-tighter">Incidents & Risk Register</h2>
+                    <section class="mb-12">
+                        <h3 class="text-xs font-black text-blue-800 mb-6 uppercase tracking-widest border-l-4 border-blue-600 pl-6">Recent Security Incidents (Last 24 Months)</h3>
+                        <div class="overflow-hidden border border-slate-200 rounded-2xl shadow-md">
+                            <table class="w-full text-left text-[10px]">
+                                <thead><tr><th>ID</th><th>Type</th><th>Systems</th><th>Impact</th><th>Status</th></tr></thead>
+                                <tbody class="font-medium italic">
+                                    <tr><td>I-1</td><td>Email Spill</td><td>M365 Email</td><td>Unencrypted CUI exposed</td><td>Remediated</td></tr>
+                                    <tr><td>I-2</td><td>Phishing</td><td>M365 Account</td><td>Credentials compromised</td><td>MFA Enabled</td></tr>
+                                    <tr><td>I-3</td><td>Stale Access</td><td>AD/M365 Groups</td><td>Former employee access</td><td>Sign-off Required</td></tr>
+                                    <tr><td>I-4</td><td>Ransomware</td><td>EDR/Endpoint</td><td>Blocked by EDR</td><td>Restored</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                    <section class="mb-12">
+                        <h3 class="text-xs font-black text-blue-800 mb-6 uppercase tracking-widest border-l-4 border-blue-600 pl-6">Top Risks Register Snapshot</h3>
+                        <div class="overflow-hidden border border-slate-200 rounded-2xl shadow-md">
+                            <table class="w-full text-left text-[10px]">
+                                <thead><tr><th>ID</th><th>Description</th><th>Rating</th><th>Owner</th><th>Mitigations</th><th>Status</th></tr></thead>
+                                <tbody class="font-medium italic">
+                                    <tr class="bg-red-50"><td>R-1</td><td>BYOD CUI Access</td><td class="text-red-600 font-black">High</td><td>CISO</td><td>MDM, VPN, DLP</td><td>In Progress</td></tr>
+                                    <tr class="bg-red-50"><td>R-2</td><td>Legacy CUI Servers</td><td class="text-red-600 font-black">High</td><td>CIO</td><td>Migration, Scanning</td><td>In Progress</td></tr>
+                                    <tr><td>R-4</td><td>Incomplete Logging</td><td class="text-orange-600 font-black">Med-High</td><td>CISO</td><td>SIEM expansion</td><td>Open</td></tr>
+                                    <tr><td>R-6</td><td>Unmarked CUI</td><td class="text-red-600 font-black">High</td><td>Comp Mgr</td><td>Training, Templates</td><td>Open</td></tr>
+                                    <tr><td>R-8</td><td>Infrequent IR Testing</td><td>Med</td><td>CISO</td><td>Tabletops</td><td>Planned</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mt-8 p-8 bg-blue-50 border border-blue-200 rounded-3xl text-sm italic font-medium leading-relaxed text-slate-700">
+                            <p class="font-black uppercase tracking-tighter text-blue-800 mb-2">Internal Risk Connection Analysis:</p>
+                            Incidents I‑1 and I‑3 (CUI handling/access) map directly to Risks R‑1, R‑3, and R‑6. Incident I-2 (phishing) is linked to Risks around monitoring and SI, justifying MFA expansions. Incident I-4 (ransomware) reinforces the need for EDR and tested playbooks (R-2/R-4).
+                        </div>
+                    </section>
                 </div>
 
-                <!-- 11. Supply Chain -->
+                <!-- 11. Supply Chain (FULL DASHBOARD) -->
                 <div id="supply" class="tab-content p-12">
-                    <h2 class="text-3xl font-black text-slate-900 mb-8 border-b-2 border-slate-100 pb-4">Supply Chain Management</h2>
-                    <div class="grid md:grid-cols-2 gap-12 text-sm italic leading-relaxed text-slate-700 font-black tracking-tighter">
-                        <div class="p-10 bg-slate-50 border border-slate-200 rounded-3xl shadow-inner">VectorPath Analytics GmbH (EU): High-value CUI shared for modeling; self-attestation only; no flow-down verification audit performed (Gap #14).</div>
-                        <div class="p-10 bg-slate-50 border border-slate-200 rounded-3xl shadow-inner">SecureCloud Compute, LLC: Cloud compute provider hosting BIOINF-APP01; legacy service accounts with static keys remain active on sensitive workloads.</div>
+                    <h2 class="text-3xl font-black text-slate-900 mb-8 border-b-2 border-slate-100 pb-6 uppercase tracking-tighter">Supply Chain Management</h2>
+                    <section class="mb-12">
+                        <h3 class="text-xs font-black text-blue-800 mb-6 uppercase tracking-widest border-l-4 border-blue-600 pl-6">Key Suppliers Matrix</h3>
+                        <div class="overflow-hidden border border-slate-200 rounded-2xl shadow-md">
+                            <table class="w-full text-left text-[10px]">
+                                <thead><tr><th>Supplier</th><th>Role</th><th>Data</th><th>CMMC Int</th><th>Evidence</th></tr></thead>
+                                <tbody class="font-medium italic">
+                                    <tr><td>GovCloud Hosting</td><td>Cloud GCC High</td><td>CUI</td><td>Level 2</td><td>FedRAMP High</td></tr>
+                                    <tr><td>SecureIT MSP</td><td>Admin/Support</td><td>CUI/FCI</td><td>Level 2</td><td>SPRS/Self-Assmt</td></tr>
+                                    <tr><td>Precision Analytics</td><td>Modeling</td><td>CUI</td><td>Level 2</td><td>Questionnaire</td></tr>
+                                    <tr><td>Delta Print</td><td>Logistics</td><td>FCI</td><td>Level 1</td><td>Contract Clause</td></tr>
+                                    <tr><td>Aegis Integrators</td><td>Prime</td><td>CUI</td><td>Level 2</td><td>CMMC Certificate</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                    <div class="grid grid-cols-4 gap-4 mb-10 text-center font-black">
+                        <div class="p-4 bg-white border border-slate-200 rounded-xl"><p class="text-2xl">24</p><p class="text-[9px] uppercase">Total Vendors</p></div>
+                        <div class="p-4 bg-white border border-slate-200 rounded-xl border-t-blue-600 border-t-4"><p class="text-2xl text-blue-600">5</p><p class="text-[9px] uppercase">Handle CUI</p></div>
+                        <div class="p-4 bg-white border border-slate-200 rounded-xl"><p class="text-2xl">4/5</p><p class="text-[9px] uppercase">7012 Clauses</p></div>
+                        <div class="p-4 bg-white border border-slate-200 rounded-xl border-t-red-600 border-t-4"><p class="text-2xl text-red-600">3/5</p><p class="text-[9px] uppercase">SPRS Verified</p></div>
                     </div>
+                    <section class="mb-12">
+                        <h3 class="text-xs font-black text-blue-800 mb-6 uppercase tracking-widest border-l-4 border-blue-600 pl-6">Supply‑Chain Gaps (Seeded Findings)</h3>
+                        <div class="p-8 border-2 border-red-200 bg-red-50/50 rounded-3xl text-sm font-bold italic text-red-900 leading-relaxed">
+                            <ul class="space-y-3">
+                                <li>• Inconsistent DFARS/CMMC flow-down for analytics subs.</li>
+                                <li>• Over-reliance on self-attestation without requesting formal SPRS scores.</li>
+                                <li>• SecureIT (MSP) uses shared service accounts with static keys.</li>
+                                <li>• No formal risk-tiering to distinguish high-value technical CUI vendors.</li>
+                            </ul>
+                        </div>
+                    </section>
                 </div>
 
                 <!-- 12. Audit Documents -->
                 <div id="artifacts" class="tab-content p-12">
-                    <h2 class="text-3xl font-black text-slate-900 mb-10 border-b-2 border-slate-100 pb-4 text-center md:text-left">Audit Documentation & Interactive Tools</h2>
+                    <h2 class="text-3xl font-black text-slate-900 mb-10 border-b-2 border-slate-100 pb-4 text-center md:text-left uppercase tracking-tighter">Audit Documentation & Interactive Tools</h2>
                     <div class="grid md:grid-cols-3 gap-6 font-black uppercase text-[11px] tracking-widest text-center">
                         <a href="https://sands-mvcc.github.io/CMMC/ssp.html" target="_blank" class="p-8 border-2 border-blue-100 bg-slate-50 rounded-2xl hover:bg-blue-100 transition-all shadow-md text-blue-900">📄 System Security Plan</a>
                         <a href="https://sands-mvcc.github.io/CMMC/poam.html" target="_blank" class="p-8 border-2 border-red-100 bg-slate-50 rounded-2xl hover:bg-red-100 transition-all shadow-md text-red-900">📄 Plan of Action (POA&M)</a>
@@ -492,12 +698,94 @@
                     </div>
                 </div>
 
-                <!-- 13. Instructor Guide -->
+                <!-- 13. Instructor Guide (FULL VERBATIM CONTENT B-L) -->
                 <div id="guide" class="tab-content p-12">
-                    <h2 class="text-3xl font-black text-blue-900 mb-10 border-b-2 border-slate-100 pb-4 uppercase tracking-widest underline underline-offset-8">Instructor Strategy</h2>
-                    <div class="text-sm italic leading-relaxed space-y-10 text-slate-700 font-black uppercase tracking-tighter">
-                        <section><h5 class="underline mb-2">Learning Mission:</h5>Identify path of EAR biological data exfiltration; verify split-tunneling risk on unmanaged hardware; audit BSL-3 local logging for Gap #8; map CAGE 6AB95 to the -42 SPRS score justification.</section>
-                    </div>
+                    <h2 class="text-3xl font-black text-slate-900 mb-6 border-b-2 border-slate-100 pb-4 tracking-tighter">Instructor Guide – Apex BioDefense</h2>
+                    <p class="text-slate-600 mb-12 leading-relaxed text-sm font-medium">This instructor guide supports the Apex BioDefense CMMC Level 2 audit training scenario. It provides learning objectives, facilitation steps, expected findings, and debrief questions to help instructors run the exercise effectively.</p>
+
+                    <section class="mb-12">
+                        <h3 class="text-2xl font-black text-slate-900 mb-4 tracking-tight">Scenario Overview</h3>
+                        <div class="space-y-4 text-slate-600 text-sm leading-relaxed font-medium italic">
+                            <p>Apex BioDefense Laboratories, Inc. (Apex BioDefense) is a biodefense research contractor specializing in vaccines and diagnostics for high‑consequence biological threats. The company operates BSL‑2 and BSL‑3 laboratories in Frederick, Maryland, supporting BARDA and DoD‑funded programs.</p>
+                            <p>Apex has approximately 95 employees, two active DoD contracts, and annual revenue of about $22M. The company’s CMMC 2.0 target is Level 2, and this case study seeds eight specific CMMC gaps into its environment. Students will examine Apex’s environment to identify and document CMMC‑relevant gaps.</p>
+                        </div>
+                    </section>
+
+                    <section class="mb-12">
+                        <h3 class="text-xl font-bold text-blue-800 mb-6 uppercase tracking-widest text-xs">Learning Objectives</h3>
+                        <ul class="list-disc list-inside space-y-3 text-sm text-slate-700 italic font-bold">
+                            <li>Describe the assessment boundary of a biodefense research contractor undergoing CMMC Level 2.</li>
+                            <li>Identify where CUI and EAR technical data are handled within the environment.</li>
+                            <li>Analyze security posture, policies, and incidents to spot seeded control gaps.</li>
+                            <li>Develop findings and recommendations aligned with CMMC Level 2 requirements.</li>
+                        </ul>
+                    </section>
+
+                    <section class="mb-12">
+                        <h3 class="text-xl font-bold text-blue-800 mb-6 uppercase tracking-widest text-xs">Facilitation Plan and Timing</h3>
+                        <div class="space-y-4">
+                            <!-- Phase 1 -->
+                            <details class="group bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm" open>
+                                <summary class="p-6 cursor-pointer flex justify-between items-center bg-slate-50 group-hover:bg-slate-100">
+                                    <h4 class="font-black text-slate-900 text-sm uppercase tracking-tight">Phase 1 – Orientation (15–20 minutes)</h4>
+                                    <span class="text-blue-500 transition-transform group-open:rotate-180">▼</span>
+                                </summary>
+                                <div class="p-8 border-t border-slate-200 bg-white grid md:grid-cols-3 gap-8 text-xs leading-relaxed font-medium italic">
+                                    <div><p class="font-black text-blue-800 uppercase text-[9px] mb-1">Purpose</p><p>Introduce the Apex scenario and clarify context.</p></div>
+                                    <div><p class="font-black text-blue-800 uppercase text-[9px] mb-1">Instructor Actions</p><p>Walk through each tab; highlight scoping regarding CUI and EAR data flows.</p></div>
+                                    <div><p class="font-black text-blue-800 uppercase text-[9px] mb-1">Student Tasks</p><p>Skim Overview and Facilities; note data locations.</p></div>
+                                </div>
+                            </details>
+                            <!-- Phase 2 -->
+                            <details class="group bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+                                <summary class="p-6 cursor-pointer flex justify-between items-center bg-slate-50 group-hover:bg-slate-100">
+                                    <h4 class="font-black text-slate-900 text-sm uppercase tracking-tight">Phase 2 – Scoping (25–30 minutes)</h4>
+                                    <span class="text-blue-500 transition-transform group-open:rotate-180">▼</span>
+                                </summary>
+                                <div class="p-8 border-t border-slate-200 bg-white grid md:grid-cols-3 gap-8 text-xs leading-relaxed font-medium italic">
+                                    <div><p class="font-black text-blue-800 uppercase text-[9px] mb-1">Purpose</p><p>Determine reasonable CMMC assessment boundary.</p></div>
+                                    <div><p class="font-black text-blue-800 uppercase text-[9px] mb-1">Instructor Actions</p><p>Direct to Facilities, IT Env, and Diagrams.</p></div>
+                                    <div><p class="font-black text-blue-800 uppercase text-[9px] mb-1">Student Tasks</p><p>Create list of in-scope systems/enclaves.</p></div>
+                                </div>
+                            </details>
+                            <!-- Phase 3 -->
+                            <details class="group bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+                                <summary class="p-6 cursor-pointer flex justify-between items-center bg-slate-50 group-hover:bg-slate-100">
+                                    <h4 class="font-black text-slate-900 text-sm uppercase tracking-tight">Phase 3 – Evidence Review (40–60 minutes)</h4>
+                                    <span class="text-blue-500 transition-transform group-open:rotate-180">▼</span>
+                                </summary>
+                                <div class="p-8 border-t border-slate-200 bg-white grid md:grid-cols-3 gap-8 text-xs leading-relaxed font-medium italic">
+                                    <div><p class="font-black text-blue-800 uppercase text-[9px] mb-1">Purpose</p><p>Identify potential CMMC Level 2 gaps.</p></div>
+                                    <div><p class="font-black text-blue-800 uppercase text-[9px] mb-1">Instructor Actions</p><p>Point to Posture, Policies, Training, and Risks.</p></div>
+                                    <div><p class="font-black text-blue-800 uppercase text-[9px] mb-1">Student Tasks</p><p>Document suspected control gaps; prepare concise findings.</p></div>
+                                </div>
+                            </details>
+                            <!-- Phase 4 -->
+                            <details class="group bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+                                <summary class="p-6 cursor-pointer flex justify-between items-center bg-slate-50 group-hover:bg-slate-100">
+                                    <h4 class="font-black text-slate-900 text-sm uppercase tracking-tight">Phase 4 – Debrief (20–30 minutes)</h4>
+                                    <span class="text-blue-500 transition-transform group-open:rotate-180">▼</span>
+                                </summary>
+                                <div class="p-8 border-t border-slate-200 bg-white text-xs leading-relaxed font-medium italic">
+                                    Synthesize observations into readiness summary; present top 5-8 findings using provided template.
+                                </div>
+                            </details>
+                        </div>
+                    </section>
+
+                    <section class="mb-12">
+                        <h3 class="text-xl font-bold text-blue-800 mb-6 uppercase tracking-widest text-xs">Expected Seeded Gaps Checklist</h3>
+                        <div class="space-y-2 text-[11px] font-black italic text-red-900">
+                            <div class="p-3 bg-red-50 border border-red-100 rounded">Gap 1: Access control weakness (incomplete role-based enforcement).</div>
+                            <div class="p-3 bg-red-50 border border-red-100 rounded">Gap 2: Inconsistent MFA coverage for remote/BYOD access paths.</div>
+                            <div class="p-3 bg-red-50 border border-red-100 rounded">Gap 3: Logging gaps for legacy BSL-3 acquisition systems.</div>
+                            <div class="p-3 bg-red-50 border border-red-100 rounded">Gap 4: Configuration management weakness for lab workstations.</div>
+                            <div class="p-3 bg-red-50 border border-red-100 rounded">Gap 5: Incident response process gaps (documentation or testing).</div>
+                            <div class="p-3 bg-red-50 border border-red-100 rounded">Gap 6: Training and awareness gaps for staff handling CUI.</div>
+                            <div class="p-3 bg-red-50 border border-red-100 rounded">Gap 7: Physical security/control weakness in sensitive spaces.</div>
+                            <div class="p-3 bg-red-50 border border-red-100 rounded">Gap 8: Supplier or cloud risk gap (GovBio cloud tenant).</div>
+                        </div>
+                    </section>
                 </div>
 
             </div>
