@@ -1,0 +1,2004 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDCG | CMMC Audit Training Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .nav-button.active {
+            background-color: #f1f5f9;
+            color: #0f172a;
+            border-right: 4px solid #3b82f6;
+        }
+        .tracking-tighter {
+            letter-spacing: -0.05em;
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease;
+        }
+        .accordion-item.active .accordion-content {
+            max-height: 1000px;
+            padding-bottom: 2rem;
+        }
+        .accordion-item.active .chevron {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 h-screen flex overflow-hidden">
+
+    <!-- Sidebar -->
+    <aside class="w-72 bg-white border-r border-slate-200 flex flex-col flex-shrink-0 z-20">
+        <!-- Branding Section -->
+        <div class="p-6 border-b border-slate-100">
+            <h1 class="text-2xl font-black tracking-tighter text-slate-800">CDCG</h1>
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-tight">COASTAL DEFENSE<br>CONSULTING GROUP</p>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="flex-1 overflow-y-auto py-4 space-y-1">
+            <button onclick="showTab('overview')" id="btn-overview" class="nav-button active w-full flex items-center px-6 py-3 text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors">
+                <span class="mr-3 text-lg">🏢</span> Overview
+            </button>
+            <button onclick="showTab('contracts')" id="btn-contracts" class="nav-button w-full flex items-center px-6 py-3 text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors">
+                <span class="mr-3 text-lg">📋</span> Contracts
+            </button>
+            <button onclick="showTab('organization')" id="btn-organization" class="nav-button w-full flex items-center px-6 py-3 text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors">
+                <span class="mr-3 text-lg">👥</span> Organization
+            </button>
+            <button onclick="showTab('it-environment')" id="btn-it-environment" class="nav-button w-full flex items-center px-6 py-3 text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors">
+                <span class="mr-3 text-lg">🖥</span> IT Environment
+            </button>
+            <button onclick="showTab('network-diagrams')" id="btn-network-diagrams" class="nav-button w-full flex items-center px-6 py-3 text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors">
+                <span class="mr-3 text-lg">🌐</span> Network Diagrams
+            </button>
+            <button onclick="showTab('security-posture')" id="btn-security-posture" class="nav-button w-full flex items-center px-6 py-3 text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors">
+                <span class="mr-3 text-lg">🛡</span> Security Posture
+            </button>
+            <button onclick="showTab('policies-procedures')" id="btn-policies-procedures" class="nav-button w-full flex items-center px-6 py-3 text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors">
+                <span class="mr-3 text-lg">📘</span> Policies & Procedures
+            </button>
+            <button onclick="showTab('personnel-training')" id="btn-personnel-training" class="nav-button w-full flex items-center px-6 py-3 text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors">
+                <span class="mr-3 text-lg">🔑</span> Personnel & Training
+            </button>
+            <button onclick="showTab('physical-security')" id="btn-physical-security" class="nav-button w-full flex items-center px-6 py-3 text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors">
+                <span class="mr-3 text-lg">🏛</span> Physical Security
+            </button>
+            <button onclick="showTab('incidents-risks')" id="btn-incidents-risks" class="nav-button w-full flex items-center px-6 py-3 text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors">
+                <span class="mr-3 text-lg">🚨</span> Incidents & Risks
+            </button>
+            <button onclick="showTab('supply-chain')" id="btn-supply-chain" class="nav-button w-full flex items-center px-6 py-3 text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors">
+                <span class="mr-3 text-lg">🔗</span> Supply Chain
+            </button>
+            <button onclick="showTab('audit-documents')" id="btn-audit-documents" class="nav-button w-full flex items-center px-6 py-3 text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors">
+                <span class="mr-3 text-lg">📂</span> Audit Documents
+            </button>
+            <button onclick="showTab('instructor-guide')" id="btn-instructor-guide" class="nav-button w-full flex items-center px-6 py-3 text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors">
+                <span class="mr-3 text-lg">🎓</span> Instructor Guide
+            </button>
+        </nav>
+        
+        <div class="p-4 border-t border-slate-100">
+            <div class="text-[10px] text-slate-400 font-medium uppercase tracking-tighter">System Version 2.0.4b</div>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+        
+        <!-- Header -->
+        <header class="h-14 bg-white border-b border-slate-200 flex items-center px-8 flex-shrink-0 z-10">
+            <p class="text-red-600 font-bold italic text-sm w-full text-center">
+                ⚠ This case study is entirely fictitious and created for educational purposes only. Any resemblance to real organizations, contracts, or individuals is coincidental.
+            </p>
+        </header>
+
+        <!-- Scrollable Workspace -->
+        <main class="flex-1 overflow-y-auto p-8">
+            
+            <!-- Metric Row -->
+            <div class="grid grid-cols-5 gap-6 mb-8">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Employees</p>
+                    <p class="text-3xl font-black tracking-tighter">38 <span class="text-sm font-medium text-slate-400">Total</span></p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">DoD Contracts</p>
+                    <p class="text-3xl font-black tracking-tighter">3 <span class="text-sm font-medium text-slate-400">Active</span></p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border-2 border-red-500 shadow-md">
+                    <p class="text-xs font-bold text-red-500 uppercase tracking-wider mb-1">CMMC Gaps</p>
+                    <p class="text-3xl font-black tracking-tighter text-red-600">7 <span class="text-sm font-medium">Seeded</span></p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Annual Revenue</p>
+                    <p class="text-3xl font-black tracking-tighter">~$9M</p>
+                </div>
+                <div class="bg-blue-600 p-6 rounded-2xl border border-blue-700 shadow-lg">
+                    <p class="text-xs font-bold text-blue-100 uppercase tracking-wider mb-1">Target Level</p>
+                    <p class="text-3xl font-black tracking-tighter text-white">Level 2</p>
+                </div>
+            </div>
+
+            <!-- Content Containers -->
+            <!-- Overview Tab Content -->
+            <div id="overview" class="tab-content active">
+                <div class="bg-white p-10 rounded-2xl border border-slate-200 shadow-xl min-h-[400px]">
+                    <div class="max-w-4xl mx-auto">
+                        <h2 class="text-4xl font-black tracking-tighter mb-2 text-slate-900 uppercase">Organizational Overview</h2>
+                        <p class="text-lg font-medium text-slate-500 mb-10 leading-relaxed">
+                            Coastal Defense Consulting Group (CDCG) is a small DoD management consulting firm based in McLean, Virginia, providing acquisition support, program management, and policy advisory services to OSD and military departments.
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mb-10">
+                            <section>
+                                <h3 class="text-sm font-black uppercase tracking-widest text-blue-600 mb-4 flex items-center">
+                                    <span class="mr-2">🏢</span> Company Profile
+                                </h3>
+                                <p class="text-slate-600 text-sm leading-relaxed">
+                                    Coastal Defense Consulting Group (CDCG) is a knowledge-work defense contractor whose primary business is supporting government clients through acquisition analysis, program management support, executive briefings, policy documentation, and advisory services. Unlike a manufacturing contractor, CDCG’s CUI environment is centered on documents, email, SharePoint, Teams, and consultant laptops rather than production systems or industrial equipment.
+                                </p>
+                            </section>
+
+                            <section>
+                                <h3 class="text-sm font-black uppercase tracking-widest text-blue-600 mb-4 flex items-center">
+                                    <span class="mr-2">🌐</span> Operating Environment
+                                </h3>
+                                <p class="text-slate-600 text-sm leading-relaxed">
+                                    CDCG operates from McLean, Virginia and supports hybrid work across headquarters, client locations, and home offices. Staff regularly access contract data remotely, collaborate through Microsoft 365, and exchange working documents with government stakeholders and selected subcontractors.
+                                </p>
+                            </section>
+
+                            <section>
+                                <h3 class="text-sm font-black uppercase tracking-widest text-blue-600 mb-4 flex items-center">
+                                    <span class="mr-2">🔐</span> CUI Environment
+                                </h3>
+                                <p class="text-slate-600 text-sm leading-relaxed">
+                                    Most Controlled Unclassified Information in this case resides in draft reports, acquisition documents, policy memos, schedules, briefing materials, email, and SharePoint/Teams collaboration spaces. This makes secure document handling, identity management, remote access, and collaboration controls especially important.
+                                </p>
+                            </section>
+
+                            <section>
+                                <h3 class="text-sm font-black uppercase tracking-widest text-red-600 mb-4 flex items-center">
+                                    <span class="mr-2">⚠️</span> Key Scenario Risks
+                                </h3>
+                                <ul class="space-y-2">
+                                    <li class="flex items-start text-sm text-slate-600">
+                                        <span class="text-red-500 mr-2">•</span> CUI appears in unencrypted email.
+                                    </li>
+                                    <li class="flex items-start text-sm text-slate-600">
+                                        <span class="text-red-500 mr-2">•</span> Home use is not consistently protected by enforced VPN access.
+                                    </li>
+                                    <li class="flex items-start text-sm text-slate-600">
+                                        <span class="text-red-500 mr-2">•</span> A legacy document management system is not clearly included in SSP scope.
+                                    </li>
+                                    <li class="flex items-start text-sm text-slate-600">
+                                        <span class="text-red-500 mr-2">•</span> High staff turnover contributes to stale access and delayed offboarding.
+                                    </li>
+                                    <li class="flex items-start text-sm text-slate-600">
+                                        <span class="text-red-500 mr-2">•</span> Some security and compliance weaknesses are known but not fully remediated.
+                                    </li>
+                                </ul>
+                            </section>
+                        </div>
+
+                        <!-- Compact Details Block -->
+                        <div class="mt-12 pt-8 border-t border-slate-100 flex flex-wrap gap-x-12 gap-y-4">
+                            <div>
+                                <p class="text-[10px] font-black uppercase text-slate-400 mb-1">Location</p>
+                                <p class="text-sm font-bold text-slate-700">McLean, VA</p>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-black uppercase text-slate-400 mb-1">Employees</p>
+                                <p class="text-sm font-bold text-slate-700">38</p>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-black uppercase text-slate-400 mb-1">Revenue</p>
+                                <p class="text-sm font-bold text-slate-700">~$9M</p>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-black uppercase text-slate-400 mb-1">Active Contracts</p>
+                                <p class="text-sm font-bold text-slate-700">3</p>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-black uppercase text-slate-400 mb-1">CAGE Code</p>
+                                <p class="text-sm font-bold text-slate-700">5CG82</p>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-black uppercase text-slate-400 mb-1">Target Level</p>
+                                <p class="text-sm font-bold text-blue-600">Level 2</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contracts Tab Content -->
+            <div id="contracts" class="tab-content">
+                <div class="bg-white p-10 rounded-2xl border border-slate-200 shadow-xl min-h-[400px]">
+                    <div class="max-w-4xl mx-auto">
+                        <h2 class="text-4xl font-black tracking-tighter mb-2 text-slate-900 uppercase">Active Contracts</h2>
+                        <p class="text-lg font-medium text-slate-500 mb-10 leading-relaxed">
+                            CDCG currently supports three active DoD-related contracts involving acquisition support, program management, and policy advisory services. Across these contracts, CUI primarily appears in reports, schedules, policy documents, briefing materials, email, and SharePoint-based collaboration spaces.
+                        </p>
+
+                        <!-- Contract Blocks -->
+                        <div class="space-y-6">
+                            <!-- Block 1 -->
+                            <div class="p-6 bg-slate-50 rounded-xl border border-slate-200">
+                                <div class="flex justify-between items-start mb-4">
+                                    <h3 class="text-xl font-black text-slate-800 uppercase tracking-tight">OSD Acquisition Support Services</h3>
+                                    <span class="px-3 py-1 bg-blue-100 text-blue-700 text-[10px] font-black uppercase rounded-full">Prime Contract</span>
+                                </div>
+                                <div class="grid grid-cols-3 gap-4 mb-4">
+                                    <div>
+                                        <p class="text-[10px] font-black uppercase text-slate-400">Customer</p>
+                                        <p class="text-sm font-bold text-slate-700">Office of the Secretary of Defense (OSD)</p>
+                                    </div>
+                                    <div class="col-span-2">
+                                        <p class="text-[10px] font-black uppercase text-slate-400">Description</p>
+                                        <p class="text-sm text-slate-600">CDCG provides acquisition analysis, executive briefing support, milestone preparation, staffing coordination, and policy documentation assistance.</p>
+                                    </div>
+                                </div>
+                                <div class="pt-4 border-t border-slate-200">
+                                    <p class="text-[10px] font-black uppercase text-red-500 mb-1 italic">CUI / Compliance Note</p>
+                                    <p class="text-sm text-slate-600 italic">Includes CUI in draft acquisition documents, internal coordination materials, and executive briefing content. Requires secure handling in email, SharePoint, Teams, and endpoint devices.</p>
+                                </div>
+                            </div>
+
+                            <!-- Block 2 -->
+                            <div class="p-6 bg-slate-50 rounded-xl border border-slate-200">
+                                <div class="flex justify-between items-start mb-4">
+                                    <h3 class="text-xl font-black text-slate-800 uppercase tracking-tight">Military Department Program Management Advisory Support</h3>
+                                    <span class="px-3 py-1 bg-blue-100 text-blue-700 text-[10px] font-black uppercase rounded-full">Prime Contract</span>
+                                </div>
+                                <div class="grid grid-cols-3 gap-4 mb-4">
+                                    <div>
+                                        <p class="text-[10px] font-black uppercase text-slate-400">Customer</p>
+                                        <p class="text-sm font-bold text-slate-700">Military Department Program Office</p>
+                                    </div>
+                                    <div class="col-span-2">
+                                        <p class="text-[10px] font-black uppercase text-slate-400">Description</p>
+                                        <p class="text-sm text-slate-600">Provides program management support, schedule analysis, meeting preparation, risk tracking, action-item coordination, and documentation support.</p>
+                                    </div>
+                                </div>
+                                <div class="pt-4 border-t border-slate-200">
+                                    <p class="text-[10px] font-black uppercase text-red-500 mb-1 italic">CUI / Compliance Note</p>
+                                    <p class="text-sm text-slate-600 italic">Regularly involves CUI in schedules, risk registers, working reports, and planning documents. CUI exposure occurs through routine collaboration workflows.</p>
+                                </div>
+                            </div>
+
+                            <!-- Block 3 -->
+                            <div class="p-6 bg-slate-50 rounded-xl border border-slate-200">
+                                <div class="flex justify-between items-start mb-4">
+                                    <h3 class="text-xl font-black text-slate-800 uppercase tracking-tight">Policy and Governance Advisory Support</h3>
+                                    <span class="px-3 py-1 bg-slate-200 text-slate-600 text-[10px] font-black uppercase rounded-full">Subcontract</span>
+                                </div>
+                                <div class="grid grid-cols-3 gap-4 mb-4">
+                                    <div>
+                                        <p class="text-[10px] font-black uppercase text-slate-400">Customer</p>
+                                        <p class="text-sm font-bold text-slate-700">DoD / Defense Policy Stakeholders</p>
+                                    </div>
+                                    <div class="col-span-2">
+                                        <p class="text-[10px] font-black uppercase text-slate-400">Description</p>
+                                        <p class="text-sm text-slate-600">Supports policy analysis, issue papers, governance documentation, stakeholder coordination, and leadership briefing preparation.</p>
+                                    </div>
+                                </div>
+                                <div class="pt-4 border-t border-slate-200">
+                                    <p class="text-[10px] font-black uppercase text-red-500 mb-1 italic">CUI / Compliance Note</p>
+                                    <p class="text-sm text-slate-600 italic">Risk arises from collaborative drafting across email and cloud platforms, increasing the chance of mislabeling, oversharing, or storing CUI in wrong locations.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Summary Block -->
+                        <div class="mt-12 pt-8 border-t border-slate-100 grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <div class="col-span-2">
+                                <h3 class="text-sm font-black uppercase tracking-widest text-blue-600 mb-3">Contract Environment Summary</h3>
+                                <p class="text-sm text-slate-600 leading-relaxed">
+                                    CDCG’s contract portfolio reflects a consulting-driven CUI environment in which sensitive information lives in documents, schedules, reports, and collaboration tools rather than manufacturing systems. This means the most important safeguards in the case involve proper scoping, secure document handling, remote access controls, logging, access management, and timely offboarding.
+                                </p>
+                            </div>
+                            <div class="bg-slate-50 p-6 rounded-xl border border-slate-100">
+                                <h3 class="text-[10px] font-black uppercase text-slate-400 mb-3">Quick Compliance Drivers</h3>
+                                <ul class="space-y-2">
+                                    <li class="text-[11px] font-bold text-slate-700 flex items-start">
+                                        <span class="text-blue-500 mr-2">•</span> 3 Active Contracts
+                                    </li>
+                                    <li class="text-[11px] font-bold text-slate-700 flex items-start">
+                                        <span class="text-blue-500 mr-2">•</span> Acquisition & Program Mgmt
+                                    </li>
+                                    <li class="text-[11px] font-bold text-slate-700 flex items-start">
+                                        <span class="text-blue-500 mr-2">•</span> CMMC Level 2 / NIST 800-171
+                                    </li>
+                                    <li class="text-[11px] font-bold text-slate-700 flex items-start">
+                                        <span class="text-blue-500 mr-2">•</span> Office 365 / Teams Scope
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Organization Tab Content -->
+            <div id="organization" class="tab-content">
+                <div class="bg-white p-10 rounded-2xl border border-slate-200 shadow-xl min-h-[400px]">
+                    <div class="max-w-4xl mx-auto">
+                        <h2 class="text-4xl font-black tracking-tighter mb-2 text-slate-900 uppercase">Organization Structure</h2>
+                        <p class="text-lg font-medium text-slate-500 mb-10 leading-relaxed">
+                            CDCG is a small defense consulting firm with a lean management structure, project-based delivery teams, and shared IT/security responsibilities that directly affect how CUI access is granted, reviewed, and removed.
+                        </p>
+
+                        <div class="space-y-12">
+                            <!-- Section 1: Leadership -->
+                            <section>
+                                <h3 class="text-sm font-black uppercase tracking-widest text-blue-600 mb-6 flex items-center">
+                                    <span class="mr-2">👑</span> Leadership and Key Roles
+                                </h3>
+                                <p class="text-slate-600 text-sm leading-relaxed mb-6">
+                                    CDCG operates with a compact leadership team typical of a small consulting contractor. Operational, technical, and compliance responsibilities are shared across a limited number of leaders, which increases the importance of clearly defined accountabilities for CUI protection, access approvals, training, and offboarding.
+                                </p>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+                                    <div class="flex items-start">
+                                        <div class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 mr-3"></div>
+                                        <div>
+                                            <p class="text-sm font-bold text-slate-800">Chief Executive Officer (CEO)</p>
+                                            <p class="text-[11px] text-slate-500">Oversees strategy, client relationships, and business performance.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start">
+                                        <div class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 mr-3"></div>
+                                        <div>
+                                            <p class="text-sm font-bold text-slate-800">Chief Operations Officer (COO)</p>
+                                            <p class="text-[11px] text-slate-500">Manages day-to-day operations and staffing across active contracts.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start">
+                                        <div class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 mr-3"></div>
+                                        <div>
+                                            <p class="text-sm font-bold text-slate-800">Chief Information Officer (CIO)</p>
+                                            <p class="text-[11px] text-slate-500">Oversees IT environment, M365, remote access, and endpoints.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start">
+                                        <div class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 mr-3"></div>
+                                        <div>
+                                            <p class="text-sm font-bold text-slate-800">Chief Information Security Officer (CISO)</p>
+                                            <p class="text-[11px] text-slate-500">Leads policy, incident response, and CMMC readiness activities.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start">
+                                        <div class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 mr-3"></div>
+                                        <div>
+                                            <p class="text-sm font-bold text-slate-800">Program Managers</p>
+                                            <p class="text-[11px] text-slate-500">Oversee contract execution and approve access to collaboration spaces.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start">
+                                        <div class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 mr-3"></div>
+                                        <div>
+                                            <p class="text-sm font-bold text-slate-800">HR / Operations Lead</p>
+                                            <p class="text-[11px] text-slate-500">Coordinates onboarding, offboarding, and personnel records.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <!-- Section 2: Functional Teams -->
+                            <section>
+                                <h3 class="text-sm font-black uppercase tracking-widest text-blue-600 mb-6 flex items-center">
+                                    <span class="mr-2">🛠️</span> Functional Teams
+                                </h3>
+                                <p class="text-slate-600 text-sm leading-relaxed mb-6">
+                                    CDCG’s workforce is organized around consulting delivery rather than technical production. Most personnel work in project-based teams that create, review, store, and share contract deliverables in cloud collaboration platforms.
+                                </p>
+                                <div class="bg-slate-50 p-6 rounded-xl border border-slate-100 mb-6">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <ul class="space-y-3">
+                                            <li class="flex items-center text-sm font-bold text-slate-700">
+                                                <span class="text-blue-500 mr-2">📂</span> Acquisition Support Team
+                                            </li>
+                                            <li class="flex items-center text-sm font-bold text-slate-700">
+                                                <span class="text-blue-500 mr-2">📊</span> Program Management Support Team
+                                            </li>
+                                            <li class="flex items-center text-sm font-bold text-slate-700">
+                                                <span class="text-blue-500 mr-2">⚖️</span> Policy and Advisory Team
+                                            </li>
+                                        </ul>
+                                        <ul class="space-y-3">
+                                            <li class="flex items-center text-sm font-bold text-slate-700">
+                                                <span class="text-blue-500 mr-2">🛡️</span> IT and Security Support
+                                            </li>
+                                            <li class="flex items-center text-sm font-bold text-slate-700">
+                                                <span class="text-blue-500 mr-2">🤝</span> HR / Administrative Support
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <p class="text-slate-600 text-sm italic leading-relaxed">
+                                    Because CDCG is a knowledge-work environment, access to CUI is driven more by role, project assignment, and collaboration platform permissions than by physical production systems. This makes group membership, role changes, and timely access removal especially important.
+                                </p>
+                            </section>
+
+                            <!-- Section 3: Risk Observations -->
+                            <section>
+                                <h3 class="text-sm font-black uppercase tracking-widest text-red-600 mb-6 flex items-center">
+                                    <span class="mr-2">🔍</span> Organizational Risk Observations
+                                </h3>
+                                <div class="space-y-3">
+                                    <div class="flex items-start p-3 hover:bg-red-50 rounded-lg transition-colors group">
+                                        <span class="text-red-500 mr-3 font-bold">•</span>
+                                        <p class="text-sm text-slate-600">High employee turnover increases the likelihood of stale accounts and delayed access removal.</p>
+                                    </div>
+                                    <div class="flex items-start p-3 hover:bg-red-50 rounded-lg transition-colors group">
+                                        <span class="text-red-500 mr-3 font-bold">•</span>
+                                        <p class="text-sm text-slate-600">Project-based staffing creates frequent role changes that can lead to over-broad permissions.</p>
+                                    </div>
+                                    <div class="flex items-start p-3 hover:bg-red-50 rounded-lg transition-colors group">
+                                        <span class="text-red-500 mr-3 font-bold">•</span>
+                                        <p class="text-sm text-slate-600">Program managers influence access decisions, but responsibilities are not always documented consistently.</p>
+                                    </div>
+                                    <div class="flex items-start p-3 hover:bg-red-50 rounded-lg transition-colors group">
+                                        <span class="text-red-500 mr-3 font-bold">•</span>
+                                        <p class="text-sm text-slate-600">HR and IT coordination for offboarding is not always timely, creating risk of lingering access after departures.</p>
+                                    </div>
+                                    <div class="flex items-start p-3 hover:bg-red-50 rounded-lg transition-colors group">
+                                        <span class="text-red-500 mr-3 font-bold">•</span>
+                                        <p class="text-sm text-slate-600">Small organization size relies on a few individuals performing multiple roles, increasing process dependence.</p>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+
+                        <!-- Organization Snapshot -->
+                        <div class="mt-12 pt-8 border-t border-slate-100 flex flex-wrap justify-between items-center bg-slate-50/50 p-6 rounded-b-2xl -mx-10 -mb-10">
+                            <h4 class="text-xs font-black uppercase text-slate-400 tracking-widest">Organization Snapshot</h4>
+                            <div class="flex gap-x-8">
+                                <div class="text-center">
+                                    <p class="text-[10px] font-black text-slate-400 uppercase">Size</p>
+                                    <p class="text-sm font-bold text-slate-700">38 Employees</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-[10px] font-black text-slate-400 uppercase">Model</p>
+                                    <p class="text-sm font-bold text-slate-700">Project-Based Teams</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-[10px] font-black text-slate-400 uppercase">Concern</p>
+                                    <p class="text-sm font-bold text-red-600">Offboarding Lag</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- IT Environment Tab Content -->
+            <div id="it-environment" class="tab-content">
+                <div class="bg-white p-10 rounded-2xl border border-slate-200 shadow-xl min-h-[400px]">
+                    <div class="max-w-4xl mx-auto">
+                        <h2 class="text-4xl font-black tracking-tighter mb-2 text-slate-900 uppercase">IT Environment</h2>
+                        <p class="text-lg font-medium text-slate-500 mb-10 leading-relaxed">
+                            CDCG operates a hybrid, Microsoft 365-centered environment in which most contract work is performed on laptops and cloud collaboration platforms, with limited on-premise infrastructure still supporting historical data and legacy workflows.
+                        </p>
+
+                        <div class="space-y-12">
+                            <!-- Section 1: Core Environment -->
+                            <section>
+                                <h3 class="text-sm font-black uppercase tracking-widest text-blue-600 mb-6 flex items-center">
+                                    <span class="mr-2">🏢</span> Core Environment
+                                </h3>
+                                <p class="text-slate-600 text-sm leading-relaxed mb-6">
+                                    CDCG’s IT environment is built around Microsoft 365, consultant laptops, remote collaboration, and a small amount of legacy on-premise infrastructure. Most daily work is performed through email, SharePoint, Teams, and document-based workflows rather than through specialized engineering or manufacturing systems.
+                                </p>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="flex items-center p-3 bg-slate-50 rounded-lg border border-slate-100">
+                                        <span class="text-blue-500 mr-3 text-lg">☁️</span>
+                                        <span class="text-xs font-bold text-slate-700">Microsoft 365 (Email, Teams, SharePoint)</span>
+                                    </div>
+                                    <div class="flex items-center p-3 bg-slate-50 rounded-lg border border-slate-100">
+                                        <span class="text-blue-500 mr-3 text-lg">💻</span>
+                                        <span class="text-xs font-bold text-slate-700">Company-Managed Laptops</span>
+                                    </div>
+                                    <div class="flex items-center p-3 bg-slate-50 rounded-lg border border-slate-100">
+                                        <span class="text-blue-500 mr-3 text-lg">🏠</span>
+                                        <span class="text-xs font-bold text-slate-700">Remote Access / Hybrid Work Support</span>
+                                    </div>
+                                    <div class="flex items-center p-3 bg-slate-50 rounded-lg border border-slate-100">
+                                        <span class="text-blue-500 mr-3 text-lg">💾</span>
+                                        <span class="text-xs font-bold text-slate-700">Legacy Admin & Document Systems</span>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <!-- Section 2: In-Scope CUI Systems -->
+                            <section>
+                                <h3 class="text-sm font-black uppercase tracking-widest text-blue-600 mb-6 flex items-center">
+                                    <span class="mr-2">🔐</span> In-Scope CUI Systems
+                                </h3>
+                                <p class="text-slate-600 text-sm leading-relaxed mb-6">
+                                    In this case, CUI primarily lives in digital business systems rather than dedicated production environments. Students should recognize that systems can be in scope for CMMC not because they are complex, but because they store, process, or transmit CUI.
+                                </p>
+                                <ul class="space-y-3 mb-6">
+                                    <li class="flex items-start text-sm text-slate-600">
+                                        <span class="text-blue-500 mr-2 font-bold">•</span> CUI-related email and attachments
+                                    </li>
+                                    <li class="flex items-start text-sm text-slate-600">
+                                        <span class="text-blue-500 mr-2 font-bold">•</span> SharePoint and Teams collaboration spaces used for contract work
+                                    </li>
+                                    <li class="flex items-start text-sm text-slate-600">
+                                        <span class="text-blue-500 mr-2 font-bold">•</span> Consultant laptops used to access, edit, and store working documents
+                                    </li>
+                                    <li class="flex items-start text-sm text-slate-600">
+                                        <span class="text-blue-500 mr-2 font-bold">•</span> Identity and access services that control authentication into CUI platforms
+                                    </li>
+                                    <li class="flex items-start text-sm text-slate-600">
+                                        <span class="text-blue-500 mr-2 font-bold">•</span> A legacy document management system that still contains historical CUI
+                                    </li>
+                                </ul>
+                                <div class="p-4 bg-amber-50 border-l-4 border-amber-400 rounded-r-lg text-sm text-amber-800 italic">
+                                    The legacy document management system is especially important in this scenario because it contains CUI but is not clearly represented in the documented SSP boundary.
+                                </div>
+                            </section>
+
+                            <!-- Section 3: Remote Access -->
+                            <section>
+                                <h3 class="text-sm font-black uppercase tracking-widest text-blue-600 mb-6 flex items-center">
+                                    <span class="mr-2">🌐</span> Remote Access and Collaboration
+                                </h3>
+                                <p class="text-slate-600 text-sm leading-relaxed mb-6">
+                                    CDCG supports a hybrid workforce, and personnel routinely work from headquarters, client spaces, and home offices. Collaboration is heavily dependent on email, Teams, SharePoint, and shared document workflows. This creates efficiency, but it also increases reliance on strong remote-access controls, device management, and secure handling of CUI in cloud-based tools.
+                                </p>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3">
+                                    <div class="flex items-start text-xs text-slate-600">
+                                        <span class="mr-2">✅</span> Frequent home and off-site access to systems
+                                    </div>
+                                    <div class="flex items-start text-xs text-slate-600">
+                                        <span class="mr-2">✅</span> Heavy use of M365 for collaboration
+                                    </div>
+                                    <div class="flex items-start text-xs text-slate-600">
+                                        <span class="mr-2">❌</span> Inconsistent VPN enforcement
+                                    </div>
+                                    <div class="flex items-start text-xs text-slate-600">
+                                        <span class="mr-2">⚠️</span> Risk of CUI download outside approved locations
+                                    </div>
+                                </div>
+                            </section>
+
+                            <!-- Section 4: IT Risk Observations -->
+                            <section>
+                                <h3 class="text-sm font-black uppercase tracking-widest text-red-600 mb-6 flex items-center">
+                                    <span class="mr-2">🚨</span> IT Risk Observations
+                                </h3>
+                                <div class="grid grid-cols-1 gap-4">
+                                    <div class="flex items-start p-4 bg-red-50 rounded-xl border border-red-100">
+                                        <div class="text-red-500 mr-3 mt-1 font-bold">!</div>
+                                        <div class="text-sm text-slate-700 leading-relaxed">
+                                            <p class="font-bold mb-1">Unsecured Workflows</p>
+                                            CUI is sometimes handled in standard email rather than protected methods, and remote access is not consistently enforced through VPN-only workflows.
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start p-4 bg-red-50 rounded-xl border border-red-100">
+                                        <div class="text-red-500 mr-3 mt-1 font-bold">!</div>
+                                        <div class="text-sm text-slate-700 leading-relaxed">
+                                            <p class="font-bold mb-1">Boundary Gaps</p>
+                                            The legacy document management system contains CUI but is missing from the formal system boundary (SSP).
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start p-4 bg-red-50 rounded-xl border border-red-100">
+                                        <div class="text-red-500 mr-3 mt-1 font-bold">!</div>
+                                        <div class="text-sm text-slate-700 leading-relaxed">
+                                            <p class="font-bold mb-1">Control Dependency</p>
+                                            High reliance on users and distributed endpoints makes identity management and logging critical, yet currently vulnerable.
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+
+                        <!-- Environment Snapshot -->
+                        <div class="mt-12 pt-8 border-t border-slate-100 flex flex-wrap justify-between items-center bg-slate-50/50 p-6 rounded-b-2xl -mx-10 -mb-10">
+                            <h4 class="text-xs font-black uppercase text-slate-400 tracking-widest">Environment Snapshot</h4>
+                            <div class="flex gap-x-8">
+                                <div class="text-center">
+                                    <p class="text-[10px] font-black text-slate-400 uppercase">Primary Platform</p>
+                                    <p class="text-sm font-bold text-slate-700">Microsoft 365</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-[10px] font-black text-slate-400 uppercase">Work Model</p>
+                                    <p class="text-sm font-bold text-slate-700">Hybrid / Remote</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-[10px] font-black text-slate-400 uppercase">Key Risk</p>
+                                    <p class="text-sm font-bold text-red-600">Legacy DMS exclusion</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Network Diagrams Tab Content -->
+            <div id="network-diagrams" class="tab-content">
+                <div class="bg-white p-10 rounded-2xl border border-slate-200 shadow-xl min-h-[400px]">
+                    <div class="max-w-4xl mx-auto">
+                        <h2 class="text-4xl font-black tracking-tighter mb-2 text-slate-900 uppercase">Network Diagrams</h2>
+                        <p class="text-lg font-medium text-slate-500 mb-10 leading-relaxed">
+                            These diagrams show how CDCG’s hybrid environment is structured, where CUI-related systems are located, and how users, cloud services, and legacy systems connect across the case study environment.
+                        </p>
+
+                        <div class="space-y-16">
+                            <!-- Diagram 1: High-Level Topology -->
+                            <section>
+                                <h3 class="text-sm font-black uppercase tracking-widest text-blue-600 mb-6 flex items-center">
+                                    <span class="mr-2">🌐</span> High-Level Enterprise Topology
+                                </h3>
+                                <div class="bg-slate-50 p-8 rounded-2xl border border-slate-200 flex justify-center">
+                                    <svg viewBox="0 0 800 400" class="w-full h-auto max-w-3xl">
+                                        <!-- Styles -->
+                                        <defs>
+                                            <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                                                <path d="M0,0 L0,6 L9,3 z" fill="#94a3b8" />
+                                            </marker>
+                                        </defs>
+                                        
+                                        <!-- Internet/Cloud Cloud -->
+                                        <path d="M400,50 Q380,50 370,65 Q350,65 340,85 Q350,110 370,110 L430,110 Q450,110 460,85 Q450,65 430,65 Q420,50 400,50" fill="#eff6ff" stroke="#3b82f6" stroke-width="2" />
+                                        <text x="400" y="85" text-anchor="middle" font-size="14" font-weight="900" fill="#1d4ed8">M365 CLOUD</text>
+                                        
+                                        <!-- Remote Users -->
+                                        <rect x="50" y="150" width="140" height="80" rx="10" fill="#fff" stroke="#94a3b8" stroke-width="2" />
+                                        <text x="120" y="185" text-anchor="middle" font-size="12" font-weight="800" fill="#475569">REMOTE / HOME</text>
+                                        <text x="120" y="205" text-anchor="middle" font-size="10" fill="#64748b">Consultant Laptops</text>
+                                        
+                                        <!-- HQ -->
+                                        <rect x="330" y="250" width="140" height="100" rx="10" fill="#fff" stroke="#1e293b" stroke-width="2" />
+                                        <text x="400" y="285" text-anchor="middle" font-size="12" font-weight="900" fill="#1e293b">CDCG HQ</text>
+                                        <text x="400" y="305" text-anchor="middle" font-size="10" fill="#475569">McLean, VA</text>
+                                        
+                                        <!-- Legacy DMS -->
+                                        <rect x="350" y="315" width="100" height="25" rx="4" fill="#f8fafc" stroke="#94a3b8" stroke-dasharray="4" />
+                                        <text x="400" y="332" text-anchor="middle" font-size="9" font-weight="bold" fill="#64748b">LEGACY DMS</text>
+                                        
+                                        <!-- Client Box -->
+                                        <rect x="610" y="150" width="140" height="80" rx="10" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1" />
+                                        <text x="680" y="185" text-anchor="middle" font-size="12" font-weight="800" fill="#475569">GOVT CLIENTS</text>
+                                        <text x="680" y="205" text-anchor="middle" font-size="10" fill="#64748b">OSD / Mil Depts</text>
+
+                                        <!-- Connections -->
+                                        <line x1="120" y1="150" x2="380" y2="100" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)" />
+                                        <line x1="400" y1="250" x2="400" y2="110" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)" />
+                                        <line x1="680" y1="150" x2="420" y2="100" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)" />
+                                        <path d="M120,230 L120,300 L330,300" fill="none" stroke="#3b82f6" stroke-width="2" stroke-dasharray="5" marker-end="url(#arrow)" />
+                                        <text x="220" y="290" font-size="9" font-weight="bold" fill="#3b82f6">VPN ACCESS</text>
+                                    </svg>
+                                </div>
+                                <p class="mt-4 text-sm text-slate-500 italic text-center">
+                                    This diagram provides a high-level view of CDCG’s hybrid environment, showing how users, cloud collaboration systems, remote access paths, and legacy infrastructure connect across the company’s CUI environment.
+                                </p>
+                            </section>
+
+                            <!-- Diagram 2: Logical CUI Environment -->
+                            <section>
+                                <h3 class="text-sm font-black uppercase tracking-widest text-blue-600 mb-6 flex items-center">
+                                    <span class="mr-2">🛡️</span> Logical CUI Environment
+                                </h3>
+                                <div class="bg-slate-50 p-8 rounded-2xl border border-slate-200 flex justify-center">
+                                    <svg viewBox="0 0 800 350" class="w-full h-auto max-w-3xl">
+                                        <!-- CUI Boundary -->
+                                        <rect x="50" y="50" width="700" height="250" rx="20" fill="#fff" stroke="#ef4444" stroke-width="3" stroke-dasharray="8" />
+                                        <text x="65" y="75" font-size="12" font-weight="900" fill="#ef4444">LOGICAL CUI BOUNDARY (IN SCOPE)</text>
+                                        
+                                        <!-- Systems -->
+                                        <!-- Cloud Services -->
+                                        <rect x="100" y="100" width="250" height="150" rx="12" fill="#eff6ff" stroke="#3b82f6" stroke-width="2" />
+                                        <text x="225" y="130" text-anchor="middle" font-size="14" font-weight="900" fill="#1d4ed8">M365 ASSETS</text>
+                                        <text x="140" y="160" font-size="11" fill="#1e40af">• SharePoint (CUI Folders)</text>
+                                        <text x="140" y="185" font-size="11" fill="#1e40af">• Teams Collaboration</text>
+                                        <text x="140" y="210" font-size="11" fill="#1e40af">• Outlook (CUI Attachments)</text>
+                                        
+                                        <!-- Identity -->
+                                        <rect x="375" y="100" width="100" height="60" rx="8" fill="#f8fafc" stroke="#64748b" stroke-width="2" />
+                                        <text x="425" y="135" text-anchor="middle" font-size="11" font-weight="900" fill="#475569">IDENTITY &</text>
+                                        <text x="425" y="150" text-anchor="middle" font-size="11" font-weight="900" fill="#475569">AUTH (MFA)</text>
+
+                                        <!-- Legacy DMS - Highlighted Callout -->
+                                        <rect x="500" y="100" width="220" height="150" rx="12" fill="#fff1f2" stroke="#e11d48" stroke-width="2" />
+                                        <text x="610" y="130" text-anchor="middle" font-size="14" font-weight="900" fill="#be123c">LEGACY DMS</text>
+                                        <text x="520" y="160" font-size="11" fill="#9f1239">• Historical CUI Data</text>
+                                        <text x="520" y="185" font-size="11" fill="#9f1239">• Unmapped Scoping Gap</text>
+                                        
+                                        <!-- Arrow from Auth to Systems -->
+                                        <path d="M425,160 L425,280 L150,280 L150,250" fill="none" stroke="#64748b" stroke-width="1.5" stroke-dasharray="4" marker-end="url(#arrow)" />
+                                        <path d="M425,160 L425,280 L610,280 L610,250" fill="none" stroke="#64748b" stroke-width="1.5" stroke-dasharray="4" marker-end="url(#arrow)" />
+                                        
+                                        <!-- Callout Box -->
+                                        <rect x="520" y="210" width="180" height="30" rx="4" fill="#fb7185" />
+                                        <text x="610" y="230" text-anchor="middle" font-size="10" font-weight="bold" fill="#fff">⚠️ MISSING FROM CURRENT SSP</text>
+                                    </svg>
+                                </div>
+                                <p class="mt-4 text-sm text-slate-500 italic text-center">
+                                    This diagram highlights the systems that directly store, process, or transmit CUI and helps students understand the logical boundary of the environment that should be considered in scope.
+                                </p>
+                            </section>
+
+                            <!-- Diagram 3: User Access View -->
+                            <section>
+                                <h3 class="text-sm font-black uppercase tracking-widest text-blue-600 mb-6 flex items-center">
+                                    <span class="mr-2">🔑</span> User Access and Remote Work View
+                                </h3>
+                                <div class="bg-slate-50 p-8 rounded-2xl border border-slate-200 flex justify-center">
+                                    <svg viewBox="0 0 800 300" class="w-full h-auto max-w-3xl">
+                                        <!-- User Groups -->
+                                        <rect x="50" y="50" width="200" height="80" rx="12" fill="#fff" stroke="#1e293b" stroke-width="2" />
+                                        <text x="150" y="95" text-anchor="middle" font-size="14" font-weight="900" fill="#1e293b">HQ USERS</text>
+                                        
+                                        <rect x="50" y="170" width="200" height="80" rx="12" fill="#fff" stroke="#3b82f6" stroke-width="2" />
+                                        <text x="150" y="215" text-anchor="middle" font-size="14" font-weight="900" fill="#1d4ed8">REMOTE USERS</text>
+                                        
+                                        <!-- Target -->
+                                        <rect x="550" y="110" width="200" height="80" rx="12" fill="#eff6ff" stroke="#3b82f6" stroke-width="2" />
+                                        <text x="650" y="155" text-anchor="middle" font-size="14" font-weight="900" fill="#1d4ed8">M365 / CUI DATA</text>
+                                        
+                                        <!-- Paths -->
+                                        <path d="M250,90 L400,90 L400,130 L550,130" fill="none" stroke="#1e293b" stroke-width="2" marker-end="url(#arrow)" />
+                                        <text x="325" y="80" font-size="10" font-weight="bold" fill="#1e293b">DIRECT OFFICE ACCESS</text>
+                                        
+                                        <!-- Remote Paths -->
+                                        <!-- Valid Path -->
+                                        <path d="M250,210 L350,210 L350,150 L550,150" fill="none" stroke="#10b981" stroke-width="3" marker-end="url(#arrow)" />
+                                        <text x="355" y="175" font-size="10" font-weight="bold" fill="#059669">SECURE VPN PATH</text>
+                                        
+                                        <!-- Risky Path -->
+                                        <path d="M250,210 L450,210 L450,180 L550,180" fill="none" stroke="#ef4444" stroke-width="2" stroke-dasharray="4" marker-end="url(#arrow)" />
+                                        <text x="300" y="225" font-size="10" font-weight="bold" fill="#ef4444">⚠️ BYPASS: DIRECT INTERNET ACCESS</text>
+                                        
+                                        <!-- Risk Callout -->
+                                        <rect x="350" y="240" width="350" height="30" rx="4" fill="#fee2e2" stroke="#ef4444" stroke-width="1" />
+                                        <text x="525" y="260" text-anchor="middle" font-size="10" font-weight="bold" fill="#991b1b">RISK: VPN ENFORCEMENT IS NOT CONSISTENT FOR ALL USERS</text>
+                                    </svg>
+                                </div>
+                                <p class="mt-4 text-sm text-slate-500 italic text-center">
+                                    This diagram focuses on how users interact with CDCG systems in day-to-day work and highlights why remote access, identity management, and secure collaboration are central issues in the case.
+                                </p>
+                            </section>
+                        </div>
+
+                        <!-- Instructional Note -->
+                        <div class="mt-16 p-6 bg-blue-50 border-l-4 border-blue-500 rounded-r-2xl">
+                            <h4 class="text-xs font-black uppercase text-blue-700 mb-2">Instructional Note</h4>
+                            <p class="text-sm text-blue-800 leading-relaxed">
+                                Use these diagrams to identify in-scope systems, understand how CUI moves through the environment, and recognize where remote access and legacy systems create scoping and security challenges.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security Posture Tab Content -->
+            <div id="security-posture" class="tab-content">
+                <div class="bg-white p-10 rounded-2xl border border-slate-200 shadow-xl min-h-[400px]">
+                    <div class="max-w-4xl mx-auto">
+                        <h2 class="text-4xl font-black tracking-tighter mb-2 text-slate-900 uppercase">Security Posture</h2>
+                        <p class="text-lg font-medium text-slate-500 mb-10 leading-relaxed">
+                            CDCG has a partially developed CMMC Level 2 security program with several important controls in place, but multiple known weaknesses remain in CUI handling, remote access, logging, system scoping, and personnel-related access management.
+                        </p>
+
+                        <div class="space-y-12">
+                            <!-- Section 1: Overall Posture Summary -->
+                            <section>
+                                <h3 class="text-sm font-black uppercase tracking-widest text-blue-600 mb-4 flex items-center">
+                                    <span class="mr-2">📊</span> Overall Posture Summary
+                                </h3>
+                                <div class="space-y-4 text-slate-600 text-sm leading-relaxed">
+                                    <p>
+                                        CDCG has established the basic structure of a CMMC-aligned security program, including policies, role definitions, training expectations, cloud collaboration controls, and some incident handling processes. However, the environment still shows important inconsistencies between documented expectations and actual day-to-day practice.
+                                    </p>
+                                    <p>
+                                        The company’s security posture is strongest where controls are centralized, such as in baseline policy, account administration, and standard cloud collaboration tools. The posture is weaker where secure behavior depends on consistent user action, complete scoping, timely offboarding, and stronger enforcement of remote-access and CUI-handling requirements.
+                                    </p>
+                                </div>
+                            </section>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                                <!-- Section 2: Relative Strength -->
+                                <section>
+                                    <h3 class="text-sm font-black uppercase tracking-widest text-emerald-600 mb-4 flex items-center">
+                                        <span class="mr-2">✅</span> Areas of Relative Strength
+                                    </h3>
+                                    <ul class="space-y-2">
+                                        <li class="flex items-start text-sm text-slate-600">
+                                            <span class="text-emerald-500 mr-2 font-bold">•</span>
+                                            CDCG has a defined target of CMMC Level 2 and has already identified known gap areas.
+                                        </li>
+                                        <li class="flex items-start text-sm text-slate-600">
+                                            <span class="text-emerald-500 mr-2 font-bold">•</span>
+                                            Core collaboration workflows are centered on a manageable set of platforms.
+                                        </li>
+                                        <li class="flex items-start text-sm text-slate-600">
+                                            <span class="text-emerald-500 mr-2 font-bold">•</span>
+                                            Company-managed laptops and centralized cloud services provide a reasonable foundation.
+                                        </li>
+                                        <li class="flex items-start text-sm text-slate-600">
+                                            <span class="text-emerald-500 mr-2 font-bold">•</span>
+                                            Security policies, training expectations, and incident response processes exist.
+                                        </li>
+                                        <li class="flex items-start text-sm text-slate-600">
+                                            <span class="text-emerald-500 mr-2 font-bold">•</span>
+                                            Leadership awareness of the need to improve compliance readiness.
+                                        </li>
+                                    </ul>
+                                </section>
+
+                                <!-- Section 3: Known Gaps -->
+                                <section>
+                                    <h3 class="text-sm font-black uppercase tracking-widest text-red-600 mb-4 flex items-center">
+                                        <span class="mr-2">❌</span> Known Gap Areas
+                                    </h3>
+                                    <ul class="space-y-2">
+                                        <li class="flex items-start text-sm text-slate-600">
+                                            <span class="text-red-500 mr-2 font-bold">•</span>
+                                            CUI transmitted through standard email instead of protected methods.
+                                        </li>
+                                        <li class="flex items-start text-sm text-slate-600">
+                                            <span class="text-red-500 mr-2 font-bold">•</span>
+                                            Remote access is not always restricted through approved VPN workflows.
+                                        </li>
+                                        <li class="flex items-start text-sm text-slate-600">
+                                            <span class="text-red-500 mr-2 font-bold">•</span>
+                                            Legacy DMS excluded from documented SSP boundary.
+                                        </li>
+                                        <li class="flex items-start text-sm text-slate-600">
+                                            <span class="text-red-500 mr-2 font-bold">•</span>
+                                            Logging and monitoring inconsistently applied across systems.
+                                        </li>
+                                        <li class="flex items-start text-sm text-slate-600">
+                                            <span class="text-red-500 mr-2 font-bold">•</span>
+                                            High turnover and delayed offboarding creating stale account risks.
+                                        </li>
+                                        <li class="flex items-start text-sm text-slate-600">
+                                            <span class="text-red-500 mr-2 font-bold">•</span>
+                                            Inconsistent enforcement of existing policy expectations.
+                                        </li>
+                                    </ul>
+                                </section>
+                            </div>
+
+                            <!-- Section 4: Readiness Observations -->
+                            <section>
+                                <h3 class="text-sm font-black uppercase tracking-widest text-blue-600 mb-4 flex items-center">
+                                    <span class="mr-2">🔎</span> Readiness Observations
+                                </h3>
+                                <div class="space-y-4 text-slate-600 text-sm leading-relaxed">
+                                    <p>
+                                        CDCG is not starting from zero; the company already has enough structure in place for students to see a recognizable compliance program. At the same time, the case is intentionally built so students can identify the difference between having documented controls and having consistently implemented controls.
+                                    </p>
+                                    <p>
+                                        Students should come away understanding that CDCG’s readiness problem is not simply the absence of cybersecurity activity. The larger issue is that several important control areas are only partially implemented, incompletely scoped, weakly enforced, or not translated into sustained operational practice.
+                                    </p>
+                                </div>
+                            </section>
+                        </div>
+
+                        <!-- Instructional Note -->
+                        <div class="mt-12 p-4 bg-slate-50 border border-slate-100 rounded-xl text-center">
+                            <p class="text-xs text-slate-400 font-medium italic">
+                                This tab should help students distinguish between documented security intent and real operational effectiveness across the case environment.
+                            </p>
+                        </div>
+
+                        <!-- Posture Snapshot -->
+                        <div class="mt-12 pt-8 border-t border-slate-100 flex flex-wrap justify-between items-center bg-slate-50/50 p-6 rounded-b-2xl -mx-10 -mb-10">
+                            <h4 class="text-xs font-black uppercase text-slate-400 tracking-widest">Posture Snapshot</h4>
+                            <div class="flex gap-x-8">
+                                <div class="text-center">
+                                    <p class="text-[10px] font-black text-slate-400 uppercase">Target Level</p>
+                                    <p class="text-sm font-bold text-slate-700">CMMC Level 2</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-[10px] font-black text-slate-400 uppercase">Known Gaps</p>
+                                    <p class="text-sm font-bold text-red-600">7 Seeded findings</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-[10px] font-black text-slate-400 uppercase">Primary Strength</p>
+                                    <p class="text-sm font-bold text-slate-700">Centralized Policy</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Policies & Procedures Tab Content -->
+            <div id="policies-procedures" class="tab-content">
+                <div class="bg-white p-10 rounded-2xl border border-slate-200 shadow-xl min-h-[400px]">
+                    <div class="max-w-4xl mx-auto">
+                        <h2 class="text-4xl font-black tracking-tighter mb-2 text-slate-900 uppercase">Policies & Procedures</h2>
+                        <p class="text-lg font-medium text-slate-500 mb-10 leading-relaxed">
+                            These sample internal policies show how CDCG expects personnel to handle CUI, use remote access, and remove access when staff leave or change roles. Students should compare these written expectations to how the organization actually operates in the case.
+                        </p>
+
+                        <div class="space-y-4">
+                            <!-- Policy Card 1 -->
+                            <div class="accordion-item bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden active">
+                                <button onclick="toggleAccordion(this)" class="w-full flex items-center justify-between p-6 text-left hover:bg-slate-50 transition-colors">
+                                    <div>
+                                        <h3 class="text-xl font-black text-slate-800 uppercase tracking-tight">CUI Identification, Marking, and Handling Standard</h3>
+                                        <p class="text-sm text-slate-500 mt-1">Defines how CDCG identifies, marks, stores, shares, and remediates Controlled Unclassified Information.</p>
+                                    </div>
+                                    <span class="chevron transform transition-transform duration-300 ml-4">
+                                        <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                    </span>
+                                </button>
+                                <div class="accordion-content px-6">
+                                    <div class="pt-4 border-t border-slate-100">
+                                        <div class="mb-6">
+                                            <h4 class="text-xs font-black uppercase tracking-widest text-blue-600 mb-2">Purpose and Scope</h4>
+                                            <p class="text-sm text-slate-600 leading-relaxed">
+                                                This standard defines how CDCG identifies, marks, stores, transmits, and disposes of CUI across email, SharePoint, Teams, laptops, and approved internal systems. It applies to all employees, contractors, and systems that handle contract-related CUI.
+                                            </p>
+                                        </div>
+                                        <div class="mb-6">
+                                            <h4 class="text-xs font-black uppercase tracking-widest text-blue-600 mb-2">Requirements</h4>
+                                            <ul class="space-y-2">
+                                                <li class="flex items-start text-sm text-slate-600">
+                                                    <span class="text-blue-500 mr-2 font-bold">•</span> CUI must be identified based on customer markings, contract context, and internal review.
+                                                </li>
+                                                <li class="flex items-start text-sm text-slate-600">
+                                                    <span class="text-blue-500 mr-2 font-bold">•</span> Documents and emails containing CUI must be clearly marked.
+                                                </li>
+                                                <li class="flex items-start text-sm text-slate-600">
+                                                    <span class="text-blue-500 mr-2 font-bold">•</span> CUI must only be stored in approved company systems and approved collaboration locations.
+                                                </li>
+                                                <li class="flex items-start text-sm text-slate-600">
+                                                    <span class="text-blue-500 mr-2 font-bold">•</span> CUI must not be stored in personal accounts, non-approved platforms, or general-purpose shared areas.
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-xs font-black uppercase tracking-widest text-red-600 mb-2">Response to Improper Handling</h4>
+                                            <ul class="space-y-2">
+                                                <li class="flex items-start text-sm text-slate-600">
+                                                    <span class="text-red-500 mr-2 font-bold">•</span> If CUI is found in the wrong location, users must notify IT or security immediately.
+                                                </li>
+                                                <li class="flex items-start text-sm text-slate-600">
+                                                    <span class="text-red-500 mr-2 font-bold">•</span> The incident must be documented and the information relocated, removed, or otherwise remediated.
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Policy Card 2 -->
+                            <div class="accordion-item bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                                <button onclick="toggleAccordion(this)" class="w-full flex items-center justify-between p-6 text-left hover:bg-slate-50 transition-colors">
+                                    <div>
+                                        <h3 class="text-xl font-black text-slate-800 uppercase tracking-tight">Remote Access and BYOD Standard</h3>
+                                        <p class="text-sm text-slate-500 mt-1">Establishes how personnel may access CDCG systems remotely without exposing CUI.</p>
+                                    </div>
+                                    <span class="chevron transform transition-transform duration-300 ml-4">
+                                        <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                    </span>
+                                </button>
+                                <div class="accordion-content px-6">
+                                    <div class="pt-4 border-t border-slate-100">
+                                        <div class="mb-6">
+                                            <h4 class="text-xs font-black uppercase tracking-widest text-blue-600 mb-2">Purpose and Scope</h4>
+                                            <p class="text-sm text-slate-600 leading-relaxed">
+                                                This standard governs remote access to CDCG systems from home offices, travel locations, and other non-corporate work sites. It applies to all users who connect to company resources from outside formal office locations.
+                                            </p>
+                                        </div>
+                                        <div class="mb-6">
+                                            <h4 class="text-xs font-black uppercase tracking-widest text-blue-600 mb-2">Requirements</h4>
+                                            <ul class="space-y-2">
+                                                <li class="flex items-start text-sm text-slate-600">
+                                                    <span class="text-blue-500 mr-2 font-bold">•</span> Personnel handling CUI must use approved company devices and approved remote-access methods.
+                                                </li>
+                                                <li class="flex items-start text-sm text-slate-600">
+                                                    <span class="text-blue-500 mr-2 font-bold">•</span> Remote sessions involving CUI must be protected through managed access controls and secure communications.
+                                                </li>
+                                                <li class="flex items-start text-sm text-slate-600">
+                                                    <span class="text-blue-500 mr-2 font-bold">•</span> Personal devices may not be used to store or download CUI.
+                                                </li>
+                                                <li class="flex items-start text-sm text-slate-600">
+                                                    <span class="text-blue-500 mr-2 font-bold">•</span> Users must follow secure home-workspace expectations when handling sensitive information remotely.
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-xs font-black uppercase tracking-widest text-red-600 mb-2">Prohibited Practices</h4>
+                                            <ul class="space-y-2">
+                                                <li class="flex items-start text-sm text-slate-600">
+                                                    <span class="text-red-500 mr-2 font-bold">•</span> Sending CUI from personal email accounts
+                                                </li>
+                                                <li class="flex items-start text-sm text-slate-600">
+                                                    <span class="text-red-500 mr-2 font-bold">•</span> Downloading CUI to unmanaged devices
+                                                </li>
+                                                <li class="flex items-start text-sm text-slate-600">
+                                                    <span class="text-red-500 mr-2 font-bold">•</span> Using non-approved file-sharing tools for contract work
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Policy Card 3 -->
+                            <div class="accordion-item bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                                <button onclick="toggleAccordion(this)" class="w-full flex items-center justify-between p-6 text-left hover:bg-slate-50 transition-colors">
+                                    <div>
+                                        <h3 class="text-xl font-black text-slate-800 uppercase tracking-tight">Access Removal and Offboarding Standard</h3>
+                                        <p class="text-sm text-slate-500 mt-1">Defines how CDCG removes system access for departing personnel and changing roles.</p>
+                                    </div>
+                                    <span class="chevron transform transition-transform duration-300 ml-4">
+                                        <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                    </span>
+                                </button>
+                                <div class="accordion-content px-6">
+                                    <div class="pt-4 border-t border-slate-100">
+                                        <div class="mb-6">
+                                            <h4 class="text-xs font-black uppercase tracking-widest text-blue-600 mb-2">Purpose and Scope</h4>
+                                            <p class="text-sm text-slate-600 leading-relaxed">
+                                                This standard establishes the minimum process for disabling, removing, or updating user access when employees, subcontractors, or temporary personnel leave CDCG or move to new assignments.
+                                            </p>
+                                        </div>
+                                        <div class="mb-6">
+                                            <h4 class="text-xs font-black uppercase tracking-widest text-blue-600 mb-2">Requirements</h4>
+                                            <ul class="space-y-2">
+                                                <li class="flex items-start text-sm text-slate-600">
+                                                    <span class="text-blue-500 mr-2 font-bold">•</span> HR and management must notify IT of departures and role changes as soon as they are known.
+                                                </li>
+                                                <li class="flex items-start text-sm text-slate-600">
+                                                    <span class="text-blue-500 mr-2 font-bold">•</span> Access to email, SharePoint, Teams, VPN, file shares, and relevant systems must be removed promptly.
+                                                </li>
+                                                <li class="flex items-start text-sm text-slate-600">
+                                                    <span class="text-blue-500 mr-2 font-bold">•</span> Company devices, tokens, and related access materials must be collected or disabled.
+                                                </li>
+                                                <li class="flex items-start text-sm text-slate-600">
+                                                    <span class="text-blue-500 mr-2 font-bold">•</span> Temporary exceptions must be documented, approved, and time-limited.
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-xs font-black uppercase tracking-widest text-blue-600 mb-2">Access Review Expectation</h4>
+                                            <ul class="space-y-2">
+                                                <li class="flex items-start text-sm text-slate-600">
+                                                    <span class="text-blue-500 mr-2 font-bold">•</span> Role changes should trigger review of prior permissions and project-related access.
+                                                </li>
+                                                <li class="flex items-start text-sm text-slate-600">
+                                                    <span class="text-blue-500 mr-2 font-bold">•</span> Users should retain only the access needed for current responsibilities.
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Instructional Note -->
+                        <div class="mt-12 p-6 bg-slate-50 border border-slate-100 rounded-xl text-center">
+                            <p class="text-xs text-slate-400 font-medium italic">
+                                Students should use these policy cards to compare written expectations with actual practice across the rest of the case study.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Personnel & Training Tab Content -->
+            <div id="personnel-training" class="tab-content">
+                <div class="bg-white p-10 rounded-2xl border border-slate-200 shadow-xl min-h-[400px]">
+                    <div class="max-w-4xl mx-auto">
+                        <h2 class="text-4xl font-black tracking-tighter mb-2 text-slate-900 uppercase">Personnel & Training</h2>
+                        <p class="text-lg font-medium text-slate-500 mb-10 leading-relaxed">
+                            CDCG relies on a small, distributed workforce that regularly handles CUI through documents, email, and collaboration platforms, making personnel awareness and role-based training an important part of the organization’s security posture.
+                        </p>
+
+                        <div class="space-y-12">
+                            <!-- Section 1: Workforce Overview -->
+                            <section>
+                                <h3 class="text-sm font-black uppercase tracking-widest text-blue-600 mb-4 flex items-center">
+                                    <span class="mr-2">👥</span> Workforce Overview
+                                </h3>
+                                <div class="space-y-4 text-slate-600 text-sm leading-relaxed">
+                                    <p>
+                                        CDCG has a small consulting workforce made up of program managers, analysts, advisors, administrators, and IT/security personnel. Most staff members work in hybrid roles and routinely access company information from headquarters, home offices, and client-facing work environments.
+                                    </p>
+                                    <p>
+                                        Because the company’s environment is centered on email, SharePoint, Teams, laptops, and document workflows, personnel behavior has a direct effect on whether CUI is handled correctly. Security in this case depends not only on tools and policies, but also on whether employees understand their responsibilities and follow expected procedures in daily work.
+                                    </p>
+                                </div>
+                            </section>
+
+                            <!-- Section 2: Training Program -->
+                            <section>
+                                <h3 class="text-sm font-black uppercase tracking-widest text-blue-600 mb-4 flex items-center">
+                                    <span class="mr-2">📚</span> Training Program
+                                </h3>
+                                <p class="text-slate-600 text-sm leading-relaxed mb-6">
+                                    CDCG has an established baseline security-awareness program and expects employees to complete training relevant to their responsibilities. Training content is intended to support CUI protection, secure remote work, acceptable use, phishing awareness, reporting expectations, and general cybersecurity responsibilities.
+                                </p>
+                                <div class="bg-slate-50 p-6 rounded-xl border border-slate-100 mb-6">
+                                    <h4 class="text-xs font-black uppercase text-slate-400 mb-4">Training Topics Covered</h4>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2">
+                                        <div class="flex items-center text-sm text-slate-700">
+                                            <span class="text-blue-500 mr-2 font-bold">•</span> General security awareness
+                                        </div>
+                                        <div class="flex items-center text-sm text-slate-700">
+                                            <span class="text-blue-500 mr-2 font-bold">•</span> CUI handling and marking
+                                        </div>
+                                        <div class="flex items-center text-sm text-slate-700">
+                                            <span class="text-blue-500 mr-2 font-bold">•</span> Phishing and social engineering
+                                        </div>
+                                        <div class="flex items-center text-sm text-slate-700">
+                                            <span class="text-blue-500 mr-2 font-bold">•</span> Incident reporting expectations
+                                        </div>
+                                        <div class="flex items-center text-sm text-slate-700">
+                                            <span class="text-blue-500 mr-2 font-bold">•</span> Remote work/secure collaboration
+                                        </div>
+                                        <div class="flex items-center text-sm text-slate-700">
+                                            <span class="text-blue-500 mr-2 font-bold">•</span> Role-based expectations
+                                        </div>
+                                        <div class="flex items-center text-sm text-slate-700">
+                                            <span class="text-blue-500 mr-2 font-bold">•</span> Insider-threat awareness
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-slate-500 italic leading-relaxed">
+                                    While the training structure exists, the case is designed so students can question whether completion, retention, and day-to-day application are equally strong across the organization.
+                                </p>
+                            </section>
+
+                            <!-- Section 3: Training Gaps -->
+                            <section>
+                                <h3 class="text-sm font-black uppercase tracking-widest text-red-600 mb-4 flex items-center">
+                                    <span class="mr-2">🔍</span> Training Gaps and Observations
+                                </h3>
+                                <ul class="space-y-3">
+                                    <li class="flex items-start text-sm text-slate-600">
+                                        <span class="text-red-500 mr-3 font-bold">•</span>
+                                        Written expectations for CUI handling exist, but staff do not always follow them consistently in practice.
+                                    </li>
+                                    <li class="flex items-start text-sm text-slate-600">
+                                        <span class="text-red-500 mr-3 font-bold">•</span>
+                                        Some users continue to rely on convenience-driven behaviors such as standard email workflows that increase exposure risk.
+                                    </li>
+                                    <li class="flex items-start text-sm text-slate-600">
+                                        <span class="text-red-500 mr-3 font-bold">•</span>
+                                        Hybrid work increases the need for recurring reinforcement of secure remote-access and document-handling expectations.
+                                    </li>
+                                    <li class="flex items-start text-sm text-slate-600">
+                                        <span class="text-red-500 mr-3 font-bold">•</span>
+                                        Managers and frequent CUI users may require stronger role-based reinforcement than general awareness training provides.
+                                    </li>
+                                    <li class="flex items-start text-sm text-slate-600">
+                                        <span class="text-red-500 mr-3 font-bold">•</span>
+                                        The case suggests that training exists, but training effectiveness is not always clearly demonstrated through user behavior.
+                                    </li>
+                                </ul>
+                            </section>
+
+                            <!-- Section 4: Why This Matters -->
+                            <section>
+                                <h3 class="text-sm font-black uppercase tracking-widest text-blue-600 mb-4 flex items-center">
+                                    <span class="mr-2">💡</span> Why This Matters in the Case
+                                </h3>
+                                <p class="text-slate-600 text-sm leading-relaxed">
+                                    Students should understand that personnel and training issues in this case are not just background information. They help explain why repeated weaknesses appear in CUI handling, remote work, access management, and incident response. Several of the seeded findings become more meaningful when viewed through the lens of user behavior, reinforcement, and accountability.
+                                </p>
+                                <p class="text-slate-600 text-sm leading-relaxed mt-4">
+                                    This tab should encourage students to ask whether the company’s training program is merely documented or whether it actually shapes secure behavior across the environment.
+                                </p>
+                            </section>
+                        </div>
+
+                        <!-- Instructional Note -->
+                        <div class="mt-12 p-4 bg-slate-50 border border-slate-100 rounded-xl text-center">
+                            <p class="text-xs text-slate-400 font-medium italic">
+                                Students should connect this tab to incidents, offboarding, remote access, and policy-practice gaps elsewhere in the case.
+                            </p>
+                        </div>
+
+                        <!-- Training Snapshot -->
+                        <div class="mt-12 pt-8 border-t border-slate-100 flex flex-wrap justify-between items-center bg-slate-50/50 p-6 rounded-b-2xl -mx-10 -mb-10">
+                            <h4 class="text-xs font-black uppercase text-slate-400 tracking-widest">Training Snapshot</h4>
+                            <div class="flex gap-x-8">
+                                <div class="text-center">
+                                    <p class="text-[10px] font-black text-slate-400 uppercase">Workforce</p>
+                                    <p class="text-sm font-bold text-slate-700">38 Employees</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-[10px] font-black text-slate-400 uppercase">Model</p>
+                                    <p class="text-sm font-bold text-slate-700">Hybrid / Distributed</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-[10px] font-black text-slate-400 uppercase">Key Issue</p>
+                                    <p class="text-sm font-bold text-red-600">Behavior Inconsistency</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Physical Security Tab Content -->
+            <div id="physical-security" class="tab-content">
+                <div class="bg-white p-10 rounded-2xl border border-slate-200 shadow-xl min-h-[400px]">
+                    <div class="max-w-4xl mx-auto">
+                        <h2 class="text-4xl font-black tracking-tighter mb-2 text-slate-900 uppercase">Physical Security</h2>
+                        <p class="text-lg font-medium text-slate-500 mb-10 leading-relaxed">
+                            Although CDCG is primarily a document- and cloud-based consulting environment, physical safeguards still matter because staff handle CUI through laptops, printed materials, office spaces, home work areas, badges, and removable media.
+                        </p>
+
+                        <div class="space-y-12">
+                            <!-- Section 1: Office Environment -->
+                            <section>
+                                <h3 class="text-sm font-black uppercase tracking-widest text-blue-600 mb-4 flex items-center">
+                                    <span class="mr-2">🏛️</span> Office Environment
+                                </h3>
+                                <p class="text-slate-600 text-sm leading-relaxed mb-6">
+                                    CDCG operates from a professional office environment in McLean, Virginia with standard business access controls rather than a high-security industrial facility. Most personnel work in shared office areas, conference rooms, and administrative spaces that support consulting and document-based contract work.
+                                </p>
+                                <div class="bg-slate-50 p-6 rounded-xl border border-slate-100">
+                                    <h4 class="text-xs font-black uppercase text-slate-400 mb-4">On-Site Physical Safeguards</h4>
+                                    <ul class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2">
+                                        <li class="flex items-center text-sm text-slate-700">
+                                            <span class="text-blue-500 mr-2 font-bold">•</span> Badge-based building or suite access
+                                        </li>
+                                        <li class="flex items-center text-sm text-slate-700">
+                                            <span class="text-blue-500 mr-2 font-bold">•</span> Visitor sign-in and escort expectations
+                                        </li>
+                                        <li class="flex items-center text-sm text-slate-700">
+                                            <span class="text-blue-500 mr-2 font-bold">•</span> Locked offices or storage for sensitive materials
+                                        </li>
+                                        <li class="flex items-center text-sm text-slate-700">
+                                            <span class="text-blue-500 mr-2 font-bold">•</span> Workstation and conference room use controls
+                                        </li>
+                                        <li class="flex items-center text-sm text-slate-700">
+                                            <span class="text-blue-500 mr-2 font-bold">•</span> Responsibility for unattended devices
+                                        </li>
+                                    </ul>
+                                </div>
+                            </section>
+
+                            <!-- Section 2: Remote and Home-Office Handling -->
+                            <section>
+                                <h3 class="text-sm font-black uppercase tracking-widest text-blue-600 mb-4 flex items-center">
+                                    <span class="mr-2">🏠</span> Remote and Home-Office Handling
+                                </h3>
+                                <p class="text-slate-600 text-sm leading-relaxed mb-6">
+                                    Because CDCG uses a hybrid work model, physical protection of CUI does not stop at headquarters. Employees working from home or other remote locations are expected to protect screens, laptops, printed documents, and conversations from unauthorized viewing or access.
+                                </p>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="p-4 border border-slate-200 rounded-lg bg-white shadow-sm">
+                                        <p class="text-xs font-bold text-blue-600 uppercase mb-1">Controlled Workspace</p>
+                                        <p class="text-xs text-slate-500">Using a private area when handling sensitive information.</p>
+                                    </div>
+                                    <div class="p-4 border border-slate-200 rounded-lg bg-white shadow-sm">
+                                        <p class="text-xs font-bold text-blue-600 uppercase mb-1">Screen Security</p>
+                                        <p class="text-xs text-slate-500">Locking screens and securing devices when away.</p>
+                                    </div>
+                                    <div class="p-4 border border-slate-200 rounded-lg bg-white shadow-sm">
+                                        <p class="text-xs font-bold text-blue-600 uppercase mb-1">Viewing Restrictions</p>
+                                        <p class="text-xs text-slate-500">Preventing shoulder surfing or unauthorized viewing.</p>
+                                    </div>
+                                    <div class="p-4 border border-slate-200 rounded-lg bg-white shadow-sm">
+                                        <p class="text-xs font-bold text-blue-600 uppercase mb-1">Print Management</p>
+                                        <p class="text-xs text-slate-500">Limiting CUI printing and using secure disposal.</p>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <!-- Section 3: Media and Device Protection -->
+                            <section>
+                                <h3 class="text-sm font-black uppercase tracking-widest text-blue-600 mb-4 flex items-center">
+                                    <span class="mr-2">💾</span> Media and Device Protection
+                                </h3>
+                                <p class="text-slate-600 text-sm leading-relaxed mb-6">
+                                    CDCG relies heavily on laptops and digital collaboration, so the physical protection of endpoints and media is an important part of the case. Devices and media that contain or may provide access to CUI must be controlled throughout their lifecycle, including use, transport, storage, reassignment, and disposal.
+                                </p>
+                                <ul class="space-y-3">
+                                    <li class="flex items-start text-sm text-slate-600">
+                                        <span class="text-blue-500 mr-3 font-bold">•</span>
+                                        <span class="font-semibold text-slate-800 mr-1">Securing endpoints:</span> Company laptops must be secured when not in use.
+                                    </li>
+                                    <li class="flex items-start text-sm text-slate-600">
+                                        <span class="text-blue-500 mr-3 font-bold">•</span>
+                                        <span class="font-semibold text-slate-800 mr-1">Removable media:</span> Controlling any USB or external media used for company business.
+                                    </li>
+                                    <li class="flex items-start text-sm text-slate-600">
+                                        <span class="text-blue-500 mr-3 font-bold">•</span>
+                                        <span class="font-semibold text-slate-800 mr-1">Media disposal:</span> Sanitizing or destroying media before disposal or reuse.
+                                    </li>
+                                    <li class="flex items-start text-sm text-slate-600">
+                                        <span class="text-blue-500 mr-3 font-bold">•</span>
+                                        <span class="font-semibold text-slate-800 mr-1">Accountability:</span> Tracking devices issued to users who leave or change roles.
+                                    </li>
+                                </ul>
+                            </section>
+
+                            <!-- Section 4: Physical Security Observations -->
+                            <section>
+                                <h3 class="text-sm font-black uppercase tracking-widest text-red-600 mb-4 flex items-center">
+                                    <span class="mr-2">🔍</span> Physical Security Observations
+                                </h3>
+                                <ul class="space-y-4">
+                                    <li class="flex items-start text-sm text-slate-600">
+                                        <span class="text-red-500 mr-3 font-bold">•</span>
+                                        <p>Physical security at headquarters appears adequate for a small consulting office, but the environment depends heavily on user behavior.</p>
+                                    </li>
+                                    <li class="flex items-start text-sm text-slate-600">
+                                        <span class="text-red-500 mr-3 font-bold">•</span>
+                                        <p>Hybrid work increases the chance of unauthorized viewing, insecure printing, or poor storage practices outside the office.</p>
+                                    </li>
+                                    <li class="flex items-start text-sm text-slate-600">
+                                        <span class="text-red-500 mr-3 font-bold">•</span>
+                                        <p>Device accountability is especially important because laptops are central to daily contract work.</p>
+                                    </li>
+                                    <li class="flex items-start text-sm text-slate-600">
+                                        <span class="text-red-500 mr-3 font-bold">•</span>
+                                        <p>Delayed offboarding can create both logical-access risk and physical-access risk if badges, laptops, or tokens are not collected promptly.</p>
+                                    </li>
+                                </ul>
+                            </section>
+                        </div>
+
+                        <!-- Instructional Note -->
+                        <div class="mt-12 p-4 bg-slate-50 border border-slate-100 rounded-xl text-center">
+                            <p class="text-xs text-slate-400 font-medium italic">
+                                Students should connect physical security to remote work, device accountability, offboarding, media handling, and CUI protection obligations.
+                            </p>
+                        </div>
+
+                        <!-- Physical Security Snapshot -->
+                        <div class="mt-12 pt-8 border-t border-slate-100 flex flex-wrap justify-between items-center bg-slate-50/50 p-6 rounded-b-2xl -mx-10 -mb-10">
+                            <h4 class="text-xs font-black uppercase text-slate-400 tracking-widest">Physical Security Snapshot</h4>
+                            <div class="flex gap-x-8">
+                                <div class="text-center">
+                                    <p class="text-[10px] font-black text-slate-400 uppercase">Primary Site</p>
+                                    <p class="text-sm font-bold text-slate-700">McLean, VA</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-[10px] font-black text-slate-400 uppercase">Key Assets</p>
+                                    <p class="text-sm font-bold text-slate-700">Laptops & Badges</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-[10px] font-black text-slate-400 uppercase">Primary Concern</p>
+                                    <p class="text-sm font-bold text-red-600">Hybrid Data Leakage</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Incidents & Risks Tab Content -->
+            <div id="incidents-risks" class="tab-content">
+                <div class="bg-white p-10 rounded-2xl border border-slate-200 shadow-xl min-h-[400px]">
+                    <div class="max-w-4xl mx-auto">
+                        <h2 class="text-4xl font-black tracking-tighter mb-2 text-slate-900 uppercase">Incidents & Risks</h2>
+                        <p class="text-lg font-medium text-slate-500 mb-10 leading-relaxed">
+                            This tab summarizes the types of security incidents, recurring weaknesses, and active risk themes that shape CDCG’s CMMC readiness and help explain the seeded findings in the case.
+                        </p>
+
+                        <div class="space-y-12">
+                            <!-- Section 1: Incident Environment -->
+                            <section>
+                                <h3 class="text-sm font-black uppercase tracking-widest text-blue-600 mb-4 flex items-center">
+                                    <span class="mr-2">🚨</span> Incident Environment
+                                </h3>
+                                <div class="space-y-4 text-slate-600 text-sm leading-relaxed">
+                                    <p>
+                                        CDCG has documented incident-response expectations and is aware of the need to identify, report, and remediate security events affecting company systems and CUI. However, the case is designed to show that having an incident process on paper does not guarantee consistent operational follow-through, complete logging, or timely closure of underlying weaknesses.
+                                    </p>
+                                    <p>
+                                        In this environment, the most meaningful incident exposure comes from routine consulting workflows, including email, cloud collaboration, remote access, identity misuse, and incomplete control enforcement. Students should view incidents in this case not only as isolated events, but also as indicators of broader control and governance problems.
+                                    </p>
+                                </div>
+                            </section>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                                <!-- Section 2: Recurring Risk Themes -->
+                                <section>
+                                    <h3 class="text-sm font-black uppercase tracking-widest text-blue-600 mb-4 flex items-center">
+                                        <span class="mr-2">🔄</span> Recurring Risk Themes
+                                    </h3>
+                                    <ul class="space-y-2">
+                                        <li class="flex items-start text-sm text-slate-600">
+                                            <span class="text-blue-500 mr-2 font-bold">•</span>
+                                            CUI is sometimes handled through insecure or weakly controlled workflows.
+                                        </li>
+                                        <li class="flex items-start text-sm text-slate-600">
+                                            <span class="text-blue-500 mr-2 font-bold">•</span>
+                                            Remote work introduces persistent exposure when access controls are inconsistent.
+                                        </li>
+                                        <li class="flex items-start text-sm text-slate-600">
+                                            <span class="text-red-500 mr-2 font-bold">•</span>
+                                            Legacy systems increase scoping uncertainty and may weaken visibility.
+                                        </li>
+                                        <li class="flex items-start text-sm text-slate-600">
+                                            <span class="text-red-500 mr-2 font-bold">•</span>
+                                            High turnover and delayed offboarding create stale-account risks.
+                                        </li>
+                                        <li class="flex items-start text-sm text-slate-600">
+                                            <span class="text-blue-500 mr-2 font-bold">•</span>
+                                            Known issues are not always tracked to full remediation.
+                                        </li>
+                                        <li class="flex items-start text-sm text-slate-600">
+                                            <span class="text-blue-500 mr-2 font-bold">•</span>
+                                            Third-party relationships may expose organization to flow-down risk.
+                                        </li>
+                                    </ul>
+                                </section>
+
+                                <!-- Section 3: Seeded Observations -->
+                                <section>
+                                    <h3 class="text-sm font-black uppercase tracking-widest text-red-600 mb-4 flex items-center">
+                                        <span class="mr-2">🔍</span> Seeded Incident and Risk Observations
+                                    </h3>
+                                    <ul class="space-y-2">
+                                        <li class="flex items-start text-sm text-slate-600">
+                                            <span class="text-red-500 mr-2 font-bold">•</span>
+                                            Prior mishandling of CUI suggests policy is not always matched by user behavior.
+                                        </li>
+                                        <li class="flex items-start text-sm text-slate-600">
+                                            <span class="text-red-500 mr-2 font-bold">•</span>
+                                            Remote access practices raise questions about enforcement and monitoring.
+                                        </li>
+                                        <li class="flex items-start text-sm text-slate-600">
+                                            <span class="text-red-500 mr-2 font-bold">•</span>
+                                            Legacy-system activity not represented clearly in the formal boundary.
+                                        </li>
+                                        <li class="flex items-start text-sm text-slate-600">
+                                            <span class="text-red-500 mr-2 font-bold">•</span>
+                                            Personnel changes are a repeated source of access removal risk.
+                                        </li>
+                                        <li class="flex items-start text-sm text-slate-600">
+                                            <span class="text-red-500 mr-2 font-bold">•</span>
+                                            Incident documentation shows awareness, but not always closure.
+                                        </li>
+                                    </ul>
+                                </section>
+                            </div>
+
+                            <!-- Section 4: Student Use -->
+                            <section>
+                                <h3 class="text-sm font-black uppercase tracking-widest text-blue-600 mb-4 flex items-center">
+                                    <span class="mr-2">💡</span> How Students Should Use This Tab
+                                </h3>
+                                <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                                    Students should use this tab as a bridge between the narrative case material and the formal audit documents. The issues summarized here should help inform entries in the SSP, POA&M, SAR, IRP review, and risk register.
+                                </p>
+                                <p class="text-slate-600 text-sm leading-relaxed">
+                                    Students should also ask whether each issue represents a one-time event, an unremediated weakness, or a broader pattern that should affect risk ratings, control conclusions, or remediation priorities.
+                                </p>
+                            </section>
+                        </div>
+
+                        <!-- Instructional Note -->
+                        <div class="mt-12 p-4 bg-slate-50 border border-slate-100 rounded-xl text-center">
+                            <p class="text-xs text-slate-400 font-medium italic">
+                                Students should trace incidents back to root causes and determine whether each issue belongs in the SSP, POA&M, SAR, or risk register.
+                            </p>
+                        </div>
+
+                        <!-- Risk Snapshot -->
+                        <div class="mt-12 pt-8 border-t border-slate-100 flex flex-wrap justify-between items-center bg-slate-50/50 p-6 rounded-b-2xl -mx-10 -mb-10">
+                            <h4 class="text-xs font-black uppercase text-slate-400 tracking-widest">Risk Snapshot</h4>
+                            <div class="flex gap-x-8">
+                                <div class="text-center">
+                                    <p class="text-[10px] font-black text-slate-400 uppercase">Primary Pattern</p>
+                                    <p class="text-sm font-bold text-slate-700">User Dependency</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-[10px] font-black text-slate-400 uppercase">Root Cause</p>
+                                    <p class="text-sm font-bold text-slate-700">Inconsistent Enforcement</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-[10px] font-black text-slate-400 uppercase">Audit Impact</p>
+                                    <p class="text-sm font-bold text-red-600">SAR/POAM Seeded Gaps</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Supply Chain Tab Content -->
+            <div id="supply-chain" class="tab-content">
+                <div class="bg-white p-10 rounded-2xl border border-slate-200 shadow-xl min-h-[400px]">
+                    <div class="max-w-4xl mx-auto">
+                        <h2 class="text-4xl font-black tracking-tighter mb-2 text-slate-900 uppercase">Supply Chain</h2>
+                        <p class="text-lg font-medium text-slate-500 mb-10 leading-relaxed">
+                            CDCG’s supply chain is made up primarily of cloud platforms, managed IT/security support, and specialized subcontractors rather than manufacturing suppliers, which means third-party risk is driven by data access, privileged support, and CUI flow-down obligations.
+                        </p>
+
+                        <div class="space-y-12">
+                            <!-- Section 1: Third-Party Environment -->
+                            <section>
+                                <h3 class="text-sm font-black uppercase tracking-widest text-blue-600 mb-4 flex items-center">
+                                    <span class="mr-2">🤝</span> Third-Party Environment
+                                </h3>
+                                <p class="text-slate-600 text-sm leading-relaxed mb-6">
+                                    CDCG depends on a small but important network of outside providers to support daily operations, cloud collaboration, IT administration, and specialized project work. In this case, the supply chain is less about physical goods and more about outside entities that may host data, administer systems, or participate in contract performance.
+                                </p>
+                                <p class="text-slate-600 text-sm italic leading-relaxed">
+                                    Students should recognize that third-party risk in a consulting environment often comes from vendors with logical access, service dependencies, or subcontractor involvement in CUI-related work rather than from traditional production suppliers.
+                                </p>
+                            </section>
+
+                            <!-- Section 2: Representative Suppliers -->
+                            <section>
+                                <h3 class="text-sm font-black uppercase tracking-widest text-blue-600 mb-6 flex items-center">
+                                    <span class="mr-2">🏢</span> Representative Suppliers and Subcontractors
+                                </h3>
+                                <div class="space-y-4">
+                                    <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                                        <p class="text-sm font-bold text-slate-800">Microsoft 365 / Cloud Collaboration Provider</p>
+                                        <p class="text-xs text-slate-500">Supports email, Teams, SharePoint, and core collaboration workflows used in CUI-related work.</p>
+                                    </div>
+                                    <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                                        <p class="text-sm font-bold text-slate-800">Managed IT / Security Support Provider</p>
+                                        <p class="text-xs text-slate-500">Assists with administration, troubleshooting, maintenance, and portions of the technical environment that may involve privileged access.</p>
+                                    </div>
+                                    <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                                        <p class="text-sm font-bold text-slate-800">Legacy Document System Support Vendor</p>
+                                        <p class="text-xs text-slate-500">Supports or maintains the older document management environment that still contains historical CUI.</p>
+                                    </div>
+                                    <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                                        <p class="text-sm font-bold text-slate-800">Specialized Subcontractor / Analyst Support</p>
+                                        <p class="text-xs text-slate-500">Provides limited contract support on selected tasks and may receive or contribute to project information depending on assignment.</p>
+                                    </div>
+                                    <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                                        <p class="text-sm font-bold text-slate-800">Administrative Service Providers</p>
+                                        <p class="text-xs text-slate-500">Support payroll, HR, and business operations but are not intended to handle CUI as part of normal operations.</p>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-slate-600 mt-4 leading-relaxed">
+                                    Not every third party in the CDCG environment presents the same level of risk. Some may only touch general business information, while others may have direct exposure to CUI, privileged access, or inherited influence over the security of in-scope systems.
+                                </p>
+                            </section>
+
+                            <!-- Section 3: Risk Observations -->
+                            <section>
+                                <h3 class="text-sm font-black uppercase tracking-widest text-red-600 mb-6 flex items-center">
+                                    <span class="mr-2">🚨</span> Supply-Chain Risk Observations
+                                </h3>
+                                <ul class="space-y-3">
+                                    <li class="flex items-start text-sm text-slate-600">
+                                        <span class="text-red-500 mr-3 font-bold">•</span>
+                                        Third parties that store, process, or transmit CUI require more scrutiny than vendors supporting only general business functions.
+                                    </li>
+                                    <li class="flex items-start text-sm text-slate-600">
+                                        <span class="text-red-500 mr-3 font-bold">•</span>
+                                        Privileged service providers can create security exposure even when they are not the original owners of the data.
+                                    </li>
+                                    <li class="flex items-start text-sm text-slate-600">
+                                        <span class="text-red-500 mr-3 font-bold">•</span>
+                                        Subcontractors involved in contract performance may require formal CUI flow-down expectations and stronger evidence review.
+                                    </li>
+                                    <li class="flex items-start text-sm text-slate-600">
+                                        <span class="text-red-500 mr-3 font-bold">•</span>
+                                        Legacy-system support relationships create added risk when documentation, boundaries, or responsibilities are unclear.
+                                    </li>
+                                    <li class="flex items-start text-sm text-slate-600">
+                                        <span class="text-red-500 mr-3 font-bold">•</span>
+                                        The case is designed so students consider whether third-party oversight is documented, risk-based, and aligned to actual data exposure.
+                                    </li>
+                                </ul>
+                            </section>
+
+                            <!-- Section 4: Student Use -->
+                            <section>
+                                <h3 class="text-sm font-black uppercase tracking-widest text-blue-600 mb-4 flex items-center">
+                                    <span class="mr-2">💡</span> How Students Should Use This Tab
+                                </h3>
+                                <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                                    Students should use this tab to think carefully about which external parties belong inside the broader compliance conversation and why. The key question is not simply whether CDCG has vendors, but whether any vendor or subcontractor has access to CUI, administrative control, or contract responsibilities that create flow-down or oversight obligations.
+                                </p>
+                                <p class="text-slate-600 text-sm leading-relaxed">
+                                    This tab should support student reasoning in the SSP, POA&M, SAR, and risk register by helping them identify where third-party access, unclear supplier boundaries, or weak oversight may contribute to open findings.
+                                </p>
+                            </section>
+                        </div>
+
+                        <!-- Instructional Note -->
+                        <div class="mt-12 p-4 bg-slate-50 border border-slate-100 rounded-xl text-center">
+                            <p class="text-xs text-slate-400 font-medium italic">
+                                Students should assess which suppliers handle CUI, which only support general business operations, and where flow-down or evidence-review expectations appear weak.
+                            </p>
+                        </div>
+
+                        <!-- Supply Chain Snapshot -->
+                        <div class="mt-12 pt-8 border-t border-slate-100 flex flex-wrap justify-between items-center bg-slate-50/50 p-6 rounded-b-2xl -mx-10 -mb-10">
+                            <h4 class="text-xs font-black uppercase text-slate-400 tracking-widest">Supply Chain Snapshot</h4>
+                            <div class="flex gap-x-8">
+                                <div class="text-center">
+                                    <p class="text-[10px] font-black text-slate-400 uppercase">Primary Partners</p>
+                                    <p class="text-sm font-bold text-slate-700">M365 & MSP</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-[10px] font-black text-slate-400 uppercase">Main Risk</p>
+                                    <p class="text-sm font-bold text-slate-700">Privileged Data Access</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-[10px] font-black text-slate-400 uppercase">Compliance Gap</p>
+                                    <p class="text-sm font-bold text-red-600">Flow-down Oversight</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Audit Documents Tab Content -->
+            <div id="audit-documents" class="tab-content">
+                <div class="bg-white p-10 rounded-2xl border border-slate-200 shadow-xl min-h-[400px]">
+                    <div class="max-w-6xl mx-auto">
+                        <h2 class="text-4xl font-black tracking-tighter mb-2 text-slate-900 uppercase">Audit Documents</h2>
+                        <p class="text-lg font-medium text-slate-500 mb-10 leading-relaxed">
+                            Use these cards to open the core audit and compliance documents for the Coastal Defense Consulting Group case study.
+                        </p>
+
+                        <!-- Document Grid -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <!-- Card 1 -->
+                            <div class="p-6 bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between hover:border-blue-300 hover:shadow-md transition-all">
+                                <div>
+                                    <h3 class="text-lg font-black text-slate-800 uppercase tracking-tight mb-2">System Security Plan (SSP)</h3>
+                                    <p class="text-xs text-slate-500 leading-relaxed mb-6">Comprehensive blueprint of the organization’s cybersecurity posture.</p>
+                                </div>
+                                <a href="https://sands-mvcc.github.io/CMMC/ssp.html" target="_blank" class="w-full text-center py-2 bg-blue-600 text-white text-xs font-black uppercase rounded-lg hover:bg-blue-700 transition-colors">
+                                    Open Document
+                                </a>
+                            </div>
+
+                            <!-- Card 2 -->
+                            <div class="p-6 bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between hover:border-blue-300 hover:shadow-md transition-all">
+                                <div>
+                                    <h3 class="text-lg font-black text-slate-800 uppercase tracking-tight mb-2">Plan of Action & Milestones (POA&M)</h3>
+                                    <p class="text-xs text-slate-500 leading-relaxed mb-6">Tracking and remediating security control gaps.</p>
+                                </div>
+                                <a href="https://sands-mvcc.github.io/CMMC/POAM.html" target="_blank" class="w-full text-center py-2 bg-blue-600 text-white text-xs font-black uppercase rounded-lg hover:bg-blue-700 transition-colors">
+                                    Open Document
+                                </a>
+                            </div>
+
+                            <!-- Card 3 -->
+                            <div class="p-6 bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between hover:border-blue-300 hover:shadow-md transition-all">
+                                <div>
+                                    <h3 class="text-lg font-black text-slate-800 uppercase tracking-tight mb-2">Asset Inventory & Categorization</h3>
+                                    <p class="text-xs text-slate-500 leading-relaxed mb-6">Inventory of all hardware, software, and CUI assets.</p>
+                                </div>
+                                <a href="https://sands-mvcc.github.io/CMMC/asset.html" target="_blank" class="w-full text-center py-2 bg-blue-600 text-white text-xs font-black uppercase rounded-lg hover:bg-blue-700 transition-colors">
+                                    Open Document
+                                </a>
+                            </div>
+
+                            <!-- Card 4 -->
+                            <div class="p-6 bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between hover:border-blue-300 hover:shadow-md transition-all">
+                                <div>
+                                    <h3 class="text-lg font-black text-slate-800 uppercase tracking-tight mb-2">Security Assessment Report (SAR)</h3>
+                                    <p class="text-xs text-slate-500 leading-relaxed mb-6">Results of the formal security control assessment.</p>
+                                </div>
+                                <a href="https://sands-mvcc.github.io/CMMC/sar.html" target="_blank" class="w-full text-center py-2 bg-blue-600 text-white text-xs font-black uppercase rounded-lg hover:bg-blue-700 transition-colors">
+                                    Open Document
+                                </a>
+                            </div>
+
+                            <!-- Card 5 -->
+                            <div class="p-6 bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between hover:border-blue-300 hover:shadow-md transition-all">
+                                <div>
+                                    <h3 class="text-lg font-black text-slate-800 uppercase tracking-tight mb-2">Incident Response Plan (IRP)</h3>
+                                    <p class="text-xs text-slate-500 leading-relaxed mb-6">Procedures for detecting and recovering from breaches.</p>
+                                </div>
+                                <a href="https://sands-mvcc.github.io/CMMC/irp.html" target="_blank" class="w-full text-center py-2 bg-blue-600 text-white text-xs font-black uppercase rounded-lg hover:bg-blue-700 transition-colors">
+                                    Open Document
+                                </a>
+                            </div>
+
+                            <!-- Card 6 -->
+                            <div class="p-6 bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between hover:border-blue-300 hover:shadow-md transition-all">
+                                <div>
+                                    <h3 class="text-lg font-black text-slate-800 uppercase tracking-tight mb-2">Access Control Matrix</h3>
+                                    <p class="text-xs text-slate-500 leading-relaxed mb-6">Role-based permission framework for CUI systems.</p>
+                                </div>
+                                <a href="https://sands-mvcc.github.io/CMMC/acm.html" target="_blank" class="w-full text-center py-2 bg-blue-600 text-white text-xs font-black uppercase rounded-lg hover:bg-blue-700 transition-colors">
+                                    Open Document
+                                </a>
+                            </div>
+
+                            <!-- Card 7 -->
+                            <div class="p-6 bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between hover:border-blue-300 hover:shadow-md transition-all">
+                                <div>
+                                    <h3 class="text-lg font-black text-slate-800 uppercase tracking-tight mb-2">Audit Log & Monitoring Report</h3>
+                                    <p class="text-xs text-slate-500 leading-relaxed mb-6">Continuous monitoring and event logging strategies.</p>
+                                </div>
+                                <a href="https://sands-mvcc.github.io/CMMC/almr.html" target="_blank" class="w-full text-center py-2 bg-blue-600 text-white text-xs font-black uppercase rounded-lg hover:bg-blue-700 transition-colors">
+                                    Open Document
+                                </a>
+                            </div>
+
+                            <!-- Card 8 -->
+                            <div class="p-6 bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between hover:border-blue-300 hover:shadow-md transition-all">
+                                <div>
+                                    <h3 class="text-lg font-black text-slate-800 uppercase tracking-tight mb-2">Configuration Management Plan</h3>
+                                    <p class="text-xs text-slate-500 leading-relaxed mb-6">Maintaining secure system configurations.</p>
+                                </div>
+                                <a href="https://sands-mvcc.github.io/CMMC/cmp.html" target="_blank" class="w-full text-center py-2 bg-blue-600 text-white text-xs font-black uppercase rounded-lg hover:bg-blue-700 transition-colors">
+                                    Open Document
+                                </a>
+                            </div>
+
+                            <!-- Card 9 -->
+                            <div class="p-6 bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between hover:border-blue-300 hover:shadow-md transition-all">
+                                <div>
+                                    <h3 class="text-lg font-black text-slate-800 uppercase tracking-tight mb-2">Vulnerability Scan Reports</h3>
+                                    <p class="text-xs text-slate-500 leading-relaxed mb-6">Documentation of regular vulnerability assessments.</p>
+                                </div>
+                                <a href="https://sands-mvcc.github.io/CMMC/vsr.html" target="_blank" class="w-full text-center py-2 bg-blue-600 text-white text-xs font-black uppercase rounded-lg hover:bg-blue-700 transition-colors">
+                                    Open Document
+                                </a>
+                            </div>
+
+                            <!-- Card 10 -->
+                            <div class="p-6 bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between hover:border-blue-300 hover:shadow-md transition-all">
+                                <div>
+                                    <h3 class="text-lg font-black text-slate-800 uppercase tracking-tight mb-2">SPRS Submission Score</h3>
+                                    <p class="text-xs text-slate-500 leading-relaxed mb-6">Official self-assessment score submitted to the DoD.</p>
+                                </div>
+                                <a href="https://sands-mvcc.github.io/CMMC/sss.html" target="_blank" class="w-full text-center py-2 bg-blue-600 text-white text-xs font-black uppercase rounded-lg hover:bg-blue-700 transition-colors">
+                                    Open Document
+                                </a>
+                            </div>
+
+                            <!-- Card 11 -->
+                            <div class="p-6 bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between hover:border-blue-300 hover:shadow-md transition-all">
+                                <div>
+                                    <h3 class="text-lg font-black text-slate-800 uppercase tracking-tight mb-2">Maintenance Report</h3>
+                                    <p class="text-xs text-slate-500 leading-relaxed mb-6">Logs of system patching and lifecycle maintenance.</p>
+                                </div>
+                                <a href="https://sands-mvcc.github.io/CMMC/maintenance.html" target="_blank" class="w-full text-center py-2 bg-blue-600 text-white text-xs font-black uppercase rounded-lg hover:bg-blue-700 transition-colors">
+                                    Open Document
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Instructor Guide Tab Content -->
+            <div id="instructor-guide" class="tab-content">
+                <div class="bg-white p-10 rounded-2xl border border-slate-200 shadow-xl min-h-[400px]">
+                    <div class="max-w-4xl mx-auto">
+                        <h2 class="text-4xl font-black tracking-tighter mb-2 text-slate-900 uppercase">Instructor Guide</h2>
+                        <p class="text-lg font-medium text-slate-500 mb-10 leading-relaxed">
+                            Coastal Defense Consulting Group (CDCG) – CMMC Level 2 Audit Training Facilitation Guide
+                        </p>
+
+                        <div class="space-y-12">
+                            <!-- Intro -->
+                            <section>
+                                <p class="text-slate-600 text-sm leading-relaxed">
+                                    This guide supports instructors using the Coastal Defense Consulting Group case study in CMMC Level 2 audit training. It explains the instructional purpose of the case, highlights the major seeded issues, and helps facilitators connect case evidence to the formal audit artifacts students are expected to produce.
+                                </p>
+                            </section>
+
+                            <!-- Instructional Purpose -->
+                            <section>
+                                <h3 class="text-sm font-black uppercase tracking-widest text-blue-600 mb-4">Instructional Purpose</h3>
+                                <div class="space-y-4 text-slate-600 text-sm leading-relaxed">
+                                    <p>
+                                        The CDCG case is designed to help students analyze a small defense consulting firm whose CUI environment is centered on documents, collaboration tools, remote work, and user-managed workflows rather than laboratories, manufacturing systems, or engineering platforms. The case emphasizes how CMMC concerns can arise in ordinary business systems when CUI is created, shared, stored, or accessed through email, Teams, SharePoint, laptops, and legacy repositories.
+                                    </p>
+                                    <p>
+                                        This case is especially useful for helping students understand that compliance problems often emerge from incomplete scoping, inconsistent control enforcement, user behavior, weak follow-through, and poorly coordinated access management rather than from the total absence of cybersecurity structure.
+                                    </p>
+                                </div>
+                            </section>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                                <!-- Scenario Summary -->
+                                <section>
+                                    <h3 class="text-sm font-black uppercase tracking-widest text-blue-600 mb-4">Scenario Summary</h3>
+                                    <ul class="space-y-2 mb-4">
+                                        <li class="text-xs text-slate-600"><span class="font-bold text-slate-800">Organization:</span> Coastal Defense Consulting Group (CDCG)</li>
+                                        <li class="text-xs text-slate-600"><span class="font-bold text-slate-800">Type:</span> Small DoD management consulting contractor</li>
+                                        <li class="text-xs text-slate-600"><span class="font-bold text-slate-800">Location:</span> McLean, Virginia</li>
+                                        <li class="text-xs text-slate-600"><span class="font-bold text-slate-800">Employees:</span> 38</li>
+                                        <li class="text-xs text-slate-600"><span class="font-bold text-slate-800">Revenue:</span> ~$9M</li>
+                                        <li class="text-xs text-slate-600"><span class="font-bold text-slate-800">Active Contracts:</span> 3</li>
+                                        <li class="text-xs text-slate-600"><span class="font-bold text-slate-800">Target Level:</span> CMMC Level 2</li>
+                                    </ul>
+                                    <p class="text-xs text-slate-500 italic">
+                                        The company supports acquisition, program management, and policy advisory work. Findings primarily involve identity, access, and secure collaboration.
+                                    </p>
+                                </section>
+
+                                <!-- Core Seeded Weaknesses -->
+                                <section>
+                                    <h3 class="text-sm font-black uppercase tracking-widest text-red-600 mb-4">Core Seeded Weaknesses</h3>
+                                    <ul class="space-y-2">
+                                        <li class="flex items-start text-xs text-slate-600">
+                                            <span class="text-red-500 mr-2 font-bold">•</span> Unencrypted or weakly controlled email workflows.
+                                        </li>
+                                        <li class="flex items-start text-xs text-slate-600">
+                                            <span class="text-red-500 mr-2 font-bold">•</span> Inconsistent VPN-only methods for remote access.
+                                        </li>
+                                        <li class="flex items-start text-xs text-slate-600">
+                                            <span class="text-red-500 mr-2 font-bold">•</span> Legacy DMS containing CUI excluded from SSP scope.
+                                        </li>
+                                        <li class="flex items-start text-xs text-slate-600">
+                                            <span class="text-red-500 mr-2 font-bold">•</span> Delayed offboarding creating stale-account risks.
+                                        </li>
+                                        <li class="flex items-start text-xs text-slate-600">
+                                            <span class="text-red-500 mr-2 font-bold">•</span> Imbalanced logging maturity across systems.
+                                        </li>
+                                        <li class="flex items-start text-xs text-slate-600">
+                                            <span class="text-red-500 mr-2 font-bold">•</span> Operational practice divergence from written policy.
+                                        </li>
+                                    </ul>
+                                </section>
+                            </div>
+
+                            <!-- Learning Objectives -->
+                            <section>
+                                <h3 class="text-sm font-black uppercase tracking-widest text-blue-600 mb-4">Learning Objectives</h3>
+                                <ul class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                    <li class="flex items-center text-xs text-slate-700 bg-slate-50 p-2 rounded">Identify CUI boundaries in cloud-heavy environments</li>
+                                    <li class="flex items-center text-xs text-slate-700 bg-slate-50 p-2 rounded">Distinguish policy from actual implementation</li>
+                                    <li class="flex items-center text-xs text-slate-700 bg-slate-50 p-2 rounded">Recognize remote work effects on CUI protection</li>
+                                    <li class="flex items-center text-xs text-slate-700 bg-slate-50 p-2 rounded">Evaluate offboarding as a control problem</li>
+                                    <li class="flex items-center text-xs text-slate-700 bg-slate-50 p-2 rounded">Translate evidence into formal audit artifacts</li>
+                                    <li class="flex items-center text-xs text-slate-700 bg-slate-50 p-2 rounded">Explain readiness impacts of repeat incidents</li>
+                                </ul>
+                            </section>
+
+                            <!-- Framing -->
+                            <section>
+                                <h3 class="text-sm font-black uppercase tracking-widest text-blue-600 mb-4">How to Frame the Case for Students</h3>
+                                <p class="text-slate-600 text-sm leading-relaxed">
+                                    Instructors should emphasize that CDCG is not a “broken” company with no cybersecurity structure. Instead, it is a realistic small contractor that has policies, tools, and awareness of compliance expectations, but still operates with important gaps between formal security intent and operational consistency.
+                                </p>
+                            </section>
+
+                            <!-- Teaching Notes -->
+                            <section>
+                                <h3 class="text-sm font-black uppercase tracking-widest text-blue-600 mb-6">Tab-by-Tab Teaching Notes</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    <div class="p-4 border border-slate-100 rounded-lg">
+                                        <p class="text-[10px] font-black uppercase text-blue-500 mb-1">Overview</p>
+                                        <p class="text-[11px] text-slate-600">Identify the nature of consulting risks vs. manufacturing.</p>
+                                    </div>
+                                    <div class="p-4 border border-slate-100 rounded-lg">
+                                        <p class="text-[10px] font-black uppercase text-blue-500 mb-1">Contracts</p>
+                                        <p class="text-[11px] text-slate-600">Connect work types (policy/briefs) to CUI exposure.</p>
+                                    </div>
+                                    <div class="p-4 border border-slate-100 rounded-lg">
+                                        <p class="text-[10px] font-black uppercase text-blue-500 mb-1">Organization</p>
+                                        <p class="text-[11px] text-slate-600">Focus on role ownership and turnover effects.</p>
+                                    </div>
+                                    <div class="p-4 border border-slate-100 rounded-lg">
+                                        <p class="text-[10px] font-black uppercase text-blue-500 mb-1">IT Environment</p>
+                                        <p class="text-[11px] text-slate-600">M365 and legacy DMS scoping for CUI.</p>
+                                    </div>
+                                    <div class="p-4 border border-slate-100 rounded-lg">
+                                        <p class="text-[10px] font-black uppercase text-blue-500 mb-1">Diagrams</p>
+                                        <p class="text-[11px] text-slate-600">Discuss logical boundaries and remote pathways.</p>
+                                    </div>
+                                    <div class="p-4 border border-slate-100 rounded-lg">
+                                        <p class="text-[10px] font-black uppercase text-blue-500 mb-1">Postures</p>
+                                        <p class="text-[11px] text-slate-600">Distinguish broad maturity from real effectiveness.</p>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <!-- Expected Outputs & Mistakes -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                                <section>
+                                    <h3 class="text-sm font-black uppercase tracking-widest text-emerald-600 mb-4">Expected Student Outputs</h3>
+                                    <ul class="space-y-2">
+                                        <li class="text-xs text-slate-600"><span class="font-bold text-slate-800">SSP:</span> Define boundary and current implementation.</li>
+                                        <li class="text-xs text-slate-600"><span class="font-bold text-slate-800">POA&M:</span> Record unresolved weaknesses and ownership.</li>
+                                        <li class="text-xs text-slate-600"><span class="font-bold text-slate-800">SAR:</span> Capture deficiencies and supporting evidence.</li>
+                                        <li class="text-xs text-slate-600"><span class="font-bold text-slate-800">ACM:</span> Identify role-based access and stale permissions.</li>
+                                    </ul>
+                                </section>
+                                <section>
+                                    <h3 class="text-sm font-black uppercase tracking-widest text-amber-600 mb-4">Common Student Mistakes</h3>
+                                    <ul class="space-y-2">
+                                        <li class="text-xs text-slate-600">Treating M365 as "general business" rather than in-scope.</li>
+                                        <li class="text-xs text-slate-600">Ignoring the legacy DMS because it's older.</li>
+                                        <li class="text-xs text-slate-600">Assuming MFA alone solves all remote-access risk.</li>
+                                        <li class="text-xs text-slate-600">Confusing documented policy with implementation.</li>
+                                    </ul>
+                                </section>
+                            </div>
+
+                            <!-- Debrief Questions -->
+                            <section>
+                                <h3 class="text-sm font-black uppercase tracking-widest text-blue-600 mb-4">Suggested Debrief Questions</h3>
+                                <ul class="space-y-2">
+                                    <li class="flex items-start text-xs text-slate-600 bg-slate-50 p-3 rounded-lg">Which weaknesses are technical vs. process or governance?</li>
+                                    <li class="flex items-start text-xs text-slate-600 bg-slate-50 p-3 rounded-lg">Where do policy and practice diverge most clearly?</li>
+                                    <li class="flex items-start text-xs text-slate-600 bg-slate-50 p-3 rounded-lg">What appears to be the strongest root-cause pattern across the case?</li>
+                                </ul>
+                            </section>
+
+                            <!-- Evaluation -->
+                            <section>
+                                <h3 class="text-sm font-black uppercase tracking-widest text-blue-600 mb-4">Instructor Evaluation Guidance</h3>
+                                <p class="text-slate-600 text-sm leading-relaxed">
+                                    Student work should be evaluated less on whether they use identical wording and more on whether they demonstrate defensible scoping, evidence-based reasoning, consistent treatment of repeated issues, and appropriate placement of findings across the audit artifacts. Strong submissions should show cross-tab thinking and should distinguish one-time events from structural weaknesses.
+                                </p>
+                            </section>
+                        </div>
+
+                        <!-- Closing Note -->
+                        <div class="mt-16 pt-8 border-t border-slate-100 text-center">
+                            <p class="text-xs text-slate-400 font-medium italic">
+                                This guide is intended to support facilitation, discussion, and evaluation of student reasoning across the Coastal Defense Consulting Group CMMC Level 2 case study.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        function showTab(tabId) {
+            // Hide all tab content
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            // Show target tab
+            const targetTab = document.getElementById(tabId);
+            if (targetTab) {
+                targetTab.classList.add('active');
+            }
+
+            // Update navigation button styles
+            const navButtons = document.querySelectorAll('.nav-button');
+            navButtons.forEach(btn => btn.classList.remove('active'));
+            
+            const activeBtn = document.getElementById('btn-' + tabId);
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+            }
+
+            // Smooth scroll to top of workspace when changing tabs
+            document.querySelector('main').scrollTop = 0;
+        }
+
+        function toggleAccordion(button) {
+            const item = button.closest('.accordion-item');
+            const isActive = item.classList.contains('active');
+            
+            // Close other items if desired (optional)
+            // document.querySelectorAll('.accordion-item').forEach(i => i.classList.remove('active'));
+
+            if (isActive) {
+                item.classList.remove('active');
+            } else {
+                item.classList.add('active');
+            }
+        }
+    </script>
+</body>
+</html>
