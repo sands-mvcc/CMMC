@@ -1,0 +1,1539 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CMMC Certification Guide | DoD Contractor Training</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0a1628;
+  --navy-2: #0f2040;
+  --navy-3: #142852;
+  --steel: #1e3a5f;
+  --amber: #f59e0b;
+  --amber-dim: #d97706;
+  --amber-glow: rgba(245,158,11,0.15);
+  --cyan: #06b6d4;
+  --cyan-dim: #0891b2;
+  --red: #ef4444;
+  --green: #22c55e;
+  --white: #f8fafc;
+  --gray-100: #e2e8f0;
+  --gray-300: #94a3b8;
+  --gray-500: #64748b;
+  --card-bg: rgba(14,30,60,0.7);
+  --border: rgba(245,158,11,0.2);
+  --text: #e2e8f0;
+  --text-dim: #94a3b8;
+  --bg: #060e1c;
+  --surface: #0a1628;
+  --surface-2: #0f2040;
+}
+[data-theme="light"] {
+  --navy: #e8eef7;
+  --navy-2: #d4e0f0;
+  --navy-3: #bdd0e8;
+  --steel: #a8bdd6;
+  --amber: #b45309;
+  --amber-dim: #92400e;
+  --amber-glow: rgba(180,83,9,0.1);
+  --cyan: #0e7490;
+  --cyan-dim: #164e63;
+  --red: #dc2626;
+  --green: #16a34a;
+  --white: #1e293b;
+  --gray-100: #334155;
+  --gray-300: #475569;
+  --gray-500: #64748b;
+  --card-bg: rgba(255,255,255,0.85);
+  --border: rgba(180,83,9,0.25);
+  --text: #1e293b;
+  --text-dim: #475569;
+  --bg: #f1f5fb;
+  --surface: #ffffff;
+  --surface-2: #e8eef7;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  transition: background 0.3s, color 0.3s;
+  overflow-x: hidden;
+}
+
+/* HEADER */
+header {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 60px;
+  backdrop-filter: blur(12px);
+}
+.logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.4rem;
+  letter-spacing: 0.1em;
+  color: var(--amber);
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.logo span { color: var(--text); }
+.header-right { display: flex; align-items: center; gap: 1rem; }
+.theme-btn {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 0.4rem 0.9rem;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex; align-items: center; gap: 0.4rem;
+}
+.theme-btn:hover { border-color: var(--amber); color: var(--amber); }
+.badge {
+  background: var(--amber-glow);
+  border: 1px solid var(--amber);
+  color: var(--amber);
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+  letter-spacing: 0.08em;
+  font-family: 'DM Mono', monospace;
+}
+
+/* HERO */
+.hero {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 3rem 2rem 2.5rem;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--amber), var(--cyan), var(--amber));
+  background-size: 200% 100%;
+  animation: shimmer 3s linear infinite;
+}
+@keyframes shimmer { 0%{background-position:0%} 100%{background-position:200%} }
+.hero-inner { max-width: 1100px; margin: 0 auto; }
+.hero h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  letter-spacing: 0.05em;
+  line-height: 1;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+}
+.hero h1 em { color: var(--amber); font-style: normal; }
+.hero p {
+  color: var(--text-dim);
+  font-size: 1rem;
+  max-width: 680px;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+.nav-pills {
+  display: flex; flex-wrap: wrap; gap: 0.5rem;
+}
+.nav-pill {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 0.4rem 1rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'DM Sans', sans-serif;
+}
+.nav-pill:hover, .nav-pill.active {
+  background: var(--amber-glow);
+  border-color: var(--amber);
+  color: var(--amber);
+}
+
+/* MAIN LAYOUT */
+.main { max-width: 1100px; margin: 0 auto; padding: 2.5rem 2rem; }
+
+/* SECTION HEADER */
+.section-header {
+  display: flex; align-items: flex-start; gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.section-icon {
+  width: 44px; height: 44px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; flex-shrink: 0;
+}
+.icon-amber { background: var(--amber-glow); border: 1px solid var(--amber); }
+.icon-cyan { background: rgba(6,182,212,0.1); border: 1px solid var(--cyan); }
+.icon-red { background: rgba(239,68,68,0.1); border: 1px solid var(--red); }
+.icon-green { background: rgba(34,197,94,0.1); border: 1px solid var(--green); }
+.section-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 0.05em; color: var(--text); }
+.section-sub { font-size: 0.85rem; color: var(--text-dim); margin-top: 0.2rem; }
+
+/* LEVEL OVERVIEW CARDS */
+.level-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.2rem; margin-bottom: 2.5rem; }
+@media(max-width:700px){ .level-grid{grid-template-columns:1fr;} }
+.level-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.4rem;
+  cursor: pointer;
+  transition: all 0.25s;
+  position: relative;
+  overflow: hidden;
+}
+.level-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  transition: opacity 0.3s;
+}
+.level-card.l1::before { background: var(--green); }
+.level-card.l2::before { background: var(--amber); }
+.level-card.l3::before { background: var(--cyan); }
+.level-card:hover, .level-card.active {
+  border-color: var(--amber);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px var(--amber-glow);
+}
+.level-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  display: inline-block;
+  margin-bottom: 0.8rem;
+}
+.l1 .level-badge { background: rgba(34,197,94,0.15); color: var(--green); border: 1px solid var(--green); }
+.l2 .level-badge { background: var(--amber-glow); color: var(--amber); border: 1px solid var(--amber); }
+.l3 .level-badge { background: rgba(6,182,212,0.1); color: var(--cyan); border: 1px solid var(--cyan); }
+.level-card h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.level-card p { font-size: 0.82rem; color: var(--text-dim); line-height: 1.5; }
+.level-meta { display: flex; gap: 1rem; margin-top: 1rem; }
+.meta-item { font-size: 0.75rem; color: var(--text-dim); }
+.meta-item strong { display: block; color: var(--text); font-size: 0.85rem; font-weight: 600; }
+
+/* PROCESS TIMELINE */
+.timeline { position: relative; padding-left: 2rem; }
+.timeline::before {
+  content: '';
+  position: absolute; left: 0.6rem; top: 0; bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--amber), var(--cyan), transparent);
+}
+.timeline-step {
+  position: relative;
+  margin-bottom: 1.5rem;
+  animation: fadeUp 0.4s ease both;
+}
+.timeline-step:nth-child(1){animation-delay:0.05s}
+.timeline-step:nth-child(2){animation-delay:0.1s}
+.timeline-step:nth-child(3){animation-delay:0.15s}
+.timeline-step:nth-child(4){animation-delay:0.2s}
+.timeline-step:nth-child(5){animation-delay:0.25s}
+.timeline-step:nth-child(6){animation-delay:0.3s}
+.timeline-step:nth-child(7){animation-delay:0.35s}
+@keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:none} }
+.step-dot {
+  position: absolute; left: -2.4rem; top: 0.9rem;
+  width: 1.2rem; height: 1.2rem;
+  border-radius: 50%;
+  border: 2px solid var(--amber);
+  background: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--amber);
+  font-weight: 600;
+}
+.step-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.2rem 1.4rem;
+  transition: border-color 0.2s;
+}
+.step-card:hover { border-color: var(--amber); }
+.step-number { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--amber); margin-bottom: 0.3rem; }
+.step-card h4 { font-size: 1rem; font-weight: 600; margin-bottom: 0.4rem; }
+.step-card p { font-size: 0.85rem; color: var(--text-dim); line-height: 1.55; }
+.step-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.7rem; }
+.tag {
+  font-size: 0.7rem;
+  font-family: 'DM Mono', monospace;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+}
+
+/* PAGE SECTIONS */
+.page-section { display: none; }
+.page-section.active { display: block; }
+
+/* REQUIREMENT GRID */
+.req-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
+.req-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.2rem;
+  transition: all 0.25s;
+  cursor: pointer;
+}
+.req-card:hover { border-color: var(--cyan); box-shadow: 0 4px 20px rgba(6,182,212,0.1); }
+.req-id {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--cyan);
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+.req-card h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.5rem; }
+.req-card p { font-size: 0.82rem; color: var(--text-dim); line-height: 1.5; }
+.req-expanded {
+  margin-top: 0.8rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  line-height: 1.55;
+  display: none;
+}
+.req-card.open .req-expanded { display: block; }
+.req-card.open { border-color: var(--cyan); }
+
+/* DIBCAC TABLE */
+.dibcac-grid { display: grid; gap: 1.2rem; }
+.dibcac-domain {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.dibcac-domain-header {
+  padding: 1rem 1.4rem;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 1rem;
+  cursor: pointer;
+}
+.dibcac-domain-header:hover { background: var(--amber-glow); }
+.domain-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  background: var(--amber-glow);
+  border: 1px solid var(--amber);
+  color: var(--amber);
+  white-space: nowrap;
+}
+.domain-title { font-weight: 600; font-size: 0.95rem; flex: 1; }
+.domain-count { font-size: 0.78rem; color: var(--text-dim); white-space: nowrap; }
+.chevron { font-size: 0.8rem; color: var(--text-dim); transition: transform 0.3s; }
+.dibcac-domain.open .chevron { transform: rotate(180deg); }
+.dibcac-items { display: none; padding: 1rem 1.4rem; }
+.dibcac-domain.open .dibcac-items { display: block; }
+.dibcac-item {
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--border);
+  display: flex; gap: 1rem;
+}
+.dibcac-item:last-child { border-bottom: none; }
+.item-ref {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--cyan);
+  white-space: nowrap;
+  padding-top: 0.1rem;
+  min-width: 90px;
+}
+.item-text { font-size: 0.83rem; color: var(--text-dim); line-height: 1.5; }
+.item-text strong { color: var(--text); font-weight: 600; display: block; margin-bottom: 0.2rem; }
+
+/* CHECKLIST */
+.checklist { display: flex; flex-direction: column; gap: 0.8rem; }
+.check-item {
+  display: flex; gap: 1rem; align-items: flex-start;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 1.2rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.check-item:hover { border-color: var(--amber); }
+.check-box {
+  width: 20px; height: 20px;
+  border-radius: 5px;
+  border: 2px solid var(--gray-500);
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+  margin-top: 0.1rem;
+}
+.check-item.checked .check-box {
+  background: var(--green);
+  border-color: var(--green);
+  color: white;
+}
+.check-item.checked .check-box::after { content: '✓'; font-size: 0.75rem; font-weight: 700; }
+.check-label { font-size: 0.9rem; font-weight: 500; flex: 1; }
+.check-item.checked .check-label { text-decoration: line-through; color: var(--text-dim); }
+.check-detail { font-size: 0.8rem; color: var(--text-dim); margin-top: 0.2rem; line-height: 1.45; }
+.check-item.checked .check-detail { color: var(--text-dim); opacity: 0.6; }
+
+/* PROGRESS BAR */
+.progress-wrap { margin-bottom: 1.5rem; }
+.progress-label { font-size: 0.8rem; color: var(--text-dim); margin-bottom: 0.5rem; display: flex; justify-content: space-between; }
+.progress-bar { height: 6px; background: var(--surface-2); border-radius: 999px; overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--amber), var(--cyan)); border-radius: 999px; transition: width 0.5s ease; }
+
+/* DOCS TABLE */
+.docs-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.docs-table th {
+  text-align: left;
+  padding: 0.7rem 1rem;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+  font-weight: 600;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+}
+.docs-table td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-dim);
+  vertical-align: top;
+}
+.docs-table td:first-child { color: var(--text); font-weight: 500; }
+.docs-table tr:hover td { background: var(--amber-glow); }
+.dot-yes { color: var(--green); font-weight: 700; text-align: center; }
+.dot-no { color: var(--gray-500); text-align: center; }
+
+/* INFO BOX */
+.info-box {
+  background: var(--amber-glow);
+  border: 1px solid var(--amber);
+  border-radius: 10px;
+  padding: 1rem 1.2rem;
+  font-size: 0.85rem;
+  color: var(--text);
+  line-height: 1.55;
+  margin-bottom: 1.5rem;
+  display: flex; gap: 0.8rem;
+}
+.info-box-icon { font-size: 1.1rem; flex-shrink: 0; }
+
+/* TABS */
+.tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+.tab {
+  padding: 0.5rem 1.1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  font-size: 0.83rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--text-dim);
+}
+.tab:hover, .tab.active { background: var(--amber-glow); border-color: var(--amber); color: var(--amber); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* DIVIDER */
+.divider { height: 1px; background: var(--border); margin: 2.5rem 0; }
+
+/* RESET BTN */
+.reset-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.8rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 1rem;
+}
+.reset-btn:hover { border-color: var(--red); color: var(--red); }
+
+/* SCROLL ANCHOR OFFSET */
+.anchor { scroll-margin-top: 80px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">⬡ <span>CMMC</span> GUIDE</div>
+  <div class="header-right">
+    <span class="badge">32 CFR Part 170</span>
+    <button class="theme-btn" onclick="toggleTheme()">
+      <span id="theme-icon">☀️</span> <span id="theme-label">Light Mode</span>
+    </button>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-inner">
+    <h1>DoD Contractor<br><em>CMMC Certification</em> Guide</h1>
+    <p>A chronological, interactive training resource covering all three CMMC levels — from FAR 52.204-21 Level 1 self-assessments through DIBCAC government-led Level 3 assessments.</p>
+    <div class="nav-pills">
+      <button class="nav-pill active" onclick="showSection('overview', this)">Overview</button>
+      <button class="nav-pill" onclick="showSection('level1', this)">Level 1 — FCI</button>
+      <button class="nav-pill" onclick="showSection('far', this)">FAR 52.204-21</button>
+      <button class="nav-pill" onclick="showSection('level2', this)">Level 2 — CUI</button>
+      <button class="nav-pill" onclick="showSection('level3', this)">Level 3 — Advanced</button>
+      <button class="nav-pill" onclick="showSection('dibcac', this)">DIBCAC Assessment</button>
+      <button class="nav-pill" onclick="showSection('docs', this)">Required Documents</button>
+      <button class="nav-pill" onclick="showSection('checklist', this)">Audit Checklist</button>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- ════════════════ OVERVIEW ════════════════ -->
+<div id="overview" class="page-section active">
+  <div class="section-header">
+    <div class="section-icon icon-amber">🏛️</div>
+    <div>
+      <div class="section-title">Program Overview</div>
+      <div class="section-sub">Understand the three-level structure before selecting your path</div>
+    </div>
+  </div>
+
+  <div class="info-box">
+    <span class="info-box-icon">ℹ️</span>
+    <span>CMMC (Cybersecurity Maturity Model Certification) is administered under <strong>32 CFR Part 170</strong>. The required level is driven by the type of information you process: FCI for Level 1, CUI for Levels 2 and 3. Requirements flow down through solicitations, contracts, and subcontracts.</span>
+  </div>
+
+  <div class="level-grid">
+    <div class="level-card l1" onclick="showSection('level1', null)">
+      <div class="level-badge">LEVEL 1</div>
+      <h3>Foundational</h3>
+      <p>For contractors handling <strong>Federal Contract Information (FCI)</strong>. Annual self-assessment against 15 basic safeguarding requirements.</p>
+      <div class="level-meta">
+        <div class="meta-item"><strong>15</strong>FAR Requirements</div>
+        <div class="meta-item"><strong>Annual</strong>Self-Assessment</div>
+        <div class="meta-item"><strong>SPRS</strong>Reporting</div>
+      </div>
+    </div>
+    <div class="level-card l2" onclick="showSection('level2', null)">
+      <div class="level-badge">LEVEL 2</div>
+      <h3>Advanced</h3>
+      <p>For contractors handling <strong>Controlled Unclassified Information (CUI)</strong>. Based on 110 requirements in NIST SP 800-171 Rev. 2.</p>
+      <div class="level-meta">
+        <div class="meta-item"><strong>110</strong>Controls</div>
+        <div class="meta-item"><strong>C3PAO or Self</strong>Assessment</div>
+        <div class="meta-item"><strong>180-day</strong>POA&amp;M Window</div>
+      </div>
+    </div>
+    <div class="level-card l3" onclick="showSection('level3', null)">
+      <div class="level-badge">LEVEL 3</div>
+      <h3>Expert</h3>
+      <p>For the <strong>most sensitive CUI environments</strong>. Requires Level 2 Final + DIBCAC government assessment every 3 years.</p>
+      <div class="level-meta">
+        <div class="meta-item"><strong>24</strong>SP 800-172 Reqs</div>
+        <div class="meta-item"><strong>DIBCAC</strong>Assessment</div>
+        <div class="meta-item"><strong>3-Year</strong>Cycle</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-icon icon-amber">🗺️</div>
+    <div>
+      <div class="section-title">Certification Roadmap</div>
+      <div class="section-sub">Sequential process applicable across all levels</div>
+    </div>
+  </div>
+
+  <div class="timeline">
+    <div class="timeline-step">
+      <div class="step-dot">1</div>
+      <div class="step-card">
+        <div class="step-number">STEP 01</div>
+        <h4>Determine Contract Requirements</h4>
+        <p>Identify the CMMC level required by your solicitation or contract. Determine whether flowdown requirements apply to your subcontractors or enclaves. FCI → Level 1; CUI → Level 2 or 3.</p>
+        <div class="step-tags"><span class="tag">Contracting Officer</span><span class="tag">Legal Review</span><span class="tag">FCI vs CUI</span></div>
+      </div>
+    </div>
+    <div class="timeline-step">
+      <div class="step-dot">2</div>
+      <div class="step-card">
+        <div class="step-number">STEP 02</div>
+        <h4>Define Scope &amp; Assessment Boundary</h4>
+        <p>Identify all systems, assets, and people that process, store, or transmit FCI/CUI. Document the boundary clearly — only in-scope systems are assessed. Narrowing scope reduces cost and risk.</p>
+        <div class="step-tags"><span class="tag">System Owner</span><span class="tag">ISSO</span><span class="tag">Network Diagrams</span></div>
+      </div>
+    </div>
+    <div class="timeline-step">
+      <div class="step-dot">3</div>
+      <div class="step-card">
+        <div class="step-number">STEP 03</div>
+        <h4>Build / Update the SSP</h4>
+        <p>Create or update your System Security Plan describing system boundaries, security control implementation, inherited protections, and responsible parties for each control.</p>
+        <div class="step-tags"><span class="tag">SSP Author</span><span class="tag">Control Owners</span><span class="tag">Required L1–L3</span></div>
+      </div>
+    </div>
+    <div class="timeline-step">
+      <div class="step-dot">4</div>
+      <div class="step-card">
+        <div class="step-number">STEP 04</div>
+        <h4>Conduct Gap Analysis &amp; Remediate</h4>
+        <p>Assess current state against required controls. Document gaps in a POA&amp;M (allowed at L2/L3; prohibited at L1). Remediate all gaps — at Level 1, ALL controls must be in place before claiming compliance.</p>
+        <div class="step-tags"><span class="tag">IT/Security Staff</span><span class="tag">POA&amp;M (L2/L3)</span><span class="tag">180-Day Limit</span></div>
+      </div>
+    </div>
+    <div class="timeline-step">
+      <div class="step-dot">5</div>
+      <div class="step-card">
+        <div class="step-number">STEP 05</div>
+        <h4>Complete Required Assessment</h4>
+        <p>Level 1: Annual self-assessment. Level 2: Self-assessment or C3PAO certification (contract-driven). Level 3: Must first hold Level 2 Final, then undergo DIBCAC government-led assessment.</p>
+        <div class="step-tags"><span class="tag">Self / C3PAO / DIBCAC</span><span class="tag">Evidence Package</span></div>
+      </div>
+    </div>
+    <div class="timeline-step">
+      <div class="step-dot">6</div>
+      <div class="step-card">
+        <div class="step-number">STEP 06</div>
+        <h4>Submit Results to SPRS / CMMC eMASS</h4>
+        <p>Report assessment scores in the Supplier Performance Risk System (SPRS). Level 3 results also go into CMMC eMASS. Scores must be current and accurate — false claims carry legal liability.</p>
+        <div class="step-tags"><span class="tag">SPRS</span><span class="tag">CMMC eMASS (L3)</span><span class="tag">Contract Admin</span></div>
+      </div>
+    </div>
+    <div class="timeline-step">
+      <div class="step-dot">7</div>
+      <div class="step-card">
+        <div class="step-number">STEP 07</div>
+        <h4>Annual Affirmation by Senior Official</h4>
+        <p>A senior-level official (not a technical reviewer) must affirm continued compliance annually. This is a management attestation with legal accountability for the organization's declared CMMC status.</p>
+        <div class="step-tags"><strong style="color:var(--amber)">⚠ Legal Accountability</strong><span class="tag">CEO/CISO/SVP</span><span class="tag">Annual</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ LEVEL 1 ════════════════ -->
+<div id="level1" class="page-section">
+  <div class="section-header">
+    <div class="section-icon icon-green">🛡️</div>
+    <div>
+      <div class="section-title">Level 1 — Foundational (FCI)</div>
+      <div class="section-sub">Annual self-assessment · 15 FAR requirements · No POA&amp;M allowed</div>
+    </div>
+  </div>
+
+  <div class="info-box">
+    <span class="info-box-icon">⚠️</span>
+    <span><strong>Critical Rule:</strong> At Level 1, POA&amp;Ms are <em>not permitted</em>. All 15 safeguarding requirements in FAR 52.204-21 must be fully implemented before you can claim Level 1 status. A single unmet control means you are not yet compliant.</span>
+  </div>
+
+  <div class="timeline">
+    <div class="timeline-step">
+      <div class="step-dot">1</div>
+      <div class="step-card">
+        <div class="step-number">L1 · STEP 01</div>
+        <h4>Identify Covered Information Systems</h4>
+        <p>Locate every system that processes, stores, or transmits Federal Contract Information (FCI). FCI is information provided by or generated for the government under contract — but not intended for public release.</p>
+      </div>
+    </div>
+    <div class="timeline-step">
+      <div class="step-dot">2</div>
+      <div class="step-card">
+        <div class="step-number">L1 · STEP 02</div>
+        <h4>Document the System Boundary</h4>
+        <p>Create a network diagram and data flow showing where FCI enters, resides, and exits your environment. Accurate boundary documentation limits scope and supports your self-assessment narrative.</p>
+      </div>
+    </div>
+    <div class="timeline-step">
+      <div class="step-dot">3</div>
+      <div class="step-card">
+        <div class="step-number">L1 · STEP 03</div>
+        <h4>Implement All 15 FAR 52.204-21 Requirements</h4>
+        <p>Review and implement each of the 15 basic safeguarding practices. See the <strong>FAR 52.204-21</strong> section for an interactive breakdown. Remember: all 15 must be in place — no partial credit.</p>
+      </div>
+    </div>
+    <div class="timeline-step">
+      <div class="step-dot">4</div>
+      <div class="step-card">
+        <div class="step-number">L1 · STEP 04</div>
+        <h4>Perform the Annual Self-Assessment</h4>
+        <p>Score each of the 15 requirements as Met or Not Met. Document your assessment methodology, evidence reviewed, and findings. Retain records for audit purposes.</p>
+      </div>
+    </div>
+    <div class="timeline-step">
+      <div class="step-dot">5</div>
+      <div class="step-card">
+        <div class="step-number">L1 · STEP 05</div>
+        <h4>Submit Score to SPRS</h4>
+        <p>Enter your self-assessment score in the Supplier Performance Risk System (SPRS). The maximum Level 1 score is +15 (one point per control). Negative scores indicate non-compliance.</p>
+      </div>
+    </div>
+    <div class="timeline-step">
+      <div class="step-dot">6</div>
+      <div class="step-card">
+        <div class="step-number">L1 · STEP 06</div>
+        <h4>Senior Official Submits Annual Affirmation</h4>
+        <p>A senior company official attests that the organization continues to meet all 15 Level 1 requirements. This affirmation carries legal weight — false affirmations may trigger False Claims Act liability.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ FAR 52.204-21 ════════════════ -->
+<div id="far" class="page-section">
+  <div class="section-header">
+    <div class="section-icon icon-cyan">📋</div>
+    <div>
+      <div class="section-title">FAR 52.204-21 — 15 Basic Safeguarding Requirements</div>
+      <div class="section-sub">Click any requirement to expand implementation guidance</div>
+    </div>
+  </div>
+
+  <div class="info-box">
+    <span class="info-box-icon">📌</span>
+    <span>These 15 requirements are the baseline for CMMC Level 1. They are derived from NIST SP 800-171 and focus on basic cyber hygiene. Contractors must implement <strong>all 15</strong> with no exceptions or POA&amp;Ms at Level 1.</span>
+  </div>
+
+  <div class="req-grid" id="farGrid"></div>
+</div>
+
+<!-- ════════════════ LEVEL 2 ════════════════ -->
+<div id="level2" class="page-section">
+  <div class="section-header">
+    <div class="section-icon icon-amber">🔐</div>
+    <div>
+      <div class="section-title">Level 2 — Advanced (CUI)</div>
+      <div class="section-sub">110 NIST SP 800-171 controls · Self or C3PAO · 180-day POA&amp;M window</div>
+    </div>
+  </div>
+
+  <div class="info-box">
+    <span class="info-box-icon">📎</span>
+    <span>Level 2 applies when your contract involves <strong>Controlled Unclassified Information (CUI)</strong>. Whether you use a self-assessment or a C3PAO third-party assessment depends on the specific contract solicitation. POA&amp;Ms are allowed for some controls but must be closed within 180 days — and some requirements cannot remain open on a POA&amp;M.</span>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('l2', 'process', this)">Process</button>
+    <button class="tab" onclick="switchTab('l2', 'domains', this)">14 Control Families</button>
+    <button class="tab" onclick="switchTab('l2', 'poam', this)">POA&amp;M Rules</button>
+  </div>
+
+  <div id="l2-process" class="tab-panel active">
+    <div class="timeline">
+      <div class="timeline-step">
+        <div class="step-dot">1</div>
+        <div class="step-card">
+          <div class="step-number">L2 · STEP 01</div>
+          <h4>Define CUI Scope &amp; Assessment Boundary</h4>
+          <p>Identify all systems processing CUI. Create or update network diagrams, data flow diagrams, and system inventories. Scoping decisions significantly affect cost and timeline.</p>
+          <div class="step-tags"><span class="tag">ISSO</span><span class="tag">System Owner</span><span class="tag">Data Flow Diagrams</span></div>
+        </div>
+      </div>
+      <div class="timeline-step">
+        <div class="step-dot">2</div>
+        <div class="step-card">
+          <div class="step-number">L2 · STEP 02</div>
+          <h4>Create / Maintain System Security Plan (SSP)</h4>
+          <p>Build a comprehensive SSP documenting all 110 NIST SP 800-171 controls, implementation status, responsible parties, and system interconnections. The SSP is the primary artifact reviewers examine.</p>
+          <div class="step-tags"><span class="tag">Required Document</span><span class="tag">110 Controls</span></div>
+        </div>
+      </div>
+      <div class="timeline-step">
+        <div class="step-dot">3</div>
+        <div class="step-card">
+          <div class="step-number">L2 · STEP 03</div>
+          <h4>Gap Analysis Against 110 Controls</h4>
+          <p>Assess each of the 110 NIST SP 800-171 Rev. 2 requirements. Score Met/Not Met/Partially Met. Calculate your preliminary SPRS score (max +110; deductions apply for each unmet control by assigned point value).</p>
+          <div class="step-tags"><span class="tag">SPRS Score</span><span class="tag">14 Families</span></div>
+        </div>
+      </div>
+      <div class="timeline-step">
+        <div class="step-dot">4</div>
+        <div class="step-card">
+          <div class="step-number">L2 · STEP 04</div>
+          <h4>Remediate &amp; Manage POA&amp;Ms</h4>
+          <p>Remediate all gaps possible. For remaining gaps, create POA&amp;M entries documenting the gap, remediation plan, milestones, and responsible party. POA&amp;Ms must be closed within 180 days. Some controls are ineligible for POA&amp;M.</p>
+          <div class="step-tags"><span class="tag">180-Day Limit</span><span class="tag">Milestone Tracking</span></div>
+        </div>
+      </div>
+      <div class="timeline-step">
+        <div class="step-dot">5</div>
+        <div class="step-card">
+          <div class="step-number">L2 · STEP 05</div>
+          <h4>Complete Assessment (Self or C3PAO)</h4>
+          <p><strong>Self-Assessment:</strong> Contractor-led using NIST SP 800-171A assessment methods. <strong>C3PAO Certification:</strong> Independent third-party assessment by a DoD-approved Certified Third-Party Assessment Organization. Contract type determines which is required.</p>
+          <div class="step-tags"><span class="tag">Evidence Package</span><span class="tag">Interviews</span><span class="tag">Technical Testing</span></div>
+        </div>
+      </div>
+      <div class="timeline-step">
+        <div class="step-dot">6</div>
+        <div class="step-card">
+          <div class="step-number">L2 · STEP 06</div>
+          <h4>Submit Results to SPRS</h4>
+          <p>Submit your assessment score to SPRS. For C3PAO assessments, the assessor submits directly. Conditional Status may be granted with open POA&amp;Ms; Final Status requires all controls met.</p>
+          <div class="step-tags"><span class="tag">Conditional vs Final</span><span class="tag">SPRS</span></div>
+        </div>
+      </div>
+      <div class="timeline-step">
+        <div class="step-dot">7</div>
+        <div class="step-card">
+          <div class="step-number">L2 · STEP 07</div>
+          <h4>Annual Affirmation + Periodic Reassessment</h4>
+          <p>Annual affirmation of continued compliance. C3PAO certifications must be renewed every 3 years. Monitor and update your SPRS score if control status changes.</p>
+          <div class="step-tags"><span class="tag">3-Year C3PAO Renewal</span><span class="tag">Annual Affirmation</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="l2-domains" class="tab-panel">
+    <div class="req-grid">
+      <div class="req-card" onclick="toggleReq(this)">
+        <div class="req-id">AC · Access Control</div>
+        <h4>Limit System Access</h4>
+        <p>Control access to organizational systems to authorized users, processes, and devices.</p>
+        <div class="req-expanded">22 requirements covering user accounts, remote access, least privilege, CUI flow enforcement, separation of duties, and mobile device control.</div>
+      </div>
+      <div class="req-card" onclick="toggleReq(this)">
+        <div class="req-id">AT · Awareness &amp; Training</div>
+        <h4>Ensure Security Awareness</h4>
+        <p>Provide awareness training; ensure personnel are aware of security risks associated with their activities.</p>
+        <div class="req-expanded">3 requirements: role-based awareness training, threat recognition training, and insider threat training. Training records are a key audit artifact.</div>
+      </div>
+      <div class="req-card" onclick="toggleReq(this)">
+        <div class="req-id">AU · Audit &amp; Accountability</div>
+        <h4>Create &amp; Retain Audit Logs</h4>
+        <p>Create and retain logs sufficient to enable monitoring, analysis, investigation, and reporting of unlawful activity.</p>
+        <div class="req-expanded">9 requirements: log creation, log retention, log review, log protection, and alerting on audit failures. System log configurations and retention policies are reviewed.</div>
+      </div>
+      <div class="req-card" onclick="toggleReq(this)">
+        <div class="req-id">CM · Configuration Management</div>
+        <h4>Establish Secure Configurations</h4>
+        <p>Establish and maintain baseline configurations and inventories of organizational systems.</p>
+        <div class="req-expanded">9 requirements including configuration baselines, configuration change control, security impact analysis, principle of least functionality, and blacklisting/whitelisting.</div>
+      </div>
+      <div class="req-card" onclick="toggleReq(this)">
+        <div class="req-id">IA · Identification &amp; Authentication</div>
+        <h4>Identify &amp; Authenticate Users</h4>
+        <p>Identify system users, processes, and devices and authenticate their identities before allowing access.</p>
+        <div class="req-expanded">11 requirements covering MFA, password complexity, password management, identifier management, and authenticator management. MFA for remote access is a frequent finding.</div>
+      </div>
+      <div class="req-card" onclick="toggleReq(this)">
+        <div class="req-id">IR · Incident Response</div>
+        <h4>Establish Incident Capabilities</h4>
+        <p>Establish an operational incident-handling capability including preparation, detection, analysis, containment, recovery, and user activities.</p>
+        <div class="req-expanded">3 requirements: incident response plan, incident handling, and incident reporting. Plans must be tested and reporting timelines (72 hrs for CUI breaches) must be documented.</div>
+      </div>
+      <div class="req-card" onclick="toggleReq(this)">
+        <div class="req-id">MA · Maintenance</div>
+        <h4>Perform System Maintenance</h4>
+        <p>Perform maintenance on organizational systems; provide controls on tools, techniques, and personnel performing maintenance.</p>
+        <div class="req-expanded">6 requirements covering scheduled maintenance, controlled use of maintenance tools, sanitization of equipment removed for maintenance, and multi-factor authentication for remote maintenance.</div>
+      </div>
+      <div class="req-card" onclick="toggleReq(this)">
+        <div class="req-id">MP · Media Protection</div>
+        <h4>Protect System Media</h4>
+        <p>Protect system media containing CUI, both paper and digital.</p>
+        <div class="req-expanded">9 requirements: media access, media marking, media storage, media transport, media sanitization, and media protection policies. Encryption of portable media is commonly reviewed.</div>
+      </div>
+      <div class="req-card" onclick="toggleReq(this)">
+        <div class="req-id">PE · Physical Protection</div>
+        <h4>Limit Physical Access</h4>
+        <p>Limit physical access to organizational systems to authorized individuals.</p>
+        <div class="req-expanded">6 requirements covering physical access authorizations, physical access controls, escorting visitors, physical access log management, and monitoring physical access.</div>
+      </div>
+      <div class="req-card" onclick="toggleReq(this)">
+        <div class="req-id">PS · Personnel Security</div>
+        <h4>Screen Individuals</h4>
+        <p>Screen individuals prior to authorizing access; ensure CUI is protected during and after personnel actions.</p>
+        <div class="req-expanded">2 requirements: personnel screening (background checks) and personnel termination/transfer procedures including revoking system access and retrieving credentials.</div>
+      </div>
+      <div class="req-card" onclick="toggleReq(this)">
+        <div class="req-id">RA · Risk Assessment</div>
+        <h4>Assess Organizational Risk</h4>
+        <p>Periodically assess the risk to operations, assets, and individuals resulting from system operation and associated information processing.</p>
+        <div class="req-expanded">3 requirements: risk assessments, vulnerability scanning, and remediation of vulnerabilities. Vulnerability scan results and remediation timelines are audit artifacts.</div>
+      </div>
+      <div class="req-card" onclick="toggleReq(this)">
+        <div class="req-id">CA · Security Assessment</div>
+        <h4>Periodically Assess Controls</h4>
+        <p>Periodically assess security controls; develop and implement plans of action; and monitor systems on an ongoing basis.</p>
+        <div class="req-expanded">4 requirements: security assessments, plans of action and milestones, continuous monitoring, and system connections. The SSP and POA&amp;M directly support this family.</div>
+      </div>
+      <div class="req-card" onclick="toggleReq(this)">
+        <div class="req-id">SC · System &amp; Comm. Protection</div>
+        <h4>Protect System Communications</h4>
+        <p>Monitor, control, and protect communications at external boundaries and key internal boundaries.</p>
+        <div class="req-expanded">16 requirements including boundary protection, CUI encryption in transit, network segmentation, denial of service protection, split tunneling, and mobile code controls.</div>
+      </div>
+      <div class="req-card" onclick="toggleReq(this)">
+        <div class="req-id">SI · System &amp; Info. Integrity</div>
+        <h4>Identify &amp; Correct Flaws</h4>
+        <p>Identify, report, and correct information system flaws; protect systems from malicious code; monitor system security alerts.</p>
+        <div class="req-expanded">7 requirements: flaw remediation, malicious code protection, security alerts, software/firmware integrity, spam protection, security functionality verification, and information input validation.</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="l2-poam" class="tab-panel">
+    <div class="info-box">
+      <span class="info-box-icon">📋</span>
+      <span>POA&amp;Ms at Level 2 are permitted for <em>some</em> unmet controls, but with strict conditions. Understanding these rules is essential for managing your path to Level 2 Final status.</span>
+    </div>
+    <div class="timeline">
+      <div class="timeline-step"><div class="step-dot">!</div>
+        <div class="step-card">
+          <h4>180-Day Closeout Requirement</h4>
+          <p>All POA&amp;M items must be closed within 180 days of the initial assessment date. Failure to close POA&amp;Ms within this window results in loss of Conditional Status and potential contract impacts.</p>
+          <div class="step-tags"><span class="tag">Hard Deadline</span><span class="tag">180 Days</span></div>
+        </div>
+      </div>
+      <div class="timeline-step"><div class="step-dot">!</div>
+        <div class="step-card">
+          <h4>Ineligible Controls — Cannot Be on POA&amp;M</h4>
+          <p>DoD has designated certain high-priority requirements as ineligible for POA&amp;M. These controls must be fully implemented before claiming even Conditional Status. Review current DoD guidance for the current ineligible list.</p>
+          <div class="step-tags"><span class="tag">MFA Requirements</span><span class="tag">Encryption Controls</span><span class="tag">Incident Response</span></div>
+        </div>
+      </div>
+      <div class="timeline-step"><div class="step-dot">!</div>
+        <div class="step-card">
+          <h4>Conditional vs. Final Status</h4>
+          <p><strong>Conditional:</strong> Open POA&amp;M items exist but are allowable; contract work may proceed subject to contracting officer approval. <strong>Final:</strong> All 110 controls met; no open POA&amp;Ms. Final status required for highest-sensitivity programs.</p>
+          <div class="step-tags"><span class="tag">SPRS Reporting</span></div>
+        </div>
+      </div>
+      <div class="timeline-step"><div class="step-dot">!</div>
+        <div class="step-card">
+          <h4>SPRS Score Implications</h4>
+          <p>Each unmet control carries a negative point value (ranging from -1 to -5). The base score is +110. POA&amp;M controls are still counted as deductions until fully remediated. A negative SPRS score is a significant red flag to contracting officers.</p>
+          <div class="step-tags"><span class="tag">Base: +110</span><span class="tag">Deductions Per Control</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ LEVEL 3 ════════════════ -->
+<div id="level3" class="page-section">
+  <div class="section-header">
+    <div class="section-icon icon-cyan">🎯</div>
+    <div>
+      <div class="section-title">Level 3 — Expert (Sensitive CUI)</div>
+      <div class="section-sub">Requires Level 2 Final · DIBCAC assessment · 24 NIST SP 800-172 requirements</div>
+    </div>
+  </div>
+
+  <div class="info-box">
+    <span class="info-box-icon">🔴</span>
+    <span><strong>Prerequisite:</strong> You must hold <em>Level 2 Final status</em> before pursuing Level 3. Level 3 adds 24 enhanced security requirements from NIST SP 800-172 on top of the Level 2 baseline, and requires a government-led assessment by DCMA's DIBCAC every 3 years.</span>
+  </div>
+
+  <div class="timeline">
+    <div class="timeline-step">
+      <div class="step-dot">1</div>
+      <div class="step-card">
+        <div class="step-number">L3 · PREREQUISITE</div>
+        <h4>Achieve Level 2 Final Status</h4>
+        <p>All 110 NIST SP 800-171 controls must be fully implemented with no open POA&amp;Ms. Level 2 Final status must be recorded in SPRS before pursuing Level 3 assessment.</p>
+        <div class="step-tags"><span class="tag">SPRS: Final Status</span><span class="tag">110 Controls Met</span></div>
+      </div>
+    </div>
+    <div class="timeline-step">
+      <div class="step-dot">2</div>
+      <div class="step-card">
+        <div class="step-number">L3 · STEP 01</div>
+        <h4>Implement 24 NIST SP 800-172 Requirements</h4>
+        <p>Layer the 24 selected enhanced security requirements from NIST SP 800-172 on top of your Level 2 controls. These address advanced persistent threats (APTs) and are significantly more stringent, covering penetration resistance, deception techniques, and advanced threat hunting.</p>
+        <div class="step-tags"><span class="tag">SP 800-172</span><span class="tag">APT Focus</span><span class="tag">Enhanced Controls</span></div>
+      </div>
+    </div>
+    <div class="timeline-step">
+      <div class="step-dot">3</div>
+      <div class="step-card">
+        <div class="step-number">L3 · STEP 02</div>
+        <h4>Prepare Evidence Package for DIBCAC</h4>
+        <p>Compile a comprehensive evidence package: updated SSP, all policies and procedures, training records, network and data flow diagrams, system inventories, audit logs, incident response documentation, and results from any prior assessments.</p>
+        <div class="step-tags"><span class="tag">SSP + Appendices</span><span class="tag">Policy Library</span><span class="tag">Technical Evidence</span></div>
+      </div>
+    </div>
+    <div class="timeline-step">
+      <div class="step-dot">4</div>
+      <div class="step-card">
+        <div class="step-number">L3 · STEP 03</div>
+        <h4>Undergo DIBCAC Assessment</h4>
+        <p>The Defense Industrial Base Cybersecurity Assessment Center (DIBCAC), under DCMA, conducts the government-led Level 3 assessment. This is a rigorous evaluation combining document review, interviews, and technical testing. See the <strong>DIBCAC Assessment</strong> section for the full process.</p>
+        <div class="step-tags"><span class="tag">DCMA / DIBCAC</span><span class="tag">Government-Led</span><span class="tag">On-Site + Remote</span></div>
+      </div>
+    </div>
+    <div class="timeline-step">
+      <div class="step-dot">5</div>
+      <div class="step-card">
+        <div class="step-number">L3 · STEP 04</div>
+        <h4>Results Recorded in CMMC eMASS &amp; SPRS</h4>
+        <p>DIBCAC records assessment results in CMMC eMASS. Your SPRS record is also updated. Level 3 status is valid for 3 years, subject to annual affirmation and continuous monitoring.</p>
+        <div class="step-tags"><span class="tag">CMMC eMASS</span><span class="tag">SPRS Update</span><span class="tag">3-Year Validity</span></div>
+      </div>
+    </div>
+    <div class="timeline-step">
+      <div class="step-dot">6</div>
+      <div class="step-card">
+        <div class="step-number">L3 · STEP 05</div>
+        <h4>Annual Affirmation + 3-Year Re-Assessment</h4>
+        <p>Senior official annual affirmation continues at Level 3. Every 3 years, a new DIBCAC assessment is required to maintain Level 3 certification. Significant changes to the system boundary or controls should trigger interim reporting.</p>
+        <div class="step-tags"><span class="tag">Annual Affirmation</span><span class="tag">3-Year DIBCAC Cycle</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section-header">
+    <div class="section-icon icon-cyan">📐</div>
+    <div>
+      <div class="section-title">NIST SP 800-172 — 24 Enhanced Requirements</div>
+      <div class="section-sub">Selected requirements added at Level 3 above the Level 2 baseline</div>
+    </div>
+  </div>
+  <div class="req-grid" id="sp172Grid"></div>
+</div>
+
+<!-- ════════════════ DIBCAC ════════════════ -->
+<div id="dibcac" class="page-section">
+  <div class="section-header">
+    <div class="section-icon icon-cyan">🏛️</div>
+    <div>
+      <div class="section-title">DIBCAC Assessment Process</div>
+      <div class="section-sub">DCMA Defense Industrial Base Cybersecurity Assessment Center · Level 3 Government-Led Assessment</div>
+    </div>
+  </div>
+
+  <div class="info-box">
+    <span class="info-box-icon">🎖️</span>
+    <span>The <strong>Defense Industrial Base Cybersecurity Assessment Center (DIBCAC)</strong> is an element of the Defense Contract Management Agency (DCMA). DIBCAC conducts government-led cybersecurity assessments for contractors seeking CMMC Level 3. These are rigorous, multi-phase evaluations — very different from a self-assessment or C3PAO review.</span>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('dibcac', 'phases', this)">Assessment Phases</button>
+    <button class="tab" onclick="switchTab('dibcac', 'methods', this)">Assessment Methods</button>
+    <button class="tab" onclick="switchTab('dibcac', 'artifacts', this)">Required Artifacts</button>
+    <button class="tab" onclick="switchTab('dibcac', 'people', this)">Key Stakeholders</button>
+  </div>
+
+  <div id="dibcac-phases" class="tab-panel active">
+    <div class="timeline">
+      <div class="timeline-step">
+        <div class="step-dot">1</div>
+        <div class="step-card">
+          <div class="step-number">DIBCAC · PHASE 01</div>
+          <h4>Pre-Assessment Preparation</h4>
+          <p>DIBCAC notifies the contractor of the pending assessment. The contractor confirms Level 2 Final status in SPRS, designates a primary Point of Contact (POC) and Technical POC, and prepares the evidence package. DIBCAC reviews your SSP before the formal assessment begins.</p>
+          <div class="step-tags"><span class="tag">SSP Submission</span><span class="tag">POC Designation</span><span class="tag">Evidence Pre-Check</span></div>
+        </div>
+      </div>
+      <div class="timeline-step">
+        <div class="step-dot">2</div>
+        <div class="step-card">
+          <div class="step-number">DIBCAC · PHASE 02</div>
+          <h4>Document &amp; Policy Review</h4>
+          <p>DIBCAC assessors conduct an in-depth review of your SSP, policies, procedures, training records, incident response plans, and all supporting documentation. Gaps identified during document review are flagged for follow-up during interviews and testing.</p>
+          <div class="step-tags"><span class="tag">SSP Deep Dive</span><span class="tag">Policy Gap Analysis</span><span class="tag">Remote or On-Site</span></div>
+        </div>
+      </div>
+      <div class="timeline-step">
+        <div class="step-dot">3</div>
+        <div class="step-card">
+          <div class="step-number">DIBCAC · PHASE 03</div>
+          <h4>Interviews</h4>
+          <p>DIBCAC conducts structured interviews with system owners, IT/security staff, control owners, HR personnel, and senior management. Interview questions focus on whether documented controls are understood and operationally implemented — not just written in the SSP.</p>
+          <div class="step-tags"><span class="tag">All Stakeholders</span><span class="tag">Operational Focus</span><span class="tag">Consistency Check</span></div>
+        </div>
+      </div>
+      <div class="timeline-step">
+        <div class="step-dot">4</div>
+        <div class="step-card">
+          <div class="step-number">DIBCAC · PHASE 04</div>
+          <h4>Technical Testing &amp; Observation</h4>
+          <p>Assessors perform technical testing to verify control implementation: reviewing system configurations, testing access controls, observing authentication processes, checking audit log settings, verifying encryption in transit and at rest, and examining network segmentation effectiveness.</p>
+          <div class="step-tags"><span class="tag">Config Review</span><span class="tag">Access Testing</span><span class="tag">Encryption Verification</span><span class="tag">Log Analysis</span></div>
+        </div>
+      </div>
+      <div class="timeline-step">
+        <div class="step-dot">5</div>
+        <div class="step-card">
+          <div class="step-number">DIBCAC · PHASE 05</div>
+          <h4>Finding Adjudication &amp; Draft Report</h4>
+          <p>DIBCAC compiles findings, scores each of the 134 requirements (110 from L2 + 24 from SP 800-172), and prepares a draft assessment report. The contractor has an opportunity to review and provide clarification or additional evidence for disputed findings before the report is finalized.</p>
+          <div class="step-tags"><span class="tag">134 Requirements Scored</span><span class="tag">Draft Review Period</span><span class="tag">Contractor Response</span></div>
+        </div>
+      </div>
+      <div class="timeline-step">
+        <div class="step-dot">6</div>
+        <div class="step-card">
+          <div class="step-number">DIBCAC · PHASE 06</div>
+          <h4>Final Report &amp; CMMC eMASS Entry</h4>
+          <p>DIBCAC issues the final assessment report and records results in CMMC eMASS. If all requirements are met, Level 3 status is granted for 3 years. If deficiencies remain, the contractor must remediate and may need to undergo a re-assessment.</p>
+          <div class="step-tags"><span class="tag">CMMC eMASS</span><span class="tag">SPRS Update</span><span class="tag">3-Year Certificate</span></div>
+        </div>
+      </div>
+      <div class="timeline-step">
+        <div class="step-dot">7</div>
+        <div class="step-card">
+          <div class="step-number">DIBCAC · PHASE 07</div>
+          <h4>Continuous Monitoring &amp; Annual Affirmation</h4>
+          <p>Post-assessment, the contractor must maintain all controls, report significant changes to the system environment, and submit annual affirmations of continued compliance. The 3-year re-assessment cycle then repeats.</p>
+          <div class="step-tags"><span class="tag">Change Reporting</span><span class="tag">Annual Affirmation</span><span class="tag">3-Year Cycle</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="dibcac-methods" class="tab-panel">
+    <div class="dibcac-grid" id="dibcacMethodsGrid"></div>
+  </div>
+
+  <div id="dibcac-artifacts" class="tab-panel">
+    <div class="info-box">
+      <span class="info-box-icon">📦</span>
+      <span>Assemble this artifact package <em>before</em> DIBCAC arrives. Incomplete or inconsistent artifacts are the most common reason for extended assessment timelines. Each artifact should clearly map to specific NIST SP 800-171 or 800-172 controls.</span>
+    </div>
+    <div class="dibcac-grid" id="dibcacArtifactsGrid"></div>
+  </div>
+
+  <div id="dibcac-people" class="tab-panel">
+    <div class="dibcac-grid" id="dibcacPeopleGrid"></div>
+  </div>
+</div>
+
+<!-- ════════════════ DOCUMENTS ════════════════ -->
+<div id="docs" class="page-section">
+  <div class="section-header">
+    <div class="section-icon icon-amber">📁</div>
+    <div>
+      <div class="section-title">Required Documents &amp; Records</div>
+      <div class="section-sub">Core documentation requirements across all three CMMC levels</div>
+    </div>
+  </div>
+
+  <div class="info-box">
+    <span class="info-box-icon">📌</span>
+    <span>These documents form the evidentiary backbone of any CMMC assessment. At Level 2 and Level 3, assessors expect artifacts that are current, consistent with each other, and traceable to specific controls. A well-documented SSP with supporting artifacts dramatically reduces assessment friction.</span>
+  </div>
+
+  <div style="overflow-x:auto; border:1px solid var(--border); border-radius:12px;">
+    <table class="docs-table">
+      <thead>
+        <tr>
+          <th>Document</th>
+          <th>Purpose</th>
+          <th style="text-align:center">L1</th>
+          <th style="text-align:center">L2</th>
+          <th style="text-align:center">L3</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>System Security Plan (SSP)</td><td>Describes system boundary, control implementation, responsible parties, interconnections</td><td class="dot-yes">✓</td><td class="dot-yes">✓</td><td class="dot-yes">✓</td></tr>
+        <tr><td>Plan of Action &amp; Milestones (POA&amp;M)</td><td>Tracks unmet controls, remediation plans, milestones, and responsible owners</td><td class="dot-no">—</td><td class="dot-yes">✓</td><td class="dot-yes">✓</td></tr>
+        <tr><td>SPRS Assessment Score</td><td>Official reporting of self-assessment or certification results in DoD system</td><td class="dot-yes">✓</td><td class="dot-yes">✓</td><td class="dot-yes">✓</td></tr>
+        <tr><td>Annual Affirmation</td><td>Senior official attests continued compliance; carries legal weight</td><td class="dot-yes">✓</td><td class="dot-yes">✓</td><td class="dot-yes">✓</td></tr>
+        <tr><td>Network Topology Diagram</td><td>Visual depiction of system architecture, connections, and boundary</td><td class="dot-no">—</td><td class="dot-yes">✓</td><td class="dot-yes">✓</td></tr>
+        <tr><td>CUI Data Flow Diagram</td><td>Shows how CUI enters, moves through, and exits the system environment</td><td class="dot-no">—</td><td class="dot-yes">✓</td><td class="dot-yes">✓</td></tr>
+        <tr><td>System Component Inventory</td><td>List of all hardware, software, and services in scope</td><td class="dot-no">—</td><td class="dot-yes">✓</td><td class="dot-yes">✓</td></tr>
+        <tr><td>Policies &amp; Procedures Library</td><td>Documented organizational policies mapped to security control families</td><td class="dot-no">—</td><td class="dot-yes">✓</td><td class="dot-yes">✓</td></tr>
+        <tr><td>Security Awareness Training Records</td><td>Evidence that all personnel completed required security training</td><td class="dot-no">—</td><td class="dot-yes">✓</td><td class="dot-yes">✓</td></tr>
+        <tr><td>Incident Response Plan (IRP)</td><td>Documented procedures for detecting, responding to, and recovering from incidents</td><td class="dot-no">—</td><td class="dot-yes">✓</td><td class="dot-yes">✓</td></tr>
+        <tr><td>Configuration Baselines</td><td>Approved security configurations for all in-scope system components</td><td class="dot-no">—</td><td class="dot-yes">✓</td><td class="dot-yes">✓</td></tr>
+        <tr><td>Vulnerability Scan Results</td><td>Recent scan outputs with remediation status and timelines</td><td class="dot-no">—</td><td class="dot-yes">✓</td><td class="dot-yes">✓</td></tr>
+        <tr><td>Access Control Lists / User Inventory</td><td>List of authorized users, accounts, and access levels for in-scope systems</td><td class="dot-no">—</td><td class="dot-yes">✓</td><td class="dot-yes">✓</td></tr>
+        <tr><td>Audit Log Samples</td><td>Representative log samples demonstrating logging is operational and retained</td><td class="dot-no">—</td><td class="dot-yes">✓</td><td class="dot-yes">✓</td></tr>
+        <tr><td>CMMC eMASS Record</td><td>Government system record for Level 3 DIBCAC assessment results</td><td class="dot-no">—</td><td class="dot-no">—</td><td class="dot-yes">✓</td></tr>
+        <tr><td>Penetration Test Results</td><td>Evidence of adversarial testing against in-scope systems (SP 800-172 requirement)</td><td class="dot-no">—</td><td class="dot-no">—</td><td class="dot-yes">✓</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ════════════════ CHECKLIST ════════════════ -->
+<div id="checklist" class="page-section">
+  <div class="section-header">
+    <div class="section-icon icon-green">✅</div>
+    <div>
+      <div class="section-title">Master Audit Checklist</div>
+      <div class="section-sub">Click items to mark complete · Progress tracked automatically</div>
+    </div>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span>Checklist Progress</span>
+      <span id="progressText">0 / 20 completed</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+  </div>
+
+  <button class="reset-btn" onclick="resetChecklist()">↺ Reset All</button>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('cl', 'all', this)">All Items</button>
+    <button class="tab" onclick="switchTab('cl', 'pre', this)">Pre-Assessment</button>
+    <button class="tab" onclick="switchTab('cl', 'assess', this)">Assessment</button>
+    <button class="tab" onclick="switchTab('cl', 'post', this)">Post-Assessment</button>
+  </div>
+
+  <div id="cl-all" class="tab-panel active">
+    <div class="checklist" id="masterChecklist"></div>
+  </div>
+  <div id="cl-pre" class="tab-panel">
+    <div class="checklist" id="preChecklist"></div>
+  </div>
+  <div id="cl-assess" class="tab-panel">
+    <div class="checklist" id="assessChecklist"></div>
+  </div>
+  <div id="cl-post" class="tab-panel">
+    <div class="checklist" id="postChecklist"></div>
+  </div>
+</div>
+
+</div><!-- end .main -->
+
+<script>
+// ─── THEME ───────────────────────────────────────────
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.getElementById('theme-icon').textContent = isDark ? '🌙' : '☀️';
+  document.getElementById('theme-label').textContent = isDark ? 'Dark Mode' : 'Light Mode';
+}
+
+// ─── NAVIGATION ──────────────────────────────────────
+function showSection(id, btn) {
+  document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (btn) {
+    document.querySelectorAll('.nav-pill').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+  } else {
+    document.querySelectorAll('.nav-pill').forEach(p => p.classList.remove('active'));
+    // find matching pill
+    document.querySelectorAll('.nav-pill').forEach(p => {
+      if (p.getAttribute('onclick') && p.getAttribute('onclick').includes(`'${id}'`)) p.classList.add('active');
+    });
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ─── TABS ────────────────────────────────────────────
+function switchTab(prefix, panel, btn) {
+  document.querySelectorAll(`[id^="${prefix}-"]`).forEach(p => p.classList.remove('active'));
+  document.getElementById(`${prefix}-${panel}`).classList.add('active');
+  if (btn) {
+    btn.closest('.tabs').querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+  }
+}
+
+// ─── REQ CARD TOGGLE ─────────────────────────────────
+function toggleReq(card) {
+  card.classList.toggle('open');
+}
+
+// ─── FAR 52.204-21 DATA ──────────────────────────────
+const farRequirements = [
+  { id: 'FAR-01', title: 'Limit System Access to Authorized Users', desc: 'Limit information system access to authorized users, processes acting on behalf of authorized users, and devices.', detail: 'Implement user account controls, disable shared accounts, remove inactive accounts, and maintain an authorized user list. Evidence: user inventory, access control policy, account management procedures.' },
+  { id: 'FAR-02', title: 'Limit Access to Authorized Transactions & Functions', desc: 'Limit information system access to the types of transactions and functions that authorized users are permitted to execute.', detail: 'Apply least privilege: users should only have access required for their job role. Implement role-based access controls (RBAC). Evidence: role definitions, access request records.' },
+  { id: 'FAR-03', title: 'Control External System Connections', desc: 'Verify and control/limit connections to external information systems.', detail: 'Document all connections to external systems. Use boundary protection devices (firewalls, proxies). Establish and enforce terms of use for external systems. Evidence: interconnection agreements, firewall rules.' },
+  { id: 'FAR-04', title: 'Control CUI Posted to Public Websites', desc: 'Control information posted or processed on publicly accessible information systems.', detail: 'Establish and enforce policies prohibiting posting FCI to public websites without authorization. Designate individuals authorized to post. Conduct periodic reviews of public-facing content. Evidence: content review logs, policies.' },
+  { id: 'FAR-05', title: 'Identify & Authenticate Users', desc: 'Identify information system users, processes acting on behalf of users, and devices.', detail: 'All users and devices must have unique identifiers. No anonymous or shared accounts for accessing systems with FCI. Evidence: user directory, device inventory, unique account documentation.' },
+  { id: 'FAR-06', title: 'Authenticate Users, Processes & Devices', desc: 'Authenticate (or verify) the identities of those users, processes, or devices as a prerequisite to allowing access.', detail: 'Implement password authentication at minimum. Passwords must meet complexity requirements. Privileged accounts and remote access should use stronger authentication. Evidence: authentication policy, password configuration screenshots.' },
+  { id: 'FAR-07', title: 'Sanitize or Destroy Media Before Reuse/Disposal', desc: 'Sanitize or destroy information system media before disposal or reuse.', detail: 'Before disposing of or repurposing media (hard drives, USB drives, optical media), sanitize using NIST SP 800-88 methods. Document sanitization actions. Evidence: media sanitization records, destruction certificates.' },
+  { id: 'FAR-08', title: 'Limit Physical Access to Authorized Individuals', desc: 'Limit physical access to organizational information systems to authorized individuals.', detail: 'Control physical access to facilities housing FCI systems. Use locks, badges, visitor logs. Review access lists periodically. Evidence: access control logs, visitor records, physical security policy.' },
+  { id: 'FAR-09', title: 'Escort Visitors & Monitor Activity', desc: 'Escort visitors and monitor visitor activity.', detail: 'Visitors must be escorted and monitored while in areas containing FCI systems. Maintain visitor logs. Brief personnel on visitor escort responsibilities. Evidence: visitor log samples, escort policy.' },
+  { id: 'FAR-10', title: 'Maintain Audit Logs of Physical Access', desc: 'Maintain audit logs of physical access.', detail: 'Keep records of all physical access to facilities. Logs should capture who accessed, when, and for what purpose. Retain logs per policy (typically 3 years). Evidence: access log samples, retention policy.' },
+  { id: 'FAR-11', title: 'Control Physical Access to Systems', desc: 'Control and manage physical access devices.', detail: 'Manage keys, badges, and other access devices. Maintain inventory of access devices. Revoke access for terminated employees promptly. Conduct periodic access reviews. Evidence: access device inventory, termination checklist.' },
+  { id: 'FAR-12', title: 'Monitor, Control & Protect Communications', desc: 'Monitor, control, and protect organizational communications at the external boundaries and key internal boundaries.', detail: 'Implement boundary protection (firewalls, IDS/IPS). Monitor network traffic. Deny-by-default at boundaries. Implement DMZs where appropriate. Evidence: firewall configurations, network diagrams, monitoring policy.' },
+  { id: 'FAR-13', title: 'Implement Subnetworks for Accessible System Components', desc: 'Implement subnetworks for publicly accessible system components that are physically or logically separated from internal networks.', detail: 'Segregate public-facing servers (web, email) from internal FCI systems using DMZs or VLANs. Prevent direct traffic between public zones and internal CUI/FCI zones. Evidence: network diagram, VLAN/firewall configuration.' },
+  { id: 'FAR-14', title: 'Identify, Report & Correct Information System Flaws', desc: 'Identify, report, and correct information system flaws in a timely manner.', detail: 'Establish a vulnerability management process. Apply patches within defined timelines. Track known vulnerabilities. Evidence: patch management policy, vulnerability scan results, patch history.' },
+  { id: 'FAR-15', title: 'Provide Malicious Code Protection', desc: 'Provide protection from malicious code at appropriate locations within organizational information systems.', detail: 'Deploy anti-malware/antivirus on all endpoints and servers. Keep signatures current. Enable real-time scanning. Configure automatic updates. Evidence: AV deployment records, scan logs, policy.' }
+];
+
+function renderFAR() {
+  const grid = document.getElementById('farGrid');
+  grid.innerHTML = farRequirements.map(r => `
+    <div class="req-card" onclick="toggleReq(this)">
+      <div class="req-id">${r.id} · FAR 52.204-21</div>
+      <h4>${r.title}</h4>
+      <p>${r.desc}</p>
+      <div class="req-expanded"><strong>Implementation Guidance:</strong><br><br>${r.detail}</div>
+    </div>
+  `).join('');
+}
+
+// ─── SP 800-172 DATA ─────────────────────────────────
+const sp172Reqs = [
+  { id: 'AC.L3', title: 'Employ Dynamic Access Control', desc: 'Use attribute-based or policy-based access control supporting dynamic rule changes in response to detected threats.' },
+  { id: 'AT.L3', title: 'Advanced Threat Awareness Training', desc: 'Provide security awareness training on identifying and reporting potential indicators of APT activity.' },
+  { id: 'CA.L3', title: 'Conduct Adversarial Testing', desc: 'Conduct penetration testing of organizational systems periodically, employing specialized expertise and attack methods.' },
+  { id: 'CM.L3', title: 'Detect & Respond to Unauthorized Changes', desc: 'Employ automated mechanisms to detect unauthorized changes and alert responsible personnel.' },
+  { id: 'IA.L3', title: 'Employ Replay-Resistant Authentication', desc: 'Employ replay-resistant authentication mechanisms for network access to privileged and non-privileged accounts.' },
+  { id: 'IR.L3', title: 'Establish Cyber Hunting Capability', desc: 'Develop a cyber hunting capability to search for indicators of compromise using a proactive approach.' },
+  { id: 'PS.L3', title: 'Employ Advanced Personnel Security', desc: 'Apply additional personnel security controls including advanced vetting for privileged users.' },
+  { id: 'RA.L3', title: 'Employ Threat Intelligence', desc: 'Employ threat intelligence, at a minimum from open or commercial sources, and any DoD-provided threat intelligence.' },
+  { id: 'SC.L3', title: 'Implement Deception Technologies', desc: 'Employ deception technologies and techniques to identify and understand attacker TTPs.' },
+  { id: 'SI.L3', title: 'Employ Advanced Malware Protection', desc: 'Use advanced malware protection tools including behavioral analysis, sandboxing, and machine learning-based detection.' },
+];
+
+function renderSP172() {
+  const grid = document.getElementById('sp172Grid');
+  grid.innerHTML = sp172Reqs.map(r => `
+    <div class="req-card" onclick="toggleReq(this)">
+      <div class="req-id">${r.id} · SP 800-172</div>
+      <h4>${r.title}</h4>
+      <p>${r.desc}</p>
+      <div class="req-expanded">This enhanced requirement addresses Advanced Persistent Threat (APT) vectors. It builds on the Level 2 baseline and requires more sophisticated, proactive security capabilities. Evidence for this control will be rigorously examined during the DIBCAC assessment.</div>
+    </div>
+  `).join('');
+}
+
+// ─── DIBCAC METHODS ──────────────────────────────────
+const dibcacMethods = [
+  { domain: 'EXAMINE', count: 'Document Review', items: [
+    { ref: 'Method 1', title: 'SSP Review', text: 'Assessors review the full System Security Plan for completeness, accuracy, and alignment with actual system configurations.' },
+    { ref: 'Method 2', title: 'Policy & Procedure Review', text: 'All security policies and procedures are evaluated for coverage of required control families and operational applicability.' },
+    { ref: 'Method 3', title: 'Plan of Action & Milestones', text: 'Open POA&M items are reviewed for legitimacy, milestone credibility, and closure timeline adherence.' },
+    { ref: 'Method 4', title: 'Audit Logs & Records', text: 'Sample audit logs are reviewed to confirm logging is operational, complete, and retained per policy.' },
+    { ref: 'Method 5', title: 'Training Records', text: 'Training completion records are verified for all personnel with access to in-scope systems.' }
+  ]},
+  { domain: 'INTERVIEW', count: 'Personnel Interviews', items: [
+    { ref: 'Method 6', title: 'System Owner Interview', text: 'The system owner is interviewed regarding their understanding of system boundaries, data flows, and control responsibilities.' },
+    { ref: 'Method 7', title: 'ISSO/Security Staff Interview', text: 'Security personnel are questioned on implementation details, incident procedures, and operational control effectiveness.' },
+    { ref: 'Method 8', title: 'IT Staff Interview', text: 'Technical staff are asked to demonstrate knowledge of configurations, patch processes, and access management procedures.' },
+    { ref: 'Method 9', title: 'HR Personnel Interview', text: 'HR staff are queried on personnel security processes: background checks, onboarding, and termination procedures.' },
+    { ref: 'Method 10', title: 'Senior Management Interview', text: 'Leadership is questioned on program oversight, resource commitment, and awareness of CMMC affirmation obligations.' }
+  ]},
+  { domain: 'TEST', count: 'Technical Testing', items: [
+    { ref: 'Method 11', title: 'Access Control Testing', text: 'Assessors verify that access controls function as documented: privilege enforcement, account lockout, and MFA operation.' },
+    { ref: 'Method 12', title: 'Configuration Review', text: 'System configurations are compared against approved baselines and CIS/DISA STIGs as applicable.' },
+    { ref: 'Method 13', title: 'Network Boundary Testing', text: 'Firewall rules, network segmentation, and traffic filtering are verified through technical inspection.' },
+    { ref: 'Method 14', title: 'Encryption Verification', text: 'Data in transit and at rest encryption is validated for all in-scope CUI storage and transmission paths.' },
+    { ref: 'Method 15', title: 'Audit Functionality Testing', text: 'Assessors verify audit systems are generating, storing, and protecting logs correctly by testing various events.' }
+  ]}
+];
+
+function renderDIBCACMethods() {
+  const grid = document.getElementById('dibcacMethodsGrid');
+  grid.innerHTML = dibcacMethods.map(domain => `
+    <div class="dibcac-domain open">
+      <div class="dibcac-domain-header" onclick="toggleDomain(this)">
+        <span class="domain-num">${domain.domain}</span>
+        <span class="domain-title">${domain.count}</span>
+        <span class="domain-count">${domain.items.length} methods</span>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="dibcac-items">
+        ${domain.items.map(i => `
+          <div class="dibcac-item">
+            <span class="item-ref">${i.ref}</span>
+            <span class="item-text"><strong>${i.title}</strong>${i.text}</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+// ─── DIBCAC ARTIFACTS ────────────────────────────────
+const dibcacArtifacts = [
+  { domain: 'TIER 1 — MANDATORY (Submit Before Assessment)', count: '7 artifacts', items: [
+    { ref: 'A-01', title: 'System Security Plan (SSP)', text: 'Current, complete SSP covering all 134 requirements (110 L2 + 24 L3). Must include system boundary, data flows, control implementation statements, and responsible parties.' },
+    { ref: 'A-02', title: 'Network Topology Diagram', text: 'Current diagram showing all hardware, connections, CUI data flows, boundary devices, external connections, and any cloud services.' },
+    { ref: 'A-03', title: 'CUI Data Flow Diagram', text: 'Detailed data flow showing how CUI enters the environment, where it is processed and stored, and how it exits or is destroyed.' },
+    { ref: 'A-04', title: 'System Component Inventory', text: 'Complete inventory of all hardware, software, and services within the assessment boundary.' },
+    { ref: 'A-05', title: 'SPRS Level 2 Final Score Record', text: 'Screenshot or printout showing active Level 2 Final status in SPRS. Level 2 Final is a hard prerequisite for Level 3.' },
+    { ref: 'A-06', title: 'Current POA&M (if applicable)', text: 'If any items remain open from Level 2, the POA&M must show closure status. All L2 items must be closed before L3 assessment.' },
+    { ref: 'A-07', title: 'Policies & Procedures Index', text: 'Organized library of all security policies and procedures, mapped to control families. Must demonstrate currency (reviewed within past year).' }
+  ]},
+  { domain: 'TIER 2 — SUPPORTING EVIDENCE', count: '9 artifacts', items: [
+    { ref: 'A-08', title: 'Security Awareness Training Records', text: 'Completion records for all personnel. Records must show completion date, training content, and acknowledgment of receipt.' },
+    { ref: 'A-09', title: 'Access Control Lists / User Inventory', text: 'List of all authorized accounts including account type, privileges, and associated user. Should cover OS, application, and network device accounts.' },
+    { ref: 'A-10', title: 'Vulnerability Scan Results', text: 'Most recent scan results (within 90 days) with remediation status. Both authenticated and unauthenticated scans preferred.' },
+    { ref: 'A-11', title: 'Patch Management Records', text: 'Evidence of active patch management including patching timelines, patch status dashboard, and exception handling records.' },
+    { ref: 'A-12', title: 'Configuration Baselines', text: 'Approved secure configuration baselines for all system component types. Alignment with CIS Benchmarks or DISA STIGs is preferred.' },
+    { ref: 'A-13', title: 'Incident Response Plan + Test Records', text: 'IRP with evidence of testing (tabletop or full exercise). Test reports should include findings and after-action items.' },
+    { ref: 'A-14', title: 'Audit Log Samples', text: 'Representative samples showing audit logs are operational, capturing required events, and being retained per policy.' },
+    { ref: 'A-15', title: 'Penetration Test Results (SP 800-172)', text: 'Required for L3: results from an adversarial penetration test conducted within the past year by qualified personnel.' },
+    { ref: 'A-16', title: 'Risk Assessment Results', text: 'Current risk assessment documenting identified threats, vulnerabilities, likelihood, impact, and risk treatment decisions.' }
+  ]}
+];
+
+function renderDIBCACArtifacts() {
+  const grid = document.getElementById('dibcacArtifactsGrid');
+  grid.innerHTML = dibcacArtifacts.map(domain => `
+    <div class="dibcac-domain open">
+      <div class="dibcac-domain-header" onclick="toggleDomain(this)">
+        <span class="domain-num">${domain.domain}</span>
+        <span class="domain-title"></span>
+        <span class="domain-count">${domain.count}</span>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="dibcac-items">
+        ${domain.items.map(i => `
+          <div class="dibcac-item">
+            <span class="item-ref">${i.ref}</span>
+            <span class="item-text"><strong>${i.title}</strong>${i.text}</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+// ─── DIBCAC PEOPLE ───────────────────────────────────
+const dibcacPeople = [
+  { domain: 'CONTRACTOR ROLES', count: '5 roles', items: [
+    { ref: 'Affirming Official', title: 'Senior Management', text: 'Must be at the senior management level (CEO, CISO, SVP, or equivalent). Signs the annual affirmation. Accountable for the organization\'s declared CMMC status. Not a technical role.' },
+    { ref: 'System Owner', title: 'Accountability Lead', text: 'Owns the information system and is accountable for its operation and protection. Primary liaison with the DIBCAC assessment team.' },
+    { ref: 'ISSO/Security Lead', title: 'Technical Authority', text: 'The Information System Security Officer leads technical implementation and serves as primary technical contact during interviews and testing.' },
+    { ref: 'Control Owners', title: 'Domain Experts', text: 'Individual staff responsible for specific control families (IT, HR, Facilities, Legal). Must be available for interview during the assessment.' },
+    { ref: 'Contract Admin', title: 'Contracting Interface', text: 'Manages SPRS entries, affirmation submissions, and communicates with the contracting officer on CMMC status changes.' }
+  ]},
+  { domain: 'GOVERNMENT ROLES', count: '4 roles', items: [
+    { ref: 'DIBCAC Lead Assessor', title: 'DCMA/DIBCAC', text: 'Government employee leading the assessment team. Makes final scoring determinations and signs the official assessment report.' },
+    { ref: 'DIBCAC Assessors', title: 'Technical Evaluators', text: 'Government technical staff conducting document review, interviews, and technical testing for specific control families.' },
+    { ref: 'Contracting Officer (CO)', title: 'Contract Authority', text: 'The CO receives notification of assessment results and makes contract eligibility determinations based on CMMC status. Accessible throughout the process.' },
+    { ref: 'CMMC PMO', title: 'DoD Program Office', text: 'The DoD CMMC Program Management Office oversees the entire CMMC program, maintains the eMASS system, and issues policy updates.' }
+  ]}
+];
+
+function renderDIBCACPeople() {
+  const grid = document.getElementById('dibcacPeopleGrid');
+  grid.innerHTML = dibcacPeople.map(domain => `
+    <div class="dibcac-domain open">
+      <div class="dibcac-domain-header" onclick="toggleDomain(this)">
+        <span class="domain-num">${domain.domain}</span>
+        <span class="domain-title"></span>
+        <span class="domain-count">${domain.count}</span>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="dibcac-items">
+        ${domain.items.map(i => `
+          <div class="dibcac-item">
+            <span class="item-ref">${i.ref}</span>
+            <span class="item-text"><strong>${i.title}</strong>${i.text}</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleDomain(header) {
+  header.closest('.dibcac-domain').classList.toggle('open');
+}
+
+// ─── CHECKLIST ───────────────────────────────────────
+const checklistItems = [
+  { id:'c1', phase:'pre', label:'Determine CMMC Level from contract/solicitation', detail:'Review the contract, DFARS clauses, and any flowdown requirements. Confirm FCI vs CUI determination.' },
+  { id:'c2', phase:'pre', label:'Identify all subcontractors requiring CMMC', detail:'Determine which subcontractors handle FCI/CUI and what level they must achieve.' },
+  { id:'c3', phase:'pre', label:'Define and document the assessment boundary', detail:'Create or update network diagrams and data flow diagrams. Confirm all in-scope components.' },
+  { id:'c4', phase:'pre', label:'Build or update the System Security Plan (SSP)', detail:'SSP must describe all controls, their implementation status, responsible parties, and system interconnections.' },
+  { id:'c5', phase:'pre', label:'Conduct gap analysis against required controls', detail:'L1: 15 FAR controls. L2: 110 NIST SP 800-171 controls. L3: +24 NIST SP 800-172 controls.' },
+  { id:'c6', phase:'pre', label:'Remediate all identified gaps', detail:'L1: all gaps must be closed before claiming compliance. L2/L3: use POA&M for allowable open items.' },
+  { id:'c7', phase:'pre', label:'Create POA&M for remaining gaps (L2/L3 only)', detail:'Document each unmet control, remediation plan, milestones, resources, and responsible party.' },
+  { id:'c8', phase:'pre', label:'Assemble complete evidence package', detail:'Policies, procedures, training records, scan results, network diagrams, access lists, audit logs.' },
+  { id:'c9', phase:'pre', label:'Confirm Level 2 Final in SPRS before L3 pursuit', detail:'Level 3 cannot begin without Level 2 Final status on record in SPRS.' },
+  { id:'c10', phase:'assess', label:'Complete required assessment type for your level', detail:'L1: self-assessment. L2: self or C3PAO. L3: DIBCAC government assessment.' },
+  { id:'c11', phase:'assess', label:'Designate POC and Technical POC for assessment team', detail:'Provide assessors with a primary point of contact and a technical subject matter expert.' },
+  { id:'c12', phase:'assess', label:'Support document review phase', detail:'Provide all requested documentation promptly. Respond to RFIs within stated timelines.' },
+  { id:'c13', phase:'assess', label:'Prepare personnel for interviews', detail:'Brief all personnel likely to be interviewed. They should understand controls relevant to their role.' },
+  { id:'c14', phase:'assess', label:'Support technical testing phase', detail:'Provide access to systems, configurations, and logs as requested by assessors.' },
+  { id:'c15', phase:'assess', label:'Review draft findings and submit clarifications', detail:'Review the draft assessment report. Provide factual corrections and additional evidence for disputed findings.' },
+  { id:'c16', phase:'post', label:'Submit assessment score to SPRS', detail:'For self-assessments: contractor submits. For C3PAO/DIBCAC: assessor submits. Verify accuracy.' },
+  { id:'c17', phase:'post', label:'Close all POA&M items within 180 days (L2/L3)', detail:'Track milestones actively. Update SPRS score as items close. Notify assessor of material closures.' },
+  { id:'c18', phase:'post', label:'Have senior official submit annual affirmation', detail:'The affirming official must be senior management with accountability. This carries False Claims Act exposure.' },
+  { id:'c19', phase:'post', label:'Establish continuous monitoring program', detail:'Monitor controls on an ongoing basis. Update SSP when system changes occur. Conduct periodic internal reviews.' },
+  { id:'c20', phase:'post', label:'Schedule re-assessment before certification expiration', detail:'C3PAO certs: 3-year renewal. DIBCAC: 3-year cycle. Begin preparation at least 6 months before expiration.' }
+];
+
+let checkState = {};
+checklistItems.forEach(i => checkState[i.id] = false);
+
+function renderChecklist() {
+  const all = document.getElementById('masterChecklist');
+  const pre = document.getElementById('preChecklist');
+  const assess = document.getElementById('assessChecklist');
+  const post = document.getElementById('postChecklist');
+
+  const makeItem = (item) => `
+    <div class="check-item ${checkState[item.id] ? 'checked' : ''}" id="chk-${item.id}" onclick="toggleCheck('${item.id}')">
+      <div class="check-box"></div>
+      <div>
+        <div class="check-label">${item.label}</div>
+        <div class="check-detail">${item.detail}</div>
+      </div>
+    </div>
+  `;
+
+  all.innerHTML = checklistItems.map(makeItem).join('');
+  pre.innerHTML = checklistItems.filter(i=>i.phase==='pre').map(makeItem).join('');
+  assess.innerHTML = checklistItems.filter(i=>i.phase==='assess').map(makeItem).join('');
+  post.innerHTML = checklistItems.filter(i=>i.phase==='post').map(makeItem).join('');
+  updateProgress();
+}
+
+function toggleCheck(id) {
+  checkState[id] = !checkState[id];
+  document.querySelectorAll(`#chk-${id}`).forEach(el => {
+    el.classList.toggle('checked', checkState[id]);
+  });
+  updateProgress();
+}
+
+function updateProgress() {
+  const total = checklistItems.length;
+  const done = Object.values(checkState).filter(Boolean).length;
+  document.getElementById('progressText').textContent = `${done} / ${total} completed`;
+  document.getElementById('progressFill').style.width = `${(done/total)*100}%`;
+}
+
+function resetChecklist() {
+  checklistItems.forEach(i => checkState[i.id] = false);
+  renderChecklist();
+}
+
+// ─── INIT ─────────────────────────────────────────────
+renderFAR();
+renderSP172();
+renderDIBCACMethods();
+renderDIBCACArtifacts();
+renderDIBCACPeople();
+renderChecklist();
+</script>
+</body>
+</html>
