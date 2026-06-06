@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FFSI — CMMC Ecosystem & Workforce Planning Exercise</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Mulish:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* ═══════════════════════════════════════════════
+   CSS VARIABLES
+═══════════════════════════════════════════════ */
+:root {
+  --navy:        #0d2137;
+  --navy-mid:    #163352;
+  --teal:        #0e6e71;
+  --teal-mid:    #128a8e;
+  --teal-light:  #e0f5f5;
+  --teal-pale:   #f0fbfb;
+  --gold:        #c47f17;
+  --gold-light:  #fef3d0;
+  --red:         #b91c1c;
+  --red-light:   #fef2f2;
+  --green:       #166534;
+  --green-light: #dcfce7;
+  --purple:      #5b21b6;
+  --purple-light:#ede9fe;
+  --gray-900:    #111827;
+  --gray-700:    #374151;
+  --gray-500:    #6b7280;
+  --gray-300:    #d1d5db;
+  --gray-100:    #f3f4f6;
+  --white:       #ffffff;
+
+  --bg:          #fafbfc;
+  --bg-card:     var(--white);
+  --bg-alt:      var(--gray-100);
+  --text:        var(--gray-900);
+  --text-muted:  var(--gray-500);
+  --border:      var(--gray-300);
+  --accent:      var(--teal);
+  --accent-mid:  var(--teal-mid);
+  --header-bg:   var(--navy);
+
+  --serif:  'Playfair Display', Georgia, serif;
+  --sans:   'Mulish', system-ui, sans-serif;
+  --mono:   'JetBrains Mono', monospace;
+  --radius: 10px;
+  --shadow: 0 1px 4px rgba(0,0,0,.07), 0 4px 14px rgba(0,0,0,.05);
+  --shadow-md: 0 4px 20px rgba(0,0,0,.1);
+}
+
+[data-theme="dark"] {
+  --bg:          #0b1520;
+  --bg-card:     #111e2b;
+  --bg-alt:      #0d1a26;
+  --text:        #c8dae8;
+  --text-muted:  #5e8099;
+  --border:      #1e3349;
+  --accent:      #1aacb0;
+  --accent-mid:  #22c4c8;
+  --header-bg:   #060e17;
+  --teal-light:  #062628;
+  --teal-pale:   #04181a;
+  --gold-light:  #1f1500;
+  --red-light:   #1a0707;
+  --green-light: #052210;
+  --purple-light:#160d30;
+  --gray-100:    #0d1a26;
+}
+
+/* ═══════════════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:var(--sans);
+  background:var(--bg);
+  color:var(--text);
+  font-size:15px;
+  line-height:1.7;
+  transition:background .25s,color .25s;
+}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:var(--bg-alt);}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+
+/* ═══════════════════════════════════════════════
+   TOP BAR
+═══════════════════════════════════════════════ */
+.top-bar{
+  position:sticky;top:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.65rem 2rem;
+  background:var(--bg-card);
+  border-bottom:1px solid var(--border);
+  box-shadow:0 1px 8px rgba(0,0,0,.06);
+  gap:.75rem;flex-wrap:wrap;
+}
+.tb-left{display:flex;align-items:center;gap:.65rem;}
+.tb-chip{
+  background:var(--teal);color:#fff;
+  font-family:var(--mono);font-size:.68rem;font-weight:500;
+  padding:.2rem .55rem;border-radius:5px;letter-spacing:.08em;
+}
+.tb-title{font-size:.8rem;font-weight:700;color:var(--text-muted);}
+.tb-right{display:flex;gap:.4rem;align-items:center;}
+
+.btn{
+  display:inline-flex;align-items:center;gap:.35rem;
+  padding:.35rem .8rem;border-radius:7px;
+  border:1px solid var(--border);
+  background:var(--bg-card);color:var(--text);
+  font-family:var(--sans);font-size:.75rem;font-weight:700;
+  cursor:pointer;transition:all .18s;white-space:nowrap;
+  letter-spacing:.01em;
+}
+.btn:hover{border-color:var(--accent);color:var(--accent);}
+.btn-accent{background:var(--teal);color:#fff;border-color:var(--teal);}
+.btn-accent:hover{background:var(--teal-mid);border-color:var(--teal-mid);color:#fff;}
+.btn-ghost{background:transparent;}
+
+/* ═══════════════════════════════════════════════
+   PROGRESS NAV
+═══════════════════════════════════════════════ */
+.progress-nav{
+  background:var(--bg-card);border-bottom:1px solid var(--border);
+  padding:.5rem 2rem;
+  display:flex;gap:.3rem;overflow-x:auto;
+  scrollbar-width:none;
+}
+.progress-nav::-webkit-scrollbar{display:none;}
+.pnav-btn{
+  padding:.3rem .7rem;border-radius:5px;
+  border:1px solid transparent;
+  background:none;color:var(--text-muted);
+  font-family:var(--sans);font-size:.72rem;font-weight:700;
+  cursor:pointer;transition:all .15s;white-space:nowrap;
+}
+.pnav-btn:hover{color:var(--accent);border-color:var(--accent);}
+.pnav-btn.active{background:var(--teal-light);color:var(--teal);border-color:var(--teal);}
+[data-theme="dark"] .pnav-btn.active{background:var(--teal-pale);}
+
+/* ═══════════════════════════════════════════════
+   PAGE WRAP & HEADER
+═══════════════════════════════════════════════ */
+.page{max-width:1020px;margin:0 auto;padding:2rem 1.75rem 5rem;}
+
+.hero{
+  background:var(--header-bg);
+  border-radius:var(--radius);
+  padding:2.25rem 2.5rem 2rem;
+  margin-bottom:2rem;
+  color:#fff;
+  position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';
+  position:absolute;top:0;right:0;bottom:0;width:35%;
+  background:repeating-linear-gradient(
+    -55deg,transparent,transparent 18px,
+    rgba(14,110,113,.15) 18px,rgba(14,110,113,.15) 19px
+  );pointer-events:none;
+}
+.hero::after{
+  content:'';
+  position:absolute;bottom:-60px;right:80px;
+  width:180px;height:180px;border-radius:50%;
+  background:rgba(14,110,113,.12);pointer-events:none;
+}
+.hero-kicker{
+  font-size:.65rem;font-weight:800;letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(255,255,255,.5);margin-bottom:.6rem;
+}
+.hero h1{
+  font-family:var(--serif);font-size:clamp(1.5rem,4vw,2.2rem);
+  line-height:1.12;margin-bottom:.5rem;font-style:italic;
+}
+.hero h1 em{font-style:normal;color:#4dd8dc;}
+.hero-sub{font-size:.88rem;color:rgba(255,255,255,.7);max-width:580px;margin-bottom:1.1rem;}
+.hero-chips{display:flex;gap:.45rem;flex-wrap:wrap;}
+.hchip{
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);
+  font-size:.63rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+  padding:.18rem .55rem;border-radius:4px;
+}
+
+/* ═══════════════════════════════════════════════
+   SECTION CHROME
+═══════════════════════════════════════════════ */
+.section{
+  margin-bottom:2.25rem;
+  scroll-margin-top:90px;
+}
+.sec-header{
+  display:flex;align-items:center;gap:.75rem;
+  margin-bottom:1.1rem;padding-bottom:.75rem;
+  border-bottom:2px solid var(--border);
+}
+.sec-num{
+  width:34px;height:34px;flex-shrink:0;
+  background:var(--teal);color:#fff;
+  border-radius:8px;display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:.8rem;font-weight:500;
+}
+.sec-title{font-family:var(--serif);font-size:1.15rem;font-weight:600;}
+.sec-pts{
+  margin-left:auto;font-size:.7rem;font-weight:800;
+  background:var(--teal-light);color:var(--teal);
+  border:1px solid var(--teal);
+  padding:.15rem .55rem;border-radius:5px;letter-spacing:.04em;
+  white-space:nowrap;
+}
+[data-theme="dark"] .sec-pts{background:var(--teal-pale);}
+
+/* ═══════════════════════════════════════════════
+   CARDS
+═══════════════════════════════════════════════ */
+.card{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:1.25rem;
+  box-shadow:var(--shadow);
+}
+.card+.card{margin-top:.75rem;}
+
+/* ═══════════════════════════════════════════════
+   GLOSSARY
+═══════════════════════════════════════════════ */
+.glossary-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:.6rem;
+}
+.gloss-card{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:.85rem 1rem;
+  border-top:3px solid var(--teal);
+  transition:box-shadow .2s,border-color .2s;
+}
+.gloss-card:hover{box-shadow:var(--shadow-md);}
+.gloss-term{
+  font-family:var(--mono);font-size:.7rem;font-weight:500;
+  color:var(--teal);letter-spacing:.05em;margin-bottom:.3rem;
+}
+.gloss-def{font-size:.78rem;color:var(--text-muted);line-height:1.5;}
+
+/* ═══════════════════════════════════════════════
+   CALLOUTS
+═══════════════════════════════════════════════ */
+.callout{
+  display:flex;gap:.65rem;align-items:flex-start;
+  border-radius:var(--radius);padding:.85rem 1rem;
+  font-size:.83rem;margin-bottom:1rem;
+}
+.callout-teal{background:var(--teal-light);border-left:4px solid var(--teal);}
+.callout-gold{background:var(--gold-light);border-left:4px solid var(--gold);}
+.callout-red {background:var(--red-light);border-left:4px solid var(--red);}
+[data-theme="dark"] .callout-teal{background:var(--teal-pale);}
+[data-theme="dark"] .callout-gold{background:#1a1000;}
+[data-theme="dark"] .callout-red{background:var(--red-light);}
+.callout-icon{font-size:1rem;flex-shrink:0;margin-top:.05rem;}
+
+/* ═══════════════════════════════════════════════
+   CHALLENGE CARDS
+═══════════════════════════════════════════════ */
+.challenge-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.7rem;}
+.challenge-card{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:1rem 1.1rem;
+  display:flex;gap:.75rem;align-items:flex-start;
+  border-left:4px solid var(--red);
+  transition:box-shadow .2s;
+}
+.challenge-card:hover{box-shadow:var(--shadow-md);}
+.challenge-icon{font-size:1.2rem;flex-shrink:0;margin-top:.05rem;}
+.challenge-title{font-weight:700;font-size:.87rem;margin-bottom:.2rem;}
+.challenge-desc{font-size:.78rem;color:var(--text-muted);line-height:1.5;}
+
+/* ═══════════════════════════════════════════════
+   PERSONNEL ANALYSIS
+═══════════════════════════════════════════════ */
+.person-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:.75rem;}
+.person-card{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:1rem;
+  transition:border-color .2s,box-shadow .2s;
+}
+.person-card:hover{border-color:var(--accent);box-shadow:var(--shadow);}
+.person-head{display:flex;align-items:flex-start;gap:.65rem;margin-bottom:.65rem;}
+.person-avatar{
+  width:36px;height:36px;flex-shrink:0;
+  border-radius:8px;background:var(--teal-light);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.9rem;border:1px solid var(--teal);
+}
+[data-theme="dark"] .person-avatar{background:var(--teal-pale);}
+.person-name{font-weight:700;font-size:.88rem;margin-bottom:.1rem;}
+.person-title{font-size:.73rem;color:var(--text-muted);}
+.person-dept{
+  font-size:.62rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--teal);margin-top:.2rem;
+}
+.role-assign-group{display:flex;flex-direction:column;gap:.35rem;}
+.role-label{font-size:.65rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);}
+.role-select{
+  width:100%;padding:.38rem .55rem;
+  border:1px solid var(--border);border-radius:6px;
+  background:var(--bg);color:var(--text);
+  font-family:var(--sans);font-size:.78rem;
+  cursor:pointer;transition:border-color .18s;
+}
+.role-select:focus{outline:none;border-color:var(--accent);}
+.justification-input{
+  width:100%;padding:.38rem .55rem;
+  border:1px solid var(--border);border-radius:6px;
+  background:var(--bg);color:var(--text);
+  font-family:var(--sans);font-size:.78rem;
+  resize:vertical;min-height:52px;line-height:1.5;
+  transition:border-color .18s;margin-top:.35rem;
+}
+.justification-input:focus{outline:none;border-color:var(--accent);}
+
+/* ═══════════════════════════════════════════════
+   ECOSYSTEM RESOURCE CARDS
+═══════════════════════════════════════════════ */
+.eco-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:.75rem;}
+.eco-card{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:1.1rem;
+  border-top:3px solid var(--border);
+  transition:all .2s;
+}
+.eco-card:hover{border-color:var(--accent);box-shadow:var(--shadow);}
+.eco-card-head{display:flex;align-items:center;gap:.6rem;margin-bottom:.65rem;}
+.eco-icon{font-size:1.1rem;}
+.eco-title{font-weight:700;font-size:.9rem;}
+.eco-type{
+  margin-left:auto;font-size:.62rem;font-weight:800;letter-spacing:.07em;
+  text-transform:uppercase;
+  background:var(--teal-light);color:var(--teal);
+  border:1px solid var(--teal);padding:.1rem .4rem;border-radius:4px;
+}
+[data-theme="dark"] .eco-type{background:var(--teal-pale);}
+.eco-desc{font-size:.78rem;color:var(--text-muted);line-height:1.5;margin-bottom:.75rem;}
+.eco-decision{display:flex;flex-direction:column;gap:.35rem;}
+.decision-row{display:flex;gap:.4rem;align-items:center;}
+.decision-label{font-size:.65rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);min-width:72px;}
+.radio-group{display:flex;gap:.35rem;flex-wrap:wrap;}
+.radio-opt{
+  padding:.25rem .55rem;border-radius:5px;
+  border:1px solid var(--border);background:var(--bg);
+  font-size:.72rem;font-weight:700;cursor:pointer;
+  transition:all .15s;font-family:var(--sans);color:var(--text);
+}
+.radio-opt:hover{border-color:var(--accent);}
+.radio-opt.sel-yes{background:var(--green-light);border-color:var(--green);color:var(--green);}
+.radio-opt.sel-no{background:var(--red-light);border-color:var(--red);color:var(--red);}
+.radio-opt.sel-maybe{background:var(--gold-light);border-color:var(--gold);color:var(--gold);}
+[data-theme="dark"] .radio-opt.sel-yes{background:#042210;}
+[data-theme="dark"] .radio-opt.sel-no{background:#1a0707;}
+[data-theme="dark"] .radio-opt.sel-maybe{background:#1a1000;}
+.eco-rationale{
+  width:100%;margin-top:.3rem;
+  padding:.35rem .55rem;border:1px solid var(--border);border-radius:6px;
+  background:var(--bg);color:var(--text);
+  font-family:var(--sans);font-size:.76rem;
+  resize:vertical;min-height:48px;line-height:1.5;
+  transition:border-color .18s;
+}
+.eco-rationale:focus{outline:none;border-color:var(--accent);}
+
+/* ═══════════════════════════════════════════════
+   TRAINING MATRIX
+═══════════════════════════════════════════════ */
+.train-table-wrap{overflow-x:auto;}
+.train-table{width:100%;border-collapse:collapse;font-size:.78rem;min-width:600px;}
+.train-table th{
+  background:var(--bg-alt);color:var(--text-muted);
+  font-size:.64rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;
+  padding:.55rem .75rem;text-align:left;border-bottom:2px solid var(--border);
+  white-space:nowrap;
+}
+.train-table td{padding:.5rem .75rem;border-bottom:1px solid var(--border);vertical-align:top;}
+.train-table tr:last-child td{border-bottom:none;}
+.train-table tr:hover td{background:var(--bg-alt);}
+.priority-sel{
+  padding:.28rem .45rem;border:1px solid var(--border);border-radius:5px;
+  background:var(--bg);color:var(--text);
+  font-family:var(--sans);font-size:.72rem;cursor:pointer;
+  transition:border-color .18s;
+}
+.priority-sel:focus{outline:none;border-color:var(--accent);}
+.p-immediate{background:var(--red-light);color:var(--red);border-color:var(--red);}
+.p-midterm{background:var(--gold-light);color:var(--gold);border-color:var(--gold);}
+.p-longterm{background:var(--teal-light);color:var(--teal);border-color:var(--teal);}
+[data-theme="dark"] .p-immediate{background:#1a0707;}
+[data-theme="dark"] .p-midterm{background:#1a1000;}
+[data-theme="dark"] .p-longterm{background:var(--teal-pale);}
+
+/* ═══════════════════════════════════════════════
+   DOCUMENTATION CHECKLIST
+═══════════════════════════════════════════════ */
+.doc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.6rem;}
+.doc-card{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:.9rem 1rem;
+  transition:border-color .2s;
+}
+.doc-card:hover{border-color:var(--accent);}
+.doc-name{font-weight:700;font-size:.85rem;margin-bottom:.5rem;}
+.doc-status-row{display:flex;gap:.3rem;margin-bottom:.4rem;}
+.doc-status-btn{
+  flex:1;padding:.28rem .3rem;text-align:center;
+  border-radius:5px;border:1px solid var(--border);background:var(--bg);
+  font-family:var(--sans);font-size:.67rem;font-weight:700;cursor:pointer;
+  transition:all .15s;color:var(--text);
+}
+.doc-status-btn:hover{border-color:var(--accent);}
+.ds-exists{background:var(--green-light);border-color:var(--green);color:var(--green);}
+.ds-update{background:var(--gold-light);border-color:var(--gold);color:var(--gold);}
+.ds-create{background:var(--red-light);border-color:var(--red);color:var(--red);}
+[data-theme="dark"] .ds-exists{background:#042210;}
+[data-theme="dark"] .ds-update{background:#1a1000;}
+[data-theme="dark"] .ds-create{background:#1a0707;}
+.doc-priority-input{
+  width:100%;padding:.3rem .5rem;border:1px solid var(--border);border-radius:5px;
+  background:var(--bg);color:var(--text);
+  font-family:var(--sans);font-size:.74rem;
+  transition:border-color .18s;
+}
+.doc-priority-input:focus{outline:none;border-color:var(--accent);}
+
+/* ═══════════════════════════════════════════════
+   WORKFORCE MATRIX
+═══════════════════════════════════════════════ */
+.wf-table-wrap{overflow-x:auto;}
+.wf-table{width:100%;border-collapse:collapse;font-size:.78rem;min-width:700px;}
+.wf-table th{
+  background:var(--navy);color:rgba(255,255,255,.85);
+  font-size:.62rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  padding:.55rem .75rem;text-align:left;border-bottom:2px solid var(--border);
+  white-space:nowrap;
+}
+[data-theme="dark"] .wf-table th{background:#040d14;}
+.wf-table td{padding:.55rem .75rem;border-bottom:1px solid var(--border);vertical-align:top;}
+.wf-table tr:last-child td{border-bottom:none;}
+.wf-table tr:hover td{background:var(--bg-alt);}
+.wf-req{font-weight:700;font-size:.82rem;color:var(--text);}
+.wf-check{
+  display:flex;align-items:center;justify-content:center;gap:.3rem;
+  cursor:pointer;
+}
+.wf-checkbox{
+  width:16px;height:16px;accent-color:var(--teal);cursor:pointer;
+  flex-shrink:0;
+}
+.wf-input{
+  width:100%;padding:.28rem .45rem;border:1px solid var(--border);border-radius:5px;
+  background:var(--bg);color:var(--text);
+  font-family:var(--sans);font-size:.73rem;
+  transition:border-color .18s;
+}
+.wf-input:focus{outline:none;border-color:var(--accent);}
+
+/* ═══════════════════════════════════════════════
+   EXEC RECOMMENDATION
+═══════════════════════════════════════════════ */
+.exec-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+@media(max-width:620px){.exec-grid{grid-template-columns:1fr;}}
+.exec-card{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:1.1rem;
+}
+.exec-card-title{
+  font-weight:700;font-size:.85rem;margin-bottom:.5rem;
+  display:flex;align-items:center;gap:.5rem;
+}
+.exec-icon{font-size:1rem;}
+.exec-textarea{
+  width:100%;padding:.45rem .6rem;
+  border:1px solid var(--border);border-radius:6px;
+  background:var(--bg);color:var(--text);
+  font-family:var(--sans);font-size:.8rem;
+  resize:vertical;min-height:70px;line-height:1.6;
+  transition:border-color .18s;
+}
+.exec-textarea:focus{outline:none;border-color:var(--accent);}
+.exec-full{grid-column:1/-1;}
+
+/* ═══════════════════════════════════════════════
+   SCORING RUBRIC
+═══════════════════════════════════════════════ */
+.rubric-block{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius);overflow:hidden;margin-bottom:1rem;
+}
+.rubric-cat-header{
+  display:grid;
+  grid-template-columns:1fr 70px 70px 70px 70px 90px 80px;
+  background:var(--bg-alt);border-bottom:2px solid var(--border);
+}
+.rch-cell{
+  padding:.5rem .7rem;
+  font-size:.62rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--text-muted);
+}
+.rubric-row{
+  display:grid;
+  grid-template-columns:1fr 70px 70px 70px 70px 90px 80px;
+  border-bottom:1px solid var(--border);align-items:start;
+}
+.rubric-row:last-child{border-bottom:none;}
+.rubric-row:hover{background:var(--bg-alt);}
+.rc-cell{padding:.6rem .7rem;font-size:.78rem;vertical-align:top;}
+.rc-cat{font-weight:700;font-size:.85rem;margin-bottom:.15rem;}
+.rc-sub{font-size:.72rem;color:var(--text-muted);}
+.rc-desc{font-size:.72rem;color:var(--text-muted);line-height:1.4;}
+.pts-pill{
+  display:inline-block;
+  font-size:.65rem;font-weight:800;letter-spacing:.05em;
+  padding:.12rem .45rem;border-radius:4px;
+  background:var(--teal-light);color:var(--teal);border:1px solid var(--teal);
+}
+[data-theme="dark"] .pts-pill{background:var(--teal-pale);}
+.score-input-sm{
+  width:52px;padding:.3rem .4rem;text-align:center;
+  border:1px solid var(--border);border-radius:5px;
+  background:var(--bg);color:var(--text);
+  font-family:var(--mono);font-size:.82rem;
+}
+.score-input-sm:focus{outline:none;border-color:var(--accent);}
+.rubric-total-row{
+  background:var(--teal-light);
+  display:grid;grid-template-columns:1fr 70px 70px 70px 70px 90px 80px;
+  align-items:center;
+}
+[data-theme="dark"] .rubric-total-row{background:var(--teal-pale);}
+@media(max-width:800px){
+  .rubric-cat-header,.rubric-row,.rubric-total-row{
+    grid-template-columns:1fr;display:block;
+  }
+  .rubric-cat-header{display:none;}
+  .rc-cell{padding:.4rem .7rem;}
+}
+
+/* ═══════════════════════════════════════════════
+   SCORE DASHBOARD
+═══════════════════════════════════════════════ */
+.score-dash{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-top:1rem;
+}
+@media(max-width:560px){.score-dash{grid-template-columns:1fr 1fr;}}
+.score-tile{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:.9rem;text-align:center;
+}
+.score-tile-val{
+  font-family:var(--serif);font-size:1.9rem;color:var(--teal);line-height:1;margin-bottom:.2rem;
+}
+.score-tile-label{font-size:.65rem;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:.07em;}
+.rating-pill{
+  display:inline-block;font-size:.85rem;font-weight:700;
+  padding:.3rem .9rem;border-radius:20px;border:2px solid;
+}
+.r-excellent{background:var(--green-light);color:var(--green);border-color:var(--green);}
+.r-proficient{background:var(--teal-light);color:var(--teal);border-color:var(--teal);}
+.r-developing{background:var(--gold-light);color:var(--gold);border-color:var(--gold);}
+.r-needs{background:var(--red-light);color:var(--red);border-color:var(--red);}
+[data-theme="dark"] .r-excellent{background:#042210;}
+[data-theme="dark"] .r-proficient{background:var(--teal-pale);}
+[data-theme="dark"] .r-developing{background:#1a1000;}
+[data-theme="dark"] .r-needs{background:#1a0707;}
+
+/* ═══════════════════════════════════════════════
+   TIMER
+═══════════════════════════════════════════════ */
+.timer-strip{
+  display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:.7rem 1rem;margin-bottom:1.75rem;
+}
+.timer-label{font-size:.7rem;font-weight:800;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase;}
+.timer-val{
+  font-family:var(--mono);font-size:1.2rem;font-weight:500;color:var(--teal);min-width:62px;
+}
+.timer-val.warn{color:var(--gold);}
+.timer-val.expired{color:var(--red);}
+.timer-btns{display:flex;gap:.35rem;}
+.timer-seg{
+  flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden;
+  margin-left:auto;max-width:200px;
+}
+.timer-seg-fill{height:100%;background:var(--teal);border-radius:3px;transition:width 1s linear;}
+
+/* ═══════════════════════════════════════════════
+   MISC
+═══════════════════════════════════════════════ */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+@media(max-width:620px){.grid-2{grid-template-columns:1fr;}}
+.hr{border:none;border-top:1px solid var(--border);margin:1.25rem 0;}
+.badge{display:inline-block;font-size:.63rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:.1rem .4rem;border-radius:4px;}
+.badge-teal{background:var(--teal-light);color:var(--teal);border:1px solid var(--teal);}
+.badge-gold{background:var(--gold-light);color:var(--gold);border:1px solid var(--gold);}
+.badge-red{background:var(--red-light);color:var(--red);border:1px solid var(--red);}
+[data-theme="dark"] .badge-teal{background:var(--teal-pale);}
+[data-theme="dark"] .badge-gold{background:#1a1000;}
+[data-theme="dark"] .badge-red{background:#1a0707;}
+.objectives-list{display:flex;flex-direction:column;gap:.5rem;}
+.obj-item{
+  display:flex;gap:.75rem;align-items:flex-start;
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:.75rem 1rem;
+}
+.obj-num{
+  width:24px;height:24px;flex-shrink:0;
+  background:var(--teal);color:#fff;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.68rem;font-weight:800;
+}
+.obj-text{font-size:.83rem;line-height:1.5;}
+
+@media print{
+  .top-bar,.progress-nav,.timer-strip,.tb-right,.btn{display:none!important;}
+  .section{break-inside:avoid;}
+  body{font-size:13px;}
+  .hero{background:#0d2137!important;-webkit-print-color-adjust:exact;}
+  .rubric-total-row{background:#e0f5f5!important;-webkit-print-color-adjust:exact;}
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div class="tb-left">
+    <div class="tb-chip">FFSI</div>
+    <div class="tb-title">CMMC Ecosystem &amp; Workforce Planning Exercise</div>
+  </div>
+  <div class="tb-right">
+    <button class="btn btn-ghost" id="themeBtn" onclick="toggleTheme()">🌙 Dark Mode</button>
+    <button class="btn" onclick="window.print()">🖨 Print</button>
+    <button class="btn" onclick="clearAll()">↺ Reset</button>
+    <button class="btn btn-accent" onclick="exportAll()">📤 Export</button>
+  </div>
+</div>
+
+<!-- PROGRESS NAV -->
+<div class="progress-nav">
+  <button class="pnav-btn active" onclick="navTo('intro',this)">Intro</button>
+  <button class="pnav-btn" onclick="navTo('objectives',this)">Objectives</button>
+  <button class="pnav-btn" onclick="navTo('terms',this)">Key Terms</button>
+  <button class="pnav-btn" onclick="navTo('challenges',this)">Challenges</button>
+  <button class="pnav-btn" onclick="navTo('personnel',this)">Personnel Analysis</button>
+  <button class="pnav-btn" onclick="navTo('ecosystem',this)">Ecosystem Planning</button>
+  <button class="pnav-btn" onclick="navTo('training',this)">Training Plan</button>
+  <button class="pnav-btn" onclick="navTo('docs',this)">Documentation</button>
+  <button class="pnav-btn" onclick="navTo('workforce',this)">Workforce Matrix</button>
+  <button class="pnav-btn" onclick="navTo('exec',this)">Exec Briefing</button>
+  <button class="pnav-btn" onclick="navTo('rubric',this)">Rubric</button>
+</div>
+
+<div class="page">
+
+<!-- HERO -->
+<div class="hero" id="intro">
+  <div class="hero-kicker">CMMC 2.0 Training Workshop · 30–45 Minute Exercise</div>
+  <h1>Building FFSI's CMMC Ecosystem:<br><em>Workforce, Certification &amp; Partner Strategy</em></h1>
+  <div class="hero-sub">Analyze Federal Food Services Inc.'s cybersecurity readiness, identify staffing gaps, and develop a strategic plan for achieving CMMC Level 2 certification using the full CMMC Ecosystem.</div>
+  <div class="hero-chips">
+    <span class="hchip">CMMC Level 2</span>
+    <span class="hchip">100 Points Total</span>
+    <span class="hchip">Team Exercise</span>
+    <span class="hchip">Decision-Oriented</span>
+    <span class="hchip">⚠ Fictional — Training Use Only</span>
+  </div>
+</div>
+
+<!-- TIMER -->
+<div class="timer-strip">
+  <span class="timer-label">⏱ Activity Timer</span>
+  <span class="timer-val" id="timerVal">45:00</span>
+  <div class="timer-btns">
+    <button class="btn" onclick="startTimer()">▶ Start</button>
+    <button class="btn" onclick="pauseTimer()">⏸ Pause</button>
+    <button class="btn" onclick="resetTimer()">↺ Reset</button>
+  </div>
+  <div class="timer-seg"><div class="timer-seg-fill" id="timerFill" style="width:100%"></div></div>
+</div>
+
+<!-- EXECUTIVE INTRO -->
+<div class="section">
+  <div class="sec-header">
+    <div class="sec-num">📋</div>
+    <div class="sec-title">Executive Introduction</div>
+  </div>
+  <div class="callout callout-teal">
+    <span class="callout-icon">🎯</span>
+    <div><strong>Why this exercise matters:</strong> Most mid-sized DIB contractors cannot achieve CMMC Level 2 certification using only internal resources. They must strategically combine internal staffing, certified professionals, training programs, managed service providers, and third-party assessors — the CMMC Ecosystem. Making the wrong choices wastes budget, delays certification, and creates compliance gaps that can cost contracts.</div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div style="font-weight:700;margin-bottom:.5rem;font-size:.9rem;">Why Outside Assistance Is Usually Required</div>
+      <ul style="font-size:.82rem;color:var(--text-muted);padding-left:1.1rem;line-height:1.8;">
+        <li>CMMC Level 2 requires 110 NIST SP 800-171 practices across 14 domains</li>
+        <li>Most contractors lack in-house CMMC expertise at the time of assessment</li>
+        <li>C3PAO assessors must be independent — contractors cannot self-assess at Level 2</li>
+        <li>Gaps in SSPs, POA&amp;Ms, and policies require specialized documentation skills</li>
+        <li>Ongoing managed security services support continuous compliance between assessments</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div style="font-weight:700;margin-bottom:.5rem;font-size:.9rem;">Why Internal Staffing &amp; Certifications Matter</div>
+      <ul style="font-size:.82rem;color:var(--text-muted);padding-left:1.1rem;line-height:1.8;">
+        <li>Assessors will interview internal staff — they must be knowledgeable and prepared</li>
+        <li>Certified CMMC Professionals (CCPs) provide credible internal compliance leadership</li>
+        <li>Registered Practitioners (RPs) can guide preparation without conducting assessments</li>
+        <li>Internal ownership of the SSP and POA&amp;M is required by DFARS 252.204-7020</li>
+        <li>Long-term compliance requires embedded staff, not just periodic consultants</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- LEARNING OBJECTIVES -->
+<div class="section" id="objectives">
+  <div class="sec-header">
+    <div class="sec-num">🎯</div>
+    <div class="sec-title">Learning Objectives</div>
+  </div>
+  <div class="objectives-list">
+    <div class="obj-item"><div class="obj-num">1</div><div class="obj-text">Identify the roles and functions of key CMMC Ecosystem entities — including OSA, RP, RPO, CCP, CCA, C3PAO, MSP, and MSSP — and explain how each supports a contractor's path to certification.</div></div>
+    <div class="obj-item"><div class="obj-num">2</div><div class="obj-text">Analyze an organization's existing personnel structure and determine appropriate CMMC role assignments, certification paths, and training priorities for key staff members.</div></div>
+    <div class="obj-item"><div class="obj-num">3</div><div class="obj-text">Evaluate a set of cybersecurity and compliance readiness challenges and develop a realistic workforce plan — including decisions to hire, train, certify, or outsource each capability.</div></div>
+    <div class="obj-item"><div class="obj-num">4</div><div class="obj-text">Design a training and certification roadmap with prioritized timelines (0–3, 3–6, and 6–12 months) aligned to assessment readiness milestones.</div></div>
+    <div class="obj-item"><div class="obj-num">5</div><div class="obj-text">Assess a set of CMMC-required documents and determine which exist, which need updates, and which must be created — prioritizing based on assessment impact.</div></div>
+    <div class="obj-item"><div class="obj-num">6</div><div class="obj-text">Distinguish between capabilities that should remain internal vs. those that should be outsourced, justifying each decision in terms of cost, risk, expertise, and long-term compliance sustainability.</div></div>
+    <div class="obj-item"><div class="obj-num">7</div><div class="obj-text">Synthesize findings into a concise executive briefing that addresses staffing gaps, certification priorities, ecosystem partner selection, and documentation priorities.</div></div>
+  </div>
+</div>
+
+<!-- KEY TERMS -->
+<div class="section" id="terms">
+  <div class="sec-header">
+    <div class="sec-num">📖</div>
+    <div class="sec-title">Key Terms</div>
+  </div>
+  <div class="glossary-grid" id="glossaryGrid"></div>
+</div>
+
+<!-- ORGANIZATIONAL CHALLENGES -->
+<div class="section" id="challenges">
+  <div class="sec-header">
+    <div class="sec-num">⚠️</div>
+    <div class="sec-title">FFSI Organizational Challenges</div>
+  </div>
+  <div class="callout callout-gold">
+    <span class="callout-icon">⚡</span>
+    <div><strong>Scenario:</strong> FFSI leadership has 12 months to achieve CMMC Level 2 certification or risk losing two major Army contracts totaling $171 million. Your consulting team has been retained to assess the organization's readiness and recommend a path forward. Review the challenges below before completing the activities.</div>
+  </div>
+  <div class="challenge-grid" id="challengeGrid"></div>
+</div>
+
+<!-- ACTIVITY 1: PERSONNEL ANALYSIS -->
+<div class="section" id="personnel">
+  <div class="sec-header">
+    <div class="sec-num">1</div>
+    <div class="sec-title">Activity 1 — Personnel Analysis</div>
+    <div class="sec-pts">20 pts</div>
+  </div>
+  <div class="callout callout-teal">
+    <span class="callout-icon">👥</span>
+    <div><strong>Instructions:</strong> Review each FFSI employee below. Assign the most appropriate CMMC role and provide a 1–2 sentence justification. Consider their existing responsibilities, technical skills, and access to CUI when making your decision.</div>
+  </div>
+  <div class="person-grid" id="personnelGrid"></div>
+</div>
+
+<!-- ACTIVITY 2: ECOSYSTEM RESOURCE PLANNING -->
+<div class="section" id="ecosystem">
+  <div class="sec-header">
+    <div class="sec-num">2</div>
+    <div class="sec-title">Activity 2 — Ecosystem Resource Planning</div>
+    <div class="sec-pts">20 pts</div>
+  </div>
+  <div class="callout callout-teal">
+    <span class="callout-icon">🌐</span>
+    <div><strong>Instructions:</strong> For each ecosystem resource below, decide whether FFSI should engage it. Select <strong>Yes / No / Maybe</strong> and provide your rationale — including what problem it solves and whether the capability should be internal or outsourced.</div>
+  </div>
+  <div class="eco-grid" id="ecoGrid"></div>
+</div>
+
+<!-- ACTIVITY 3: TRAINING PLAN -->
+<div class="section" id="training">
+  <div class="sec-header">
+    <div class="sec-num">3</div>
+    <div class="sec-title">Activity 3 — Certification &amp; Training Roadmap</div>
+    <div class="sec-pts">20 pts</div>
+  </div>
+  <div class="callout callout-teal">
+    <span class="callout-icon">🎓</span>
+    <div><strong>Instructions:</strong> For each training/certification type, identify the FFSI employees who should receive it and set a priority timeline. Use the personnel roster from Activity 1 as your reference.</div>
+  </div>
+  <div class="train-table-wrap">
+    <table class="train-table">
+      <thead>
+        <tr>
+          <th>Training / Certification</th>
+          <th>Recommended Recipients</th>
+          <th>Rationale</th>
+          <th>Priority</th>
+        </tr>
+      </thead>
+      <tbody id="trainingTableBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ACTIVITY 4: DOCUMENTATION READINESS -->
+<div class="section" id="docs">
+  <div class="sec-header">
+    <div class="sec-num">4</div>
+    <div class="sec-title">Activity 4 — Documentation Readiness</div>
+    <div class="sec-pts">15 pts</div>
+  </div>
+  <div class="callout callout-teal">
+    <span class="callout-icon">📁</span>
+    <div><strong>Instructions:</strong> For each CMMC document, indicate its current status at FFSI and identify the owner. Use the case study gaps as context — <strong>Exists</strong> (already in place), <strong>Update</strong> (exists but incomplete), or <strong>Create</strong> (does not exist).</div>
+  </div>
+  <div class="doc-grid" id="docGrid"></div>
+</div>
+
+<!-- ACTIVITY 5: WORKFORCE DECISION MATRIX -->
+<div class="section" id="workforce">
+  <div class="sec-header">
+    <div class="sec-num">5</div>
+    <div class="sec-title">Activity 5 — Workforce Decision Matrix</div>
+    <div class="sec-pts">15 pts</div>
+  </div>
+  <div class="callout callout-teal">
+    <span class="callout-icon">📊</span>
+    <div><strong>Instructions:</strong> For each CMMC program requirement, check all viable options and enter your final recommendation in the last column. Consider cost, timeline, and FFSI's current staffing when making decisions.</div>
+  </div>
+  <div class="wf-table-wrap">
+    <table class="wf-table">
+      <thead>
+        <tr>
+          <th>Requirement</th>
+          <th>Existing Resource</th>
+          <th>Train Staff</th>
+          <th>Hire Employee</th>
+          <th>Contract Service</th>
+          <th>Recommendation</th>
+        </tr>
+      </thead>
+      <tbody id="wfTableBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ACTIVITY 6: EXECUTIVE BRIEFING -->
+<div class="section" id="exec">
+  <div class="sec-header">
+    <div class="sec-num">6</div>
+    <div class="sec-title">Activity 6 — Executive Briefing</div>
+    <div class="sec-pts">10 pts</div>
+  </div>
+  <div class="callout callout-gold">
+    <span class="callout-icon">💼</span>
+    <div><strong>Instructions:</strong> Prepare a concise briefing for FFSI's CEO and COO. Each response should be 2–4 sentences of actionable guidance supported by your analysis in Activities 1–5. You will present this during the debrief.</div>
+  </div>
+  <div class="exec-grid" id="execGrid"></div>
+</div>
+
+<!-- RUBRIC -->
+<div class="section" id="rubric">
+  <div class="sec-header">
+    <div class="sec-num">📊</div>
+    <div class="sec-title">Facilitator Scoring Rubric</div>
+  </div>
+  <div class="callout callout-teal">
+    <span class="callout-icon">🎓</span>
+    <div>Enter scores in the fields on the right. The total updates automatically. Performance levels: <strong>Excellent (90–100)</strong> · <strong>Proficient (75–89)</strong> · <strong>Developing (60–74)</strong> · <strong>Needs Improvement (&lt;60)</strong>.</div>
+  </div>
+  <div class="rubric-block">
+    <div class="rubric-cat-header">
+      <div class="rch-cell">Category &amp; Criteria</div>
+      <div class="rch-cell">Excellent</div>
+      <div class="rch-cell">Proficient</div>
+      <div class="rch-cell">Developing</div>
+      <div class="rch-cell">Needs Impr.</div>
+      <div class="rch-cell">Points Possible</div>
+      <div class="rch-cell">Score</div>
+    </div>
+    <div id="rubricRows"></div>
+    <div class="rubric-total-row">
+      <div class="rc-cell" style="font-weight:800;font-size:.9rem;">Total Score</div>
+      <div class="rc-cell"></div><div class="rc-cell"></div><div class="rc-cell"></div><div class="rc-cell"></div>
+      <div class="rc-cell"><span class="pts-pill">100 pts</span></div>
+      <div class="rc-cell"><strong id="totalScore" style="font-family:var(--mono);font-size:1rem;color:var(--teal);">0</strong> / 100</div>
+    </div>
+  </div>
+  <div class="score-dash">
+    <div class="score-tile">
+      <div class="score-tile-val" id="scoreBig">0</div>
+      <div class="score-tile-label">Total Points</div>
+    </div>
+    <div class="score-tile">
+      <div class="score-tile-val" id="scorePct">0%</div>
+      <div class="score-tile-label">Percentage</div>
+    </div>
+    <div class="score-tile" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.4rem;">
+      <div id="ratingPill" class="rating-pill r-needs">Needs Improvement</div>
+      <div class="score-tile-label">Performance Level</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end .page -->
+
+<script>
+/* ══════════════════════════════════════════════════════
+   DATA
+══════════════════════════════════════════════════════ */
+const glossaryTerms = [
+  { term:'OSA', def:'Organization Seeking Assessment — a DIB contractor pursuing CMMC certification.' },
+  { term:'RP', def:'Registered Practitioner — an individual certified by Cyber AB to provide CMMC consulting and preparation guidance.' },
+  { term:'RPO', def:'Registered Practitioner Organization — a company registered with Cyber AB whose practitioners hold RP credentials.' },
+  { term:'CCP', def:'Certified CMMC Professional — an individual certified by Cyber AB with in-depth knowledge of CMMC practices and assessment methods.' },
+  { term:'CCA', def:'Certified CMMC Assessor — a credentialed individual authorized to conduct official CMMC assessments on behalf of a C3PAO.' },
+  { term:'C3PAO', def:'Certified Third-Party Assessment Organization — an authorized organization that conducts formal CMMC Level 2 and Level 3 assessments.' },
+  { term:'Cyber AB', def:'CMMC Accreditation Body — the independent body that oversees the CMMC ecosystem, credentialing, and accreditation standards.' },
+  { term:'MSP', def:'Managed Service Provider — a company that manages IT infrastructure and services on behalf of a client.' },
+  { term:'MSSP', def:'Managed Security Service Provider — a company that manages cybersecurity monitoring, detection, and response services.' },
+  { term:'FCI', def:'Federal Contract Information — information provided by or generated for the Government under a contract, not intended for public release.' },
+  { term:'CUI', def:'Controlled Unclassified Information — government-created or government-related information that requires safeguarding per law or regulation.' },
+  { term:'SSP', def:'System Security Plan — the primary document describing how NIST SP 800-171 security requirements are implemented across the contractor\'s environment.' },
+  { term:'POA&M', def:'Plan of Action and Milestones — documents known gaps, remediation steps, responsible owners, and target dates for achieving compliance.' },
+  { term:'SPRS', def:'Supplier Performance Risk System — DoD portal where contractors submit their NIST SP 800-171 self-assessment scores.' },
+  { term:'DIB', def:'Defense Industrial Base — the worldwide network of organizations that support U.S. defense requirements.' },
+];
+
+const challenges = [
+  { icon:'👤', title:'Single System Administrator', desc:'FFSI has only one sysadmin (Tanya Holbrook) managing all servers, patching, backups, and access controls for 847 employees across 4 locations.' },
+  { icon:'📜', title:'No CCP Certification On Staff', desc:'No current FFSI employee holds a Certified CMMC Professional (CCP) credential. The compliance manager has limited CMMC-specific experience.' },
+  { icon:'📄', title:'Incomplete System Security Plan', desc:'The SSP exists but covers only 60% of required NIST SP 800-171 practices. Several sections have placeholder text rather than implemented controls.' },
+  { icon:'🔒', title:'No MSSP / Security Monitoring', desc:'FFSI has no managed security service provider. Splunk SIEM alerts went unreviewed for 90 days due to staffing. 24/7 security monitoring is absent.' },
+  { icon:'⏰', title:'12-Month Certification Deadline', desc:'Two Army contracts require CMMC Level 2 certification within 12 months. One contract is already in a renewal cycle that may be impacted.' },
+  { icon:'🔗', title:'Unmanaged Supply Chain Risk', desc:'Five critical subcontractors — including an IT managed services provider — have not been assessed. DFARS 252.204-7021 flowdown obligations are unverified.' },
+  { icon:'💻', title:'32% Unmanaged Endpoints', desc:'Production tablets, QA lab workstations, and warehouse PCs are not enrolled in Intune MDM and lack EDR coverage, creating unmonitored attack surface.' },
+  { icon:'📊', title:'SPRS Score Not Submitted', desc:'FFSI has not submitted a current NIST SP 800-171 self-assessment score to SPRS. The preliminary self-assessment suggests a score of +68/110 — below target.' },
+];
+
+const personnelRoster = [
+  { id:'calloway', emoji:'👩‍💼', name:'Margaret L. Calloway', title:'President & CEO', dept:'Executive', context:'Sets organizational tone; makes final decisions on budget and contracts; has authority to sign CMMC affirmations.' },
+  { id:'reeves', emoji:'📋', name:'Calvin T. Reeves', title:'VP of Contracts & Compliance', dept:'Contracts', context:'Manages all federal contract relationships; primary owner of CUI data governance; interfaces with contracting officers.' },
+  { id:'dillard', emoji:'🔐', name:'Marcus A. Dillard', title:'ISSO', dept:'Cybersecurity', context:'Primary security technical point of contact; manages SIEM; most knowledgeable on NIST 800-171 practices; leads incident response.' },
+  { id:'forsythe', emoji:'💻', name:'Lena B. Forsythe', title:'Director of IT', dept:'IT', context:'Responsible for all IT systems; oversees the network, servers, and endpoint management; manages the IT team.' },
+  { id:'osei', emoji:'✅', name:'Amara E. Osei', title:'Compliance Manager', dept:'Compliance', context:'Manages POA&M documentation; coordinates policy reviews; limited CMMC-specific experience; handles general compliance.' },
+  { id:'waters', emoji:'☁️', name:'Jasmine C. Waters', title:'Cloud Administrator', dept:'IT', context:'Manages AWS GovCloud and M365 GCC tenant; configures IAM, Intune, and Conditional Access policies; strong technical skills.' },
+  { id:'holbrook', emoji:'🖥', name:'Tanya R. Holbrook', title:'IT Systems Administrator', dept:'IT', context:'Sole system administrator; manages AD, WSUS, and backups; overdue on security awareness training; overstretched across 4 locations.' },
+  { id:'park', emoji:'🔍', name:'Sylvia N. Park', title:'Risk & Vendor Mgmt Analyst', dept:'Compliance', context:'Manages supplier questionnaires; tracks third-party risk; owns SCRM documentation; strong analytical skills.' },
+  { id:'pennington', emoji:'👥', name:'Harold J. Pennington', title:'HR Director', dept:'HR', context:'Manages personnel screening, onboarding, and termination procedures; owns training records and the employee data system.' },
+  { id:'norwood', emoji:'🔒', name:'Reginald T. Norwood', title:'Physical Security Manager', dept:'Physical Security', context:'Manages badge access, CCTV, visitor management, and guard force; owns physical access controls at all locations.' },
+];
+
+const cmmcRoles = [
+  '— Select role —',
+  'Authorizing Official (AO)',
+  'CMMC Program Manager',
+  'CMMC Audit POC',
+  'CUI Program Manager',
+  'System Owner',
+  'ISSO / Security Lead',
+  'RP Candidate (send for RP training)',
+  'CCP Candidate (prioritize CCP cert)',
+  'Access Control Owner',
+  'Configuration Management Owner',
+  'Supply Chain / Vendor Risk Owner',
+  'Training &amp; Awareness Owner',
+  'Incident Response Lead',
+  'Physical Security Owner',
+  'Risk Management Owner',
+  'Documentation / SSP Owner',
+  'HR / Personnel Security Owner',
+];
+
+const ecoResources = [
+  { id:'rpo', icon:'🏢', type:'RPO', title:'Registered Practitioner Organization', desc:'An RPO with CMMC preparation expertise could help FFSI complete the SSP, identify gaps, and prepare staff for the C3PAO assessment. RPOs cannot conduct the official assessment.' },
+  { id:'ccp', icon:'🎓', type:'CCP Consultant', title:'External CCP Consultant', desc:'Hiring a CCP consultant (or funding internal CCP certification) provides credentialed CMMC expertise for gap analysis, SSP development, and interview preparation.' },
+  { id:'c3pao', icon:'🔍', type:'C3PAO', title:'Certified Third-Party Assessor (C3PAO)', desc:'FFSI must engage a C3PAO for the official CMMC Level 2 assessment. C3PAOs are independent — they cannot advise on remediation. Timing matters.' },
+  { id:'mssp', icon:'🛡', type:'MSSP', title:'Managed Security Service Provider', desc:'An MSSP could provide 24/7 SIEM monitoring, incident detection, and response capabilities that FFSI currently lacks due to staffing limitations.' },
+  { id:'msp', icon:'⚙️', type:'MSP', title:'Managed Service Provider', desc:'An MSP could supplement IT operations — patch management, endpoint monitoring, help desk overflow — freeing FFSI\'s single sysadmin for compliance activities.' },
+  { id:'trainer', icon:'📚', type:'Training', title:'CMMC Training Provider', desc:'A Cyber AB-authorized training provider could deliver role-based CMMC training, RP/CCP certification prep, and security awareness content to FFSI staff.' },
+  { id:'cyberab', icon:'🏛', type:'Cyber AB', title:'Cyber AB (Accreditation Body)', desc:'Cyber AB maintains the marketplace of RPOs, C3PAOs, and certified practitioners. FFSI should use the Cyber AB Marketplace to vet and select ecosystem partners.' },
+];
+
+const trainingTypes = [
+  { id:'awareness', type:'CMMC Awareness Training', desc:'General CMMC overview, CUI handling, and contractor obligations under DFARS 252.204-7012.' },
+  { id:'rolebased', type:'Role-Based Security Training', desc:'Technical security training tailored to job function — IT staff, contracts team, production supervisors.' },
+  { id:'rp', type:'Registered Practitioner (RP) Certification', desc:'Cyber AB RP credential — prepares practitioners to advise on CMMC readiness and guide assessment preparation.' },
+  { id:'ccp', type:'Certified CMMC Professional (CCP)', desc:'Cyber AB CCP credential — demonstrates deep CMMC knowledge; enables internal CMMC program management.' },
+  { id:'technical', type:'Technical Security Training', desc:'Hands-on training covering SIEM operation, vulnerability management, endpoint security, and cloud security configuration.' },
+  { id:'ir', type:'Incident Response Training', desc:'Tabletop exercises, IRP walkthroughs, and live-action IR drills aligned to CMMC practice 3.6.1 and 3.6.2.' },
+  { id:'leadership', type:'Security Leadership Training', desc:'Executive and management-level security training covering governance, risk decisions, CMMC affirmation obligations, and program oversight.' },
+];
+
+const documents = [
+  { id:'ssp', name:'System Security Plan (SSP)', owner:'Amara Osei / Marcus Dillard' },
+  { id:'poam', name:'Plan of Action &amp; Milestones (POA&M)', owner:'Amara Osei' },
+  { id:'asset', name:'Asset Inventory', owner:'Lena Forsythe' },
+  { id:'risk', name:'Risk Register', owner:'Sylvia Park' },
+  { id:'irp', name:'Incident Response Plan (IRP)', owner:'Marcus Dillard' },
+  { id:'acp', name:'Access Control Policy', owner:'Lena Forsythe' },
+  { id:'training', name:'Training Records', owner:'Harold Pennington' },
+  { id:'scrm', name:'Supplier Security Procedures (SCRM)', owner:'Sylvia Park' },
+  { id:'cmp', name:'Configuration Management Plan', owner:'Tanya Holbrook' },
+  { id:'cuidata', name:'CUI Data Flow Documentation', owner:'Calvin Reeves' },
+  { id:'sprs', name:'SPRS Score Submission', owner:'Marcus Dillard / Amara Osei' },
+  { id:'mediasan', name:'Media Sanitization Procedures', owner:'Lena Forsythe' },
+];
+
+const wfRequirements = [
+  { id:'cmmc_mgmt', req:'CMMC Program Management', hint:'Who leads the overall CMMC effort?' },
+  { id:'compliance', req:'Compliance Support & SSP Documentation', hint:'Who writes and maintains the SSP and POA&M?' },
+  { id:'sec_ops', req:'Security Operations (24/7 Monitoring)', hint:'Is 24/7 SOC feasible internally?' },
+  { id:'doc_mgmt', req:'Documentation Management', hint:'Who manages policies, procedures, and evidence?' },
+  { id:'risk_mgmt', req:'Risk Management & Vendor Risk', hint:'Who owns the risk register and SCRM?' },
+  { id:'ir', req:'Incident Response', hint:'Can FFSI respond to incidents alone?' },
+  { id:'assess_prep', req:'Assessment Preparation (C3PAO Readiness)', hint:'Who preps staff and evidence for the assessors?' },
+];
+
+const execPrompts = [
+  { id:'staffing_gaps', icon:'👤', title:'Three Most Critical Staffing Gaps', hint:'Rank and justify based on FFSI\'s current state and 12-month deadline.' },
+  { id:'certifications', icon:'🎓', title:'Certifications to Pursue First', hint:'Which employees should be funded for RP or CCP certification, and in what order?' },
+  { id:'partners', icon:'🤝', title:'Ecosystem Partners to Engage Immediately', hint:'Which RPO, MSSP, MSP, or C3PAO actions should happen in the first 30 days?' },
+  { id:'outsource', icon:'📤', title:'What Should Be Outsourced', hint:'Which FFSI capabilities are too costly or risky to develop internally?' },
+  { id:'internal', icon:'🏠', title:'What Should Remain Internal', hint:'Which capabilities must stay in-house for compliance, accountability, or cost reasons?' },
+  { id:'docs_priority', icon:'📄', title:'Documentation Priorities (Top 3)', hint:'Which documents have the highest assessment impact if incomplete?' },
+];
+
+const rubricData = [
+  {
+    cat:'Personnel Analysis', pts:20,
+    ex:'All 10 role assignments are defensible with specific, CMMC-grounded justifications connecting individual responsibilities to role requirements.',
+    pr:'8–9 assignments are correct; justifications reference CMMC roles but lack full specificity.',
+    de:'6–7 assignments are reasonable; justifications are vague or generic.',
+    ni:'Fewer than 6 correct assignments; justifications missing or irrelevant.'
+  },
+  {
+    cat:'Ecosystem Understanding', pts:20,
+    ex:'All 7 ecosystem resources are correctly assessed; rationale clearly distinguishes RPO vs C3PAO, MSP vs MSSP, and internal vs outsourced capabilities.',
+    pr:'5–6 resources correctly assessed; most rationales are sound; minor confusion on one resource type.',
+    de:'3–4 resources correctly assessed; RPO/C3PAO or MSP/MSSP roles confused.',
+    ni:'Fewer than 3 correct; ecosystem roles not understood or conflated.'
+  },
+  {
+    cat:'Training Recommendations', pts:20,
+    ex:'All training types assigned to appropriate personnel with clear rationale; timeline priorities are realistic and aligned to the 12-month window.',
+    pr:'5–6 training types correctly assigned; 1–2 priority timelines are questionable but justifiable.',
+    de:'3–4 training types correctly assigned; timelines are inconsistent or not grounded in readiness urgency.',
+    ni:'Fewer than 3 correct assignments; timeline priorities absent or unrealistic.'
+  },
+  {
+    cat:'Hiring/Outsourcing Decisions', pts:15,
+    ex:'Workforce matrix is fully completed; all hire/train/contract decisions are justified with reference to FFSI\'s gaps and constraints. Build vs. buy reasoning is clear.',
+    pr:'Matrix mostly complete; 1–2 decisions lack justification; general reasoning is sound.',
+    de:'Matrix partially complete; several decisions are unclear or contradictory.',
+    ni:'Matrix largely incomplete; decisions not justified or internally inconsistent.'
+  },
+  {
+    cat:'Documentation Planning', pts:15,
+    ex:'All 12 documents are classified correctly (Exists/Update/Create) with valid owners named from the FFSI roster; priorities reflect assessment impact.',
+    pr:'9–11 documents correctly classified; owners identified; priorities mostly correct.',
+    de:'6–8 documents correctly classified; some owners missing; priorities inconsistent.',
+    ni:'Fewer than 6 documents correct; classification rationale absent.'
+  },
+  {
+    cat:'Executive Recommendations', pts:10,
+    ex:'All 6 briefing responses are actionable, specific to FFSI\'s situation, and synthesize findings from earlier activities into a coherent strategy.',
+    pr:'4–5 responses are actionable; minor vagueness in 1–2 areas.',
+    de:'2–3 responses are substantive; others are generic or not grounded in FFSI data.',
+    ni:'Fewer than 2 actionable responses; briefing is too generic to be useful.'
+  },
+];
+
+/* ══════════════════════════════════════════════════════
+   RENDER FUNCTIONS
+══════════════════════════════════════════════════════ */
+function renderGlossary() {
+  document.getElementById('glossaryGrid').innerHTML = glossaryTerms.map(t =>
+    `<div class="gloss-card"><div class="gloss-term">${t.term}</div><div class="gloss-def">${t.def}</div></div>`
+  ).join('');
+}
+
+function renderChallenges() {
+  document.getElementById('challengeGrid').innerHTML = challenges.map(c =>
+    `<div class="challenge-card">
+      <div class="challenge-icon">${c.icon}</div>
+      <div><div class="challenge-title">${c.title}</div><div class="challenge-desc">${c.desc}</div></div>
+    </div>`
+  ).join('');
+}
+
+function renderPersonnel() {
+  document.getElementById('personnelGrid').innerHTML = personnelRoster.map(p => {
+    const savedRole = localStorage.getItem(`ffsi-wex-role-${p.id}`) || '';
+    const savedJust = localStorage.getItem(`ffsi-wex-just-${p.id}`) || '';
+    return `
+    <div class="person-card">
+      <div class="person-head">
+        <div class="person-avatar">${p.emoji}</div>
+        <div>
+          <div class="person-name">${p.name}</div>
+          <div class="person-title">${p.title}</div>
+          <div class="person-dept">${p.dept}</div>
+        </div>
+      </div>
+      <div style="font-size:.75rem;color:var(--text-muted);margin-bottom:.65rem;line-height:1.5;font-style:italic;">💡 ${p.context}</div>
+      <div class="role-assign-group">
+        <label class="role-label">CMMC Role Assignment</label>
+        <select class="role-select" onchange="save('wex-role-${p.id}',this.value)">
+          ${cmmcRoles.map(r=>`<option value="${r}" ${savedRole===r?'selected':''}>${r}</option>`).join('')}
+        </select>
+        <label class="role-label" style="margin-top:.35rem;">Justification</label>
+        <textarea class="justification-input" placeholder="Why is this the right CMMC role for this person? Reference their responsibilities and FFSI context..."
+          oninput="save('wex-just-${p.id}',this.value)">${savedJust}</textarea>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderEcosystem() {
+  document.getElementById('ecoGrid').innerHTML = ecoResources.map(r => {
+    const savedDecision = localStorage.getItem(`ffsi-wex-eco-decision-${r.id}`) || '';
+    const savedRationale = localStorage.getItem(`ffsi-wex-eco-rationale-${r.id}`) || '';
+    return `
+    <div class="eco-card">
+      <div class="eco-card-head">
+        <span class="eco-icon">${r.icon}</span>
+        <span class="eco-title">${r.title}</span>
+        <span class="eco-type">${r.type}</span>
+      </div>
+      <div class="eco-desc">${r.desc}</div>
+      <div class="eco-decision">
+        <div class="decision-row">
+          <span class="decision-label">Engage?</span>
+          <div class="radio-group">
+            ${['Yes','No','Maybe'].map(v=>`
+            <button class="radio-opt ${savedDecision===v?`sel-${v.toLowerCase()}`:''}"
+              onclick="setEcoDecision('${r.id}',this,'${v}')">${v}</button>`).join('')}
+          </div>
+        </div>
+        <textarea class="eco-rationale" placeholder="What problem does this solve? Internal vs. outsourced? Cost/risk considerations..."
+          oninput="save('wex-eco-rationale-${r.id}',this.value)">${savedRationale}</textarea>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function setEcoDecision(id, btn, val) {
+  save(`wex-eco-decision-${id}`, val);
+  const group = btn.closest('.radio-group');
+  group.querySelectorAll('.radio-opt').forEach(b => b.className = 'radio-opt');
+  btn.classList.add(`sel-${val.toLowerCase()}`);
+}
+
+function renderTraining() {
+  document.getElementById('trainingTableBody').innerHTML = trainingTypes.map(t => {
+    const savedRecip = localStorage.getItem(`ffsi-wex-train-recip-${t.id}`) || '';
+    const savedRat = localStorage.getItem(`ffsi-wex-train-rat-${t.id}`) || '';
+    const savedPri = localStorage.getItem(`ffsi-wex-train-pri-${t.id}`) || '';
+    return `
+    <tr>
+      <td>
+        <div style="font-weight:700;font-size:.83rem;margin-bottom:.15rem;">${t.type}</div>
+        <div style="font-size:.72rem;color:var(--text-muted);">${t.desc}</div>
+      </td>
+      <td><input type="text" class="wf-input" placeholder="Names from roster..." value="${savedRecip}"
+        oninput="save('wex-train-recip-${t.id}',this.value)"/></td>
+      <td><input type="text" class="wf-input" placeholder="Why this training for these people?" value="${savedRat}"
+        oninput="save('wex-train-rat-${t.id}',this.value)"/></td>
+      <td>
+        <select class="priority-sel ${savedPri==='Immediate (0-3 mo)'?'p-immediate':savedPri==='Mid-Term (3-6 mo)'?'p-midterm':savedPri==='Long-Term (6-12 mo)'?'p-longterm':''}"
+          onchange="setPriorityStyle(this);save('wex-train-pri-${t.id}',this.value)">
+          <option value="">— Set —</option>
+          <option ${savedPri==='Immediate (0-3 mo)'?'selected':''}>Immediate (0-3 mo)</option>
+          <option ${savedPri==='Mid-Term (3-6 mo)'?'selected':''}>Mid-Term (3-6 mo)</option>
+          <option ${savedPri==='Long-Term (6-12 mo)'?'selected':''}>Long-Term (6-12 mo)</option>
+        </select>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function setPriorityStyle(sel) {
+  sel.className = 'priority-sel';
+  if (sel.value === 'Immediate (0-3 mo)') sel.classList.add('p-immediate');
+  else if (sel.value === 'Mid-Term (3-6 mo)') sel.classList.add('p-midterm');
+  else if (sel.value === 'Long-Term (6-12 mo)') sel.classList.add('p-longterm');
+}
+
+function renderDocs() {
+  document.getElementById('docGrid').innerHTML = documents.map(d => {
+    const savedStatus = localStorage.getItem(`ffsi-wex-doc-status-${d.id}`) || '';
+    const savedOwner = localStorage.getItem(`ffsi-wex-doc-owner-${d.id}`) || '';
+    return `
+    <div class="doc-card">
+      <div class="doc-name">${d.name}</div>
+      <div class="doc-status-row">
+        ${[['Exists','ds-exists'],['Update','ds-update'],['Create','ds-create']].map(([label,cls])=>`
+        <button class="doc-status-btn ${savedStatus===label?cls:''}"
+          onclick="setDocStatus('${d.id}',this,'${label}','${cls}')">${label}</button>`).join('')}
+      </div>
+      <input type="text" class="doc-priority-input" placeholder="Owner from FFSI roster..." value="${savedOwner}"
+        oninput="save('wex-doc-owner-${d.id}',this.value)"/>
+    </div>`;
+  }).join('');
+}
+
+function setDocStatus(id, btn, val, cls) {
+  save(`wex-doc-status-${id}`, val);
+  const row = btn.closest('.doc-status-row');
+  row.querySelectorAll('.doc-status-btn').forEach(b => b.className = 'doc-status-btn');
+  btn.classList.add(cls);
+}
+
+function renderWorkforce() {
+  document.getElementById('wfTableBody').innerHTML = wfRequirements.map(r => {
+    const savedRec = localStorage.getItem(`ffsi-wex-wf-rec-${r.id}`) || '';
+    return `
+    <tr>
+      <td>
+        <div class="wf-req">${r.req}</div>
+        <div style="font-size:.7rem;color:var(--text-muted);font-style:italic;margin-top:.15rem;">💡 ${r.hint}</div>
+      </td>
+      ${['existing','train','hire','contract'].map(col => {
+        const saved = localStorage.getItem(`ffsi-wex-wf-${col}-${r.id}`);
+        return `<td>
+          <label class="wf-check">
+            <input type="checkbox" class="wf-checkbox" ${saved==='1'?'checked':''}
+              onchange="save('wex-wf-${col}-${r.id}',this.checked?'1':'0')"/>
+          </label>
+        </td>`;
+      }).join('')}
+      <td><input type="text" class="wf-input" style="min-width:120px;" placeholder="Your recommendation..." value="${savedRec}"
+        oninput="save('wex-wf-rec-${r.id}',this.value)"/></td>
+    </tr>`;
+  }).join('');
+}
+
+function renderExec() {
+  document.getElementById('execGrid').innerHTML = execPrompts.map((p,i) => `
+    <div class="exec-card ${i===execPrompts.length-1&&execPrompts.length%2!==0?'exec-full':''}">
+      <div class="exec-card-title">
+        <span class="exec-icon">${p.icon}</span>${p.title}
+      </div>
+      <div style="font-size:.73rem;color:var(--text-muted);margin-bottom:.5rem;font-style:italic;">💡 ${p.hint}</div>
+      <textarea class="exec-textarea" placeholder="Write your executive recommendation here (2–4 sentences)..."
+        oninput="save('wex-exec-${p.id}',this.value)">${localStorage.getItem('ffsi-wex-exec-'+p.id)||''}</textarea>
+    </div>`
+  ).join('');
+}
+
+function renderRubric() {
+  document.getElementById('rubricRows').innerHTML = rubricData.map((r,i) => {
+    const saved = localStorage.getItem(`ffsi-wex-rubric-${i}`) || '';
+    return `
+    <div class="rubric-row">
+      <div class="rc-cell">
+        <div class="rc-cat">${r.cat}</div>
+      </div>
+      <div class="rc-cell rc-desc">${r.ex}</div>
+      <div class="rc-cell rc-desc">${r.pr}</div>
+      <div class="rc-cell rc-desc">${r.de}</div>
+      <div class="rc-cell rc-desc">${r.ni}</div>
+      <div class="rc-cell"><span class="pts-pill">${r.pts} pts</span></div>
+      <div class="rc-cell">
+        <input type="number" class="score-input-sm" min="0" max="${r.pts}"
+          value="${saved}" placeholder="0"
+          oninput="saveRubric(${i},this.value,${r.pts})"/>
+      </div>
+    </div>`;
+  }).join('');
+  updateScore();
+}
+
+/* ══════════════════════════════════════════════════════
+   STATE & SCORING
+══════════════════════════════════════════════════════ */
+function save(key, val) {
+  localStorage.setItem(`ffsi-${key}`, val);
+}
+
+function saveRubric(i, val, max) {
+  const clamped = Math.min(Math.max(parseInt(val)||0, 0), max);
+  localStorage.setItem(`ffsi-wex-rubric-${i}`, clamped);
+  updateScore();
+}
+
+function updateScore() {
+  const total = rubricData.reduce((s,_,i) => s + (parseInt(localStorage.getItem(`ffsi-wex-rubric-${i}`))||0), 0);
+  const pct = Math.round(total/100*100);
+  document.getElementById('totalScore').textContent = total;
+  document.getElementById('scoreBig').textContent = total;
+  document.getElementById('scorePct').textContent = pct + '%';
+  const rp = document.getElementById('ratingPill');
+  if (total>=90){rp.textContent='Excellent';rp.className='rating-pill r-excellent';}
+  else if (total>=75){rp.textContent='Proficient';rp.className='rating-pill r-proficient';}
+  else if (total>=60){rp.textContent='Developing';rp.className='rating-pill r-developing';}
+  else{rp.textContent='Needs Improvement';rp.className='rating-pill r-needs';}
+}
+
+/* ══════════════════════════════════════════════════════
+   THEME
+══════════════════════════════════════════════════════ */
+function toggleTheme() {
+  const html = document.documentElement;
+  const btn = document.getElementById('themeBtn');
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  btn.textContent = isDark ? '🌙 Dark Mode' : '☀️ Light Mode';
+  localStorage.setItem('ffsi-wex-theme', isDark ? 'light' : 'dark');
+}
+
+/* ══════════════════════════════════════════════════════
+   TIMER
+══════════════════════════════════════════════════════ */
+const TOTAL_SECS = 45 * 60;
+let timerSecs = TOTAL_SECS, timerInterval = null, timerRunning = false;
+function startTimer() {
+  if (timerRunning) return;
+  timerRunning = true;
+  timerInterval = setInterval(() => {
+    timerSecs = Math.max(0, timerSecs - 1);
+    renderTimerDisplay();
+    if (timerSecs === 0) { clearInterval(timerInterval); timerRunning = false; }
+  }, 1000);
+}
+function pauseTimer() { clearInterval(timerInterval); timerRunning = false; }
+function resetTimer() { clearInterval(timerInterval); timerRunning = false; timerSecs = TOTAL_SECS; renderTimerDisplay(); }
+function renderTimerDisplay() {
+  const m = Math.floor(timerSecs/60), s = timerSecs%60;
+  const el = document.getElementById('timerVal');
+  el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  el.className = `timer-val${timerSecs===0?' expired':timerSecs<300?' warn':''}`;
+  document.getElementById('timerFill').style.width = (timerSecs/TOTAL_SECS*100)+'%';
+}
+
+/* ══════════════════════════════════════════════════════
+   NAV
+══════════════════════════════════════════════════════ */
+function navTo(id, btn) {
+  document.getElementById(id)?.scrollIntoView({behavior:'smooth'});
+  document.querySelectorAll('.pnav-btn').forEach(b=>b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+}
+window.addEventListener('scroll', () => {
+  const ids = ['intro','objectives','terms','challenges','personnel','ecosystem','training','docs','workforce','exec','rubric'];
+  const scrollY = window.scrollY + 140;
+  let cur = 'intro';
+  ids.forEach(id => { const el=document.getElementById(id); if(el&&el.offsetTop<=scrollY) cur=id; });
+  document.querySelectorAll('.pnav-btn').forEach(b => {
+    b.classList.toggle('active', (b.getAttribute('onclick')||'').includes(`'${cur}'`));
+  });
+}, {passive:true});
+
+/* ══════════════════════════════════════════════════════
+   EXPORT
+══════════════════════════════════════════════════════ */
+function exportAll() {
+  let out = 'FFSI — CMMC ECOSYSTEM & WORKFORCE PLANNING EXERCISE\n'+'='.repeat(55)+'\n\n';
+  out += 'ACTIVITY 1 — PERSONNEL ANALYSIS\n'+'-'.repeat(40)+'\n';
+  personnelRoster.forEach(p => {
+    const role = localStorage.getItem(`ffsi-wex-role-${p.id}`)||'[Not assigned]';
+    const just = localStorage.getItem(`ffsi-wex-just-${p.id}`)||'[No justification]';
+    out += `${p.name} (${p.title})\n  Role: ${role}\n  Justification: ${just}\n\n`;
+  });
+  out += 'ACTIVITY 2 — ECOSYSTEM RESOURCE PLANNING\n'+'-'.repeat(40)+'\n';
+  ecoResources.forEach(r => {
+    const dec = localStorage.getItem(`ffsi-wex-eco-decision-${r.id}`)||'[Not decided]';
+    const rat = localStorage.getItem(`ffsi-wex-eco-rationale-${r.id}`)||'[No rationale]';
+    out += `${r.title}: ${dec}\n  Rationale: ${rat}\n\n`;
+  });
+  out += 'ACTIVITY 3 — TRAINING ROADMAP\n'+'-'.repeat(40)+'\n';
+  trainingTypes.forEach(t => {
+    const rec = localStorage.getItem(`ffsi-wex-train-recip-${t.id}`)||'—';
+    const rat = localStorage.getItem(`ffsi-wex-train-rat-${t.id}`)||'—';
+    const pri = localStorage.getItem(`ffsi-wex-train-pri-${t.id}`)||'—';
+    out += `${t.type}\n  Recipients: ${rec}\n  Priority: ${pri}\n  Rationale: ${rat}\n\n`;
+  });
+  out += 'ACTIVITY 4 — DOCUMENTATION READINESS\n'+'-'.repeat(40)+'\n';
+  documents.forEach(d => {
+    const st = localStorage.getItem(`ffsi-wex-doc-status-${d.id}`)||'[Not set]';
+    const own = localStorage.getItem(`ffsi-wex-doc-owner-${d.id}`)||'[No owner]';
+    out += `${d.name.replace(/&amp;/g,'&')}: ${st} — Owner: ${own}\n`;
+  });
+  out += '\nACTIVITY 5 — WORKFORCE DECISION MATRIX\n'+'-'.repeat(40)+'\n';
+  wfRequirements.forEach(r => {
+    const rec = localStorage.getItem(`ffsi-wex-wf-rec-${r.id}`)||'—';
+    out += `${r.req}: ${rec}\n`;
+  });
+  out += '\nACTIVITY 6 — EXECUTIVE BRIEFING\n'+'-'.repeat(40)+'\n';
+  execPrompts.forEach(p => {
+    const resp = localStorage.getItem(`ffsi-wex-exec-${p.id}`)||'[No response]';
+    out += `${p.title}:\n  ${resp}\n\n`;
+  });
+  const total = rubricData.reduce((s,_,i)=>s+(parseInt(localStorage.getItem(`ffsi-wex-rubric-${i}`))||0),0);
+  out += 'RUBRIC SCORE: '+total+'/100\n';
+  const blob = new Blob([out],{type:'text/plain'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='FFSI-Workforce-Exercise.txt'; a.click();
+}
+
+function clearAll() {
+  if (!confirm('Clear all responses? This cannot be undone.')) return;
+  Object.keys(localStorage).filter(k=>k.startsWith('ffsi-wex-')).forEach(k=>localStorage.removeItem(k));
+  location.reload();
+}
+
+/* ══════════════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  const theme = localStorage.getItem('ffsi-wex-theme') || 'light';
+  document.documentElement.setAttribute('data-theme', theme);
+  document.getElementById('themeBtn').textContent = theme==='dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
+
+  renderGlossary();
+  renderChallenges();
+  renderPersonnel();
+  renderEcosystem();
+  renderTraining();
+  renderDocs();
+  renderWorkforce();
+  renderExec();
+  renderRubric();
+  renderTimerDisplay();
+});
+</script>
+</body>
+</html>
