@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FFSI — CMMC Asset Inventory & Categorization Exercise</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,600&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+/* ══════════════════════════════════════════════
+   VARIABLES
+══════════════════════════════════════════════ */
+:root {
+  --slate:      #0f2233;
+  --slate-mid:  #1a3449;
+  --indigo:     #2251a3;
+  --indigo-mid: #2e65c4;
+  --indigo-lt:  #e8effc;
+  --indigo-pale:#f2f6fe;
+  --amber:      #a16207;
+  --amber-mid:  #ca8a04;
+  --amber-lt:   #fef9c3;
+  --red:        #9b1c1c;
+  --red-lt:     #fef2f2;
+  --green:      #14532d;
+  --green-mid:  #166534;
+  --green-lt:   #dcfce7;
+  --purple:     #5b21b6;
+  --purple-lt:  #f5f3ff;
+  --teal:       #0e7490;
+  --teal-lt:    #ecfeff;
+  --gray-900:   #111827;
+  --gray-700:   #374151;
+  --gray-500:   #6b7280;
+  --gray-300:   #d1d5db;
+  --gray-100:   #f9fafb;
+  --white:      #ffffff;
+
+  --bg:         #f8f9fb;
+  --bg-card:    var(--white);
+  --bg-alt:     var(--gray-100);
+  --text:       var(--gray-900);
+  --text-muted: var(--gray-500);
+  --border:     var(--gray-300);
+  --accent:     var(--indigo);
+  --accent-mid: var(--indigo-mid);
+
+  --serif: 'Fraunces', Georgia, serif;
+  --sans:  'IBM Plex Sans', system-ui, sans-serif;
+  --mono:  'IBM Plex Mono', monospace;
+  --rad:   8px;
+  --sh:    0 1px 3px rgba(0,0,0,.07), 0 4px 12px rgba(0,0,0,.05);
+  --sh-md: 0 4px 20px rgba(0,0,0,.09);
+}
+
+[data-theme="dark"] {
+  --bg:         #080f1a;
+  --bg-card:    #0e1825;
+  --bg-alt:     #0a1320;
+  --text:       #c5d5e8;
+  --text-muted: #5a7a96;
+  --border:     #162233;
+  --accent:     #4a7fd4;
+  --accent-mid: #5e8fe0;
+  --slate:      #040c14;
+  --indigo-lt:  #0d1e40;
+  --indigo-pale:#080f22;
+  --amber-lt:   #1c1400;
+  --red-lt:     #1a0808;
+  --green-lt:   #041a0e;
+  --purple-lt:  #100823;
+  --teal-lt:    #031820;
+  --gray-100:   #0a1320;
+}
+
+/* ══════════════════════════════════════════════
+   RESET & BASE
+══════════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:var(--sans);
+  background:var(--bg);
+  color:var(--text);
+  font-size:14.5px;
+  line-height:1.7;
+  transition:background .22s,color .22s;
+}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:var(--bg-alt);}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+
+/* ══════════════════════════════════════════════
+   TOP BAR
+══════════════════════════════════════════════ */
+.topbar{
+  position:sticky;top:0;z-index:200;
+  background:var(--bg-card);
+  border-bottom:1px solid var(--border);
+  box-shadow:0 1px 6px rgba(0,0,0,.07);
+  padding:.55rem 1.75rem;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:.6rem;flex-wrap:wrap;
+}
+.tb-brand{display:flex;align-items:center;gap:.6rem;}
+.tb-chip{
+  background:var(--accent);color:#fff;
+  font-family:var(--mono);font-size:.67rem;font-weight:500;
+  padding:.18rem .5rem;border-radius:4px;letter-spacing:.07em;
+}
+.tb-label{font-size:.77rem;font-weight:600;color:var(--text-muted);}
+.tb-actions{display:flex;gap:.35rem;flex-wrap:wrap;}
+.btn{
+  display:inline-flex;align-items:center;gap:.3rem;
+  padding:.32rem .72rem;border-radius:6px;
+  border:1px solid var(--border);
+  background:var(--bg-card);color:var(--text);
+  font-family:var(--sans);font-size:.73rem;font-weight:600;
+  cursor:pointer;transition:all .16s;white-space:nowrap;
+}
+.btn:hover{border-color:var(--accent);color:var(--accent);}
+.btn-primary{background:var(--accent);color:#fff;border-color:var(--accent);}
+.btn-primary:hover{background:var(--accent-mid);border-color:var(--accent-mid);color:#fff;}
+
+/* ══════════════════════════════════════════════
+   SECTION NAV
+══════════════════════════════════════════════ */
+.secnav{
+  background:var(--bg-card);border-bottom:1px solid var(--border);
+  padding:.42rem 1.75rem;display:flex;gap:.25rem;overflow-x:auto;
+  scrollbar-width:none;
+}
+.secnav::-webkit-scrollbar{display:none;}
+.sn-btn{
+  padding:.26rem .65rem;border-radius:4px;
+  border:1px solid transparent;
+  background:none;color:var(--text-muted);
+  font-family:var(--sans);font-size:.7rem;font-weight:600;
+  cursor:pointer;transition:all .14s;white-space:nowrap;letter-spacing:.01em;
+}
+.sn-btn:hover{color:var(--accent);}
+.sn-btn.on{background:var(--indigo-lt);color:var(--accent);border-color:var(--accent);}
+[data-theme="dark"] .sn-btn.on{background:var(--indigo-pale);}
+
+/* ══════════════════════════════════════════════
+   PAGE & HERO
+══════════════════════════════════════════════ */
+.page{max-width:1040px;margin:0 auto;padding:1.75rem 1.5rem 5rem;}
+
+.hero{
+  background:var(--slate);color:#fff;
+  border-radius:var(--rad);padding:2rem 2.25rem 1.75rem;
+  margin-bottom:1.75rem;position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(
+    60deg,transparent,transparent 22px,
+    rgba(255,255,255,.025) 22px,rgba(255,255,255,.025) 23px
+  );pointer-events:none;
+}
+.hero::after{
+  content:'ASSET\AINVENTORY';
+  white-space:pre;
+  position:absolute;right:-20px;top:50%;transform:translateY(-50%);
+  font-family:var(--serif);font-size:4.5rem;font-weight:700;line-height:1;
+  color:rgba(255,255,255,.04);pointer-events:none;letter-spacing:-.02em;
+}
+.hero-kicker{font-size:.63rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:.5rem;}
+.hero h1{font-family:var(--serif);font-size:clamp(1.4rem,3.5vw,2rem);line-height:1.12;margin-bottom:.45rem;font-style:italic;}
+.hero h1 span{color:#7eb3ff;font-style:normal;}
+.hero-sub{font-size:.86rem;color:rgba(255,255,255,.68);max-width:560px;margin-bottom:1rem;}
+.hero-chips{display:flex;gap:.4rem;flex-wrap:wrap;}
+.hc{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16);font-size:.62rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:.16rem .5rem;border-radius:3px;}
+
+/* ══════════════════════════════════════════════
+   TIMER
+══════════════════════════════════════════════ */
+.timer{
+  display:flex;align-items:center;gap:.65rem;flex-wrap:wrap;
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--rad);padding:.6rem .9rem;margin-bottom:1.75rem;
+}
+.timer-lbl{font-size:.68rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--text-muted);}
+.timer-disp{font-family:var(--mono);font-size:1.1rem;font-weight:500;color:var(--accent);min-width:58px;}
+.timer-disp.warn{color:var(--amber);}
+.timer-disp.expired{color:var(--red);}
+.timer-track{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden;max-width:180px;margin-left:auto;}
+.timer-fill{height:100%;background:var(--accent);border-radius:3px;transition:width 1s linear;}
+
+/* ══════════════════════════════════════════════
+   SECTION CHROME
+══════════════════════════════════════════════ */
+.section{margin-bottom:2rem;scroll-margin-top:90px;}
+.sec-hdr{
+  display:flex;align-items:center;gap:.65rem;
+  margin-bottom:1rem;padding-bottom:.65rem;
+  border-bottom:2px solid var(--border);
+}
+.sec-num{
+  width:32px;height:32px;flex-shrink:0;
+  background:var(--accent);color:#fff;border-radius:7px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:.75rem;font-weight:500;
+}
+.sec-title{font-family:var(--serif);font-size:1.1rem;font-weight:600;}
+.sec-pts{margin-left:auto;font-size:.67rem;font-weight:700;background:var(--indigo-lt);color:var(--accent);border:1px solid var(--accent);padding:.13rem .5rem;border-radius:4px;white-space:nowrap;}
+[data-theme="dark"] .sec-pts{background:var(--indigo-pale);}
+
+/* ══════════════════════════════════════════════
+   CALLOUTS
+══════════════════════════════════════════════ */
+.callout{
+  display:flex;gap:.6rem;align-items:flex-start;
+  border-radius:var(--rad);padding:.8rem .95rem;
+  font-size:.81rem;margin-bottom:.9rem;
+}
+.cl-blue{background:var(--indigo-lt);border-left:4px solid var(--accent);}
+.cl-amber{background:var(--amber-lt);border-left:4px solid var(--amber-mid);}
+.cl-red{background:var(--red-lt);border-left:4px solid var(--red);}
+[data-theme="dark"] .cl-blue{background:var(--indigo-pale);}
+[data-theme="dark"] .cl-amber{background:var(--amber-lt);}
+
+/* ══════════════════════════════════════════════
+   GLOSSARY
+══════════════════════════════════════════════ */
+.gloss-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:.55rem;}
+.gloss-card{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-top:3px solid var(--accent);border-radius:var(--rad);
+  padding:.75rem .9rem;transition:box-shadow .18s;
+}
+.gloss-card:hover{box-shadow:var(--sh-md);}
+.gloss-term{font-family:var(--mono);font-size:.68rem;font-weight:500;color:var(--accent);letter-spacing:.04em;margin-bottom:.25rem;}
+.gloss-def{font-size:.76rem;color:var(--text-muted);line-height:1.5;}
+
+/* ══════════════════════════════════════════════
+   CATEGORY LEGEND
+══════════════════════════════════════════════ */
+.cat-legend{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:.55rem;margin-bottom:1rem;}
+.cat-tile{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--rad);padding:.75rem .9rem;
+}
+.cat-name{font-size:.78rem;font-weight:700;margin-bottom:.2rem;display:flex;align-items:center;gap:.4rem;}
+.cat-abbr{font-family:var(--mono);font-size:.63rem;color:var(--text-muted);}
+.cat-desc{font-size:.73rem;color:var(--text-muted);line-height:1.5;}
+.dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.dot-cui    {background:#7c3aed;}
+.dot-spa    {background:#1d4ed8;}
+.dot-crma   {background:#ca8a04;}
+.dot-spec   {background:#0e7490;}
+.dot-oos    {background:#6b7280;}
+
+/* ══════════════════════════════════════════════
+   ASSET CATEGORIZATION TABLE
+══════════════════════════════════════════════ */
+.asset-list{display:flex;flex-direction:column;gap:.6rem;}
+.asset-card{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--rad);padding:.9rem 1rem;
+  transition:border-color .18s,box-shadow .18s;
+}
+.asset-card:hover{border-color:var(--accent);}
+.asset-top{display:flex;align-items:flex-start;gap:.75rem;flex-wrap:wrap;margin-bottom:.65rem;}
+.asset-icon{font-size:1.2rem;flex-shrink:0;margin-top:.05rem;}
+.asset-name{font-weight:700;font-size:.9rem;margin-bottom:.1rem;}
+.asset-id{font-family:var(--mono);font-size:.67rem;color:var(--text-muted);}
+.asset-context{font-size:.75rem;color:var(--text-muted);line-height:1.5;margin-bottom:.6rem;}
+.asset-fields{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;}
+@media(max-width:640px){.asset-fields{grid-template-columns:1fr 1fr;}}
+@media(max-width:400px){.asset-fields{grid-template-columns:1fr;}}
+.af-group{display:flex;flex-direction:column;gap:.22rem;}
+.af-label{font-size:.62rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--text-muted);}
+.af-select,.af-input{
+  padding:.32rem .5rem;border:1px solid var(--border);border-radius:5px;
+  background:var(--bg);color:var(--text);
+  font-family:var(--sans);font-size:.75rem;cursor:pointer;
+  transition:border-color .16s;
+}
+.af-select:focus,.af-input:focus{outline:none;border-color:var(--accent);}
+.af-textarea{
+  width:100%;padding:.32rem .5rem;border:1px solid var(--border);border-radius:5px;
+  background:var(--bg);color:var(--text);
+  font-family:var(--sans);font-size:.75rem;
+  resize:vertical;min-height:50px;line-height:1.5;
+  transition:border-color .16s;
+}
+.af-textarea:focus{outline:none;border-color:var(--accent);}
+.asset-questions{margin-top:.6rem;display:flex;flex-direction:column;gap:.3rem;}
+.aq-row{
+  display:flex;align-items:center;gap:.65rem;
+  background:var(--bg-alt);border-radius:5px;padding:.35rem .6rem;font-size:.75rem;
+}
+.aq-q{flex:1;color:var(--text-muted);}
+.aq-btns{display:flex;gap:.3rem;flex-shrink:0;}
+.yn-btn{
+  padding:.18rem .5rem;border-radius:4px;
+  border:1px solid var(--border);background:var(--bg-card);
+  font-family:var(--sans);font-size:.67rem;font-weight:700;
+  cursor:pointer;transition:all .14s;color:var(--text);
+}
+.yn-btn:hover{border-color:var(--accent);}
+.yn-y.sel{background:var(--green-lt);border-color:var(--green-mid);color:var(--green-mid);}
+.yn-n.sel{background:var(--red-lt);border-color:var(--red);color:var(--red);}
+.yn-u.sel{background:var(--amber-lt);border-color:var(--amber-mid);color:var(--amber);}
+[data-theme="dark"] .yn-y.sel{background:#041a0e;}
+[data-theme="dark"] .yn-n.sel{background:#1a0808;}
+[data-theme="dark"] .yn-u.sel{background:#1c1400;}
+
+/* category select color states */
+.af-select.cat-cui   {border-color:#7c3aed;background:var(--purple-lt);color:#5b21b6;}
+.af-select.cat-spa   {border-color:#1d4ed8;background:var(--indigo-lt);color:var(--indigo);}
+.af-select.cat-crma  {border-color:var(--amber-mid);background:var(--amber-lt);color:var(--amber);}
+.af-select.cat-spec  {border-color:var(--teal);background:var(--teal-lt);color:var(--teal);}
+.af-select.cat-oos   {border-color:var(--gray-500);background:var(--bg-alt);color:var(--gray-500);}
+[data-theme="dark"] .af-select.cat-cui   {background:#100823;color:#a78bfa;}
+[data-theme="dark"] .af-select.cat-spa   {background:var(--indigo-pale);color:#7eb3ff;}
+[data-theme="dark"] .af-select.cat-crma  {background:#1c1400;color:#fbbf24;}
+[data-theme="dark"] .af-select.cat-spec  {background:#031820;color:#22d3ee;}
+[data-theme="dark"] .af-select.cat-oos   {background:var(--bg-alt);color:var(--gray-500);}
+
+/* scope states */
+.af-select.scope-in   {border-color:var(--green-mid);background:var(--green-lt);color:var(--green-mid);}
+.af-select.scope-ind  {border-color:var(--amber-mid);background:var(--amber-lt);color:var(--amber);}
+.af-select.scope-out  {border-color:var(--gray-500);background:var(--bg-alt);color:var(--gray-500);}
+[data-theme="dark"] .af-select.scope-in {background:#041a0e;color:#4ade80;}
+[data-theme="dark"] .af-select.scope-ind{background:#1c1400;color:#fbbf24;}
+
+/* ══════════════════════════════════════════════
+   SCOPE MAP
+══════════════════════════════════════════════ */
+.scope-diagram{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--rad);padding:1.1rem;position:relative;
+}
+.scope-zone{
+  border-radius:6px;border:2px dashed;padding:.75rem;margin-bottom:.75rem;
+}
+.scope-zone:last-child{margin-bottom:0;}
+.scope-zone-in   {border-color:var(--green-mid);background:var(--green-lt);}
+.scope-zone-ind  {border-color:var(--amber-mid);background:var(--amber-lt);}
+.scope-zone-out  {border-color:var(--gray-300);background:var(--bg-alt);}
+[data-theme="dark"] .scope-zone-in  {background:#041a0e;}
+[data-theme="dark"] .scope-zone-ind {background:#1c1400;}
+[data-theme="dark"] .scope-zone-out {background:var(--bg-alt);}
+.scope-zone-title{font-size:.72rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:.5rem;}
+.scope-in-title  {color:var(--green-mid);}
+.scope-ind-title {color:var(--amber);}
+.scope-out-title {color:var(--text-muted);}
+.scope-textarea{
+  width:100%;padding:.4rem .55rem;
+  border:1px solid var(--border);border-radius:5px;
+  background:rgba(255,255,255,.5);color:var(--text);
+  font-family:var(--sans);font-size:.77rem;
+  resize:vertical;min-height:58px;line-height:1.5;
+  transition:border-color .16s;
+}
+[data-theme="dark"] .scope-textarea{background:rgba(0,0,0,.2);}
+.scope-textarea:focus{outline:none;border-color:var(--accent);}
+
+/* boundary questions */
+.bq-list{display:flex;flex-direction:column;gap:.45rem;margin-top:.75rem;}
+.bq-item{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--rad);padding:.7rem .9rem;
+}
+.bq-label{font-size:.72rem;font-weight:700;color:var(--text-muted);letter-spacing:.04em;margin-bottom:.3rem;}
+.bq-input{
+  width:100%;padding:.35rem .5rem;
+  border:1px solid var(--border);border-radius:5px;
+  background:var(--bg);color:var(--text);
+  font-family:var(--sans);font-size:.77rem;
+  resize:vertical;min-height:54px;line-height:1.5;
+  transition:border-color .16s;
+}
+.bq-input:focus{outline:none;border-color:var(--accent);}
+
+/* ══════════════════════════════════════════════
+   INVENTORY WORKSHEET
+══════════════════════════════════════════════ */
+.inv-table-wrap{overflow-x:auto;}
+.inv-table{width:100%;border-collapse:collapse;font-size:.75rem;min-width:820px;}
+.inv-table th{
+  background:var(--slate);color:rgba(255,255,255,.8);
+  font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  padding:.5rem .65rem;text-align:left;border-bottom:2px solid var(--border);
+  white-space:nowrap;
+}
+[data-theme="dark"] .inv-table th{background:#040c14;}
+.inv-table td{padding:.42rem .6rem;border-bottom:1px solid var(--border);vertical-align:top;}
+.inv-table tr:hover td{background:var(--bg-alt);}
+.inv-table tr:last-child td{border-bottom:none;}
+.inv-asset-name{font-weight:700;font-size:.8rem;}
+.inv-asset-id{font-family:var(--mono);font-size:.66rem;color:var(--text-muted);}
+.inv-input{
+  width:100%;padding:.26rem .4rem;
+  border:1px solid var(--border);border-radius:4px;
+  background:var(--bg);color:var(--text);
+  font-family:var(--sans);font-size:.73rem;
+  transition:border-color .16s;min-width:80px;
+}
+.inv-input:focus{outline:none;border-color:var(--accent);}
+.inv-sel{
+  width:100%;padding:.26rem .4rem;
+  border:1px solid var(--border);border-radius:4px;
+  background:var(--bg);color:var(--text);
+  font-family:var(--sans);font-size:.73rem;cursor:pointer;
+}
+.inv-sel:focus{outline:none;border-color:var(--accent);}
+.inv-locked{font-size:.73rem;color:var(--text-muted);font-style:italic;}
+.inv-badge{
+  display:inline-block;font-size:.6rem;font-weight:700;letter-spacing:.05em;
+  padding:.1rem .4rem;border-radius:3px;text-transform:uppercase;
+}
+.ib-yes{background:var(--green-lt);color:var(--green-mid);border:1px solid var(--green-mid);}
+.ib-no{background:var(--bg-alt);color:var(--text-muted);border:1px solid var(--border);}
+[data-theme="dark"] .ib-yes{background:#041a0e;}
+
+/* ══════════════════════════════════════════════
+   OWNERSHIP CARDS
+══════════════════════════════════════════════ */
+.own-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:.65rem;}
+.own-card{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--rad);padding:.9rem 1rem;
+}
+.own-card-head{margin-bottom:.6rem;}
+.own-asset-name{font-weight:700;font-size:.88rem;}
+.own-asset-type{font-size:.71rem;color:var(--text-muted);margin-top:.1rem;}
+.own-fields{display:flex;flex-direction:column;gap:.38rem;}
+.own-row{display:flex;flex-direction:column;gap:.2rem;}
+.own-label{font-size:.62rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--text-muted);}
+.own-input{
+  padding:.3rem .48rem;border:1px solid var(--border);border-radius:5px;
+  background:var(--bg);color:var(--text);
+  font-family:var(--sans);font-size:.76rem;
+  transition:border-color .16s;width:100%;
+}
+.own-input:focus{outline:none;border-color:var(--accent);}
+
+/* ══════════════════════════════════════════════
+   WEAKNESS CHECKLIST
+══════════════════════════════════════════════ */
+.weak-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:.5rem;}
+.weak-item{
+  display:flex;gap:.65rem;align-items:flex-start;
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--rad);padding:.7rem .85rem;
+  transition:all .16s;cursor:pointer;
+}
+.weak-item.checked{border-color:var(--red);background:var(--red-lt);}
+[data-theme="dark"] .weak-item.checked{background:var(--red-lt);}
+.weak-cb{width:15px;height:15px;accent-color:var(--red);flex-shrink:0;margin-top:.18rem;cursor:pointer;}
+.weak-text{font-size:.79rem;}
+.weak-title{font-weight:700;margin-bottom:.1rem;}
+.weak-desc{font-size:.72rem;color:var(--text-muted);line-height:1.45;}
+
+/* ══════════════════════════════════════════════
+   RECOMMENDATIONS
+══════════════════════════════════════════════ */
+.reco-list{display:flex;flex-direction:column;gap:.6rem;}
+.reco-item{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--rad);padding:.9rem 1rem;
+  display:flex;gap:.75rem;align-items:flex-start;
+}
+.reco-num{
+  width:26px;height:26px;flex-shrink:0;
+  background:var(--accent);color:#fff;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.7rem;font-weight:700;
+}
+.reco-body{flex:1;}
+.reco-title{font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.3rem;}
+.reco-input{
+  width:100%;padding:.35rem .5rem;
+  border:1px solid var(--border);border-radius:5px;
+  background:var(--bg);color:var(--text);
+  font-family:var(--sans);font-size:.79rem;
+  resize:vertical;min-height:58px;line-height:1.5;
+  transition:border-color .16s;
+}
+.reco-input:focus{outline:none;border-color:var(--accent);}
+
+/* ══════════════════════════════════════════════
+   DEBRIEF QUESTIONS
+══════════════════════════════════════════════ */
+.debrief-list{display:flex;flex-direction:column;gap:.5rem;}
+.dq-item{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--rad);padding:.75rem .9rem;
+  display:flex;gap:.65rem;align-items:flex-start;
+}
+.dq-num{
+  width:22px;height:22px;flex-shrink:0;
+  background:var(--accent);color:#fff;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.65rem;font-weight:700;margin-top:.06rem;
+}
+.dq-text{font-size:.82rem;}
+.dq-resp{
+  width:100%;margin-top:.35rem;
+  padding:.32rem .48rem;border:1px solid var(--border);border-radius:5px;
+  background:var(--bg);color:var(--text);
+  font-family:var(--sans);font-size:.76rem;
+  resize:vertical;min-height:50px;line-height:1.5;
+  transition:border-color .16s;
+}
+.dq-resp:focus{outline:none;border-color:var(--accent);}
+
+/* ══════════════════════════════════════════════
+   RUBRIC
+══════════════════════════════════════════════ */
+.rubric-wrap{overflow-x:auto;}
+.rubric{width:100%;border-collapse:collapse;font-size:.76rem;min-width:680px;}
+.rubric th{
+  background:var(--slate);color:rgba(255,255,255,.8);
+  font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  padding:.5rem .7rem;text-align:left;border-bottom:2px solid var(--border);
+}
+[data-theme="dark"] .rubric th{background:#040c14;}
+.rubric td{padding:.5rem .7rem;border-bottom:1px solid var(--border);vertical-align:top;}
+.rubric tr:last-child td{border-bottom:none;}
+.rubric tr:hover td{background:var(--bg-alt);}
+.rubric-total td{background:var(--indigo-lt);font-weight:700;}
+[data-theme="dark"] .rubric-total td{background:var(--indigo-pale);}
+.pts-chip{display:inline-block;background:var(--indigo-lt);color:var(--accent);border:1px solid var(--accent);font-size:.62rem;font-weight:700;padding:.1rem .4rem;border-radius:3px;}
+[data-theme="dark"] .pts-chip{background:var(--indigo-pale);}
+.score-in{
+  width:48px;padding:.28rem .35rem;text-align:center;
+  border:1px solid var(--border);border-radius:4px;
+  background:var(--bg);color:var(--text);
+  font-family:var(--mono);font-size:.8rem;
+}
+.score-in:focus{outline:none;border-color:var(--accent);}
+.perf-ex{color:var(--green-mid);font-weight:700;}
+.perf-pr{color:var(--accent);font-weight:700;}
+.perf-de{color:var(--amber);font-weight:700;}
+.perf-ni{color:var(--red);font-weight:700;}
+
+/* Score summary */
+.score-summary{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:.65rem;margin-top:1rem;
+}
+@media(max-width:540px){.score-summary{grid-template-columns:1fr 1fr;}}
+.score-tile{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--rad);padding:.8rem;text-align:center;
+}
+.st-val{font-family:var(--serif);font-size:1.8rem;color:var(--accent);line-height:1;margin-bottom:.2rem;}
+.st-lbl{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);}
+.rating-pill{display:inline-block;font-size:.82rem;font-weight:700;padding:.28rem .8rem;border-radius:16px;border:2px solid;}
+.rp-ex{background:var(--green-lt);color:var(--green-mid);border-color:var(--green-mid);}
+.rp-pr{background:var(--indigo-lt);color:var(--accent);border-color:var(--accent);}
+.rp-de{background:var(--amber-lt);color:var(--amber);border-color:var(--amber-mid);}
+.rp-ni{background:var(--red-lt);color:var(--red);border-color:var(--red);}
+[data-theme="dark"] .rp-ex{background:#041a0e;}
+[data-theme="dark"] .rp-pr{background:var(--indigo-pale);}
+[data-theme="dark"] .rp-de{background:#1c1400;}
+[data-theme="dark"] .rp-ni{background:#1a0808;}
+
+/* ══════════════════════════════════════════════
+   PROGRESS TRACKER
+══════════════════════════════════════════════ */
+.progress-banner{
+  display:flex;align-items:center;gap:.9rem;
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--rad);padding:.7rem 1rem;margin-bottom:1.75rem;
+}
+.pb-label{font-size:.72rem;font-weight:700;color:var(--accent);white-space:nowrap;}
+.pb-track{flex:1;height:9px;background:var(--border);border-radius:5px;overflow:hidden;}
+.pb-fill{height:100%;background:var(--accent);border-radius:5px;transition:width .35s;}
+.pb-count{font-size:.75rem;font-weight:700;color:var(--accent);white-space:nowrap;font-family:var(--mono);}
+
+/* ══════════════════════════════════════════════
+   MISC
+══════════════════════════════════════════════ */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;}
+@media(max-width:580px){.grid2{grid-template-columns:1fr;}}
+.hr{border:none;border-top:1px solid var(--border);margin:1rem 0;}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rad);padding:1.1rem;}
+.obj-list{display:flex;flex-direction:column;gap:.45rem;}
+.obj-item{display:flex;gap:.65rem;align-items:flex-start;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rad);padding:.65rem .9rem;}
+.obj-n{width:22px;height:22px;flex-shrink:0;background:var(--accent);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;}
+.obj-t{font-size:.81rem;line-height:1.5;}
+
+@media print{
+  .topbar,.secnav,.timer,.tb-actions,.btn,.progress-banner{display:none!important;}
+  body{font-size:12px;}
+  .section{break-inside:avoid;}
+  .hero{background:#0f2233!important;-webkit-print-color-adjust:exact;}
+  .rubric-total td{background:#e8effc!important;-webkit-print-color-adjust:exact;}
+}
+</style>
+</head>
+<body>
+
+<!-- ── TOP BAR ─────────────────────────────────────── -->
+<div class="topbar">
+  <div class="tb-brand">
+    <div class="tb-chip">FFSI</div>
+    <div class="tb-label">CMMC Asset Inventory &amp; Categorization Exercise</div>
+  </div>
+  <div class="tb-actions">
+    <button class="btn" id="themeBtn" onclick="toggleTheme()">🌙 Dark Mode</button>
+    <button class="btn" onclick="window.print()">🖨 Print</button>
+    <button class="btn" onclick="clearAll()">↺ Reset</button>
+    <button class="btn btn-primary" onclick="exportAll()">📤 Export</button>
+  </div>
+</div>
+
+<!-- ── SECTION NAV ─────────────────────────────────── -->
+<div class="secnav" id="secnav">
+  <button class="sn-btn on" onclick="navTo('intro',this)">Intro</button>
+  <button class="sn-btn" onclick="navTo('objectives',this)">Objectives</button>
+  <button class="sn-btn" onclick="navTo('terms',this)">Key Terms</button>
+  <button class="sn-btn" onclick="navTo('categories',this)">Categories</button>
+  <button class="sn-btn" onclick="navTo('act1',this)">Act 1 — Categorize</button>
+  <button class="sn-btn" onclick="navTo('act2',this)">Act 2 — Scope</button>
+  <button class="sn-btn" onclick="navTo('act3',this)">Act 3 — Inventory</button>
+  <button class="sn-btn" onclick="navTo('act4',this)">Act 4 — Ownership</button>
+  <button class="sn-btn" onclick="navTo('act5',this)">Act 5 — Weaknesses</button>
+  <button class="sn-btn" onclick="navTo('act6',this)">Act 6 — Recommendations</button>
+  <button class="sn-btn" onclick="navTo('debrief',this)">Debrief</button>
+  <button class="sn-btn" onclick="navTo('rubric',this)">Rubric</button>
+</div>
+
+<div class="page">
+
+<!-- ── HERO ────────────────────────────────────────── -->
+<div class="hero" id="intro">
+  <div class="hero-kicker">CMMC 2.0 Workshop · Asset Management · 30–45 Minutes</div>
+  <h1>Defining the <span>CMMC Assessment Boundary:</span><br>Asset Inventory &amp; Categorization</h1>
+  <div class="hero-sub">Analyze FFSI's asset environment, apply CMMC asset categories, determine assessment scope, and complete an inventory worksheet — preparing the organization for C3PAO engagement.</div>
+  <div class="hero-chips">
+    <span class="hc">NIST SP 800-171</span>
+    <span class="hc">100 Points</span>
+    <span class="hc">6 Activities</span>
+    <span class="hc">Asset Scoping</span>
+    <span class="hc">⚠ Fictional — Training Use Only</span>
+  </div>
+</div>
+
+<!-- ── TIMER ───────────────────────────────────────── -->
+<div class="timer">
+  <span class="timer-lbl">⏱ Timer</span>
+  <span class="timer-disp" id="timerDisp">45:00</span>
+  <div style="display:flex;gap:.3rem;">
+    <button class="btn" onclick="startTimer()">▶</button>
+    <button class="btn" onclick="pauseTimer()">⏸</button>
+    <button class="btn" onclick="resetTimer()">↺</button>
+  </div>
+  <div class="timer-track"><div class="timer-fill" id="timerFill" style="width:100%"></div></div>
+</div>
+
+<!-- ── PROGRESS ────────────────────────────────────── -->
+<div class="progress-banner">
+  <span class="pb-label">Exercise Progress</span>
+  <div class="pb-track"><div class="pb-fill" id="pbFill" style="width:0%"></div></div>
+  <span class="pb-count" id="pbCount">0%</span>
+</div>
+
+<!-- ── INTRODUCTION ────────────────────────────────── -->
+<div class="section">
+  <div class="sec-hdr"><div class="sec-num">📋</div><div class="sec-title">Introduction — Why Asset Inventories Matter</div></div>
+  <div class="callout cl-blue">
+    <span style="font-size:1rem;flex-shrink:0;">🎯</span>
+    <div>An accurate, well-categorized asset inventory is one of the first documents a C3PAO assessor will request. It defines the assessment boundary, drives resource allocation, and reveals whether the contractor truly understands where CUI lives in their environment. Incorrect categorization — in either direction — creates real consequences: assets missed from scope create compliance risk; assets over-scoped inflate assessment cost and effort.</div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div style="font-weight:700;font-size:.88rem;margin-bottom:.4rem;">Why Assessors Review Inventories First</div>
+      <ul style="font-size:.78rem;color:var(--text-muted);padding-left:1rem;line-height:1.85;">
+        <li>Validates that the contractor knows where CUI enters, lives, and exits</li>
+        <li>Confirms the SSP boundary matches what's actually deployed</li>
+        <li>Identifies unmanaged or unclaimed assets before interviews begin</li>
+        <li>Reveals segmentation gaps that expand scope unexpectedly</li>
+        <li>Sets the foundation for all 110 NIST SP 800-171 practice assessments</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div style="font-weight:700;font-size:.88rem;margin-bottom:.4rem;">Consequences of Improper Categorization</div>
+      <ul style="font-size:.78rem;color:var(--text-muted);padding-left:1rem;line-height:1.85;">
+        <li><strong>Under-scoping:</strong> CUI assets excluded → compliance gaps → assessment failure</li>
+        <li><strong>Over-scoping:</strong> Non-CUI assets included → higher cost, more practices to evidence</li>
+        <li><strong>Missing OT assets:</strong> Production systems connected to CUI VLANs go unreviewed</li>
+        <li><strong>Unowned assets:</strong> No owner = no evidence = assessor finding</li>
+        <li><strong>Stale inventory:</strong> Assets added post-SSP create undocumented scope gaps</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ── LEARNING OBJECTIVES ─────────────────────────── -->
+<div class="section" id="objectives">
+  <div class="sec-hdr"><div class="sec-num">🎯</div><div class="sec-title">Learning Objectives</div></div>
+  <div class="obj-list">
+    <div class="obj-item"><div class="obj-n">1</div><div class="obj-t">Identify and apply the five CMMC asset categories — CUI Assets, Security Protection Assets, Contractor Risk Managed Assets, Specialized Assets, and Out-of-Scope Assets — to a real-world asset list.</div></div>
+    <div class="obj-item"><div class="obj-n">2</div><div class="obj-t">Determine whether an asset processes, stores, or transmits CUI and explain how that determination affects its assessment scope and required security controls.</div></div>
+    <div class="obj-item"><div class="obj-n">3</div><div class="obj-t">Distinguish between in-scope, indirectly in-scope, and out-of-scope assets within a contractor's environment and justify each determination with reference to CUI flow and segmentation.</div></div>
+    <div class="obj-item"><div class="obj-n">4</div><div class="obj-t">Complete missing fields within a sample asset inventory worksheet — including asset owner, category, CUI status, criticality, and security controls — using information from the FFSI case study.</div></div>
+    <div class="obj-item"><div class="obj-n">5</div><div class="obj-t">Assign Asset Owner, Asset Custodian, and Technical Administrator roles to selected FFSI assets and explain the accountability difference between each role.</div></div>
+    <div class="obj-item"><div class="obj-n">6</div><div class="obj-t">Identify common inventory weaknesses in the FFSI environment and develop three concrete recommendations for improving the organization's asset management posture prior to assessment.</div></div>
+    <div class="obj-item"><div class="obj-n">7</div><div class="obj-t">Explain how segmentation, enclave design, and access control boundaries affect which assets fall within the CMMC assessment scope.</div></div>
+  </div>
+</div>
+
+<!-- ── KEY TERMS ────────────────────────────────────── -->
+<div class="section" id="terms">
+  <div class="sec-hdr"><div class="sec-num">📖</div><div class="sec-title">Key Terms</div></div>
+  <div class="gloss-grid" id="glossGrid"></div>
+</div>
+
+<!-- ── ASSET CATEGORIES ─────────────────────────────── -->
+<div class="section" id="categories">
+  <div class="sec-hdr"><div class="sec-num">🗂</div><div class="sec-title">CMMC Asset Categories — Reference Guide</div></div>
+  <div class="callout cl-amber">
+    <span style="font-size:1rem;flex-shrink:0;">📌</span>
+    <div>Use this reference throughout all activities. Each asset you analyze must be assigned one of these five categories. The category determines which CMMC practices apply to the asset and whether it falls within the formal assessment boundary.</div>
+  </div>
+  <div class="cat-legend" id="catLegend"></div>
+</div>
+
+<!-- ── ACTIVITY 1: ASSET CATEGORIZATION ─────────────── -->
+<div class="section" id="act1">
+  <div class="sec-hdr">
+    <div class="sec-num">1</div>
+    <div class="sec-title">Activity 1 — Asset Categorization Analysis</div>
+    <div class="sec-pts">25 pts</div>
+  </div>
+  <div class="callout cl-blue">
+    <span style="font-size:1rem;flex-shrink:0;">💡</span>
+    <div><strong>Instructions:</strong> For each FFSI asset below, answer the five diagnostic questions (Yes / No / Uncertain), assign the correct CMMC category, set the assessment scope, and enter your justification. Use the Category Reference Guide above and your knowledge of the FFSI case study environment.</div>
+  </div>
+  <div class="asset-list" id="assetList"></div>
+</div>
+
+<!-- ── ACTIVITY 2: SCOPE DETERMINATION ──────────────── -->
+<div class="section" id="act2">
+  <div class="sec-hdr">
+    <div class="sec-num">2</div>
+    <div class="sec-title">Activity 2 — Assessment Scope Determination</div>
+    <div class="sec-pts">20 pts</div>
+  </div>
+  <div class="callout cl-blue">
+    <span style="font-size:1rem;flex-shrink:0;">🔭</span>
+    <div><strong>Instructions:</strong> Based on your categorization decisions in Activity 1, identify which assets belong in each scope zone. Then answer the boundary analysis questions below. Consider segmentation, shared infrastructure, and CUI data flow pathways.</div>
+  </div>
+  <div class="scope-diagram">
+    <div class="scope-zone scope-zone-in">
+      <div class="scope-zone-title scope-in-title">✅ Clearly In Scope — CUI Assets &amp; Security Protection Assets</div>
+      <textarea class="scope-textarea" id="scope-in" placeholder="List assets by name or ID. These directly process, store, transmit CUI, or protect CUI systems. Full CMMC control set applies..." oninput="sv('scope-in',this.value)"></textarea>
+    </div>
+    <div class="scope-zone scope-zone-ind">
+      <div class="scope-zone-title scope-ind-title">⚠ Indirectly In Scope — Contractor Risk Managed / Shared Infrastructure</div>
+      <textarea class="scope-textarea" id="scope-ind" placeholder="List assets that connect to CUI systems, share network segments, or support in-scope systems. May require segmentation or compensating controls..." oninput="sv('scope-ind',this.value)"></textarea>
+    </div>
+    <div class="scope-zone scope-zone-out">
+      <div class="scope-zone-title scope-out-title">⬜ Out of Scope — Isolated Systems &amp; Non-CUI Assets</div>
+      <textarea class="scope-textarea" id="scope-out" placeholder="List assets that do not process CUI, are fully isolated, and have no pathway to CUI systems. Document the basis for exclusion..." oninput="sv('scope-out',this.value)"></textarea>
+    </div>
+  </div>
+  <div class="bq-list">
+    <div class="bq-item">
+      <div class="bq-label">Boundary Analysis Q1 — What is FFSI's CUI enclave and which assets does it contain?</div>
+      <textarea class="bq-input" id="bq-1" placeholder="Describe the CUI enclave (VLAN 20, CORP-FS-02, etc.) and list all assets that process or store CUI within it..." oninput="sv('bq-1',this.value)"></textarea>
+    </div>
+    <div class="bq-item">
+      <div class="bq-label">Boundary Analysis Q2 — Which assets create shared infrastructure concerns that could expand scope?</div>
+      <textarea class="bq-input" id="bq-2" placeholder="Identify assets on shared network segments, common switches, or shared services that could create scope expansion risk..." oninput="sv('bq-2',this.value)"></textarea>
+    </div>
+    <div class="bq-item">
+      <div class="bq-label">Boundary Analysis Q3 — Which segmentation gaps at FFSI are most critical to address before assessment?</div>
+      <textarea class="bq-input" id="bq-3" placeholder="Reference the OT/CUI VLAN gap (GAP-004), production tablets, warehouse systems, and any other segmentation findings..." oninput="sv('bq-3',this.value)"></textarea>
+    </div>
+    <div class="bq-item">
+      <div class="bq-label">Boundary Analysis Q4 — Which assets were you initially tempted to exclude but should remain in scope? Why?</div>
+      <textarea class="bq-input" id="bq-4" placeholder="Consider the ERP server, QA-DB-01, production tablets, backup server, and cloud environments..." oninput="sv('bq-4',this.value)"></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- ── ACTIVITY 3: INVENTORY WORKSHEET ──────────────── -->
+<div class="section" id="act3">
+  <div class="sec-hdr">
+    <div class="sec-num">3</div>
+    <div class="sec-title">Activity 3 — Asset Inventory Worksheet Completion</div>
+    <div class="sec-pts">20 pts</div>
+  </div>
+  <div class="callout cl-blue">
+    <span style="font-size:1rem;flex-shrink:0;">📋</span>
+    <div><strong>Instructions:</strong> Complete the missing fields (shown in white input boxes) for each asset. Fields shown in gray are pre-filled from the case study. Use FFSI case study data to fill in owners, categories, scope decisions, and security control notes.</div>
+  </div>
+  <div class="inv-table-wrap">
+    <table class="inv-table">
+      <thead>
+        <tr>
+          <th>Asset Name / ID</th>
+          <th>Location</th>
+          <th>Type</th>
+          <th>Category</th>
+          <th>CUI?</th>
+          <th>Criticality</th>
+          <th>Scope</th>
+          <th>Owner</th>
+          <th>Controls Applied</th>
+        </tr>
+      </thead>
+      <tbody id="invTableBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ── ACTIVITY 4: OWNERSHIP ─────────────────────────── -->
+<div class="section" id="act4">
+  <div class="sec-hdr">
+    <div class="sec-num">4</div>
+    <div class="sec-title">Activity 4 — Asset Ownership Assignments</div>
+    <div class="sec-pts">15 pts</div>
+  </div>
+  <div class="callout cl-blue">
+    <span style="font-size:1rem;flex-shrink:0;">👤</span>
+    <div><strong>Instructions:</strong> For each asset below, identify the Asset Owner (accountable), Asset Custodian (daily management), and Technical Administrator (hands-on maintenance). Use FFSI personnel from the case study roster. Explain accountability for each.</div>
+  </div>
+  <div class="own-grid" id="ownGrid"></div>
+</div>
+
+<!-- ── ACTIVITY 5: WEAKNESSES ───────────────────────── -->
+<div class="section" id="act5">
+  <div class="sec-hdr">
+    <div class="sec-num">5</div>
+    <div class="sec-title">Activity 5 — Inventory Weakness Identification</div>
+    <div class="sec-pts">10 pts</div>
+  </div>
+  <div class="callout cl-amber">
+    <span style="font-size:1rem;flex-shrink:0;">⚠️</span>
+    <div><strong>Instructions:</strong> Check every weakness that currently exists in FFSI's asset inventory based on your review of the case study. For each weakness you identify, briefly note the evidence that supports your finding.</div>
+  </div>
+  <div class="weak-list" id="weakList"></div>
+</div>
+
+<!-- ── ACTIVITY 6: RECOMMENDATIONS ─────────────────── -->
+<div class="section" id="act6">
+  <div class="sec-hdr">
+    <div class="sec-num">6</div>
+    <div class="sec-title">Activity 6 — Asset Management Recommendations</div>
+    <div class="sec-pts">10 pts</div>
+  </div>
+  <div class="callout cl-blue">
+    <span style="font-size:1rem;flex-shrink:0;">💡</span>
+    <div><strong>Instructions:</strong> Based on all prior activities, write three specific, actionable recommendations for improving FFSI's asset management program before the C3PAO assessment. Reference specific gaps and personnel from the FFSI case study.</div>
+  </div>
+  <div class="reco-list" id="recoList"></div>
+</div>
+
+<!-- ── DEBRIEF ───────────────────────────────────────── -->
+<div class="section" id="debrief">
+  <div class="sec-hdr"><div class="sec-num">🗣</div><div class="sec-title">Instructor Debrief Questions</div></div>
+  <div class="callout cl-blue">
+    <span style="font-size:1rem;flex-shrink:0;">🎓</span>
+    <div>Use these questions to drive a 10-minute class discussion. Participants should be able to justify their categorization decisions and reflect on how scope decisions affect CMMC assessment outcomes.</div>
+  </div>
+  <div class="debrief-list" id="debriefList"></div>
+</div>
+
+<!-- ── RUBRIC ────────────────────────────────────────── -->
+<div class="section" id="rubric">
+  <div class="sec-hdr"><div class="sec-num">📊</div><div class="sec-title">Facilitator Scoring Rubric</div></div>
+  <div class="callout cl-blue">
+    <span style="font-size:1rem;flex-shrink:0;">📝</span>
+    <div>Enter scores in the right column. The total updates automatically. Performance bands: <strong>Excellent 90–100</strong> · <strong>Proficient 75–89</strong> · <strong>Developing 60–74</strong> · <strong>Needs Improvement &lt;60</strong>.</div>
+  </div>
+  <div class="rubric-wrap">
+    <table class="rubric">
+      <thead>
+        <tr><th>Category</th><th>Excellent</th><th>Proficient</th><th>Developing</th><th>Needs Improvement</th><th>Points</th><th>Score</th></tr>
+      </thead>
+      <tbody id="rubricBody"></tbody>
+      <tfoot>
+        <tr class="rubric-total">
+          <td><strong>Total</strong></td>
+          <td colspan="4"></td>
+          <td><span class="pts-chip">100 pts</span></td>
+          <td><strong id="rubricTotal" style="font-family:var(--mono);color:var(--accent);">0</strong> / 100</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+  <div class="score-summary">
+    <div class="score-tile"><div class="st-val" id="scoreVal">0</div><div class="st-lbl">Total Points</div></div>
+    <div class="score-tile"><div class="st-val" id="scorePct">0%</div><div class="st-lbl">Percentage</div></div>
+    <div class="score-tile" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.4rem;">
+      <div id="scoreRating" class="rating-pill rp-ni">Needs Improvement</div>
+      <div class="st-lbl">Rating</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end .page -->
+
+<!-- ═══════════════════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════════════════ -->
+<script>
+/* ── DATA ──────────────────────────────────────────── */
+const glossTerms = [
+  {t:'Asset Inventory', d:'A documented list of all hardware, software, data, and system components within the organization\'s environment.'},
+  {t:'Assessment Scope', d:'The boundary that defines which systems, components, and locations are subject to CMMC evaluation.'},
+  {t:'CUI Asset', d:'A system or component that processes, stores, or transmits Controlled Unclassified Information — the highest-priority scope category.'},
+  {t:'Security Protection Asset', d:'A system that provides security capabilities to protect CUI but does not directly process or store it (e.g., firewalls, SIEM, EDR).'},
+  {t:'Contractor Risk Managed Asset', d:'An asset that does not process CUI but operates within the environment; managed via normal organizational risk processes without full CMMC compliance.'},
+  {t:'Specialized Asset', d:'An operational technology asset (OT/ICS/SCADA), IoT device, or legacy system with limited ability to implement security controls.'},
+  {t:'Out-of-Scope Asset', d:'A system that is fully isolated from CUI and has no pathway to in-scope systems; excluded from the CMMC assessment boundary.'},
+  {t:'Asset Owner', d:'The individual accountable for an asset — authorizes access, approves changes, and is ultimately responsible for compliance.'},
+  {t:'Asset Custodian', d:'The individual responsible for the day-to-day management and protection of an asset on behalf of the Asset Owner.'},
+  {t:'Assessment Boundary', d:'The defined perimeter within which CMMC requirements are evaluated; must align with the SSP system boundary.'},
+  {t:'FCI', d:'Federal Contract Information — information generated for or provided under a federal contract, not intended for public release.'},
+  {t:'CUI', d:'Controlled Unclassified Information — government-designated information requiring safeguarding per law, regulation, or policy.'},
+  {t:'SSP', d:'System Security Plan — the primary CMMC document defining the system boundary, implemented controls, and responsible parties.'},
+  {t:'Enclave', d:'A network segment isolated by access controls, firewalls, or VLANs that restricts CUI to a defined subset of systems.'},
+  {t:'Segmentation', d:'The use of VLANs, firewalls, or physical separation to prevent unauthorized access between network zones.'},
+];
+
+const catLegendData = [
+  {color:'dot-cui',  abbr:'CUI Asset',         desc:'Directly processes, stores, or transmits CUI. Full 110-practice CMMC control set applies. Highest scoping priority.'},
+  {color:'dot-spa',  abbr:'Security Protection',desc:'Protects CUI assets (firewalls, SIEM, EDR, IAM). In-scope; all applicable practices apply.'},
+  {color:'dot-crma', abbr:'Contractor Risk Mgmt',desc:'No CUI; in-scope environment. Managed via organizational risk. Fewer CMMC practices required.'},
+  {color:'dot-spec', abbr:'Specialized Asset',  desc:'OT, IoT, or legacy device. Limited ability to implement controls; compensating controls or POA&M required.'},
+  {color:'dot-oos',  abbr:'Out of Scope',        desc:'Fully isolated; no pathway to CUI. Must document basis for exclusion in SSP.'},
+];
+
+const assets = [
+  {id:'FFSI-001', icon:'🖥', name:'CORP-DC-01 / DC-02', type:'Server — Domain Controller', loc:'HQ', context:'Active Directory domain controllers. All FFSI endpoints authenticate through AD. CORP-FS-02 (CUI file server) is AD-joined and uses Kerberos authentication.'},
+  {id:'FFSI-003', icon:'📦', name:'CORP-ERP-01', type:'Server — ERP Application', loc:'HQ', context:'ProvisionEdge ERP v7.4. Processes contract delivery schedules and unit pricing (Partial CUI). Local ERP accounts — no SSO. Patch delayed 94 days in 2024.'},
+  {id:'FFSI-005', icon:'🔐', name:'CORP-FS-02', type:'Server — CUI File Server', loc:'HQ', context:'Encrypted file server on VLAN 20 (CUI enclave). Stores controlled technical data and procurement CUI. Access restricted to Contracts team and ISSO.'},
+  {id:'FFSI-006', icon:'📊', name:'CORP-SIEM-01', type:'Server — SIEM', loc:'HQ', context:'Splunk Enterprise. Collects logs from AD, firewall, VPN, CORP-FS-02, and cloud. 90-day alert review gap identified in 2024. VLAN 80 not sending logs.'},
+  {id:'FFSI-010', icon:'🔥', name:'PA-3420-HQ', type:'Network — Firewall', loc:'HQ', context:'Primary perimeter firewall. Manages VLAN segmentation and ACLs. Previously had undocumented ACL permitting VLAN 80 (OT) to VLAN 20 (CUI) — remediated Oct 2024.'},
+  {id:'FFSI-015', icon:'⚙️', name:'PROD-MES-01', type:'Server — MES', loc:'Production Plant', context:'FoodTrack Manufacturing Execution System. Contains production specs for Army contracts (Partial CUI). Not MDM enrolled. Local accounts only. Patch delayed.'},
+  {id:'FFSI-016', icon:'🏭', name:'PROD-PLC-CTRL', type:'OT — PLC Network Controller', loc:'Production Plant', context:'Controls conveyor/filling line PLCs via Modbus TCP. No authentication. No logging. Never patched. Vendor states "not patchable." Previously connected to CUI VLAN.'},
+  {id:'FFSI-017', icon:'📱', name:'PROD-TABLET-01–08', type:'Mobile — Production Tablets', loc:'Production Plant', context:'Android 11. Used to view MRE production specs (Partial CUI). PIN only. Not MDM enrolled. No EDR. Inconsistent manual updates.'},
+  {id:'FFSI-018', icon:'🔬', name:'QA-DB-01', type:'Server — QA Database', loc:'QA Lab', context:'Windows Server 2012 R2 (End of Support since Oct 2023). Stores ingredient formulations and dietary data — CUI for NATICK contract. No patches since EOS. Unlocked closet.'},
+  {id:'FFSI-020', icon:'💻', name:'WH-SHIP-01–06', type:'Workstation — Shipping', loc:'Warehouse', context:'Windows 10 workstations. Process delivery orders (FCI). Previously used shared "warehouse" account. Individual accounts now active. Patches delayed. Not in Intune.'},
+  {id:'FFSI-023', icon:'📹', name:'CORP-CCTV-NVR', type:'Physical — CCTV/NVR', loc:'HQ + Production', context:'Milestone XProtect on Linux. 47 cameras. Isolated on VLAN 60 — no routing to other VLANs. 30-day video retention. Physical security data only.'},
+  {id:'FFSI-025', icon:'📧', name:'M365-GCC-TENANT', type:'Cloud — SaaS', loc:'Cloud', context:'Microsoft 365 GCC. Exchange, Teams, SharePoint, OneDrive. CUI present on ContractsCUI SharePoint site. DLP active but not fully tuned. 3 Global Admins.'},
+  {id:'FFSI-027', icon:'☁️', name:'AWS-GOVCLOUD', type:'Cloud — IaaS', loc:'Cloud', context:'AWS GovCloud (us-gov-east-1). S3 backup storage (CUI-PROD bucket, AES-256). ERP disaster recovery. CloudTrail and GuardDuty enabled. Service accounts lack MFA.'},
+  {id:'FFSI-030', icon:'🌡', name:'COLD-STORAGE-MON', type:'IoT — Environmental Monitor', loc:'Warehouse', context:'Sensaphone 400. Monitors cold storage temperature. Legacy unpatched firmware. Web console with no MFA. Alert-only logging. VLAN 60 — isolated.'},
+  {id:'FFSI-035', icon:'🖨', name:'FFSI-PRINT-MFPS', type:'Network — Multifunction Printers', loc:'HQ', context:'5 Ricoh MFPs. PIN release + AD auth. CUI print possible. Hard drives not encrypted. Patches delayed. No auto-shred policy for printed CUI documents.'},
+];
+
+const invWorksheetAssets = [
+  {id:'FFSI-001', name:'CORP-DC-01', loc:'HQ', type:'Server', cui:true,  crit:'Critical', lockedCat:'Security Protection Asset', lockedScope:'In Scope'},
+  {id:'FFSI-003', name:'CORP-ERP-01', loc:'HQ', type:'Server', cui:true,  crit:'Critical', lockedCat:null, lockedScope:null},
+  {id:'FFSI-005', name:'CORP-FS-02',  loc:'HQ', type:'Server', cui:true,  crit:'Critical', lockedCat:'CUI Asset', lockedScope:'In Scope'},
+  {id:'FFSI-006', name:'CORP-SIEM-01',loc:'HQ', type:'Server', cui:false, crit:'High',     lockedCat:null, lockedScope:null},
+  {id:'FFSI-010', name:'PA-3420-HQ',  loc:'HQ', type:'Firewall',cui:false,crit:'Critical', lockedCat:'Security Protection Asset', lockedScope:'In Scope'},
+  {id:'FFSI-015', name:'PROD-MES-01', loc:'Prod Plant', type:'Server', cui:true, crit:'Critical', lockedCat:null, lockedScope:null},
+  {id:'FFSI-016', name:'PROD-PLC-CTRL',loc:'Prod Plant',type:'OT', cui:false,crit:'High',  lockedCat:null, lockedScope:null},
+  {id:'FFSI-018', name:'QA-DB-01',    loc:'QA Lab',   type:'Server', cui:true, crit:'Critical', lockedCat:null, lockedScope:null},
+  {id:'FFSI-023', name:'CORP-CCTV-NVR',loc:'HQ',     type:'Physical', cui:false,crit:'Medium',lockedCat:'Out of Scope', lockedScope:'Out of Scope'},
+  {id:'FFSI-025', name:'M365-GCC',    loc:'Cloud',    type:'SaaS', cui:true,  crit:'Critical', lockedCat:null, lockedScope:null},
+  {id:'FFSI-027', name:'AWS-GOVCLOUD',loc:'Cloud',    type:'IaaS', cui:true,  crit:'Critical', lockedCat:null, lockedScope:null},
+  {id:'FFSI-030', name:'COLD-MON',    loc:'Warehouse',type:'IoT',  cui:false, crit:'Medium',   lockedCat:null, lockedScope:null},
+];
+
+const ownAssets = [
+  {id:'FFSI-005', name:'CORP-FS-02', type:'CUI File Server — VLAN 20'},
+  {id:'FFSI-010', name:'PA-3420-HQ Firewall', type:'Network Perimeter Firewall'},
+  {id:'FFSI-018', name:'QA-DB-01', type:'QA Database — EOS Windows Server 2012 R2'},
+  {id:'FFSI-025', name:'M365-GCC Tenant', type:'Microsoft 365 GCC Cloud Environment'},
+  {id:'FFSI-016', name:'PROD-PLC-CTRL', type:'OT / PLC Network Controller'},
+  {id:'FFSI-006', name:'CORP-SIEM-01', type:'Splunk SIEM'},
+];
+
+const weaknesses = [
+  {t:'Missing Asset Owners', d:'One or more assets in the inventory lack a named, accountable owner. QA-DB-01 and MFPs are examples of under-owned assets at FFSI.'},
+  {t:'Missing Software / SaaS Assets', d:'Software platforms, SaaS applications, and browser-based tools are not fully inventoried alongside hardware assets.'},
+  {t:'Incomplete Cloud Inventory', d:'AWS GovCloud and M365 GCC are present but sub-resources (S3 buckets, SharePoint sites, IAM roles) are not individually inventoried.'},
+  {t:'Missing OT / PLC Devices', d:'Production-line PLCs and HMIs are not fully inventoried. PROD-PLC-CTRL is documented but individual PLC endpoints are not listed.'},
+  {t:'Incomplete Asset Classification', d:'Several assets lack a defined CMMC asset category in the current inventory. Classification is inconsistent across locations.'},
+  {t:'Inconsistent Naming Conventions', d:'Asset naming differs between HQ (CORP-*) and production (PROD-*) and warehouse — no enforced standard across all locations.'},
+  {t:'Missing Location Data for Some Assets', d:'Not all remote assets (QA Lab, warehouse tablets, IoT sensors) have standardized location codes in the inventory.'},
+  {t:'No Asset Lifecycle Tracking', d:'Assets nearing end-of-life (QA-DB-01, Windows 10 workstations) are not flagged in the inventory with planned replacement dates.'},
+  {t:'Unmanaged Endpoints Not Inventoried', d:'Production tablets and some warehouse workstations not enrolled in Intune may not be fully reflected in the asset inventory.'},
+  {t:'No Segmentation Map Linked to Inventory', d:'The asset inventory does not cross-reference VLAN assignments, making it difficult to validate scope boundaries during assessment.'},
+];
+
+const recoPrompts = [
+  {n:1, title:'Recommendation 1 — Most Critical Improvement', hint:'Address the most serious inventory gap based on your findings in Activity 5.'},
+  {n:2, title:'Recommendation 2 — Process or Policy Improvement', hint:'Recommend a process, procedure, or ownership change that would improve inventory accuracy.'},
+  {n:3, title:'Recommendation 3 — Assessment Readiness Action', hint:'Recommend a specific action that would most improve FFSI\'s posture for the upcoming C3PAO assessment.'},
+];
+
+const debriefQs = [
+  'Which assets were most difficult to categorize? What made the determination uncertain, and how did you resolve it?',
+  'Which assets — if any — would a C3PAO likely challenge as being incorrectly scoped? Why?',
+  'How does the undocumented ACL between VLAN 80 (OT) and VLAN 20 (CUI) change the categorization of the PROD-PLC-CTRL?',
+  'CORP-FS-02 and QA-DB-01 are both CUI Assets, but their security posture is very different. How does this affect the assessment?',
+  'The COLD-STORAGE-MON is isolated on VLAN 60 with no CUI. A participant argues it should be in scope because it\'s in the same facility. Evaluate this argument.',
+  'Which FFSI personnel should be assigned ownership of the highest-risk assets, and why does ownership matter during an assessor interview?',
+  'What evidence would a C3PAO expect to find in the asset inventory that FFSI currently lacks?',
+];
+
+const rubricData = [
+  {cat:'Asset Categorization Accuracy', pts:25, ex:'All 15 assets correctly categorized with specific, evidence-based justifications referencing CUI flow, segmentation, and CMMC category definitions.', pr:'12–14 correct; justifications sound but lack full specificity on 1–2 assets.', de:'9–11 correct; notable confusion between SPA and CUI Assets, or OT/Specialized category.', ni:'Fewer than 9 correct; category definitions not understood or applied consistently.'},
+  {cat:'Scope Determination', pts:20, ex:'In-scope, indirectly in-scope, and out-of-scope zones correctly populated; all 4 boundary analysis questions answered with specific FFSI context.', pr:'Zones mostly correct; 1 misplacement; boundary analysis substantive but incomplete on 1 question.', de:'2–3 misplacements; boundary questions answered generically without FFSI specifics.', ni:'Zones significantly incorrect; boundary analysis absent or not meaningful.'},
+  {cat:'Inventory Completion', pts:20, ex:'All missing fields completed accurately; category and scope fields consistent with Activity 1; owner names drawn from FFSI roster; controls column specific.', pr:'9–11 rows complete and accurate; 1–2 minor errors in category or controls column.', de:'7–8 rows complete; several owner fields blank or generic; controls column vague.', ni:'Fewer than 7 rows complete; inventory largely unfilled.'},
+  {cat:'Ownership Assignments', pts:15, ex:'All 6 assets have correct Owner, Custodian, and Technical Admin assigned from FFSI roster with clear accountability distinctions explained.', pr:'5–6 assets assigned; accountability explanations present but overlap slightly between roles.', de:'3–4 assets assigned; Owner and Custodian roles frequently confused.', ni:'Fewer than 3 assets complete; role distinctions not understood.'},
+  {cat:'Documentation Analysis', pts:10, ex:'8+ weaknesses correctly identified with specific FFSI evidence cited for each finding.', pr:'6–7 weaknesses identified; most supported by case study evidence.', de:'4–5 weaknesses identified; evidence vague or generic.', ni:'Fewer than 4 identified; weakness analysis absent.'},
+  {cat:'Recommendations', pts:10, ex:'All 3 recommendations are specific, actionable, reference FFSI personnel and gaps, and address distinct aspects of asset management improvement.', pr:'2–3 recommendations substantive; at least 2 are FFSI-specific.', de:'1–2 substantive recommendations; others too generic.', ni:'Recommendations absent, trivial, or not grounded in FFSI context.'},
+];
+
+/* ── RENDER ─────────────────────────────────────────── */
+function renderGloss() {
+  document.getElementById('glossGrid').innerHTML = glossTerms.map(t =>
+    `<div class="gloss-card"><div class="gloss-term">${t.t}</div><div class="gloss-def">${t.d}</div></div>`
+  ).join('');
+}
+
+function renderCatLegend() {
+  document.getElementById('catLegend').innerHTML = catLegendData.map(c => `
+    <div class="cat-tile">
+      <div class="cat-name"><span class="dot ${c.color}"></span>${c.abbr}</div>
+      <div class="cat-desc">${c.desc}</div>
+    </div>`).join('');
+}
+
+const catOpts = ['— Select category —','CUI Asset','Security Protection Asset','Contractor Risk Managed Asset','Specialized Asset','Out-of-Scope Asset'];
+const scopeOpts = ['— Select scope —','In Scope','Indirectly In Scope','Out of Scope'];
+const ynOpts = [['Yes','y'],['No','n'],['Uncertain','u']];
+const aqTexts = [
+  'Does this asset process, store, or transmit CUI?',
+  'Is this asset directly involved in protecting CUI (firewall, SIEM, EDR, IAM)?',
+  'Is this asset managed through normal org risk processes without full CMMC applicability?',
+  'Is this a specialized/OT/IoT/legacy device with limited control implementation?',
+  'Is this asset fully isolated with no pathway to CUI systems?',
+];
+
+function renderAssets() {
+  document.getElementById('assetList').innerHTML = assets.map(a => {
+    const savedCat   = localStorage.getItem(`ffsi-ai-cat-${a.id}`) || '';
+    const savedScope = localStorage.getItem(`ffsi-ai-scope-${a.id}`) || '';
+    const savedJust  = localStorage.getItem(`ffsi-ai-just-${a.id}`) || '';
+    return `
+    <div class="asset-card">
+      <div class="asset-top">
+        <div class="asset-icon">${a.icon}</div>
+        <div>
+          <div class="asset-name">${a.name}</div>
+          <div class="asset-id">${a.id} · ${a.type} · ${a.loc}</div>
+        </div>
+      </div>
+      <div class="asset-context">${a.context}</div>
+      <div class="asset-fields">
+        <div class="af-group">
+          <label class="af-label">CMMC Category</label>
+          <select class="af-select ${savedCat?'cat-'+catClass(savedCat):''}" id="cat-${a.id}"
+            onchange="setCatStyle(this);sv('ai-cat-${a.id}',this.value);updateProgress()">
+            ${catOpts.map(o=>`<option ${savedCat===o?'selected':''}>${o}</option>`).join('')}
+          </select>
+        </div>
+        <div class="af-group">
+          <label class="af-label">Assessment Scope</label>
+          <select class="af-select ${savedScope?'scope-'+scopeClass(savedScope):''}" id="scope-${a.id}"
+            onchange="setScopeStyle(this);sv('ai-scope-${a.id}',this.value);updateProgress()">
+            ${scopeOpts.map(o=>`<option ${savedScope===o?'selected':''}>${o}</option>`).join('')}
+          </select>
+        </div>
+        <div class="af-group" style="grid-column:1/-1;">
+          <label class="af-label">Justification — Why this category and scope?</label>
+          <textarea class="af-textarea" placeholder="Reference CUI flow, VLAN location, access controls, or known gaps from the case study..."
+            oninput="sv('ai-just-${a.id}',this.value);updateProgress()">${savedJust}</textarea>
+        </div>
+      </div>
+      <div class="asset-questions">
+        ${aqTexts.map((q,i) => {
+          const saved = localStorage.getItem(`ffsi-ai-q-${a.id}-${i}`) || '';
+          return `<div class="aq-row">
+            <span class="aq-q">Q${i+1}: ${q}</span>
+            <div class="aq-btns">
+              ${ynOpts.map(([lbl,cls])=>`
+              <button class="yn-btn yn-${cls} ${saved===lbl?'sel':''}"
+                onclick="setYN(this,'${a.id}',${i},'${lbl}')">${lbl}</button>`).join('')}
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function catClass(v) {
+  if(v==='CUI Asset') return 'cui';
+  if(v==='Security Protection Asset') return 'spa';
+  if(v==='Contractor Risk Managed Asset') return 'crma';
+  if(v==='Specialized Asset') return 'spec';
+  if(v==='Out-of-Scope Asset') return 'oos';
+  return '';
+}
+function scopeClass(v) {
+  if(v==='In Scope') return 'in';
+  if(v==='Indirectly In Scope') return 'ind';
+  if(v==='Out of Scope') return 'out';
+  return '';
+}
+function setCatStyle(sel) {
+  sel.className = 'af-select';
+  const c = catClass(sel.value); if(c) sel.classList.add('cat-'+c);
+}
+function setScopeStyle(sel) {
+  sel.className = 'af-select';
+  const c = scopeClass(sel.value); if(c) sel.classList.add('scope-'+c);
+}
+function setYN(btn, assetId, qIdx, val) {
+  sv(`ai-q-${assetId}-${qIdx}`, val);
+  const group = btn.closest('.aq-btns');
+  group.querySelectorAll('.yn-btn').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+
+function renderInvTable() {
+  const catOp2 = ['—','CUI Asset','Security Protection Asset','Contractor Risk Managed Asset','Specialized Asset','Out-of-Scope Asset'];
+  const scopeOp2 = ['—','In Scope','Indirectly In Scope','Out of Scope'];
+  document.getElementById('invTableBody').innerHTML = invWorksheetAssets.map(a => {
+    const sOwner    = localStorage.getItem(`ffsi-inv-owner-${a.id}`) || '';
+    const sCat      = localStorage.getItem(`ffsi-inv-cat-${a.id}`) || '';
+    const sScope    = localStorage.getItem(`ffsi-inv-scope-${a.id}`) || '';
+    const sControls = localStorage.getItem(`ffsi-inv-ctrl-${a.id}`) || '';
+    return `<tr>
+      <td><div class="inv-asset-name">${a.name}</div><div class="inv-asset-id">${a.id}</div></td>
+      <td class="inv-locked">${a.loc}</td>
+      <td class="inv-locked">${a.type}</td>
+      <td>${a.lockedCat
+        ? `<span class="inv-locked">${a.lockedCat}</span>`
+        : `<select class="inv-sel" onchange="sv('inv-cat-${a.id}',this.value)">${catOp2.map(o=>`<option ${sCat===o?'selected':''}>${o}</option>`).join('')}</select>`}
+      </td>
+      <td>${a.cui ? '<span class="inv-badge ib-yes">Yes</span>' : '<span class="inv-badge ib-no">No</span>'}</td>
+      <td class="inv-locked">${a.crit}</td>
+      <td>${a.lockedScope
+        ? `<span class="inv-locked">${a.lockedScope}</span>`
+        : `<select class="inv-sel" onchange="sv('inv-scope-${a.id}',this.value)">${scopeOp2.map(o=>`<option ${sScope===o?'selected':''}>${o}</option>`).join('')}</select>`}
+      </td>
+      <td><input class="inv-input" type="text" value="${sOwner}" placeholder="Name from roster..." oninput="sv('inv-owner-${a.id}',this.value)"/></td>
+      <td><input class="inv-input" type="text" value="${sControls}" placeholder="e.g., MFA, Encryption, EDR..." oninput="sv('inv-ctrl-${a.id}',this.value)"/></td>
+    </tr>`;
+  }).join('');
+}
+
+function renderOwnership() {
+  document.getElementById('ownGrid').innerHTML = ownAssets.map(a => {
+    const so = localStorage.getItem(`ffsi-own-owner-${a.id}`) || '';
+    const sc = localStorage.getItem(`ffsi-own-cust-${a.id}`) || '';
+    const st = localStorage.getItem(`ffsi-own-tech-${a.id}`) || '';
+    const sj = localStorage.getItem(`ffsi-own-just-${a.id}`) || '';
+    return `
+    <div class="own-card">
+      <div class="own-card-head">
+        <div class="own-asset-name">${a.name}</div>
+        <div class="own-asset-type">${a.id} · ${a.type}</div>
+      </div>
+      <div class="own-fields">
+        <div class="own-row">
+          <label class="own-label">Asset Owner — Accountable (name + title)</label>
+          <input class="own-input" type="text" value="${so}" placeholder="e.g., Lena B. Forsythe — IT Director" oninput="sv('own-owner-${a.id}',this.value)"/>
+        </div>
+        <div class="own-row">
+          <label class="own-label">Asset Custodian — Day-to-Day Management</label>
+          <input class="own-input" type="text" value="${sc}" placeholder="e.g., Tanya R. Holbrook — Sysadmin" oninput="sv('own-cust-${a.id}',this.value)"/>
+        </div>
+        <div class="own-row">
+          <label class="own-label">Technical Administrator — Hands-On Maintenance</label>
+          <input class="own-input" type="text" value="${st}" placeholder="e.g., Kevin L. Marsh — Net/Sec Admin" oninput="sv('own-tech-${a.id}',this.value)"/>
+        </div>
+        <div class="own-row">
+          <label class="own-label">Accountability Justification (1 sentence each)</label>
+          <input class="own-input" type="text" value="${sj}" placeholder="Explain why each person holds their role..." oninput="sv('own-just-${a.id}',this.value)"/>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderWeaknesses() {
+  document.getElementById('weakList').innerHTML = weaknesses.map((w,i) => {
+    const checked = localStorage.getItem(`ffsi-weak-${i}`) === '1';
+    return `
+    <div class="weak-item ${checked?'checked':''}" id="wi-${i}">
+      <input type="checkbox" class="weak-cb" ${checked?'checked':''} onchange="toggleWeak(${i},this)"/>
+      <div class="weak-text">
+        <div class="weak-title">${w.t}</div>
+        <div class="weak-desc">${w.d}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function toggleWeak(i, cb) {
+  localStorage.setItem(`ffsi-weak-${i}`, cb.checked ? '1' : '0');
+  document.getElementById(`wi-${i}`).classList.toggle('checked', cb.checked);
+}
+
+function renderRecos() {
+  document.getElementById('recoList').innerHTML = recoPrompts.map(r => {
+    const saved = localStorage.getItem(`ffsi-reco-${r.n}`) || '';
+    return `
+    <div class="reco-item">
+      <div class="reco-num">${r.n}</div>
+      <div class="reco-body">
+        <div class="reco-title">${r.title}</div>
+        <div style="font-size:.73rem;color:var(--text-muted);margin-bottom:.4rem;font-style:italic;">💡 ${r.hint}</div>
+        <textarea class="reco-input" placeholder="Write your recommendation here — be specific, name the gap, name the fix, reference FFSI personnel..."
+          oninput="sv('reco-${r.n}',this.value)">${saved}</textarea>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderDebrief() {
+  document.getElementById('debriefList').innerHTML = debriefQs.map((q,i) => {
+    const saved = localStorage.getItem(`ffsi-dq-${i}`) || '';
+    return `
+    <div class="dq-item">
+      <div class="dq-num">${i+1}</div>
+      <div style="flex:1;">
+        <div class="dq-text">${q}</div>
+        <textarea class="dq-resp" placeholder="Participant response..." oninput="sv('dq-${i}',this.value)">${saved}</textarea>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderRubric() {
+  document.getElementById('rubricBody').innerHTML = rubricData.map((r,i) => {
+    const saved = localStorage.getItem(`ffsi-rubric-${i}`) || '';
+    return `
+    <tr>
+      <td><strong>${r.cat}</strong></td>
+      <td class="perf-ex" style="font-size:.71rem;line-height:1.4;">${r.ex}</td>
+      <td class="perf-pr" style="font-size:.71rem;line-height:1.4;">${r.pr}</td>
+      <td class="perf-de" style="font-size:.71rem;line-height:1.4;">${r.de}</td>
+      <td class="perf-ni" style="font-size:.71rem;line-height:1.4;">${r.ni}</td>
+      <td><span class="pts-chip">${r.pts}</span></td>
+      <td><input type="number" class="score-in" min="0" max="${r.pts}" value="${saved}" placeholder="0"
+        oninput="saveRubric(${i},this.value,${r.pts})"/></td>
+    </tr>`;
+  }).join('');
+  updateRubric();
+}
+
+/* ── STATE ──────────────────────────────────────────── */
+function sv(key, val) { localStorage.setItem(`ffsi-${key}`, val); }
+
+function saveRubric(i, val, max) {
+  const c = Math.min(Math.max(parseInt(val)||0,0),max);
+  localStorage.setItem(`ffsi-rubric-${i}`, c);
+  updateRubric();
+}
+
+function updateRubric() {
+  const total = rubricData.reduce((s,_,i)=>s+(parseInt(localStorage.getItem(`ffsi-rubric-${i}`))||0),0);
+  document.getElementById('rubricTotal').textContent = total;
+  document.getElementById('scoreVal').textContent = total;
+  document.getElementById('scorePct').textContent = Math.round(total)+'%';
+  const rp = document.getElementById('scoreRating');
+  if(total>=90){rp.textContent='Excellent';rp.className='rating-pill rp-ex';}
+  else if(total>=75){rp.textContent='Proficient';rp.className='rating-pill rp-pr';}
+  else if(total>=60){rp.textContent='Developing';rp.className='rating-pill rp-de';}
+  else{rp.textContent='Needs Improvement';rp.className='rating-pill rp-ni';}
+}
+
+function updateProgress() {
+  const totalFields = assets.length * 3;
+  let filled = 0;
+  assets.forEach(a => {
+    if(localStorage.getItem(`ffsi-ai-cat-${a.id}`)) filled++;
+    if(localStorage.getItem(`ffsi-ai-scope-${a.id}`)) filled++;
+    if((localStorage.getItem(`ffsi-ai-just-${a.id}`)||'').length > 5) filled++;
+  });
+  const pct = Math.round(filled/totalFields*100);
+  document.getElementById('pbFill').style.width = pct+'%';
+  document.getElementById('pbCount').textContent = pct+'%';
+}
+
+/* ── THEME ──────────────────────────────────────────── */
+function toggleTheme() {
+  const html = document.documentElement;
+  const btn = document.getElementById('themeBtn');
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  btn.textContent = isDark ? '🌙 Dark Mode' : '☀️ Light Mode';
+  localStorage.setItem('ffsi-ai-theme', isDark ? 'light' : 'dark');
+}
+
+/* ── TIMER ──────────────────────────────────────────── */
+const TOTAL = 45*60; let secs=TOTAL, iv=null, running=false;
+function startTimer(){if(running)return;running=true;iv=setInterval(()=>{secs=Math.max(0,secs-1);renderTimer();if(secs===0){clearInterval(iv);running=false;}},1000);}
+function pauseTimer(){clearInterval(iv);running=false;}
+function resetTimer(){clearInterval(iv);running=false;secs=TOTAL;renderTimer();}
+function renderTimer(){
+  const m=Math.floor(secs/60),s=secs%60;
+  const el=document.getElementById('timerDisp');
+  el.textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  el.className=`timer-disp${secs===0?' expired':secs<300?' warn':''}`;
+  document.getElementById('timerFill').style.width=(secs/TOTAL*100)+'%';
+}
+
+/* ── NAV ────────────────────────────────────────────── */
+function navTo(id, btn) {
+  document.getElementById(id)?.scrollIntoView({behavior:'smooth'});
+  document.querySelectorAll('.sn-btn').forEach(b=>b.classList.remove('on'));
+  if(btn) btn.classList.add('on');
+}
+window.addEventListener('scroll',()=>{
+  const ids=['intro','objectives','terms','categories','act1','act2','act3','act4','act5','act6','debrief','rubric'];
+  const sy=window.scrollY+100; let cur='intro';
+  ids.forEach(id=>{const el=document.getElementById(id);if(el&&el.offsetTop<=sy)cur=id;});
+  document.querySelectorAll('.sn-btn').forEach(b=>{
+    b.classList.toggle('on',(b.getAttribute('onclick')||'').includes(`'${cur}'`));
+  });
+},{passive:true});
+
+/* ── EXPORT ─────────────────────────────────────────── */
+function exportAll() {
+  let out = 'FFSI — CMMC ASSET INVENTORY & CATEGORIZATION EXERCISE\n'+'='.repeat(55)+'\n\n';
+  out += 'ACTIVITY 1 — ASSET CATEGORIZATION\n'+'-'.repeat(40)+'\n';
+  assets.forEach(a=>{
+    const cat=localStorage.getItem(`ffsi-ai-cat-${a.id}`)||'[Not set]';
+    const sc=localStorage.getItem(`ffsi-ai-scope-${a.id}`)||'[Not set]';
+    const j=localStorage.getItem(`ffsi-ai-just-${a.id}`)||'[No justification]';
+    out+=`${a.id} — ${a.name}\n  Category: ${cat}\n  Scope: ${sc}\n  Justification: ${j}\n\n`;
+  });
+  out+='ACTIVITY 2 — SCOPE DETERMINATION\n'+'-'.repeat(40)+'\n';
+  ['in','ind','out'].forEach(k=>{
+    const v=localStorage.getItem(`ffsi-scope-${k}`)||'[Empty]';
+    out+=`Zone ${k}: ${v}\n\n`;
+  });
+  ['1','2','3','4'].forEach(n=>{
+    out+=`Boundary Q${n}: ${localStorage.getItem(`ffsi-bq-${n}`)||'[No response]'}\n\n`;
+  });
+  out+='ACTIVITY 5 — WEAKNESSES\n'+'-'.repeat(40)+'\n';
+  weaknesses.forEach((w,i)=>{if(localStorage.getItem(`ffsi-weak-${i}`)===`1`)out+=`✓ ${w.t}\n`;});
+  out+='\nACTIVITY 6 — RECOMMENDATIONS\n'+'-'.repeat(40)+'\n';
+  recoPrompts.forEach(r=>{out+=`Rec ${r.n}: ${localStorage.getItem(`ffsi-reco-${r.n}`)||'[None]'}\n\n`;});
+  const total=rubricData.reduce((s,_,i)=>s+(parseInt(localStorage.getItem(`ffsi-rubric-${i}`))||0),0);
+  out+=`RUBRIC SCORE: ${total}/100\n`;
+  const blob=new Blob([out],{type:'text/plain'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='FFSI-AssetExercise.txt';a.click();
+}
+
+function clearAll() {
+  if(!confirm('Clear all responses? This cannot be undone.')) return;
+  Object.keys(localStorage).filter(k=>k.startsWith('ffsi-')).forEach(k=>localStorage.removeItem(k));
+  location.reload();
+}
+
+/* ── INIT ───────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded',()=>{
+  const theme = localStorage.getItem('ffsi-ai-theme') || 'light';
+  document.documentElement.setAttribute('data-theme', theme);
+  document.getElementById('themeBtn').textContent = theme==='dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
+  renderGloss();
+  renderCatLegend();
+  renderAssets();
+  renderInvTable();
+  renderOwnership();
+  renderWeaknesses();
+  renderRecos();
+  renderDebrief();
+  renderRubric();
+  renderTimer();
+  updateProgress();
+});
+</script>
+</body>
+</html>
