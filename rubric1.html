@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FFSI — Data Governance Rubric</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+
+/* ─── Variables ─────────────────────────────────────────── */
+:root {
+  --green:        #1e6b3c;
+  --green-mid:    #2d9154;
+  --green-bright: #3da85c;
+  --green-light:  #e8f5ed;
+  --green-pale:   #f3faf6;
+  --black:        #0f1410;
+  --gray-900:     #1c2b22;
+  --gray-700:     #3d5244;
+  --gray-500:     #6b8275;
+  --gray-300:     #c8d8ce;
+  --gray-100:     #f0f5f2;
+  --white:        #ffffff;
+  --amber:        #b45309;
+  --amber-mid:    #d97706;
+  --amber-bg:     #fef3c7;
+  --blue:         #1e4d8c;
+  --blue-bg:      #eff4ff;
+  --red:          #b91c1c;
+  --red-bg:       #fef2f2;
+  --purple:       #6d28d9;
+  --purple-bg:    #f5f3ff;
+
+  /* Semantic */
+  --bg:           var(--white);
+  --bg-alt:       var(--gray-100);
+  --bg-card:      var(--white);
+  --text:         var(--gray-900);
+  --text-muted:   var(--gray-500);
+  --border:       var(--gray-300);
+  --accent:       var(--green);
+
+  --serif:  'DM Serif Display', Georgia, serif;
+  --sans:   'DM Sans', system-ui, sans-serif;
+  --mono:   'DM Mono', monospace;
+  --radius: 10px;
+  --shadow: 0 1px 3px rgba(0,0,0,.08), 0 4px 12px rgba(0,0,0,.06);
+}
+
+[data-theme="dark"] {
+  --bg:           #0d1710;
+  --bg-alt:       #111a13;
+  --bg-card:      #172019;
+  --text:         #cfe3d4;
+  --text-muted:   #6e9478;
+  --border:       #253329;
+  --accent:       #3da85c;
+  --green-light:  #0e2616;
+  --green-pale:   #091510;
+  --amber-bg:     #261700;
+  --blue-bg:      #080f1e;
+  --red-bg:       #1a0707;
+  --purple-bg:    #150d2a;
+}
+
+/* ─── Reset ─────────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:var(--sans);
+  background:var(--bg);
+  color:var(--text);
+  font-size:15px;
+  line-height:1.65;
+  transition:background .25s,color .25s;
+}
+
+/* ─── Layout ─────────────────────────────────────────────── */
+.page{max-width:960px;margin:0 auto;padding:2rem 1.5rem 5rem;}
+
+/* ─── Top Bar ────────────────────────────────────────────── */
+.top-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding-bottom:1.1rem;margin-bottom:1.75rem;
+  border-bottom:2px solid var(--border);
+  gap:.75rem;flex-wrap:wrap;
+}
+.brand{display:flex;align-items:center;gap:.7rem;}
+.brand-chip{
+  background:var(--accent);color:#fff;
+  font-family:var(--mono);font-size:.72rem;font-weight:500;
+  padding:.22rem .6rem;border-radius:5px;letter-spacing:.07em;
+}
+.brand-sub{font-size:.78rem;color:var(--text-muted);}
+.actions{display:flex;gap:.45rem;flex-wrap:wrap;}
+
+.btn{
+  display:inline-flex;align-items:center;gap:.4rem;
+  padding:.38rem .85rem;border-radius:7px;
+  border:1px solid var(--border);
+  background:var(--bg-card);color:var(--text);
+  font-family:var(--sans);font-size:.78rem;font-weight:600;
+  cursor:pointer;transition:all .18s;white-space:nowrap;
+}
+.btn:hover{border-color:var(--accent);color:var(--accent);}
+.btn-primary{background:var(--accent);color:#fff;border-color:var(--accent);}
+.btn-primary:hover{background:var(--green-mid);border-color:var(--green-mid);color:#fff;}
+.btn-ghost{background:transparent;}
+
+/* ─── Header ─────────────────────────────────────────────── */
+.header{
+  background:linear-gradient(135deg,#1a5c34 0%,#0e3820 100%);
+  color:#fff;border-radius:var(--radius);
+  padding:1.75rem 2rem 1.5rem;
+  margin-bottom:1.75rem;
+  position:relative;overflow:hidden;
+}
+.header::before{
+  content:'RUBRIC';
+  position:absolute;right:-10px;top:50%;transform:translateY(-50%);
+  font-family:var(--serif);font-size:7rem;font-weight:700;
+  color:rgba(255,255,255,.04);line-height:1;pointer-events:none;
+  letter-spacing:-.02em;
+}
+.hkicker{
+  font-size:.68rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;
+  color:rgba(255,255,255,.5);margin-bottom:.45rem;
+}
+.header h1{font-family:var(--serif);font-size:clamp(1.4rem,3.5vw,1.9rem);line-height:1.15;margin-bottom:.4rem;}
+.header-sub{font-size:.84rem;color:rgba(255,255,255,.7);max-width:520px;}
+.header-chips{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem;}
+.hchip{
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);
+  font-size:.65rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  padding:.18rem .55rem;border-radius:4px;
+}
+
+/* ─── Student Info Bar ───────────────────────────────────── */
+.student-bar{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.6rem;
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:1rem 1.1rem;
+  margin-bottom:1.75rem;
+}
+.sfield{display:flex;flex-direction:column;gap:.25rem;}
+.sfield-label{font-size:.65rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--text-muted);}
+.sfield-input{
+  padding:.38rem .6rem;border:1px solid var(--border);border-radius:6px;
+  background:var(--bg);color:var(--text);
+  font-family:var(--sans);font-size:.82rem;
+  transition:border-color .18s;
+}
+.sfield-input:focus{outline:none;border-color:var(--accent);}
+
+/* ─── Score Dashboard ────────────────────────────────────── */
+.score-dash{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;
+  margin-bottom:1.75rem;
+}
+@media(max-width:560px){.score-dash{grid-template-columns:1fr 1fr;}}
+.score-tile{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:1rem 1.1rem;
+  text-align:center;
+}
+.score-tile-val{
+  font-family:var(--serif);font-size:2rem;line-height:1;
+  color:var(--accent);margin-bottom:.2rem;
+}
+.score-tile-label{font-size:.7rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.07em;}
+.score-tile-sub{font-size:.75rem;color:var(--text-muted);margin-top:.15rem;}
+
+.rating-pill{
+  display:inline-block;
+  font-size:.88rem;font-weight:700;
+  padding:.35rem 1rem;border-radius:20px;border:2px solid;
+  transition:all .3s;
+}
+.rating-excellent{background:var(--green-light);color:var(--green);border-color:var(--green);}
+.rating-proficient{background:var(--blue-bg);color:var(--blue);border-color:var(--blue);}
+.rating-developing{background:var(--amber-bg);color:var(--amber);border-color:var(--amber);}
+.rating-needs{background:var(--red-bg);color:var(--red);border-color:var(--red);}
+[data-theme="dark"] .rating-excellent{background:var(--green-pale);}
+
+.progress-row{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:.85rem 1.1rem;
+  margin-bottom:1.75rem;
+}
+.prog-label{font-size:.75rem;font-weight:600;color:var(--text-muted);margin-bottom:.5rem;letter-spacing:.04em;}
+.prog-track{height:12px;background:var(--bg-alt);border-radius:6px;overflow:hidden;position:relative;}
+.prog-fill{height:100%;border-radius:6px;background:var(--accent);transition:width .4s ease;}
+.prog-segments{display:flex;margin-top:.4rem;}
+.prog-seg{font-size:.62rem;font-weight:700;text-align:center;flex:1;color:var(--text-muted);}
+.prog-seg:not(:first-child){border-left:1px dashed var(--border);}
+
+/* ─── Section Header ─────────────────────────────────────── */
+.section{margin-bottom:2rem;}
+.section-head{
+  display:flex;align-items:center;gap:.6rem;
+  margin-bottom:1rem;padding-bottom:.65rem;
+  border-bottom:2px solid var(--border);
+}
+.section-icon{
+  width:30px;height:30px;flex-shrink:0;
+  background:var(--accent);color:#fff;
+  border-radius:7px;display:flex;align-items:center;justify-content:center;
+  font-size:.82rem;
+}
+.section-title-text{font-family:var(--serif);font-size:1.1rem;}
+.section-pts{
+  margin-left:auto;font-size:.72rem;font-weight:700;
+  color:var(--text-muted);background:var(--bg-alt);
+  border:1px solid var(--border);padding:.15rem .55rem;border-radius:5px;
+}
+
+/* ─── Rubric Grid ────────────────────────────────────────── */
+/* Role assignment rubric table */
+.rubric-block{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius);overflow:hidden;
+  margin-bottom:.75rem;
+  box-shadow:var(--shadow);
+}
+.rb-head{
+  display:grid;
+  grid-template-columns:40px 1fr 80px 80px 80px 80px 100px;
+  background:var(--bg-alt);
+  border-bottom:2px solid var(--border);
+  font-size:.65rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--text-muted);
+}
+.rb-head-cell{padding:.5rem .7rem;}
+.rb-row{
+  display:grid;
+  grid-template-columns:40px 1fr 80px 80px 80px 80px 100px;
+  border-bottom:1px solid var(--border);
+  transition:background .15s;align-items:start;
+}
+.rb-row:last-child{border-bottom:none;}
+.rb-row:hover{background:var(--bg-alt);}
+.rb-cell{padding:.65rem .7rem;font-size:.82rem;vertical-align:top;}
+.rb-num{
+  font-family:var(--mono);font-size:.72rem;font-weight:500;
+  color:var(--text-muted);padding-top:.7rem;
+}
+.rb-role-name{font-weight:700;font-size:.88rem;margin-bottom:.2rem;}
+.rb-role-answer{
+  font-size:.75rem;color:var(--text-muted);font-style:italic;
+  background:var(--green-light);border:1px solid var(--green);
+  color:var(--green);border-radius:4px;
+  padding:.1rem .4rem;display:inline-block;margin-bottom:.35rem;
+  font-style:normal;font-weight:600;font-family:var(--mono);font-size:.68rem;
+}
+[data-theme="dark"] .rb-role-answer{background:var(--green-pale);}
+.rb-criteria{font-size:.78rem;color:var(--text-muted);line-height:1.45;}
+
+/* Score cells */
+.rb-score-cell{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:.6rem;}
+.score-btn-group{display:flex;flex-direction:column;gap:.25rem;width:100%;}
+.score-opt{
+  display:flex;align-items:center;gap:.4rem;
+  padding:.3rem .45rem;border-radius:5px;
+  border:1px solid var(--border);background:var(--bg);
+  cursor:pointer;font-size:.72rem;font-weight:600;
+  transition:all .15s;width:100%;text-align:left;font-family:var(--sans);
+  color:var(--text);
+}
+.score-opt:hover{border-color:var(--accent);}
+.score-opt.selected-2{background:#e8f5ed;border-color:var(--green);color:var(--green);}
+.score-opt.selected-1{background:var(--amber-bg);border-color:var(--amber);color:var(--amber);}
+.score-opt.selected-0{background:var(--red-bg);border-color:var(--red);color:var(--red);}
+[data-theme="dark"] .score-opt.selected-2{background:var(--green-pale);}
+[data-theme="dark"] .score-opt.selected-1{background:var(--amber-bg);}
+[data-theme="dark"] .score-opt.selected-0{background:var(--red-bg);}
+
+/* The "selected value" column */
+.rb-pts-cell{
+  display:flex;align-items:center;justify-content:center;
+  padding-top:.6rem;
+}
+.pts-display{
+  font-family:var(--mono);font-size:1.1rem;font-weight:500;
+  color:var(--text-muted);min-width:36px;text-align:center;
+}
+.pts-display.has-score{color:var(--accent);}
+
+/* Responsive: collapse table for mobile */
+@media(max-width:700px){
+  .rb-head,.rb-head-cell,.rb-row,.rb-cell,.rb-num,.rb-score-cell,.rb-pts-cell{
+    display:block;width:100%;
+  }
+  .rb-head{display:none;}
+  .rb-row{padding:.75rem;}
+  .rb-num{font-size:.65rem;color:var(--text-muted);margin-bottom:.25rem;}
+  .score-btn-group{flex-direction:row;}
+  .score-opt{flex:1;justify-content:center;}
+  .rb-pts-cell{justify-content:flex-start;padding:.3rem 0;}
+}
+
+/* ─── Justification Section ──────────────────────────────── */
+.just-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+@media(max-width:600px){.just-grid{grid-template-columns:1fr;}}
+
+.just-card{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:1rem;
+}
+.just-card-head{display:flex;align-items:center;gap:.5rem;margin-bottom:.65rem;}
+.just-icon{font-size:.9rem;}
+.just-role-name{font-weight:700;font-size:.88rem;}
+.just-criteria{
+  font-size:.76rem;color:var(--text-muted);line-height:1.5;
+  background:var(--bg-alt);border-radius:6px;padding:.5rem .65rem;
+  margin-bottom:.65rem;
+}
+.just-note{
+  font-size:.73rem;color:var(--text-muted);font-style:italic;margin-bottom:.5rem;
+}
+.just-score-row{display:flex;gap:.35rem;}
+.just-score-btn{
+  flex:1;padding:.4rem .3rem;border-radius:5px;
+  border:1px solid var(--border);background:var(--bg);
+  font-family:var(--sans);font-size:.72rem;font-weight:700;
+  cursor:pointer;transition:all .15s;color:var(--text);
+  display:flex;flex-direction:column;align-items:center;gap:.1rem;
+}
+.just-score-btn:hover{border-color:var(--accent);}
+.just-score-btn.sel-2{background:var(--green-light);border-color:var(--green);color:var(--green);}
+.just-score-btn.sel-1{background:var(--amber-bg);border-color:var(--amber);color:var(--amber);}
+.just-score-btn.sel-0{background:var(--red-bg);border-color:var(--red);color:var(--red);}
+[data-theme="dark"] .just-score-btn.sel-2{background:var(--green-pale);}
+.just-score-lbl{font-size:.62rem;font-weight:400;opacity:.8;}
+.just-score-val{font-size:.82rem;}
+
+.comment-box{
+  width:100%;margin-top:.5rem;
+  padding:.4rem .6rem;
+  border:1px solid var(--border);border-radius:6px;
+  background:var(--bg);color:var(--text);
+  font-family:var(--sans);font-size:.78rem;
+  resize:vertical;min-height:52px;line-height:1.5;
+  transition:border-color .18s;
+}
+.comment-box:focus{outline:none;border-color:var(--accent);}
+
+/* ─── Discussion Scoring ─────────────────────────────────── */
+.disc-card{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:1rem 1.1rem;
+  margin-bottom:.6rem;
+  display:flex;gap:1rem;align-items:flex-start;
+}
+.disc-q-num{
+  width:28px;height:28px;flex-shrink:0;
+  background:var(--accent);color:#fff;
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:.72rem;font-weight:700;
+}
+.disc-body{flex:1;}
+.disc-q-text{font-size:.84rem;font-weight:600;margin-bottom:.45rem;}
+.disc-scoring{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.4rem;}
+.disc-btn{
+  padding:.3rem .65rem;border-radius:5px;
+  border:1px solid var(--border);background:var(--bg);
+  font-family:var(--sans);font-size:.72rem;font-weight:700;
+  cursor:pointer;transition:all .15s;color:var(--text);
+}
+.disc-btn:hover{border-color:var(--accent);}
+.disc-btn.dsel-full{background:var(--green-light);border-color:var(--green);color:var(--green);}
+.disc-btn.dsel-part{background:var(--amber-bg);border-color:var(--amber);color:var(--amber);}
+.disc-btn.dsel-none{background:var(--red-bg);border-color:var(--red);color:var(--red);}
+[data-theme="dark"] .disc-btn.dsel-full{background:var(--green-pale);}
+
+/* ─── Summary Table ──────────────────────────────────────── */
+.summary-table{width:100%;border-collapse:collapse;font-size:.82rem;}
+.summary-table th{
+  background:var(--bg-alt);color:var(--text-muted);
+  font-size:.67rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:.5rem .8rem;text-align:left;border-bottom:2px solid var(--border);
+}
+.summary-table td{padding:.5rem .8rem;border-bottom:1px solid var(--border);}
+.summary-table tr:last-child td{border-bottom:none;}
+.summary-table tr:hover td{background:var(--bg-alt);}
+.summary-total td{font-weight:700;background:var(--green-light);font-size:.88rem;}
+[data-theme="dark"] .summary-total td{background:var(--green-pale);}
+.bar-cell{width:120px;}
+.mini-bar{height:8px;background:var(--border);border-radius:4px;overflow:hidden;}
+.mini-fill{height:100%;background:var(--accent);border-radius:4px;transition:width .3s;}
+
+/* ─── Callout ────────────────────────────────────────────── */
+.callout{
+  display:flex;gap:.65rem;align-items:flex-start;
+  border-radius:var(--radius);padding:.8rem 1rem;
+  font-size:.82rem;margin-bottom:1rem;
+}
+.callout-green{background:var(--green-light);border-left:4px solid var(--accent);}
+.callout-amber{background:var(--amber-bg);border-left:4px solid var(--amber-mid);}
+[data-theme="dark"] .callout-green{background:var(--green-pale);}
+
+/* ─── Answer Key ─────────────────────────────────────────── */
+.answer-key{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius);overflow:hidden;
+}
+.ak-row{
+  display:grid;grid-template-columns:160px 1fr 1fr;
+  border-bottom:1px solid var(--border);
+  align-items:start;
+}
+.ak-row:last-child{border-bottom:none;}
+.ak-row:hover{background:var(--bg-alt);}
+.ak-cell{padding:.65rem .85rem;font-size:.82rem;}
+.ak-role{font-weight:700;font-size:.83rem;}
+.ak-answer{
+  font-family:var(--mono);font-size:.72rem;
+  background:var(--green-light);border:1px solid var(--green);
+  color:var(--green);border-radius:4px;padding:.1rem .4rem;
+  display:inline-block;margin-bottom:.2rem;font-weight:600;
+}
+[data-theme="dark"] .ak-answer{background:var(--green-pale);}
+.ak-also{font-size:.73rem;color:var(--text-muted);}
+.ak-why{font-size:.78rem;color:var(--text-muted);line-height:1.5;}
+.ak-head{
+  display:grid;grid-template-columns:160px 1fr 1fr;
+  background:var(--bg-alt);border-bottom:2px solid var(--border);
+}
+.ak-head-cell{
+  padding:.5rem .85rem;
+  font-size:.65rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--text-muted);
+}
+
+/* ─── Print ──────────────────────────────────────────────── */
+@media print{
+  .top-bar .actions,.btn,.score-opt,.just-score-btn,.disc-btn{display:none!important;}
+  .comment-box{border:1px solid #ccc!important;}
+  .rubric-block,.just-card,.disc-card{break-inside:avoid;}
+  .header{background:#1a5c34!important;-webkit-print-color-adjust:exact;}
+  .summary-total td{background:#e8f5ed!important;-webkit-print-color-adjust:exact;}
+}
+
+/* ─── Misc ───────────────────────────────────────────────── */
+.hr{border:none;border-top:1px solid var(--border);margin:1.5rem 0;}
+.badge{
+  display:inline-block;font-size:.65rem;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;
+  padding:.12rem .45rem;border-radius:4px;
+}
+.badge-max{background:var(--green-light);color:var(--green);border:1px solid var(--green);}
+[data-theme="dark"] .badge-max{background:var(--green-pale);}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div class="brand">
+      <div class="brand-chip">FFSI</div>
+      <div class="brand-sub">CMMC Data Governance · Instructor Rubric</div>
+    </div>
+    <div class="actions">
+      <button class="btn btn-ghost" id="themeBtn" onclick="toggleTheme()">🌙 Dark Mode</button>
+      <button class="btn" onclick="window.print()">🖨 Print Rubric</button>
+      <button class="btn" onclick="clearAll()">↺ Clear All</button>
+      <button class="btn btn-primary" onclick="exportGrades()">📤 Export Grades</button>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="hkicker">Instructor Grading Tool · CMMC 2.0 Training Workshop</div>
+    <h1>Data Governance Role Assignment<br>Grading Rubric</h1>
+    <div class="header-sub">Federal Food Services Inc. (FFSI) — Complete scoring for each criterion, then review the summary dashboard.</div>
+    <div class="header-chips">
+      <span class="hchip">24 Points Total</span>
+      <span class="hchip">6 Role Assignments</span>
+      <span class="hchip">Justification Quality</span>
+      <span class="hchip">Discussion Participation</span>
+    </div>
+  </div>
+
+  <!-- STUDENT INFO -->
+  <div class="student-bar">
+    <div class="sfield">
+      <label class="sfield-label">Student / Participant Name</label>
+      <input class="sfield-input" type="text" id="studentName" placeholder="Enter name..." oninput="saveMeta()"/>
+    </div>
+    <div class="sfield">
+      <label class="sfield-label">Date</label>
+      <input class="sfield-input" type="date" id="gradeDate" oninput="saveMeta()"/>
+    </div>
+    <div class="sfield">
+      <label class="sfield-label">Cohort / Section</label>
+      <input class="sfield-input" type="text" id="cohort" placeholder="e.g., Workshop B" oninput="saveMeta()"/>
+    </div>
+    <div class="sfield">
+      <label class="sfield-label">Instructor</label>
+      <input class="sfield-input" type="text" id="instructor" placeholder="Instructor name..." oninput="saveMeta()"/>
+    </div>
+  </div>
+
+  <!-- SCORE DASHBOARD -->
+  <div class="score-dash">
+    <div class="score-tile">
+      <div class="score-tile-val" id="dashTotal">0</div>
+      <div class="score-tile-label">Total Score</div>
+      <div class="score-tile-sub">out of 24 points</div>
+    </div>
+    <div class="score-tile">
+      <div class="score-tile-val" id="dashPct">0%</div>
+      <div class="score-tile-label">Percentage</div>
+      <div class="score-tile-sub" id="dashPctSub">—</div>
+    </div>
+    <div class="score-tile" style="display:flex;flex-direction:column;align-items:center;justify-content:center;">
+      <div id="dashRating" class="rating-pill rating-needs" style="margin-bottom:.4rem;">Needs Improvement</div>
+      <div class="score-tile-label">Performance Level</div>
+    </div>
+  </div>
+
+  <!-- PROGRESS BAR -->
+  <div class="progress-row">
+    <div class="prog-label">Score Breakdown ── 0 &nbsp;▸&nbsp; 24 points</div>
+    <div class="prog-track">
+      <div class="prog-fill" id="progFill" style="width:0%"></div>
+    </div>
+    <div class="prog-segments">
+      <div class="prog-seg">Needs<br>(&lt;16)</div>
+      <div class="prog-seg">Developing<br>(16–18)</div>
+      <div class="prog-seg">Proficient<br>(19–21)</div>
+      <div class="prog-seg">Excellent<br>(22–24)</div>
+    </div>
+  </div>
+
+  <!-- ═══ SECTION 1: ROLE ASSIGNMENTS ════════════════════════ -->
+  <div class="section">
+    <div class="section-head">
+      <div class="section-icon">👑</div>
+      <div class="section-title-text">Role Assignment Accuracy</div>
+      <div class="section-pts">12 pts possible (2 pts each × 6 roles)</div>
+    </div>
+
+    <div class="callout callout-green">
+      <span style="font-size:1rem;flex-shrink:0;">💡</span>
+      <div><strong>Scoring guide:</strong> Award <strong>2 pts</strong> for a clearly correct assignment that matches expected positions. Award <strong>1 pt</strong> for a defensible alternate choice with strong rationale. Award <strong>0 pts</strong> for an incorrect or clearly inappropriate assignment.</div>
+    </div>
+
+    <!-- Role rubric table -->
+    <div class="rubric-block">
+      <div class="rb-head">
+        <div class="rb-head-cell">#</div>
+        <div class="rb-head-cell">Role &amp; Expected Answer(s)</div>
+        <div class="rb-head-cell">2 pts — Full</div>
+        <div class="rb-head-cell">1 pt — Partial</div>
+        <div class="rb-head-cell">0 pts — None</div>
+        <div class="rb-head-cell">Points</div>
+        <div class="rb-head-cell">Score</div>
+      </div>
+      <div id="roleRubricRows"></div>
+    </div>
+  </div>
+
+  <!-- ═══ SECTION 2: JUSTIFICATION QUALITY ══════════════════ -->
+  <div class="section">
+    <div class="section-head">
+      <div class="section-icon">✍️</div>
+      <div class="section-title-text">Justification Quality</div>
+      <div class="section-pts">8 pts possible (up to 2 pts per role, max 8)</div>
+    </div>
+
+    <div class="callout callout-amber">
+      <span style="font-size:1rem;flex-shrink:0;">📋</span>
+      <div><strong>Scoring guide:</strong> <strong>2 pts</strong> — clear, specific connection to the role's CMMC definition and FFSI context. <strong>1 pt</strong> — partially correct or vague but relevant justification. <strong>0 pts</strong> — missing, irrelevant, or merely restates the role name. Maximum of 8 points regardless of total individual scores.</div>
+    </div>
+
+    <div class="just-grid" id="justGrid"></div>
+
+    <div style="margin-top:.75rem;display:flex;align-items:center;justify-content:flex-end;gap:.75rem;">
+      <span style="font-size:.82rem;color:var(--text-muted);">Justification subtotal (cap at 8):</span>
+      <span style="font-family:var(--mono);font-size:1.1rem;font-weight:500;color:var(--accent);" id="justSubtotal">0 / 8</span>
+    </div>
+  </div>
+
+  <!-- ═══ SECTION 3: DISCUSSION PARTICIPATION ════════════════ -->
+  <div class="section">
+    <div class="section-head">
+      <div class="section-icon">💬</div>
+      <div class="section-title-text">Discussion Participation</div>
+      <div class="section-pts">4 pts possible</div>
+    </div>
+
+    <div class="callout callout-green">
+      <span style="font-size:1rem;flex-shrink:0;">🗣</span>
+      <div><strong>Scoring guide:</strong> <strong>4 pts</strong> — active, substantive contributions connecting role assignments to CMMC compliance implications. <strong>2–3 pts</strong> — participated with relevant points but limited depth. <strong>1 pt</strong> — minimal participation or off-topic responses. <strong>0 pts</strong> — no participation.</div>
+    </div>
+
+    <div id="discCards"></div>
+
+    <div style="display:flex;align-items:center;gap:.75rem;justify-content:flex-end;margin-top:.5rem;">
+      <span style="font-size:.82rem;color:var(--text-muted);">Discussion subtotal:</span>
+      <span style="font-family:var(--mono);font-size:1.1rem;font-weight:500;color:var(--accent);" id="discSubtotal">0 / 4</span>
+    </div>
+  </div>
+
+  <!-- ═══ SECTION 4: SUMMARY TABLE ═══════════════════════════ -->
+  <div class="section">
+    <div class="section-head">
+      <div class="section-icon">📊</div>
+      <div class="section-title-text">Score Summary</div>
+    </div>
+    <table class="summary-table">
+      <thead>
+        <tr>
+          <th>Criterion</th>
+          <th>Possible</th>
+          <th>Earned</th>
+          <th class="bar-cell">Visual</th>
+        </tr>
+      </thead>
+      <tbody id="summaryBody"></tbody>
+      <tfoot>
+        <tr class="summary-total">
+          <td>Total</td>
+          <td>24</td>
+          <td id="summaryTotal">0</td>
+          <td class="bar-cell">
+            <div class="mini-bar"><div class="mini-fill" id="summaryBar" style="width:0%"></div></div>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <!-- Final rating banner -->
+    <div style="margin-top:1rem;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.25rem;">
+      <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+        <div>
+          <div style="font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.25rem;">Final Score</div>
+          <div style="font-family:var(--serif);font-size:2rem;color:var(--accent);line-height:1;" id="finalBig">0 / 24</div>
+        </div>
+        <div id="finalRating" class="rating-pill rating-needs">Needs Improvement</div>
+        <div style="flex:1;font-size:.78rem;color:var(--text-muted);">
+          22–24 pts = Excellent Understanding &nbsp;·&nbsp; 19–21 = Proficient &nbsp;·&nbsp; 16–18 = Developing &nbsp;·&nbsp; Below 16 = Needs Improvement
+        </div>
+      </div>
+      <div style="margin-top:.85rem;">
+        <label style="font-size:.68rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--text-muted);display:block;margin-bottom:.3rem;">Overall Instructor Feedback</label>
+        <textarea class="comment-box" id="overallFeedback" style="min-height:70px;" placeholder="General comments on student performance, areas of strength, and recommendations for improvement..." oninput="saveMeta()"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ ANSWER KEY ══════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-head">
+      <div class="section-icon">🔑</div>
+      <div class="section-title-text">Answer Key &amp; Scoring Guide</div>
+    </div>
+    <div class="answer-key">
+      <div class="ak-head">
+        <div class="ak-head-cell">Role</div>
+        <div class="ak-head-cell">Expected Position(s)</div>
+        <div class="ak-head-cell">Why — Rationale for Graders</div>
+      </div>
+      <div id="answerKeyRows"></div>
+    </div>
+  </div>
+
+</div><!-- end .page -->
+
+<!-- ═══════════════════════════════════════════════════════════
+     JAVASCRIPT
+     ═══════════════════════════════════════════════════════════ -->
+<script>
+/* ── DATA ────────────────────────────────────────────────── */
+const roleData = [
+  {
+    id:'owner', icon:'👑', name:'Data Owner',
+    expected:'Contracts Manager, VP of Contracts & Compliance, or CIO/IT Director',
+    also:'CEO or COO acceptable if justified as ultimate authority',
+    criteria2:'Correct position (Contracts Manager / VP Contracts) selected; demonstrates understanding that Data Owner is accountable for a specific data set (CUI) and determines how it is used and who may access it.',
+    criteria1:'Assigns a senior leader (CEO, COO) but justification lacks specificity about data-level accountability vs. enterprise authority.',
+    criteria0:'Assigns IT staff, production, or HR without plausible justification.',
+    answerWhy:'The Contracts Manager or VP of Contracts & Compliance holds accountability for the CUI data generated by Army contracts — they determine classification, access levels, and data use policies. The Data Owner role is tied to a specific dataset, not the whole organization.'
+  },
+  {
+    id:'custodian', icon:'🛡', name:'Data Custodian',
+    expected:'IT Systems Administrator or IT Director',
+    also:'Cloud Administrator (Jasmine Waters) acceptable; Network/Security Admin also defensible',
+    criteria2:'Correctly identifies the IT Systems Administrator (Tanya Holbrook) or IT Director (Lena Forsythe) as the person who maintains and secures the systems that store CUI — servers, access controls, backups.',
+    criteria1:'Assigns Cloud Administrator or ISSO with reasonable justification around system protection duties.',
+    criteria0:'Assigns HR, production, or an executive role without connecting to system maintenance responsibilities.',
+    answerWhy:'The Data Custodian is responsible for the technical safeguarding of data — patch management, backups, access control configuration, and system integrity. At FFSI this maps to the IT Systems Administrator (Holbrook) or IT Director (Forsythe), who manage the servers and systems where CUI lives.'
+  },
+  {
+    id:'processor', icon:'⚙️', name:'Data Processor',
+    expected:'Contracts Manager, Production Manager, Logistics Director, QA Manager, or Contracts Staff',
+    also:'Multiple employees acceptable — any individual who routinely works with contract or CUI data',
+    criteria2:'Identifies one or more employees who routinely handle, enter, or process CUI or FCI as a core job function — including contracts staff, logistics, QA, or production.',
+    criteria1:'Identifies only one processor when multiple are plausible, or selects a supervisor rather than a hands-on processor without strong reasoning.',
+    criteria0:'Assigns IT infrastructure roles (sysadmin, cloud admin) or executive leadership who determine policy but do not directly process data.',
+    answerWhy:'A Data Processor uses data as part of their job. At FFSI, this includes contracts staff entering delivery orders, QA analysts recording test results, logistics staff processing shipping data, and production managers working with MRE specifications — all core CUI-handling activities.'
+  },
+  {
+    id:'steward', icon:'📋', name:'Data Steward',
+    expected:'Compliance Manager or Director of Quality Assurance',
+    also:'VP of Contracts & Compliance or Risk & Vendor Management Analyst defensible',
+    criteria2:'Correctly selects the Compliance Manager (Amara Osei) or QA Director (Ingrid Larsson) and articulates their role in ensuring data quality, proper classification, integrity, and compliant handling — not just system maintenance.',
+    criteria1:'Assigns the ISSO or Contracts Manager with a partial rationale around data quality or governance.',
+    criteria0:'Confuses Data Steward with Data Custodian (IT role) or assigns production/logistics staff.',
+    answerWhy:'The Data Steward ensures data quality, integrity, proper classification, and compliant handling procedures — a governance role distinct from technical system protection. At FFSI, the Compliance Manager is responsible for ensuring CUI is handled per policy, and the QA Director ensures the integrity of technical data used in contracts.'
+  },
+  {
+    id:'controller', icon:'🎛', name:'Data Controller',
+    expected:'CEO, COO, or CIO/IT Director',
+    also:'VP of Contracts & Compliance acceptable as the person who sets policy for contract data use',
+    criteria2:'Correctly identifies an executive leader (CEO, COO, or CIO) who determines the organizational purposes and means for collecting and processing data — the strategic authority over why and how all data is used.',
+    criteria1:'Assigns a senior manager with a rationale about setting data policy but without connecting to the enterprise-wide authority of the Controller role.',
+    criteria0:'Assigns IT staff, compliance staff, or individual processors without recognizing the Data Controller\'s authority-level requirement.',
+    answerWhy:'The Data Controller sets the strategic purposes and means of data processing — a C-suite or executive function. At FFSI, this is the CEO (Calloway) or COO (Vance), who determine overall data governance policy, or the CIO/IT Director who sets technology-level processing standards. This is an organizational-level role, not role-specific.'
+  },
+  {
+    id:'subject', icon:'👤', name:'Data Subject',
+    expected:'All FFSI employees, suppliers, contractors, applicants, or customers whose data is stored',
+    also:'Any response naming employees, suppliers, or individuals whose personal information is in FFSI systems',
+    criteria2:'Correctly explains that Data Subject is not an assignable role — it describes the people whose personal information is stored by FFSI: employees in HR systems, suppliers in vendor records, Army contacts in contract systems, job applicants.',
+    criteria1:'Lists some data subjects but misses key categories (e.g., only names employees, omits suppliers or contractors).',
+    criteria0:'Assigns a single named employee as "the" Data Subject, treating it as an organizational role like the others.',
+    answerWhy:'Data Subject is fundamentally different from the other roles — it is not assigned to a responsible party. Data Subjects are the individuals whose information FFSI collects and stores. This includes employees (HR/payroll), suppliers (vendor management), Army personnel (contract correspondence), and job applicants. A correct answer demonstrates this conceptual distinction.'
+  },
+];
+
+const justCriteria = [
+  { id:'owner',     label:'Clear link between contractual CUI accountability and the role definition' },
+  { id:'custodian', label:'Specific reference to system maintenance, backups, or technical safeguarding' },
+  { id:'processor', label:'Identifies actual data-handling activities, not just job seniority' },
+  { id:'steward',   label:'Distinguishes data quality/governance from technical protection (custodian)' },
+  { id:'controller',label:'Articulates enterprise-level authority over why/how data is processed' },
+  { id:'subject',   label:'Correctly frames Data Subject as people whose data is stored, not a role' },
+];
+
+const discQuestions = [
+  { q:'Which role has ultimate accountability for protecting contract-related CUI?', pts:1 },
+  { q:'Which role is most responsible for maintaining the systems that store CUI?', pts:1 },
+  { q:'Which role would most likely be interviewed first during a CMMC assessment?', pts:1 },
+  { q:'Can one person hold multiple roles? What are the risks?', pts:0.5 },
+  { q:'Which role has the greatest influence on data quality and integrity?', pts:0.5 },
+];
+
+const summaryRows = [
+  { label:'Data Owner Assignment', key:'role_owner', max:2 },
+  { label:'Data Custodian Assignment', key:'role_custodian', max:2 },
+  { label:'Data Processor Assignment', key:'role_processor', max:2 },
+  { label:'Data Steward Assignment', key:'role_steward', max:2 },
+  { label:'Data Controller Assignment', key:'role_controller', max:2 },
+  { label:'Data Subject Assignment', key:'role_subject', max:2 },
+  { label:'Justification Quality (all 6)', key:'just_total', max:8 },
+  { label:'Discussion Participation', key:'disc_total', max:4 },
+];
+
+/* ── RENDER ──────────────────────────────────────────────── */
+function renderRoleRows() {
+  const container = document.getElementById('roleRubricRows');
+  container.innerHTML = roleData.map((r, i) => {
+    const saved = localStorage.getItem(`ffsi-rubric2-role-${r.id}`) || '';
+    const comment = localStorage.getItem(`ffsi-rubric2-role-comment-${r.id}`) || '';
+    return `
+    <div class="rb-row" id="rb-row-${r.id}">
+      <div class="rb-cell rb-num">${i+1}</div>
+      <div class="rb-cell">
+        <div class="rb-role-name">${r.icon} ${r.name}</div>
+        <div class="rb-role-answer">${r.expected}</div>
+        <div class="rb-criteria text-muted" style="font-size:.75rem;color:var(--text-muted);">${r.also ? `<em>Also acceptable: ${r.also}</em>` : ''}</div>
+        <textarea class="comment-box" style="margin-top:.4rem;min-height:44px;" placeholder="Instructor comment..."
+          oninput="saveComment('role-comment-${r.id}',this.value)">${comment}</textarea>
+      </div>
+      <div class="rb-cell" style="font-size:.72rem;color:var(--text-muted);line-height:1.45;">${r.criteria2}</div>
+      <div class="rb-cell" style="font-size:.72rem;color:var(--text-muted);line-height:1.45;">${r.criteria1}</div>
+      <div class="rb-cell" style="font-size:.72rem;color:var(--text-muted);line-height:1.45;">${r.criteria0}</div>
+      <div class="rb-cell"><span class="badge badge-max">2 pts</span></div>
+      <div class="rb-score-cell">
+        <div class="score-btn-group">
+          ${[2,1,0].map(v=>`
+          <button class="score-opt ${saved==v?`selected-${v}`:''}"
+            onclick="setRoleScore('${r.id}',${v},this)">
+            ${v === 2 ? '✓ Full — 2' : v === 1 ? '~ Partial — 1' : '✗ None — 0'}
+          </button>`).join('')}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderJustGrid() {
+  const container = document.getElementById('justGrid');
+  container.innerHTML = roleData.map(r => {
+    const saved = parseInt(localStorage.getItem(`ffsi-rubric2-just-${r.id}`)) || -1;
+    const comment = localStorage.getItem(`ffsi-rubric2-just-comment-${r.id}`) || '';
+    const crit = justCriteria.find(c=>c.id===r.id);
+    return `
+    <div class="just-card">
+      <div class="just-card-head">
+        <span class="just-icon">${r.icon}</span>
+        <span class="just-role-name">${r.name}</span>
+      </div>
+      <div class="just-criteria">✔ Look for: ${crit ? crit.label : ''}</div>
+      <div class="just-score-row">
+        ${[2,1,0].map(v=>`
+        <button class="just-score-btn ${saved===v?`sel-${v}`:''}"
+          onclick="setJustScore('${r.id}',${v},this)">
+          <span class="just-score-val">${v} pt${v!==1?'s':''}</span>
+          <span class="just-score-lbl">${v===2?'Clear':'v===1?Partial:Missing'===`v===1?Partial:Missing`? (v===1?'Partial':'Missing') : ''}</span>
+        </button>`).join('')}
+      </div>
+      <textarea class="comment-box" placeholder="Feedback on justification..."
+        oninput="saveComment('just-comment-${r.id}',this.value)">${comment}</textarea>
+    </div>`;
+  }).join('');
+
+  // Fix label rendering
+  document.querySelectorAll('.just-score-lbl').forEach((el, i) => {
+    const vals = ['Clear','Partial','Missing'];
+    el.textContent = vals[i % 3];
+  });
+}
+
+function renderDiscCards() {
+  const container = document.getElementById('discCards');
+  const saved4 = parseInt(localStorage.getItem('ffsi-rubric2-disc-total')) || 0;
+
+  container.innerHTML = `
+  <div class="disc-card">
+    <div class="disc-q-num">Q</div>
+    <div class="disc-body">
+      <div class="disc-q-text">Discussion Questions (all 5)</div>
+      <div style="font-size:.78rem;color:var(--text-muted);margin-bottom:.65rem;line-height:1.5;">
+        Score the participant's overall engagement with the five discussion questions as a single holistic score out of 4 points.<br>
+        <strong>4 pts</strong> — Substantive contributions on 4–5 questions, connecting roles to CMMC compliance.<br>
+        <strong>3 pts</strong> — Engaged with 3–4 questions; mostly relevant but some depth missing.<br>
+        <strong>2 pts</strong> — Participated in 2–3 questions with limited depth or specificity.<br>
+        <strong>1 pt</strong> — Minimal participation; one question or off-topic responses.<br>
+        <strong>0 pts</strong> — No participation or disruptive.
+      </div>
+      <div class="disc-scoring">
+        ${[4,3,2,1,0].map(v=>`
+        <button class="disc-btn ${saved4===v&&v>=0?`dsel-${v>=3?'full':v>=1?'part':'none'}`:''}"
+          onclick="setDiscScore(${v},this)">
+          ${v} pt${v!==1?'s':''}
+        </button>`).join('')}
+      </div>
+      <textarea class="comment-box" placeholder="Notes on discussion quality and participation..."
+        oninput="saveComment('disc-comment',this.value)">${localStorage.getItem('ffsi-rubric2-disc-comment')||''}</textarea>
+    </div>
+  </div>`;
+}
+
+function renderAnswerKey() {
+  const container = document.getElementById('answerKeyRows');
+  container.innerHTML = roleData.map(r => `
+    <div class="ak-row">
+      <div class="ak-cell"><div class="ak-role">${r.icon} ${r.name}</div></div>
+      <div class="ak-cell">
+        <span class="ak-answer">${r.expected}</span>
+        ${r.also ? `<div class="ak-also">Also: ${r.also}</div>` : ''}
+      </div>
+      <div class="ak-cell ak-why">${r.answerWhy}</div>
+    </div>`).join('');
+}
+
+function renderSummary() {
+  const scores = getSummaryScores();
+  const body = document.getElementById('summaryBody');
+  body.innerHTML = summaryRows.map(row => {
+    const val = scores[row.key] || 0;
+    const pct = Math.round((val/row.max)*100);
+    return `
+    <tr>
+      <td>${row.label}</td>
+      <td>${row.max}</td>
+      <td><strong>${val}</strong></td>
+      <td class="bar-cell"><div class="mini-bar"><div class="mini-fill" style="width:${pct}%"></div></div></td>
+    </tr>`;
+  }).join('');
+}
+
+/* ── SCORING ─────────────────────────────────────────────── */
+function setRoleScore(id, val, btn) {
+  localStorage.setItem(`ffsi-rubric2-role-${id}`, val);
+  const group = btn.closest('.score-btn-group');
+  group.querySelectorAll('.score-opt').forEach(b => b.className = 'score-opt');
+  btn.classList.add(`selected-${val}`);
+  recalc();
+}
+
+function setJustScore(id, val, btn) {
+  localStorage.setItem(`ffsi-rubric2-just-${id}`, val);
+  const row = btn.closest('.just-score-row');
+  row.querySelectorAll('.just-score-btn').forEach(b => {
+    b.className = b.className.replace(/sel-\d/,'').trim();
+  });
+  btn.classList.add(`sel-${val}`);
+  recalc();
+}
+
+function setDiscScore(val, btn) {
+  localStorage.setItem('ffsi-rubric2-disc-total', val);
+  const scoring = btn.closest('.disc-scoring');
+  scoring.querySelectorAll('.disc-btn').forEach(b => {
+    b.className = b.className.replace(/dsel-\w+/,'').trim();
+  });
+  const cls = val >= 3 ? 'dsel-full' : val >= 1 ? 'dsel-part' : 'dsel-none';
+  btn.classList.add(cls);
+  recalc();
+}
+
+function saveComment(key, val) {
+  localStorage.setItem(`ffsi-rubric2-${key}`, val);
+}
+
+function getSummaryScores() {
+  const roleTotal = roleData.reduce((s, r) => s + (parseInt(localStorage.getItem(`ffsi-rubric2-role-${r.id}`))||0), 0);
+  const rawJust = roleData.reduce((s, r) => s + (parseInt(localStorage.getItem(`ffsi-rubric2-just-${r.id}`))||0), 0);
+  const justTotal = Math.min(rawJust, 8);
+  const discTotal = Math.min(parseInt(localStorage.getItem('ffsi-rubric2-disc-total'))||0, 4);
+  const total = roleTotal + justTotal + discTotal;
+
+  const out = { just_total: justTotal, disc_total: discTotal };
+  roleData.forEach(r => {
+    out[`role_${r.id}`] = parseInt(localStorage.getItem(`ffsi-rubric2-role-${r.id}`))||0;
+  });
+  return out;
+}
+
+function recalc() {
+  const sc = getSummaryScores();
+  const total = Object.values(sc).reduce((a,b)=>a+b,0);
+  const pct = Math.round((total/24)*100);
+
+  document.getElementById('dashTotal').textContent = total;
+  document.getElementById('dashPct').textContent = pct + '%';
+  document.getElementById('progFill').style.width = pct + '%';
+  document.getElementById('summaryTotal').textContent = total;
+  document.getElementById('summaryBar').style.width = pct + '%';
+  document.getElementById('finalBig').textContent = `${total} / 24`;
+
+  // Just subtotal
+  const rawJust = roleData.reduce((s,r) => s + (parseInt(localStorage.getItem(`ffsi-rubric2-just-${r.id}`))||0), 0);
+  document.getElementById('justSubtotal').textContent = `${Math.min(rawJust,8)} / 8`;
+  const disc = Math.min(parseInt(localStorage.getItem('ffsi-rubric2-disc-total'))||0, 4);
+  document.getElementById('discSubtotal').textContent = `${disc} / 4`;
+
+  // Rating
+  let rating, cls, sub;
+  if (total >= 22) { rating='Excellent Understanding'; cls='rating-excellent'; sub='Outstanding performance'; }
+  else if (total >= 19) { rating='Proficient'; cls='rating-proficient'; sub='Meets expectations'; }
+  else if (total >= 16) { rating='Developing'; cls='rating-developing'; sub='Additional review needed'; }
+  else { rating='Needs Improvement'; cls='rating-needs'; sub='Significant gaps present'; }
+
+  ['dashRating','finalRating'].forEach(id => {
+    const el = document.getElementById(id);
+    el.textContent = rating;
+    el.className = `rating-pill ${cls}`;
+  });
+  document.getElementById('dashPctSub').textContent = sub;
+
+  renderSummary();
+}
+
+/* ── THEME ───────────────────────────────────────────────── */
+function toggleTheme() {
+  const html = document.documentElement;
+  const btn = document.getElementById('themeBtn');
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  btn.textContent = isDark ? '🌙 Dark Mode' : '☀️ Light Mode';
+  localStorage.setItem('ffsi-rubric2-theme', isDark ? 'light' : 'dark');
+}
+
+/* ── META ────────────────────────────────────────────────── */
+function saveMeta() {
+  ['studentName','gradeDate','cohort','instructor','overallFeedback'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) localStorage.setItem(`ffsi-rubric2-meta-${id}`, el.value);
+  });
+}
+
+function restoreMeta() {
+  ['studentName','gradeDate','cohort','instructor','overallFeedback'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = localStorage.getItem(`ffsi-rubric2-meta-${id}`) || '';
+  });
+}
+
+/* ── EXPORT ──────────────────────────────────────────────── */
+function exportGrades() {
+  const name = document.getElementById('studentName').value || 'Unknown';
+  const date = document.getElementById('gradeDate').value || new Date().toLocaleDateString();
+  const cohort = document.getElementById('cohort').value || '—';
+  const instructor = document.getElementById('instructor').value || '—';
+  const feedback = document.getElementById('overallFeedback').value || '(none)';
+
+  let out = `FFSI — DATA GOVERNANCE ROLE ASSIGNMENT: GRADED RUBRIC\n`;
+  out += '='.repeat(54) + '\n';
+  out += `Student:    ${name}\nDate:       ${date}\nCohort:     ${cohort}\nInstructor: ${instructor}\n\n`;
+
+  out += 'ROLE ASSIGNMENT SCORES\n' + '-'.repeat(40) + '\n';
+  let roleTotal = 0;
+  roleData.forEach(r => {
+    const s = parseInt(localStorage.getItem(`ffsi-rubric2-role-${r.id}`))||0;
+    const c = localStorage.getItem(`ffsi-rubric2-role-comment-${r.id}`)||'';
+    roleTotal += s;
+    out += `${r.name}: ${s}/2${c?'\n  Comment: '+c:''}\n`;
+  });
+
+  const rawJust = roleData.reduce((s,r)=>s+(parseInt(localStorage.getItem(`ffsi-rubric2-just-${r.id}`))||0),0);
+  const justTotal = Math.min(rawJust, 8);
+  const discTotal = Math.min(parseInt(localStorage.getItem('ffsi-rubric2-disc-total'))||0, 4);
+  const total = roleTotal + justTotal + discTotal;
+
+  out += `\nJUSTIFICATION QUALITY\n` + '-'.repeat(40) + '\n';
+  roleData.forEach(r => {
+    const s = parseInt(localStorage.getItem(`ffsi-rubric2-just-${r.id}`))||0;
+    const c = localStorage.getItem(`ffsi-rubric2-just-comment-${r.id}`)||'';
+    out += `${r.name} justification: ${s}/2${c?'\n  Feedback: '+c:''}\n`;
+  });
+  out += `Justification subtotal (cap 8): ${justTotal}/8\n`;
+
+  out += `\nDISCUSSION PARTICIPATION: ${discTotal}/4\n`;
+  const dc = localStorage.getItem('ffsi-rubric2-disc-comment')||'';
+  if (dc) out += `  Notes: ${dc}\n`;
+
+  out += `\n` + '='.repeat(40) + '\n';
+  out += `TOTAL SCORE: ${total} / 24\n`;
+  const r = total>=22?'Excellent Understanding':total>=19?'Proficient':total>=16?'Developing':'Needs Improvement';
+  out += `RATING: ${r}\n\n`;
+  out += `OVERALL FEEDBACK:\n${feedback}\n`;
+
+  const blob = new Blob([out], {type:'text/plain'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `FFSI-Rubric-${name.replace(/\s+/g,'-')}.txt`;
+  a.click();
+}
+
+/* ── CLEAR ───────────────────────────────────────────────── */
+function clearAll() {
+  if (!confirm('Clear all scores and comments for this rubric? This cannot be undone.')) return;
+  Object.keys(localStorage).filter(k=>k.startsWith('ffsi-rubric2-')).forEach(k=>localStorage.removeItem(k));
+  location.reload();
+}
+
+/* ── INIT ────────────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', () => {
+  const theme = localStorage.getItem('ffsi-rubric2-theme') || 'light';
+  document.documentElement.setAttribute('data-theme', theme);
+  document.getElementById('themeBtn').textContent = theme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
+
+  // Set today's date as default
+  if (!localStorage.getItem('ffsi-rubric2-meta-gradeDate')) {
+    document.getElementById('gradeDate').value = new Date().toISOString().split('T')[0];
+  }
+
+  renderRoleRows();
+  renderJustGrid();
+  renderDiscCards();
+  renderAnswerKey();
+  renderSummary();
+  restoreMeta();
+  recalc();
+});
+</script>
+</body>
+</html>
