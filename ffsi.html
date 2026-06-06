@@ -1,0 +1,2323 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FFSI — CMMC 2.0 Level 2 Audit Case Study</title>
+<style>
+/* ============================================================
+   FEDERAL FOOD SERVICES INC. — CMMC CASE STUDY
+   Instructor CSS — Modify theme variables below to restyle
+   ============================================================ */
+
+/* ── Google Fonts ─────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&family=Source+Code+Pro:wght@400;600&display=swap');
+
+/* ── CSS Variables (Light Mode) ───────────────────────────── */
+:root {
+  --green-dark:   #1a5c2a;
+  --green:        #2d8a47;
+  --green-mid:    #3da85c;
+  --green-light:  #e8f5ec;
+  --green-pale:   #f2faf4;
+  --black:        #0d1117;
+  --near-black:   #1c2128;
+  --gray-900:     #24292f;
+  --gray-700:     #424a53;
+  --gray-500:     #6e7781;
+  --gray-300:     #d0d7de;
+  --gray-100:     #f6f8fa;
+  --white:        #ffffff;
+  --amber:        #d97706;
+  --amber-light:  #fef3c7;
+  --red:          #dc2626;
+  --red-light:    #fee2e2;
+  --blue:         #1d4ed8;
+  --blue-light:   #eff6ff;
+  --purple:       #7c3aed;
+  --purple-light: #f5f3ff;
+
+  /* Semantic tokens */
+  --bg:           var(--white);
+  --bg-alt:       var(--gray-100);
+  --bg-card:      var(--white);
+  --bg-sidebar:   var(--near-black);
+  --text:         var(--gray-900);
+  --text-muted:   var(--gray-500);
+  --text-sidebar: #cdd9e5;
+  --border:       var(--gray-300);
+  --accent:       var(--green);
+  --accent-dark:  var(--green-dark);
+  --header-bg:    var(--green-dark);
+  --header-text:  var(--white);
+  --badge-cui:    #7c3aed;
+  --badge-fci:    #1d4ed8;
+  --badge-nc:     var(--gray-500);
+  --sev-critical: #dc2626;
+  --sev-high:     #ea580c;
+  --sev-medium:   #d97706;
+  --sev-low:      #16a34a;
+
+  --font-serif:   'Libre Baskerville', Georgia, serif;
+  --font-sans:    'Source Sans 3', system-ui, sans-serif;
+  --font-mono:    'Source Code Pro', monospace;
+  --sidebar-w:    260px;
+  --radius:       8px;
+  --shadow:       0 1px 3px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.08);
+  --shadow-lg:    0 4px 16px rgba(0,0,0,.12);
+  --transition:   0.2s ease;
+}
+
+/* ── Dark Mode Overrides ──────────────────────────────────── */
+[data-theme="dark"] {
+  --bg:           #0d1117;
+  --bg-alt:       #161b22;
+  --bg-card:      #1c2128;
+  --bg-sidebar:   #010409;
+  --text:         #cdd9e5;
+  --text-muted:   #768390;
+  --text-sidebar: #8b949e;
+  --border:       #30363d;
+  --accent:       #3da85c;
+  --accent-dark:  #2d8a47;
+  --header-bg:    #010409;
+  --green-light:  #1c3028;
+  --green-pale:   #0f1f15;
+  --amber-light:  #2d1f00;
+  --red-light:    #2d0a0a;
+  --blue-light:   #0a1628;
+  --purple-light: #1a0d33;
+  --bg-card:      #1c2128;
+}
+
+/* ── Reset ────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.6;
+  display: flex;
+  min-height: 100vh;
+  transition: background var(--transition), color var(--transition);
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+img { max-width:100%; }
+button { font-family: var(--font-sans); cursor: pointer; }
+
+/* ── Scrollbar ─────────────────────────────────────────────  */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-alt); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ══════════════════════════════════════════════════════════
+   SIDEBAR
+   ══════════════════════════════════════════════════════════ */
+#sidebar {
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  width: var(--sidebar-w);
+  background: var(--bg-sidebar);
+  color: var(--text-sidebar);
+  overflow-y: auto;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  transition: transform var(--transition);
+}
+.sidebar-logo {
+  padding: 1.2rem 1rem;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  display: flex; align-items: center; gap: 0.7rem;
+}
+.sidebar-logo-mark {
+  width: 40px; height: 40px;
+  background: var(--green);
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: 1rem;
+  color: white;
+  flex-shrink: 0;
+  letter-spacing: -0.03em;
+}
+.sidebar-logo-text { line-height: 1.2; }
+.sidebar-logo-text strong { display: block; font-size: 0.85rem; color: white; }
+.sidebar-logo-text span { font-size: 0.7rem; color: var(--text-sidebar); }
+
+.sidebar-controls {
+  padding: 0.6rem;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  display: flex; flex-direction: column; gap: 0.4rem;
+}
+.ctrl-btn {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.45rem 0.7rem;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.04);
+  color: var(--text-sidebar);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: all var(--transition);
+  width: 100%;
+  text-align: left;
+}
+.ctrl-btn:hover { background: var(--green); color: white; border-color: var(--green); }
+.ctrl-btn.active { background: var(--green); color: white; border-color: var(--green); }
+
+.sidebar-nav { padding: 0.5rem 0; flex: 1; }
+.nav-group-label {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+  padding: 0.8rem 1rem 0.3rem;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.82rem;
+  color: var(--text-sidebar);
+  cursor: pointer;
+  transition: all var(--transition);
+  border-left: 3px solid transparent;
+}
+.nav-item:hover { color: white; background: rgba(255,255,255,0.05); border-left-color: var(--green-mid); }
+.nav-item.active { color: white; background: rgba(45,138,71,0.15); border-left-color: var(--green); }
+.nav-item .nav-icon { font-size: 0.9rem; width: 18px; text-align: center; flex-shrink: 0; }
+.nav-item .nav-num {
+  margin-left: auto;
+  font-size: 0.65rem;
+  background: rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 0.1rem 0.45rem;
+  color: rgba(255,255,255,0.4);
+}
+
+/* ══════════════════════════════════════════════════════════
+   MAIN CONTENT
+   ══════════════════════════════════════════════════════════ */
+#main {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  min-width: 0;
+}
+
+/* ── Page Header ─────────────────────────────────────────── */
+.page-header {
+  background: var(--header-bg);
+  color: var(--header-text);
+  padding: 2rem 2.5rem 1.5rem;
+  border-bottom: 4px solid var(--green);
+  position: relative;
+  overflow: hidden;
+}
+.page-header::before {
+  content: '';
+  position: absolute; top: 0; right: 0; bottom: 0;
+  width: 40%;
+  background: repeating-linear-gradient(
+    45deg, transparent, transparent 10px,
+    rgba(255,255,255,0.015) 10px, rgba(255,255,255,0.015) 20px
+  );
+  pointer-events: none;
+}
+.header-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; }
+.header-brand { display: flex; align-items: center; gap: 1rem; }
+.header-seal {
+  width: 72px; height: 72px;
+  border: 3px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column;
+}
+.header-seal-text { font-family: var(--font-serif); font-size: 1.4rem; font-weight: 700; line-height: 1; }
+.header-seal-sub { font-size: 0.45rem; letter-spacing: 0.15em; opacity: 0.7; text-transform: uppercase; }
+.header-title h1 { font-family: var(--font-serif); font-size: 1.7rem; font-weight: 700; line-height: 1.1; }
+.header-title .subtitle { font-size: 0.85rem; opacity: 0.75; margin-top: 0.25rem; font-style: italic; }
+.header-badges { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.4rem; }
+.hbadge {
+  font-size: 0.65rem; font-weight: 700; letter-spacing: 0.08em;
+  padding: 0.2rem 0.6rem; border-radius: 4px;
+  background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);
+  text-transform: uppercase;
+}
+.header-meta-cards {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+@media(max-width:900px) { .header-meta-cards { grid-template-columns: repeat(3,1fr); } }
+.meta-card {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: var(--radius);
+  padding: 0.7rem 0.8rem;
+}
+.meta-card-label { font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.6; margin-bottom: 0.2rem; }
+.meta-card-value { font-size: 1rem; font-weight: 700; line-height: 1.1; }
+.meta-card-sub { font-size: 0.65rem; opacity: 0.65; margin-top: 0.1rem; }
+
+/* ── Content Wrapper ─────────────────────────────────────── */
+.content { padding: 2rem 2.5rem; }
+@media(max-width:700px) { .content { padding: 1rem; } }
+
+/* ── Section ─────────────────────────────────────────────── */
+.section { margin-bottom: 3rem; }
+.section-anchor { scroll-margin-top: 20px; }
+.section-header {
+  display: flex; align-items: center; gap: 0.8rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--border);
+}
+.section-num {
+  width: 30px; height: 30px;
+  background: var(--accent);
+  color: white;
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.8rem; font-weight: 700;
+  flex-shrink: 0;
+}
+.section-title { font-family: var(--font-serif); font-size: 1.25rem; font-weight: 700; }
+.section-desc { font-size: 0.82rem; color: var(--text-muted); margin-left: auto; }
+
+/* ── Cards ───────────────────────────────────────────────── */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  box-shadow: var(--shadow);
+  transition: background var(--transition), border-color var(--transition);
+}
+.card + .card { margin-top: 0.75rem; }
+.card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 0.75rem; gap: 0.5rem;
+}
+.card-title { font-weight: 700; font-size: 0.95rem; }
+.card-subtitle { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.1rem; }
+.expandable { cursor: pointer; user-select: none; }
+.expand-icon { transition: transform var(--transition); font-size: 0.75rem; }
+.expanded .expand-icon { transform: rotate(180deg); }
+.expand-body { display: none; margin-top: 0.75rem; }
+.expanded .expand-body { display: block; }
+
+/* ── Grid Layouts ────────────────────────────────────────── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+.grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 0.75rem; }
+@media(max-width:900px) { .grid-3,.grid-4 { grid-template-columns:1fr 1fr; } }
+@media(max-width:600px) { .grid-2,.grid-3,.grid-4 { grid-template-columns:1fr; } }
+
+/* ── Tables ──────────────────────────────────────────────── */
+.table-wrap { overflow-x: auto; margin: 0 -0.25rem; }
+table { width: 100%; border-collapse: collapse; font-size: 0.82rem; min-width: 500px; }
+th {
+  background: var(--bg-alt);
+  color: var(--text-muted);
+  font-weight: 700;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.6rem 0.75rem;
+  text-align: left;
+  border-bottom: 2px solid var(--border);
+  white-space: nowrap;
+}
+td {
+  padding: 0.55rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--bg-alt); }
+.td-mono { font-family: var(--font-mono); font-size: 0.75rem; }
+
+/* ── Badges ──────────────────────────────────────────────── */
+.badge {
+  display: inline-block;
+  font-size: 0.65rem; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+}
+.badge-cui { background: var(--purple-light); color: var(--badge-cui); border: 1px solid var(--badge-cui); }
+.badge-fci { background: var(--blue-light); color: var(--badge-fci); border: 1px solid var(--badge-fci); }
+.badge-nc  { background: var(--bg-alt); color: var(--badge-nc); border: 1px solid var(--border); }
+.badge-green { background: var(--green-light); color: var(--green-dark); border: 1px solid var(--green); }
+.badge-amber { background: var(--amber-light); color: var(--amber); border: 1px solid var(--amber); }
+.badge-red   { background: var(--red-light); color: var(--red); border: 1px solid var(--red); }
+
+/* Severity badges */
+.sev { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 0.15rem 0.5rem; border-radius: 4px; }
+.sev-critical { background: var(--red-light); color: var(--sev-critical); border: 1px solid var(--sev-critical); }
+.sev-high     { background: #fff3eb; color: var(--sev-high); border: 1px solid var(--sev-high); }
+.sev-medium   { background: var(--amber-light); color: var(--sev-medium); border: 1px solid var(--sev-medium); }
+.sev-low      { background: var(--green-light); color: var(--sev-low); border: 1px solid var(--sev-low); }
+[data-theme="dark"] .sev-high { background: #2d1500; }
+
+/* ── Info Lists ──────────────────────────────────────────── */
+.info-grid { display: grid; grid-template-columns: auto 1fr; gap: 0.3rem 1.2rem; font-size: 0.85rem; }
+.info-label { font-weight: 700; color: var(--text-muted); white-space: nowrap; }
+.info-value { }
+
+/* ── Search / Filter Bar ─────────────────────────────────── */
+.filter-bar {
+  display: flex; gap: 0.5rem; flex-wrap: wrap;
+  margin-bottom: 1rem; align-items: center;
+}
+.filter-bar input[type="text"] {
+  padding: 0.45rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-card);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  flex: 1; min-width: 160px;
+  transition: border-color var(--transition);
+}
+.filter-bar input[type="text"]:focus { outline: none; border-color: var(--accent); }
+.filter-bar select {
+  padding: 0.45rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-card);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+.filter-btn {
+  padding: 0.45rem 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-card);
+  color: var(--text);
+  font-size: 0.8rem; font-weight: 600;
+  transition: all var(--transition);
+}
+.filter-btn:hover, .filter-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+/* ── Tabs ────────────────────────────────────────────────── */
+.tabs { display: flex; gap: 0; border-bottom: 2px solid var(--border); margin-bottom: 1.25rem; overflow-x: auto; }
+.tab-btn {
+  padding: 0.6rem 1.1rem;
+  background: none; border: none;
+  font-size: 0.82rem; font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  white-space: nowrap;
+  transition: all var(--transition);
+}
+.tab-btn:hover { color: var(--accent); }
+.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ── Network Diagram ─────────────────────────────────────── */
+#network-diagram {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  position: relative;
+  min-height: 500px;
+  overflow: hidden;
+}
+.net-layer {
+  display: flex; justify-content: center; gap: 1rem;
+  margin-bottom: 1.2rem; flex-wrap: wrap; align-items: center;
+}
+.net-node {
+  background: var(--bg-card);
+  border: 2px solid var(--border);
+  border-radius: 6px;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.72rem; font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transition);
+  position: relative;
+  min-width: 90px;
+}
+.net-node:hover { border-color: var(--accent); box-shadow: 0 0 0 3px var(--green-light); transform: translateY(-2px); }
+.net-node.internet  { border-color: #64748b; background: #f8fafc; color: #1e293b; }
+.net-node.firewall  { border-color: var(--red); background: var(--red-light); color: var(--red); }
+.net-node.server    { border-color: var(--blue); background: var(--blue-light); color: var(--blue); }
+.net-node.cloud     { border-color: #7c3aed; background: var(--purple-light); color: var(--purple); }
+.net-node.cui       { border-color: var(--amber); background: var(--amber-light); color: var(--amber); }
+.net-node.ot        { border-color: var(--green); background: var(--green-light); color: var(--green-dark); }
+.net-node.siem      { border-color: #0891b2; background: #e0f2fe; color: #0369a1; }
+.net-node.vlan      { border-color: var(--gray-500); background: var(--bg-alt); color: var(--text-muted); font-size: 0.65rem; }
+.net-connector { text-align: center; color: var(--text-muted); font-size: 0.7rem; margin-bottom: 0.4rem; }
+.net-node-label { font-size: 0.6rem; font-weight: 400; color: var(--text-muted); display: block; margin-top: 0.15rem; }
+[data-theme="dark"] .net-node.internet  { background: #1e2936; color: #94a3b8; border-color: #475569; }
+[data-theme="dark"] .net-node.firewall  { background: #2d0a0a; }
+[data-theme="dark"] .net-node.server    { background: #0a1628; }
+[data-theme="dark"] .net-node.cloud     { background: #1a0d33; }
+[data-theme="dark"] .net-node.cui       { background: #2d1f00; }
+[data-theme="dark"] .net-node.ot        { background: #0f1f15; }
+[data-theme="dark"] .net-node.siem      { background: #042331; color: #38bdf8; }
+[data-theme="dark"] .net-node.vlan      { background: #1c2128; }
+
+/* Modal */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.55); z-index: 999;
+  align-items: center; justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal-box {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.5rem;
+  max-width: 500px; width: 90%; box-shadow: var(--shadow-lg);
+  position: relative;
+}
+.modal-close {
+  position: absolute; top: 0.75rem; right: 0.75rem;
+  background: none; border: none; font-size: 1.1rem;
+  color: var(--text-muted); cursor: pointer;
+}
+.modal-title { font-family: var(--font-serif); font-weight: 700; font-size: 1rem; margin-bottom: 0.75rem; color: var(--accent); }
+
+/* ── Personnel Role Assignment ───────────────────────────── */
+.person-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  transition: border-color var(--transition);
+}
+.person-card:hover { border-color: var(--accent); }
+.person-name { font-weight: 700; font-size: 0.9rem; }
+.person-title { font-size: 0.78rem; color: var(--text-muted); }
+.person-meta { font-size: 0.72rem; color: var(--text-muted); margin: 0.4rem 0; }
+.role-select {
+  width: 100%;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 0.75rem;
+  font-family: var(--font-sans);
+  margin-top: 0.35rem;
+  cursor: pointer;
+}
+.role-select:focus { outline: none; border-color: var(--accent); }
+
+/* ── Evidence Checklist ──────────────────────────────────── */
+.evidence-item {
+  display: flex; align-items: flex-start; gap: 0.75rem;
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+  background: var(--bg-card);
+  transition: all var(--transition);
+}
+.evidence-item.checked { border-color: var(--green); background: var(--green-pale); }
+.evidence-item input[type="checkbox"] { flex-shrink: 0; width: 16px; height: 16px; accent-color: var(--green); margin-top: 2px; cursor: pointer; }
+.evidence-label { font-size: 0.85rem; font-weight: 600; }
+.evidence-desc { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem; }
+.evidence-tag { font-size: 0.65rem; font-weight: 700; color: var(--accent); margin-top: 0.2rem; }
+
+/* ── Gap Cards ───────────────────────────────────────────── */
+.gap-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.25rem;
+  margin-bottom: 0.75rem;
+  transition: all var(--transition);
+}
+.gap-card[data-sev="Critical"] { border-left-color: var(--sev-critical); }
+.gap-card[data-sev="High"]     { border-left-color: var(--sev-high); }
+.gap-card[data-sev="Medium"]   { border-left-color: var(--sev-medium); }
+.gap-card[data-sev="Low"]      { border-left-color: var(--sev-low); }
+.gap-header { display: flex; align-items: flex-start; gap: 0.7rem; flex-wrap: wrap; margin-bottom: 0.6rem; }
+.gap-id { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); }
+.gap-practice { font-size: 0.72rem; font-weight: 700; color: var(--accent); font-family: var(--font-mono); }
+.gap-title { font-weight: 700; font-size: 0.9rem; margin-bottom: 0.4rem; }
+.gap-body { font-size: 0.82rem; color: var(--text-muted); line-height: 1.55; }
+.gap-accordion { margin-top: 0.5rem; }
+.gap-section-title { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.2rem; margin-top: 0.5rem; }
+.gap-text { font-size: 0.82rem; line-height: 1.5; }
+.question-box {
+  background: var(--green-light);
+  border: 1px solid var(--green);
+  border-radius: 6px;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--green-dark);
+  margin-top: 0.5rem;
+}
+[data-theme="dark"] .question-box { background: var(--green-pale); color: var(--green-mid); }
+
+/* ── Risk Cards ──────────────────────────────────────────── */
+.risk-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  transition: border-color var(--transition);
+}
+.risk-card:hover { border-color: var(--accent); }
+.risk-header { display: flex; gap: 0.7rem; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; }
+.risk-id { font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted); }
+
+/* ── Callout ─────────────────────────────────────────────── */
+.callout {
+  border-radius: var(--radius);
+  padding: 0.85rem 1rem;
+  font-size: 0.84rem;
+  margin-bottom: 1rem;
+  display: flex; gap: 0.65rem; align-items: flex-start;
+}
+.callout-info  { background: var(--blue-light); border-left: 4px solid var(--blue); color: var(--blue); }
+.callout-warn  { background: var(--amber-light); border-left: 4px solid var(--amber); color: var(--amber); }
+.callout-tip   { background: var(--green-light); border-left: 4px solid var(--green); color: var(--green-dark); }
+.callout-icon  { font-size: 1rem; flex-shrink: 0; margin-top: 0.05rem; }
+.callout-body  { color: var(--text); }
+.callout-body strong { color: inherit; }
+
+/* ── Task List ───────────────────────────────────────────── */
+.task-item {
+  display: flex; gap: 0.75rem; align-items: flex-start;
+  padding: 0.85rem 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 0.5rem;
+  transition: border-color var(--transition);
+}
+.task-item:hover { border-color: var(--accent); }
+.task-num {
+  width: 26px; height: 26px; flex-shrink: 0;
+  background: var(--green-light); border: 1px solid var(--green);
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 0.72rem; font-weight: 700; color: var(--green-dark);
+}
+.task-text { font-size: 0.85rem; }
+.task-label { font-weight: 700; margin-bottom: 0.15rem; }
+.task-desc { color: var(--text-muted); font-size: 0.8rem; }
+
+/* ── Location Cards ──────────────────────────────────────── */
+.location-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.location-card-header {
+  background: var(--green-dark);
+  color: white;
+  padding: 0.8rem 1rem;
+  display: flex; align-items: center; gap: 0.6rem;
+}
+.location-icon { font-size: 1.2rem; }
+.location-name { font-weight: 700; font-size: 0.9rem; }
+.location-type { font-size: 0.72rem; opacity: 0.75; }
+.location-body { padding: 1rem; }
+
+/* ── Print Styles ────────────────────────────────────────── */
+@media print {
+  #sidebar { display: none; }
+  #main { margin-left: 0; }
+  .ctrl-btn, .filter-bar, .tabs { display: none; }
+  .expand-body { display: block !important; }
+  .page-header { background: #1a5c2a !important; -webkit-print-color-adjust: exact; }
+  .section { page-break-inside: avoid; }
+}
+
+/* ── Misc Utilities ──────────────────────────────────────── */
+.text-muted { color: var(--text-muted); }
+.text-small { font-size: 0.8rem; }
+.text-mono { font-family: var(--font-mono); font-size: 0.8rem; }
+.mt-05 { margin-top: 0.5rem; }
+.mt-1  { margin-top: 1rem; }
+.mb-1  { margin-bottom: 1rem; }
+.gap-05 { gap: 0.5rem; }
+.flex { display: flex; align-items: center; }
+.flex-wrap { flex-wrap: wrap; }
+.hr { border: none; border-top: 1px solid var(--border); margin: 1rem 0; }
+pre.code-block {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  overflow-x: auto;
+  line-height: 1.6;
+  white-space: pre;
+}
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════
+     SIDEBAR NAVIGATION
+     Instructor note: nav items use data-section to link to section IDs
+     ══════════════════════════════════════════════════════════ -->
+<nav id="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-mark">FFSI</div>
+    <div class="sidebar-logo-text">
+      <strong>Fed. Food Services</strong>
+      <span>CMMC L2 Case Study</span>
+    </div>
+  </div>
+
+  <div class="sidebar-controls">
+    <button class="ctrl-btn" onclick="toggleTheme()" id="themeBtn">🌙 Dark Mode</button>
+    <button class="ctrl-btn" onclick="window.print()">🖨 Print Case Study</button>
+    <button class="ctrl-btn" id="editBtn" onclick="toggleEdit()">✏️ Edit Mode</button>
+  </div>
+
+  <div class="sidebar-nav">
+    <div class="nav-group-label">Case Study</div>
+    <div class="nav-item active" onclick="scrollTo('header')"><span class="nav-icon">🏛</span> Dashboard</div>
+    <div class="nav-item" onclick="scrollTo('overview')"><span class="nav-icon">🏢</span> Company Overview</div>
+    <div class="nav-item" onclick="scrollTo('locations')"><span class="nav-icon">📍</span> Locations</div>
+    <div class="nav-item" onclick="scrollTo('contracts')"><span class="nav-icon">📋</span> Federal Contracts <span class="nav-num">6</span></div>
+
+    <div class="nav-group-label">Audit Materials</div>
+    <div class="nav-item" onclick="scrollTo('personnel')"><span class="nav-icon">👥</span> Personnel &amp; Roles <span class="nav-num">25</span></div>
+    <div class="nav-item" onclick="scrollTo('it-infra')"><span class="nav-icon">🌐</span> IT Infrastructure</div>
+    <div class="nav-item" onclick="scrollTo('assets')"><span class="nav-icon">💻</span> Asset Inventory <span class="nav-num">35</span></div>
+    <div class="nav-item" onclick="scrollTo('physical')"><span class="nav-icon">🔒</span> Physical Security</div>
+
+    <div class="nav-group-label">Audit Findings</div>
+    <div class="nav-item" onclick="scrollTo('risks')"><span class="nav-icon">⚠️</span> Risks &amp; Incidents <span class="nav-num">10</span></div>
+    <div class="nav-item" onclick="scrollTo('gaps')"><span class="nav-icon">🔍</span> Audit Gaps <span class="nav-num">12</span></div>
+    <div class="nav-item" onclick="scrollTo('evidence')"><span class="nav-icon">📁</span> Evidence Library <span class="nav-num">15</span></div>
+
+    <div class="nav-group-label">Student Work</div>
+    <div class="nav-item" onclick="scrollTo('tasks')"><span class="nav-icon">📝</span> Student Tasks <span class="nav-num">12</span></div>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════════════════════════
+     MAIN CONTENT
+     ══════════════════════════════════════════════════════════ -->
+<div id="main">
+
+  <!-- ── PAGE HEADER / DASHBOARD ─────────────────────────── -->
+  <div class="page-header" id="header">
+    <div class="header-top">
+      <div class="header-brand">
+        <div class="header-seal">
+          <div class="header-seal-text">FFSI</div>
+          <div class="header-seal-sub">Est. 1987</div>
+        </div>
+        <div class="header-title">
+          <h1>Federal Food Services Inc.</h1>
+          <div class="subtitle">CMMC 2.0 Level 2 Audit Scenario — Fictional Training Case Study</div>
+          <div class="header-badges" style="margin-top:0.5rem;">
+            <span class="hbadge">NIST SP 800-171 Rev 2</span>
+            <span class="hbadge">110 Practices</span>
+            <span class="hbadge">DFARS 252.204-7012</span>
+            <span class="hbadge" style="background:rgba(220,38,38,0.3);border-color:rgba(220,38,38,0.5);">⚠ Fictional — Training Use Only</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="header-meta-cards">
+      <div class="meta-card">
+        <div class="meta-card-label">Employees</div>
+        <div class="meta-card-value">847</div>
+        <div class="meta-card-sub">4 locations</div>
+      </div>
+      <div class="meta-card">
+        <div class="meta-card-label">Federal Revenue</div>
+        <div class="meta-card-value">$312M</div>
+        <div class="meta-card-sub">FY 2024</div>
+      </div>
+      <div class="meta-card">
+        <div class="meta-card-label">Primary Facility</div>
+        <div class="meta-card-value">Hartwell, GA</div>
+        <div class="meta-card-sub">MRE Production Plant</div>
+      </div>
+      <div class="meta-card">
+        <div class="meta-card-label">CUI Environment</div>
+        <div class="meta-card-value">Moderate</div>
+        <div class="meta-card-sub">ITAR-adjacent logistics</div>
+      </div>
+      <div class="meta-card">
+        <div class="meta-card-label">Army Contracts</div>
+        <div class="meta-card-value">6 Active</div>
+        <div class="meta-card-sub">+ 2 pending</div>
+      </div>
+      <div class="meta-card">
+        <div class="meta-card-label">CMMC Target</div>
+        <div class="meta-card-value">Level 2</div>
+        <div class="meta-card-sub">C3PAO assessment</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+
+  <!-- ══════════════════════════════════════════════════════
+       SECTION 1 — COMPANY OVERVIEW
+       ══════════════════════════════════════════════════════ -->
+  <div class="section" id="overview">
+    <div class="section-header section-anchor">
+      <div class="section-num">1</div>
+      <div>
+        <div class="section-title">Company Overview</div>
+      </div>
+      <div class="section-desc">Background, mission, and data flow context</div>
+    </div>
+
+    <div class="callout callout-warn">
+      <span class="callout-icon">⚠️</span>
+      <div class="callout-body"><strong>Instructor Note:</strong> All company data, personnel, contract numbers, and locations in this case study are entirely fictional and created for classroom training purposes. Do not use in real CMMC assessments.</div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Company Profile</div></div>
+        <div class="info-grid">
+          <span class="info-label">Legal Name</span><span class="info-value">Federal Food Services Incorporated</span>
+          <span class="info-label">Trade Name</span><span class="info-value">FFSI</span>
+          <span class="info-label">Founded</span><span class="info-value">March 14, 1987</span>
+          <span class="info-label">Ownership</span><span class="info-value">Privately held; Calloway Family Trust (majority)</span>
+          <span class="info-label">HQ</span><span class="info-value">4200 Patriot Commerce Blvd, Hartwell, GA 30643</span>
+          <span class="info-label">Employees</span><span class="info-value">847 (712 full-time, 135 seasonal/contract)</span>
+          <span class="info-label">NAICS Codes</span><span class="info-value">311999, 493110, 541614</span>
+          <span class="info-label">DUNS</span><span class="info-value">83-741-2290 (fictional)</span>
+          <span class="info-label">CAGE Code</span><span class="info-value">7FF2X (fictional)</span>
+          <span class="info-label">SAM.gov</span><span class="info-value">Active — expires March 2026</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Business Summary</div></div>
+        <p class="text-small">Federal Food Services Inc. (FFSI) is a mid-tier defense food contractor specializing in the production, packaging, quality assurance, and distribution of field-ready nutrition products for the U.S. military. The company's flagship product is the Meal, Ready-to-Eat (MRE), which it manufactures under long-term contracts with the U.S. Army Contracting Command and Defense Logistics Agency (DLA) Troop Support.</p>
+        <div class="hr"></div>
+        <p class="text-small mt-05">Founded in 1987 by Vernon Calloway, FFSI grew from a regional food-service supplier into a nationally recognized defense contractor following its first Army MRE contract in 1993. Today, FFSI operates four facilities across Georgia and Tennessee and employs 847 people, roughly 60% of whom work in production and quality assurance roles.</p>
+        <div class="hr"></div>
+        <p class="text-small mt-05"><strong>Primary Mission:</strong> Provide the U.S. Army with nutritionally complete, shelf-stable, and operationally ready meal products that meet or exceed military specifications and contractual requirements under adverse logistical conditions.</p>
+      </div>
+    </div>
+
+    <div class="card mt-1">
+      <div class="card-header expandable" onclick="toggleExpand(this)">
+        <div class="card-title">Products, Services &amp; Major Customers</div>
+        <span class="expand-icon">▼</span>
+      </div>
+      <div class="expand-body">
+        <div class="grid-3">
+          <div>
+            <div class="gap-section-title">Product Lines</div>
+            <ul class="text-small" style="padding-left:1.1rem;line-height:1.8;">
+              <li>Standard MRE (24-menu rotation)</li>
+              <li>Cold-Weather Ration Kit (CWR-K)</li>
+              <li>First Strike Ration (FSR) components</li>
+              <li>Humanitarian Daily Ration (HDR)</li>
+              <li>Special Dietary MRE (halal, vegetarian, allergen-free)</li>
+              <li>Field Kitchen Consumables</li>
+              <li>Emergency Nutrition Kits (ENK)</li>
+              <li>Shelf-stable beverages and supplements</li>
+            </ul>
+          </div>
+          <div>
+            <div class="gap-section-title">Major Federal Customers</div>
+            <ul class="text-small" style="padding-left:1.1rem;line-height:1.8;">
+              <li>U.S. Army Contracting Command (ACC)</li>
+              <li>Defense Logistics Agency (DLA) Troop Support</li>
+              <li>U.S. Army Reserve Command (USARC)</li>
+              <li>USAID Office of Food for Peace (subcontract)</li>
+              <li>U.S. Army National Guard Bureau</li>
+              <li>Army Materiel Command (AMC) depots</li>
+            </ul>
+          </div>
+          <div>
+            <div class="gap-section-title">Subcontractors &amp; Suppliers</div>
+            <ul class="text-small" style="padding-left:1.1rem;line-height:1.8;">
+              <li>Highview Packaging Solutions LLC (packaging)</li>
+              <li>Blue Ridge Spice &amp; Ingredient Co. (ingredients)</li>
+              <li>ThermaKit Distribution Inc. (cold-chain logistics)</li>
+              <li>ProSeal Defense Packaging (pouches)</li>
+              <li>SteadyPath IT Services (managed IT support)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mt-1">
+      <div class="card-header expandable" onclick="toggleExpand(this)">
+        <div class="card-title">Why FFSI Handles FCI and CUI — Data Flow Context</div>
+        <span class="expand-icon">▼</span>
+      </div>
+      <div class="expand-body">
+        <div class="callout callout-info">
+          <span class="callout-icon">ℹ️</span>
+          <div class="callout-body">FFSI processes both Federal Contract Information (FCI) and Controlled Unclassified Information (CUI) across multiple systems and locations. Understanding how this data flows is the first step in scoping the CMMC assessment boundary.</div>
+        </div>
+        <div class="grid-2">
+          <div>
+            <div class="gap-section-title">FCI at FFSI</div>
+            <p class="text-small">FCI includes contract performance data, delivery schedules, Army food specification documents, packaging standards, and procurement correspondence. This information flows through FFSI's ERP system (ProvisionEdge ERP), Microsoft 365 tenant, shared file server (CORP-FS-01), and the contract management module used by the contracts department.</p>
+          </div>
+          <div>
+            <div class="gap-section-title">CUI at FFSI</div>
+            <p class="text-small">CUI includes Defense Logistics Agency delivery order details with unit pricing, Army logistics node identifiers, controlled technical data for MRE packaging specifications, supplier security questionnaire responses, personnel records related to cleared employees, and certain export-adjacent shipping documentation. CUI is designated under categories: CONTROLLED TECHNICAL INFORMATION, PROCUREMENT &amp; ACQUISITION, and LOGISTICS.</p>
+          </div>
+        </div>
+        <div class="hr"></div>
+        <div class="gap-section-title">CUI Data Flow Summary</div>
+        <pre class="code-block">
+[Army ACC / DLA] ──SFTP/Gov Portal──► [FFSI Contracts Dept]
+                                              │
+                    ┌─────────────────────────┤
+                    ▼                         ▼
+           [CUI Enclave — VLAN 20]   [ProvisionEdge ERP]
+           (Contract Mgmt Module)    (Delivery scheduling)
+                    │                         │
+                    ▼                         ▼
+           [CORP-FS-02 CUI Share]    [Logistics Team PCs]
+           (Encrypted, ACL-gated)    (VLAN 50)
+                    │
+                    ▼
+           [M365 Compliance tenant]  ← Email/Teams w/ DLP
+           [Backup — FFSI-BKP-01]   ← Encrypted nightly</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════
+       SECTION 2 — LOCATIONS
+       ══════════════════════════════════════════════════════ -->
+  <div class="section" id="locations">
+    <div class="section-header section-anchor">
+      <div class="section-num">2</div>
+      <div><div class="section-title">Locations</div></div>
+      <div class="section-desc">4 facilities — scope determination required</div>
+    </div>
+
+    <div class="grid-2">
+
+      <div class="location-card">
+        <div class="location-card-header">
+          <span class="location-icon">🏢</span>
+          <div>
+            <div class="location-name">Corporate Headquarters</div>
+            <div class="location-type">LOC-01 — Administrative &amp; Contracts Hub</div>
+          </div>
+        </div>
+        <div class="location-body">
+          <div class="info-grid">
+            <span class="info-label">Address</span><span class="info-value">4200 Patriot Commerce Blvd, Hartwell, GA 30643</span>
+            <span class="info-label">Employees</span><span class="info-value">142</span>
+            <span class="info-label">Function</span><span class="info-value">Executive leadership, contracts, finance, HR, IT administration, compliance</span>
+            <span class="info-label">CUI Processed?</span><span class="info-value"><span class="badge badge-cui">YES — CUI</span></span>
+            <span class="info-label">FCI Processed?</span><span class="info-value"><span class="badge badge-fci">YES — FCI</span></span>
+            <span class="info-label">Network</span><span class="info-value">Primary domain, CUI VLAN 20, corporate VLAN 10</span>
+          </div>
+          <div class="hr"></div>
+          <div class="gap-section-title">Physical Security Concerns</div>
+          <ul class="text-small" style="padding-left:1rem;line-height:1.7;">
+            <li>Public-facing lobby with unescorted visitor incidents on record</li>
+            <li>Server room accessed via shared badge group — not individually logged</li>
+            <li>Executive suite has open-plan layout with shared whiteboards</li>
+          </ul>
+          <div class="gap-section-title" style="margin-top:0.6rem;">Network Connectivity</div>
+          <p class="text-small">Primary 1Gbps fiber ISP (ComState Business). Secondary 500Mbps failover (LibertyNet). Palo Alto PA-3420 firewall. Cisco Catalyst switching. FortiGate SSL VPN endpoint. Connects to AWS GovCloud tenant via AWS Direct Connect.</p>
+        </div>
+      </div>
+
+      <div class="location-card">
+        <div class="location-card-header">
+          <span class="location-icon">🏭</span>
+          <div>
+            <div class="location-name">Primary MRE Production Plant</div>
+            <div class="location-type">LOC-02 — High-Volume Manufacturing</div>
+          </div>
+        </div>
+        <div class="location-body">
+          <div class="info-grid">
+            <span class="info-label">Address</span><span class="info-value">1800 Ration Way, Hartwell, GA 30643 (adjacent to HQ)</span>
+            <span class="info-label">Employees</span><span class="info-value">463</span>
+            <span class="info-label">Function</span><span class="info-value">MRE production, packaging, labeling, initial QA, pallet staging</span>
+            <span class="info-label">CUI Processed?</span><span class="info-value"><span class="badge badge-cui">YES — CUI (Tech Data)</span></span>
+            <span class="info-label">FCI Processed?</span><span class="info-value"><span class="badge badge-fci">YES — FCI</span></span>
+            <span class="info-label">Network</span><span class="info-value">OT VLAN 80, Production VLAN 30, isolated MES segment</span>
+          </div>
+          <div class="hr"></div>
+          <div class="gap-section-title">Physical Security Concerns</div>
+          <ul class="text-small" style="padding-left:1rem;line-height:1.7;">
+            <li>OT network (production line controllers) not fully segmented from corporate LAN — <strong>known gap</strong></li>
+            <li>Contractor maintenance personnel access unsupervised during overnight shifts</li>
+            <li>Production-floor tablets used to view MRE specs have no MDM enrollment</li>
+          </ul>
+          <div class="gap-section-title" style="margin-top:0.6rem;">Network Connectivity</div>
+          <p class="text-small">Connected to HQ via private fiber (500Mbps). Manufacturing Execution System (FoodTrack MES) server on VLAN 80. Production-line tablets on isolated SSID. No direct internet egress from production floor — routed through HQ firewall.</p>
+        </div>
+      </div>
+
+      <div class="location-card">
+        <div class="location-card-header">
+          <span class="location-icon">🏗️</span>
+          <div>
+            <div class="location-name">Cold/Dry Warehouse &amp; Logistics Hub</div>
+            <div class="location-type">LOC-03 — Distribution &amp; Inventory</div>
+          </div>
+        </div>
+        <div class="location-body">
+          <div class="info-grid">
+            <span class="info-label">Address</span><span class="info-value">7750 Depot Road, Elberton, GA 30635</span>
+            <span class="info-label">Employees</span><span class="info-value">187</span>
+            <span class="info-label">Function</span><span class="info-value">Finished goods storage, order fulfillment, Army depot shipping, cold-chain management</span>
+            <span class="info-label">CUI Processed?</span><span class="info-value"><span class="badge badge-cui">LIMITED — Shipping data</span></span>
+            <span class="info-label">FCI Processed?</span><span class="info-value"><span class="badge badge-fci">YES — Delivery orders</span></span>
+            <span class="info-label">Network</span><span class="info-value">Warehouse VLAN 50, IoT VLAN 60 (temp sensors), guest VLAN 70</span>
+          </div>
+          <div class="hr"></div>
+          <div class="gap-section-title">Physical Security Concerns</div>
+          <ul class="text-small" style="padding-left:1rem;line-height:1.7;">
+            <li>Delivery drivers enter staging area without formal check-in process — <strong>audit finding</strong></li>
+            <li>Cold storage temperature monitoring system uses legacy firmware (unpatched)</li>
+            <li>Shared shipping workstations with generic "warehouse" login accounts</li>
+          </ul>
+          <div class="gap-section-title" style="margin-top:0.6rem;">Network Connectivity</div>
+          <p class="text-small">50Mbps MPLS link to HQ. Cisco Meraki switching and wireless. Cold-storage monitoring system on isolated VLAN 60 (IoT). Shipping workstations on VLAN 50. FortiGate remote VPN for warehouse supervisors to access ERP.</p>
+        </div>
+      </div>
+
+      <div class="location-card">
+        <div class="location-card-header">
+          <span class="location-icon">🔬</span>
+          <div>
+            <div class="location-name">Quality Assurance &amp; Testing Laboratory</div>
+            <div class="location-type">LOC-04 — Food Science &amp; Compliance Testing</div>
+          </div>
+        </div>
+        <div class="location-body">
+          <div class="info-grid">
+            <span class="info-label">Address</span><span class="info-value">300 Science Park Dr, Suite 210, Lavonia, GA 30553</span>
+            <span class="info-label">Employees</span><span class="info-value">55</span>
+            <span class="info-label">Function</span><span class="info-value">Microbiological testing, shelf-life studies, nutritional analysis, packaging spec validation, USDA/FDA compliance</span>
+            <span class="info-label">CUI Processed?</span><span class="info-value"><span class="badge badge-cui">YES — Proprietary specs</span></span>
+            <span class="info-label">FCI Processed?</span><span class="info-value"><span class="badge badge-fci">YES</span></span>
+            <span class="info-label">Network</span><span class="info-value">QA VLAN 40, lab instruments on isolated segment</span>
+          </div>
+          <div class="hr"></div>
+          <div class="gap-section-title">Physical Security Concerns</div>
+          <ul class="text-small" style="padding-left:1rem;line-height:1.7;">
+            <li>Lab instruments connected to workstations via USB — no media control policy enforced</li>
+            <li>QA database server (QA-DB-01) runs end-of-support Windows Server 2012 R2</li>
+            <li>Lab leased from Science Park LLC — shared HVAC, no dedicated server room; rack is in unlocked closet</li>
+          </ul>
+          <div class="gap-section-title" style="margin-top:0.6rem;">Network Connectivity</div>
+          <p class="text-small">100Mbps fiber to HQ via IPsec VPN tunnel. Lab instruments interface via RS-232 to QA workstations. QA-DB-01 server on VLAN 40. Staff use M365 for email and lab report sharing. No direct ERP access from lab facility.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════
+       SECTION 3 — FEDERAL CONTRACTS
+       ══════════════════════════════════════════════════════ -->
+  <div class="section" id="contracts">
+    <div class="section-header section-anchor">
+      <div class="section-num">3</div>
+      <div><div class="section-title">Active Federal Contracts</div></div>
+      <div class="section-desc">6 active contracts — review DFARS clauses and CUI categories</div>
+    </div>
+
+    <div id="contractsContainer">
+    <!-- Contract cards generated by JS below -->
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════
+       SECTION 4 — PERSONNEL & CMMC ROLES
+       ══════════════════════════════════════════════════════ -->
+  <div class="section" id="personnel">
+    <div class="section-header section-anchor">
+      <div class="section-num">4</div>
+      <div><div class="section-title">Personnel &amp; CMMC Role Assignment</div></div>
+      <div class="section-desc">Assign CMMC roles using the dropdowns — saved to session</div>
+    </div>
+
+    <div class="callout callout-tip">
+      <span class="callout-icon">💡</span>
+      <div class="callout-body"><strong>Student Exercise:</strong> Use the dropdown on each person's card to assign the appropriate CMMC security role. Your selections are saved during your browser session. Multiple people may share roles; some roles may remain unassigned.</div>
+    </div>
+
+    <div class="filter-bar">
+      <input type="text" id="personnelSearch" placeholder="🔍  Search name, title, or department..." oninput="filterPersonnel()"/>
+      <select onchange="filterPersonnel()" id="deptFilter">
+        <option value="">All Departments</option>
+        <option>Executive</option>
+        <option>Contracts</option>
+        <option>Finance</option>
+        <option>HR</option>
+        <option>IT</option>
+        <option>Cybersecurity</option>
+        <option>Production</option>
+        <option>Quality Assurance</option>
+        <option>Logistics</option>
+        <option>Physical Security</option>
+        <option>Compliance</option>
+      </select>
+      <select onchange="filterPersonnel()" id="cuiFilter">
+        <option value="">All CUI Levels</option>
+        <option>Full</option>
+        <option>Partial</option>
+        <option>None</option>
+      </select>
+      <button class="filter-btn" onclick="clearPersonnelFilters()">Clear</button>
+      <button class="filter-btn" style="margin-left:auto;" onclick="exportRoles()">📤 Export Roles</button>
+    </div>
+
+    <div id="personnelGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:0.75rem;">
+    <!-- Generated by JS -->
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════
+       SECTION 5 — IT INFRASTRUCTURE
+       ══════════════════════════════════════════════════════ -->
+  <div class="section" id="it-infra">
+    <div class="section-header section-anchor">
+      <div class="section-num">5</div>
+      <div><div class="section-title">IT Infrastructure</div></div>
+      <div class="section-desc">Network diagram — click nodes for details</div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('infra','diagram',this)">Network Diagram</button>
+      <button class="tab-btn" onclick="switchTab('infra','vlans',this)">VLANs</button>
+      <button class="tab-btn" onclick="switchTab('infra','systems',this)">Core Systems</button>
+      <button class="tab-btn" onclick="switchTab('infra','cloud',this)">Cloud Environment</button>
+    </div>
+
+    <div id="infra-diagram" class="tab-panel active">
+      <div class="callout callout-info">
+        <span class="callout-icon">ℹ️</span>
+        <div class="callout-body">Click any network node to view additional details. Color coding: <span style="color:var(--red);">■ Firewall</span> · <span style="color:var(--blue);">■ Server/Endpoint</span> · <span style="color:var(--purple);">■ Cloud</span> · <span style="color:var(--amber);">■ CUI Enclave</span> · <span style="color:var(--green);">■ OT/Production</span></div>
+      </div>
+      <div id="network-diagram">
+
+        <div class="net-layer">
+          <div class="net-node internet" onclick="showNodeDetail('internet')">🌐 Internet<span class="net-node-label">External</span></div>
+        </div>
+        <div class="net-connector">▼ ISP / Gov SFTP portal</div>
+
+        <div class="net-layer">
+          <div class="net-node firewall" onclick="showNodeDetail('fw-hq')">🔥 PA-3420 FW<span class="net-node-label">HQ Primary Firewall</span></div>
+          <div class="net-node firewall" onclick="showNodeDetail('fw-wh')">🔥 FortiGate 60F<span class="net-node-label">Warehouse FW</span></div>
+          <div class="net-node firewall" onclick="showNodeDetail('fw-lab')">🔥 FG IPsec VPN<span class="net-node-label">Lab Tunnel</span></div>
+        </div>
+        <div class="net-connector">▼ Internal network / VPN tunnels</div>
+
+        <div class="net-layer">
+          <div class="net-node server" onclick="showNodeDetail('dc01')">🖥 DC-01 / DC-02<span class="net-node-label">Active Directory</span></div>
+          <div class="net-node server" onclick="showNodeDetail('erp')">📦 ProvisionEdge ERP<span class="net-node-label">CORP-ERP-01</span></div>
+          <div class="net-node server" onclick="showNodeDetail('fs01')">📁 CORP-FS-01<span class="net-node-label">Corporate File Server</span></div>
+          <div class="net-node cui" onclick="showNodeDetail('cui-enclave')">🔐 CUI Enclave<span class="net-node-label">VLAN 20 / FS-02</span></div>
+          <div class="net-node siem" onclick="showNodeDetail('siem')">📊 Splunk SIEM<span class="net-node-label">CORP-SIEM-01</span></div>
+        </div>
+        <div class="net-connector">▼ Production plant fiber link / OT segment</div>
+
+        <div class="net-layer">
+          <div class="net-node ot" onclick="showNodeDetail('mes')">⚙ FoodTrack MES<span class="net-node-label">PROD-MES-01</span></div>
+          <div class="net-node ot" onclick="showNodeDetail('plc')">🏭 PLC Network<span class="net-node-label">OT VLAN 80</span></div>
+          <div class="net-node server" onclick="showNodeDetail('qadb')">🔬 QA-DB-01<span class="net-node-label">QA Database</span></div>
+          <div class="net-node server" onclick="showNodeDetail('bkp')">💾 FFSI-BKP-01<span class="net-node-label">Backup Server</span></div>
+        </div>
+        <div class="net-connector">▼ AWS Direct Connect / M365 Cloud</div>
+
+        <div class="net-layer">
+          <div class="net-node cloud" onclick="showNodeDetail('aws')">☁ AWS GovCloud<span class="net-node-label">us-gov-east-1</span></div>
+          <div class="net-node cloud" onclick="showNodeDetail('m365')">📧 M365 GCC<span class="net-node-label">Teams / SharePoint / Exchange</span></div>
+          <div class="net-node cloud" onclick="showNodeDetail('entra')">🆔 Entra ID<span class="net-node-label">Identity / SSO</span></div>
+          <div class="net-node cloud" onclick="showNodeDetail('intune')">📱 Intune<span class="net-node-label">Endpoint Mgmt (partial)</span></div>
+        </div>
+
+        <div class="net-connector">── VLAN Segments ──</div>
+        <div class="net-layer">
+          <div class="net-node vlan" onclick="showNodeDetail('vlan10')">VLAN 10<span class="net-node-label">Corporate Admin</span></div>
+          <div class="net-node vlan cui" onclick="showNodeDetail('vlan20')">VLAN 20<span class="net-node-label">CUI Contracts</span></div>
+          <div class="net-node vlan" onclick="showNodeDetail('vlan30')">VLAN 30<span class="net-node-label">Production Ops</span></div>
+          <div class="net-node vlan" onclick="showNodeDetail('vlan40')">VLAN 40<span class="net-node-label">QA Lab</span></div>
+          <div class="net-node vlan" onclick="showNodeDetail('vlan50')">VLAN 50<span class="net-node-label">Warehouse Logistics</span></div>
+          <div class="net-node vlan" onclick="showNodeDetail('vlan60')">VLAN 60<span class="net-node-label">Security/IoT</span></div>
+          <div class="net-node vlan" onclick="showNodeDetail('vlan70')">VLAN 70<span class="net-node-label">Guest Wi-Fi</span></div>
+          <div class="net-node vlan ot" onclick="showNodeDetail('vlan80')">VLAN 80<span class="net-node-label">OT / MFG Equipment</span></div>
+          <div class="net-node vlan" onclick="showNodeDetail('vlan99')">VLAN 99<span class="net-node-label">Network Mgmt</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="infra-vlans" class="tab-panel">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>VLAN</th><th>Name</th><th>Subnet</th><th>CUI</th><th>Devices</th><th>Isolation</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td class="td-mono">10</td><td>Corporate Admin</td><td class="td-mono">10.10.10.0/24</td><td><span class="badge badge-fci">FCI</span></td><td>All HQ office PCs, printers</td><td>ACL via PA-3420</td><td>General corporate user traffic</td></tr>
+            <tr><td class="td-mono">20</td><td>CUI Contracts</td><td class="td-mono">10.10.20.0/24</td><td><span class="badge badge-cui">CUI</span></td><td>Contracts staff PCs, CORP-FS-02</td><td>Strict ACL — no VLAN 10 lateral</td><td><strong>In-scope enclave</strong> — CMMC boundary</td></tr>
+            <tr><td class="td-mono">30</td><td>Production Ops</td><td class="td-mono">10.20.30.0/24</td><td><span class="badge badge-fci">FCI</span></td><td>Production supervisor PCs, MES terminals</td><td>Partial — <span class="badge badge-red">Gap</span></td><td>Limited segmentation from VLAN 80 — audit finding</td></tr>
+            <tr><td class="td-mono">40</td><td>QA Lab</td><td class="td-mono">10.30.40.0/24</td><td><span class="badge badge-cui">CUI</span></td><td>QA workstations, QA-DB-01, lab instruments</td><td>IPsec tunnel to HQ</td><td>End-of-support server on this segment</td></tr>
+            <tr><td class="td-mono">50</td><td>Warehouse Logistics</td><td class="td-mono">10.40.50.0/24</td><td><span class="badge badge-fci">FCI</span></td><td>Shipping workstations, label printers, RF guns</td><td>FortiGate ACL</td><td>Shared accounts used — audit finding</td></tr>
+            <tr><td class="td-mono">60</td><td>Security Cameras / IoT</td><td class="td-mono">10.10.60.0/24</td><td><span class="badge badge-nc">NC</span></td><td>IP cameras, badge readers, cold-storage sensors</td><td>Isolated — no routing</td><td>Milestone NVR on this VLAN</td></tr>
+            <tr><td class="td-mono">70</td><td>Guest Wi-Fi</td><td class="td-mono">192.168.70.0/24</td><td><span class="badge badge-nc">NC</span></td><td>Visitor devices</td><td>Internet-only, no internal access</td><td>Captive portal with disclaimer</td></tr>
+            <tr><td class="td-mono">80</td><td>OT / Manufacturing</td><td class="td-mono">172.16.80.0/24</td><td><span class="badge badge-nc">NC</span></td><td>PLCs, HMIs, conveyor controllers</td><td>Partial — <span class="badge badge-red">Gap</span></td><td>No active monitoring; legacy protocols (Modbus)</td></tr>
+            <tr><td class="td-mono">99</td><td>Network Management</td><td class="td-mono">10.10.99.0/24</td><td><span class="badge badge-nc">Admin</span></td><td>Switches, APs, network mgmt console</td><td>Strict ACL — admin only</td><td>Cisco ISE used for NAC</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="infra-systems" class="tab-panel">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title mb-1">On-Premises Core Systems</div>
+          <div class="info-grid">
+            <span class="info-label">Domain Controllers</span><span class="info-value">CORP-DC-01, CORP-DC-02 (Windows Server 2022, AD DS)</span>
+            <span class="info-label">File Servers</span><span class="info-value">CORP-FS-01 (corporate), CORP-FS-02 (CUI, encrypted)</span>
+            <span class="info-label">ERP</span><span class="info-value">ProvisionEdge ERP v7.4 — on CORP-ERP-01 (SQL Server 2019)</span>
+            <span class="info-label">MES</span><span class="info-value">FoodTrack MES v3.1 — on PROD-MES-01 (Windows Server 2019)</span>
+            <span class="info-label">QA Database</span><span class="info-value">QA-DB-01 (Windows Server 2012 R2 — <strong>EOS</strong>)</span>
+            <span class="info-label">SIEM</span><span class="info-value">Splunk Enterprise — CORP-SIEM-01</span>
+            <span class="info-label">Backup</span><span class="info-value">Veeam B&R v12 — FFSI-BKP-01, offsite to AWS S3 GovCloud</span>
+            <span class="info-label">EDR</span><span class="info-value">CrowdStrike Falcon — deployed on 82% of endpoints</span>
+            <span class="info-label">VPN</span><span class="info-value">FortiGate SSL VPN — 2FA enforced for contracts/IT staff; <strong>not enforced for all users</strong></span>
+            <span class="info-label">Badge System</span><span class="info-value">Lenel OnGuard — CORP-BADGE-01 (separate VLAN 60)</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title mb-1">Remote Access &amp; Identity</div>
+          <div class="info-grid">
+            <span class="info-label">Identity Provider</span><span class="info-value">Microsoft Entra ID (Hybrid — synced to on-prem AD)</span>
+            <span class="info-label">MFA</span><span class="info-value">Microsoft Authenticator — enforced for M365; <strong>not enforced for ERP or VPN for all roles</strong></span>
+            <span class="info-label">SSO</span><span class="info-value">Entra ID SSO for M365, CrowdStrike. ERP uses local accounts (gap)</span>
+            <span class="info-label">PAM</span><span class="info-value">No dedicated PAM solution — shared admin credentials used</span>
+            <span class="info-label">Endpoint Mgmt</span><span class="info-value">Intune — 68% enrollment; 32% unmanaged (production tablets, lab PCs)</span>
+            <span class="info-label">Wireless</span><span class="info-value">Cisco Meraki MR series — WPA3 at HQ; WPA2 at warehouse (gap)</span>
+            <span class="info-label">DNS/DHCP</span><span class="info-value">Windows DNS/DHCP on DC-01/DC-02</span>
+            <span class="info-label">NTP</span><span class="info-value">Synced to US NIST time servers via DC-01</span>
+            <span class="info-label">Vulnerability Scan</span><span class="info-value">Tenable Nessus — weekly scans, not covering all OT segments</span>
+            <span class="info-label">Patch Management</span><span class="info-value">WSUS — servers; Intune — enrolled endpoints; OT/tablets not covered</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="infra-cloud" class="tab-panel">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title mb-1">Microsoft 365 GCC Tenant</div>
+          <div class="info-grid">
+            <span class="info-label">Tenant Name</span><span class="info-value">ffsi.onmicrosoft.us</span>
+            <span class="info-label">License</span><span class="info-value">M365 E3 GCC (847 seats)</span>
+            <span class="info-label">Apps in Use</span><span class="info-value">Exchange Online, Teams, SharePoint, OneDrive, Defender for Endpoint (P1)</span>
+            <span class="info-label">DLP</span><span class="info-value">DLP policies active — CUI keyword detection; <strong>not fully tuned</strong></span>
+            <span class="info-label">Retention</span><span class="info-value">90-day email retention on all mailboxes; legal hold available</span>
+            <span class="info-label">Conditional Access</span><span class="info-value">Enforced for M365 apps; compliant device requirement <strong>not applied to all groups</strong></span>
+            <span class="info-label">CUI Handling</span><span class="info-value">CUI stored on SharePoint site "ContractsCUI" — restricted permissions</span>
+            <span class="info-label">Admin Roles</span><span class="info-value">3 Global Admins — should be reduced; Global Admin used for routine tasks (gap)</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title mb-1">AWS GovCloud Environment</div>
+          <div class="info-grid">
+            <span class="info-label">Account</span><span class="info-value">aws-ffsi-prod (us-gov-east-1)</span>
+            <span class="info-label">Services Used</span><span class="info-value">S3 (backup), RDS (ERP replica), CloudTrail, GuardDuty, Secrets Manager</span>
+            <span class="info-label">Access Control</span><span class="info-value">IAM roles — MFA enforced for root; service accounts without MFA (gap)</span>
+            <span class="info-label">Data Classification</span><span class="info-value">S3 buckets with CUI tagged "CUI-PROD"; encryption at rest (AES-256)</span>
+            <span class="info-label">Logging</span><span class="info-value">CloudTrail enabled; logs shipped to Splunk via S3 → Lambda</span>
+            <span class="info-label">Network</span><span class="info-value">VPC with private subnets; Direct Connect from HQ</span>
+            <span class="info-label">Vulnerability</span><span class="info-value">Amazon Inspector enabled on EC2 instances</span>
+            <span class="info-label">Backup Retention</span><span class="info-value">30-day S3 versioning; Glacier archive at 90 days</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════
+       SECTION 6 — ASSET INVENTORY
+       ══════════════════════════════════════════════════════ -->
+  <div class="section" id="assets">
+    <div class="section-header section-anchor">
+      <div class="section-num">6</div>
+      <div><div class="section-title">IT System Asset Inventory</div></div>
+      <div class="section-desc">35 assets — filter by location, CUI status, or criticality</div>
+    </div>
+
+    <div class="filter-bar">
+      <input type="text" id="assetSearch" placeholder="🔍  Search asset name, ID, or type..." oninput="filterAssets()"/>
+      <select onchange="filterAssets()" id="assetLocFilter">
+        <option value="">All Locations</option>
+        <option>HQ</option>
+        <option>Production Plant</option>
+        <option>Warehouse</option>
+        <option>QA Lab</option>
+        <option>Cloud</option>
+      </select>
+      <select onchange="filterAssets()" id="assetCUIFilter">
+        <option value="">All CUI Status</option>
+        <option>Yes</option>
+        <option>No</option>
+        <option>Partial</option>
+      </select>
+      <select onchange="filterAssets()" id="assetCritFilter">
+        <option value="">All Criticality</option>
+        <option>Critical</option>
+        <option>High</option>
+        <option>Medium</option>
+        <option>Low</option>
+      </select>
+    </div>
+
+    <div class="table-wrap">
+      <table id="assetTable">
+        <thead>
+          <tr>
+            <th>Asset ID</th><th>Asset Name</th><th>Type</th><th>Location</th><th>OS/Platform</th>
+            <th>CUI</th><th>Criticality</th><th>Auth</th><th>Logging</th><th>Patch</th><th>Backup</th>
+          </tr>
+        </thead>
+        <tbody id="assetTableBody">
+        <!-- Generated by JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════
+       SECTION 7 — PHYSICAL SECURITY
+       ══════════════════════════════════════════════════════ -->
+  <div class="section" id="physical">
+    <div class="section-header section-anchor">
+      <div class="section-num">7</div>
+      <div><div class="section-title">Physical Security Controls</div></div>
+      <div class="section-desc">Controls, evidence artifacts, and audit concerns</div>
+    </div>
+    <div id="physicalContainer">
+    <!-- Generated by JS -->
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════
+       SECTION 8 — RISKS & INCIDENTS
+       ══════════════════════════════════════════════════════ -->
+  <div class="section" id="risks">
+    <div class="section-header section-anchor">
+      <div class="section-num">8</div>
+      <div><div class="section-title">Known Risks &amp; Incidents</div></div>
+      <div class="section-desc">10 incidents — identify CMMC domain and evidence needed</div>
+    </div>
+
+    <div class="filter-bar">
+      <input type="text" id="riskSearch" placeholder="🔍  Search risks..." oninput="filterRisks()"/>
+      <select onchange="filterRisks()" id="riskCatFilter">
+        <option value="">All Categories</option>
+        <option>Phishing</option>
+        <option>Media</option>
+        <option>Access Control</option>
+        <option>Configuration</option>
+        <option>Physical</option>
+        <option>Incident Response</option>
+        <option>Audit &amp; Accountability</option>
+        <option>System Integrity</option>
+        <option>Backup</option>
+        <option>Personnel</option>
+      </select>
+    </div>
+    <div id="risksContainer"></div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════
+       SECTION 9 — AUDIT GAPS
+       ══════════════════════════════════════════════════════ -->
+  <div class="section" id="gaps">
+    <div class="section-header section-anchor">
+      <div class="section-num">9</div>
+      <div><div class="section-title">Current Cybersecurity Audit Gaps</div></div>
+      <div class="section-desc">12 findings — filter by severity or CMMC domain</div>
+    </div>
+
+    <div class="filter-bar">
+      <input type="text" id="gapSearch" placeholder="🔍  Search gaps..." oninput="filterGaps()"/>
+      <select onchange="filterGaps()" id="gapSevFilter">
+        <option value="">All Severities</option>
+        <option>Critical</option>
+        <option>High</option>
+        <option>Medium</option>
+        <option>Low</option>
+      </select>
+      <select onchange="filterGaps()" id="gapDomainFilter">
+        <option value="">All Domains</option>
+        <option>Access Control</option>
+        <option>Awareness &amp; Training</option>
+        <option>Audit &amp; Accountability</option>
+        <option>Configuration Management</option>
+        <option>Identification &amp; Authentication</option>
+        <option>Incident Response</option>
+        <option>Maintenance</option>
+        <option>Media Protection</option>
+        <option>Physical Protection</option>
+        <option>Risk Assessment</option>
+        <option>Security Assessment</option>
+        <option>System &amp; Communications Protection</option>
+        <option>System &amp; Information Integrity</option>
+        <option>Supply Chain Risk</option>
+      </select>
+      <div style="margin-left:auto;font-size:0.8rem;color:var(--text-muted);">Showing: <span id="gapCount">12</span> findings</div>
+    </div>
+    <div id="gapsContainer"></div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════
+       SECTION 10 — EVIDENCE LIBRARY
+       ══════════════════════════════════════════════════════ -->
+  <div class="section" id="evidence">
+    <div class="section-header section-anchor">
+      <div class="section-num">10</div>
+      <div><div class="section-title">Audit Evidence Library</div></div>
+      <div class="section-desc">Check off artifacts as you review them — progress saved to session</div>
+    </div>
+
+    <div class="callout callout-tip">
+      <span class="callout-icon">📁</span>
+      <div class="callout-body"><strong>Instructions:</strong> Check each artifact as you review it. Click the artifact name to see a fictional sample excerpt. Your checklist progress is saved to this browser session.</div>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
+      <div style="font-size:0.82rem;color:var(--text-muted);">Progress: <strong id="evidenceCount">0</strong> / 15 reviewed</div>
+      <div style="flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden;">
+        <div id="evidenceBar" style="height:100%;background:var(--green);border-radius:4px;width:0%;transition:width 0.4s;"></div>
+      </div>
+      <button class="filter-btn" onclick="clearEvidence()">Reset</button>
+    </div>
+
+    <div id="evidenceContainer"></div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════
+       SECTION 11 — STUDENT TASKS
+       ══════════════════════════════════════════════════════ -->
+  <div class="section" id="tasks">
+    <div class="section-header section-anchor">
+      <div class="section-num">11</div>
+      <div><div class="section-title">Student Audit Preparation Tasks</div></div>
+      <div class="section-desc">12 guided exercises for classroom use</div>
+    </div>
+
+    <div class="callout callout-info">
+      <span class="callout-icon">🎓</span>
+      <div class="callout-body">Complete these tasks using information from all sections of this case study. Tasks may be completed individually or in audit team groups. Prepare written deliverables as directed by your instructor.</div>
+    </div>
+    <div id="tasksContainer"></div>
+  </div>
+
+  </div><!-- end .content -->
+</div><!-- end #main -->
+
+<!-- ── NETWORK NODE MODAL ─────────────────────────────────── -->
+<div class="modal-overlay" id="nodeModal" onclick="closeModal('nodeModal')">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeModal('nodeModal')">✕</button>
+    <div class="modal-title" id="nodeModalTitle"></div>
+    <div id="nodeModalBody"></div>
+  </div>
+</div>
+
+<!-- ── EVIDENCE MODAL ─────────────────────────────────────── -->
+<div class="modal-overlay" id="evidenceModal" onclick="closeModal('evidenceModal')">
+  <div class="modal-box" onclick="event.stopPropagation()" style="max-width:620px;">
+    <button class="modal-close" onclick="closeModal('evidenceModal')">✕</button>
+    <div class="modal-title" id="evidenceModalTitle"></div>
+    <div id="evidenceModalBody" style="font-size:0.82rem;line-height:1.6;"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     JAVASCRIPT — DATA + INTERACTIVITY
+     ═══════════════════════════════════════════════════════════ -->
+<script>
+/* ── INSTRUCTOR NOTE: All data arrays below can be edited directly
+   to customize the case study for your classroom. ── */
+
+// ── CONTRACTS DATA ─────────────────────────────────────────
+const contracts = [
+  {
+    num: 'W909MY-24-C-0038', agency: 'U.S. Army Contracting Command — Rock Island', role: 'Prime',
+    product: 'Standard MRE Production — 24-Menu Cycle', value: '$148,200,000',
+    period: 'Oct 1, 2023 – Sep 30, 2026', cui: 'CUI//PROCUREMENT & ACQUISITION',
+    fci: true, dfars: ['252.204-7012','252.204-7019','252.204-7020','252.204-7021'],
+    dataTypes: ['Delivery schedules','Unit pricing','Packaging specifications','Nutritional data','Performance reports'],
+    systems: ['ProvisionEdge ERP','CORP-FS-02 (CUI Share)','M365 GCC (Exchange/SharePoint)'],
+    notes: 'Largest FFSI contract by value. Requires monthly production reports submitted via DoD SAFE. CUI data includes controlled packaging specs and unit pricing.'
+  },
+  {
+    num: 'SPE300-24-D-F401', agency: 'DLA Troop Support — Philadelphia Directorate', role: 'Prime',
+    product: 'Cold-Weather Ration Kits (CWR-K)', value: '$34,750,000',
+    period: 'Jan 15, 2024 – Jan 14, 2027', cui: 'CUI//CONTROLLED TECHNICAL INFORMATION',
+    fci: true, dfars: ['252.204-7012','252.204-7019','252.204-7021'],
+    dataTypes: ['Technical packaging specifications','Caloric density formulas','Cold-chain test data','Delivery orders'],
+    systems: ['ProvisionEdge ERP','QA-DB-01','CORP-FS-02'],
+    notes: 'Includes controlled technical data for insulated pouch specifications. QA lab (LOC-04) is in scope for this contract. Subcontracts to ProSeal Defense Packaging.'
+  },
+  {
+    num: 'W52P1J-23-C-0911', agency: 'USAID / U.S. Army Reserve Command (USARC) — subcontract via Pinnacle Aid Corp', role: 'Subcontractor',
+    product: 'Humanitarian Daily Ration (HDR) Emergency Meal Packs', value: '$12,400,000',
+    period: 'Apr 1, 2023 – Mar 31, 2025', cui: 'FCI Only',
+    fci: true, dfars: ['252.204-7012','52.204-21'],
+    dataTypes: ['Delivery schedules','Destination logistics node data','Inspection records'],
+    systems: ['ProvisionEdge ERP','M365 GCC Teams'],
+    notes: 'FFSI is a second-tier subcontractor. FCI only — no CUI designation. DFARS 7012 flows down from prime. FFSI receives shipping destination data classified as FCI.'
+  },
+  {
+    num: 'W909MY-24-C-0152', agency: 'U.S. Army Natick Soldier Systems Center', role: 'Prime',
+    product: 'Special Dietary MRE Variants (Halal, Vegetarian, Allergen-Free)', value: '$9,875,000',
+    period: 'Jul 1, 2024 – Jun 30, 2026', cui: 'CUI//CONTROLLED TECHNICAL INFORMATION',
+    fci: true, dfars: ['252.204-7012','252.204-7019','252.204-7020','252.204-7021'],
+    dataTypes: ['Proprietary ingredient formulations','Allergen certification data','Religious certification records','Lab test results'],
+    systems: ['QA-DB-01','CORP-FS-02','ProvisionEdge ERP'],
+    notes: 'Ingredient formulations are CUI — Controlled Technical Information. Lab (LOC-04) processes most CUI for this contract. Requires annual CMMC Level 2 affirmation.'
+  },
+  {
+    num: 'SPE300-23-G-F099', agency: 'DLA Troop Support — Industrial Hardware Directorate', role: 'Prime',
+    product: 'Field Kitchen Support Products (Fuel tabs, stove components, cooking supplies)', value: '$6,320,000',
+    period: 'Mar 1, 2023 – Feb 28, 2025', cui: 'FCI Only',
+    fci: true, dfars: ['252.204-7012','52.204-21'],
+    dataTypes: ['Delivery schedules','Inspection acceptance documentation','Packaging standards'],
+    systems: ['ProvisionEdge ERP','CORP-FS-01'],
+    notes: 'Lower-sensitivity contract. Primarily FCI. Stored on general corporate file server (CORP-FS-01) — no CUI designation. Up for re-compete in Q1 2025.'
+  },
+  {
+    num: 'W52P1J-24-C-1047', agency: 'Army Materiel Command (AMC) — Susquehanna Depot', role: 'Prime',
+    product: 'Logistics and Distribution Support — Army Depot Fulfillment Services', value: '$22,650,000',
+    period: 'Oct 1, 2024 – Sep 30, 2027', cui: 'CUI//LOGISTICS',
+    fci: true, dfars: ['252.204-7012','252.204-7019','252.204-7020','252.204-7021'],
+    dataTypes: ['Army logistics node identifiers','Stockpile location data','Distribution network schedules','Depot receipt documents'],
+    systems: ['ProvisionEdge ERP','CORP-FS-02','M365 GCC','Warehouse VLAN 50 systems'],
+    notes: 'Newest contract — CMMC Level 2 required at time of award. Logistics node identifiers are CUI//LOGISTICS. Warehouse (LOC-03) is in scope for this contract. Subcontract clause flows to ThermaKit Distribution Inc.'
+  }
+];
+
+// ── PERSONNEL DATA ─────────────────────────────────────────
+const personnel = [
+  { name:'Margaret L. Calloway', title:'President & CEO', dept:'Executive', loc:'HQ', cui:'Full', training:'Current', relevance:'Affirming Official candidate; sets tone for security culture' },
+  { name:'Douglas R. Vance', title:'Chief Operating Officer', dept:'Executive', loc:'HQ', cui:'Full', training:'Current', relevance:'Operational decisions affecting CUI handling; system owner candidate' },
+  { name:'Priya K. Nair', title:'Chief Financial Officer', dept:'Finance', loc:'HQ', cui:'Partial', training:'Current', relevance:'Finance system access; POA&M funding decisions' },
+  { name:'Calvin T. Reeves', title:'VP of Contracts & Compliance', dept:'Contracts', loc:'HQ', cui:'Full', training:'Current', relevance:'Contract data steward; CMMC Audit POC candidate; CUI Program Manager' },
+  { name:'Sandra M. Ogunyemi', title:'Contracts Manager', dept:'Contracts', loc:'HQ', cui:'Full', training:'Current', relevance:'Day-to-day CUI handling in contract docs; evidence custodian' },
+  { name:'Lena B. Forsythe', title:'Director of IT', dept:'IT', loc:'HQ', cui:'Full', training:'Current', relevance:'System owner for all IT systems; configuration management owner' },
+  { name:'Marcus A. Dillard', title:'Information System Security Officer (ISSO)', dept:'Cybersecurity', loc:'HQ', cui:'Full', training:'Current', relevance:'ISSO — primary CMMC technical POC; audit liaison; critical interviewee' },
+  { name:'Tanya R. Holbrook', title:'IT Systems Administrator', dept:'IT', loc:'HQ', cui:'Full', training:'Overdue', relevance:'Manages AD, patching, WSUS; awareness training lapsed — audit concern' },
+  { name:'Kevin L. Marsh', title:'Network & Security Administrator', dept:'IT', loc:'HQ', cui:'Full', training:'Current', relevance:'Manages firewalls, VPN, SIEM; key technical interviewee' },
+  { name:'Jasmine C. Waters', title:'Cloud Administrator', dept:'IT', loc:'HQ', cui:'Full', training:'Current', relevance:'Manages AWS GovCloud and M365 tenant; IAM policy owner' },
+  { name:'Roberto P. Fuentes', title:'Help Desk Technician', dept:'IT', loc:'HQ', cui:'None', training:'Current', relevance:'Handles password resets; shared account creation risk; training status matters' },
+  { name:'Amara E. Osei', title:'Compliance Manager', dept:'Compliance', loc:'HQ', cui:'Full', training:'Current', relevance:'POA&M owner; CMMC documentation; risk management owner candidate' },
+  { name:'Harold J. Pennington', title:'HR Director', dept:'HR', loc:'HQ', cui:'Partial', training:'Current', relevance:'Personnel screening process; termination procedures; training records owner' },
+  { name:'Cynthia A. Brewster', title:'HR Coordinator', dept:'HR', loc:'HQ', cui:'None', training:'Overdue', relevance:'Manages onboarding access requests; training completion records' },
+  { name:'Nathan G. Tillotson', title:'Plant Manager — Production', dept:'Production', loc:'Production Plant', cui:'Partial', training:'Current', relevance:'Physical security authority over plant; access badge decisions; OT system contact' },
+  { name:'Delia M. Santacruz', title:'Production Supervisor', dept:'Production', loc:'Production Plant', cui:'Partial', training:'Current', relevance:'Manages production-line tablet use; knows OT network topology' },
+  { name:'Owen F. Bradshaw', title:'MES System Operator', dept:'Production', loc:'Production Plant', cui:'Partial', training:'Overdue', relevance:'FoodTrack MES administrator; OT/MES boundary knowledge' },
+  { name:'Ingrid K. Larsson', title:'Director of Quality Assurance', dept:'Quality Assurance', loc:'QA Lab', cui:'Full', training:'Current', relevance:'QA-DB-01 owner; CUI tech data handling for special dietary contracts' },
+  { name:'Philibert J. Dumont', title:'QA Laboratory Manager', dept:'Quality Assurance', loc:'QA Lab', cui:'Full', training:'Current', relevance:'Lab instrument access; USB media use; end-of-support server awareness' },
+  { name:'Coretta M. Simmons', title:'QA Analyst', dept:'Quality Assurance', loc:'QA Lab', cui:'Partial', training:'Current', relevance:'Routine access to QA-DB-01; lab data handling procedures' },
+  { name:'Bryant L. Vickers', title:'Logistics Director', dept:'Logistics', loc:'Warehouse', cui:'Partial', training:'Current', relevance:'Warehouse shipping systems; delivery driver check-in process owner' },
+  { name:'Flora A. Yeboah', title:'Warehouse Supervisor', dept:'Logistics', loc:'Warehouse', cui:'None', training:'Overdue', relevance:'Manages shared warehouse accounts; physical access to staging area' },
+  { name:'Reginald T. Norwood', title:'Physical Security Manager', dept:'Physical Security', loc:'HQ', cui:'Partial', training:'Current', relevance:'Badge access system owner; CCTV; visitor log; guard force supervisor' },
+  { name:'Sylvia N. Park', title:'Risk & Vendor Management Analyst', dept:'Compliance', loc:'HQ', cui:'Full', training:'Current', relevance:'Supplier security questionnaire owner; third-party risk; SCRM candidate' },
+  { name:'Derek O. McAllister', title:'Finance & Contracts Analyst', dept:'Finance', loc:'HQ', cui:'Partial', training:'Current', relevance:'ERP finance module user; contract billing data; access control review subject' },
+];
+
+const cmmc_roles = [
+  '— Unassigned —',
+  'Authorizing Official (AO)',
+  'CMMC Audit POC',
+  'CUI Program Manager',
+  'System Owner',
+  'Information System Security Officer (ISSO)',
+  'Incident Response Lead',
+  'Access Control Owner',
+  'Configuration Management Owner',
+  'Media Protection Owner',
+  'Physical Security Owner',
+  'Risk Management Owner',
+  'Vendor / Supply Chain Owner',
+  'Training Owner',
+  'Asset Inventory Owner',
+  'Audit & Accountability Owner',
+  'Cloud System Administrator',
+  'Network / Boundary Owner'
+];
+
+// ── ASSETS DATA ────────────────────────────────────────────
+const assets = [
+  { id:'FFSI-001', name:'CORP-DC-01', type:'Server — Domain Controller', loc:'HQ', os:'Windows Server 2022', cui:'No', crit:'Critical', auth:'Domain Admin + MFA', log:'Yes', patch:'Current', backup:'Yes', notes:'Primary AD DS, DNS, DHCP' },
+  { id:'FFSI-002', name:'CORP-DC-02', type:'Server — Domain Controller', loc:'HQ', os:'Windows Server 2022', cui:'No', crit:'Critical', auth:'Domain Admin + MFA', log:'Yes', patch:'Current', backup:'Yes', notes:'Replica DC; located in secondary rack' },
+  { id:'FFSI-003', name:'CORP-ERP-01', type:'Server — Application', loc:'HQ', os:'Windows Server 2019 + SQL 2019', cui:'Partial', crit:'Critical', auth:'Local ERP accounts — no SSO (gap)', log:'Yes', patch:'Delayed', backup:'Yes', notes:'ProvisionEdge ERP v7.4; contract and delivery data' },
+  { id:'FFSI-004', name:'CORP-FS-01', type:'Server — File Server', loc:'HQ', os:'Windows Server 2022', cui:'No', crit:'High', auth:'AD Kerberos', log:'Yes', patch:'Current', backup:'Yes', notes:'General corporate file share; FCI present' },
+  { id:'FFSI-005', name:'CORP-FS-02', type:'Server — CUI File Server', loc:'HQ', os:'Windows Server 2022', cui:'Yes', crit:'Critical', auth:'AD + MFA required', log:'Yes', patch:'Current', backup:'Yes (encrypted)', notes:'CUI enclave file share; VLAN 20 only; AES-256 encryption at rest' },
+  { id:'FFSI-006', name:'CORP-SIEM-01', type:'Server — SIEM', loc:'HQ', os:'Linux (RHEL 8) + Splunk Enterprise', cui:'No', crit:'High', auth:'Splunk local + AD', log:'Self-logging', patch:'Current', backup:'Yes', notes:'Log aggregation from all in-scope systems; 90-day retention' },
+  { id:'FFSI-007', name:'FFSI-BKP-01', type:'Server — Backup', loc:'HQ', os:'Windows Server 2022 + Veeam', cui:'Yes', crit:'Critical', auth:'Local admin — shared (gap)', log:'Yes', patch:'Current', backup:'N/A', notes:'Backups encrypted; shared admin credential is a gap' },
+  { id:'FFSI-008', name:'CORP-BADGE-01', type:'Server — Physical Access', loc:'HQ', os:'Windows Server 2019 + Lenel OnGuard', cui:'No', crit:'High', auth:'Service account', log:'Yes', patch:'Delayed', backup:'Yes', notes:'Controls badge reader network; VLAN 60' },
+  { id:'FFSI-009', name:'CORP-VULN-01', type:'Server — Vulnerability Scanner', loc:'HQ', os:'Linux + Tenable Nessus', cui:'No', crit:'Medium', auth:'Local admin', log:'Yes', patch:'Current', backup:'No', notes:'Weekly scans; does not cover OT or all remote segments' },
+  { id:'FFSI-010', name:'PA-3420-HQ', type:'Network — Firewall', loc:'HQ', os:'PAN-OS 11.1', cui:'No', crit:'Critical', auth:'Local admin + MFA', log:'Yes', patch:'Current', backup:'Config backup weekly', notes:'Primary perimeter firewall; IPS/IDS enabled; Threat Prevention licensed' },
+  { id:'FFSI-011', name:'FG-60F-WH', type:'Network — Firewall', loc:'Warehouse', os:'FortiOS 7.4', cui:'No', crit:'High', auth:'Local admin', log:'Yes', patch:'Current', backup:'Config backup weekly', notes:'Warehouse perimeter; SSL VPN endpoint for warehouse supervisors' },
+  { id:'FFSI-012', name:'CISCO-CORE-SW', type:'Network — Core Switch', loc:'HQ', os:'Cisco IOS-XE 17.x', cui:'No', crit:'Critical', auth:'TACACS+ (ISE)', log:'Yes', patch:'Current', backup:'Config backup', notes:'Catalyst 9500; VLAN trunking for all segments' },
+  { id:'FFSI-013', name:'CISCO-ISE-01', type:'Server — NAC', loc:'HQ', os:'Cisco ISE 3.3', cui:'No', crit:'High', auth:'AD integration', log:'Yes', patch:'Current', backup:'Yes', notes:'Network access control; enforces VLAN assignment' },
+  { id:'FFSI-014', name:'MERAKI-WH-AP', type:'Network — Wireless AP', loc:'Warehouse', os:'Meraki MR57 (WPA2)', cui:'No', crit:'Medium', auth:'WPA2-Enterprise', log:'Cloud dashboard', patch:'Auto-update', backup:'N/A', notes:'WPA2 only — WPA3 not yet deployed at warehouse (gap vs HQ WPA3)' },
+  { id:'FFSI-015', name:'PROD-MES-01', type:'Server — MES', loc:'Production Plant', os:'Windows Server 2019', cui:'Partial', crit:'Critical', auth:'Local MES accounts', log:'Partial', patch:'Delayed', backup:'Yes', notes:'FoodTrack MES v3.1; production scheduling; not MDM enrolled' },
+  { id:'FFSI-016', name:'PROD-PLC-CTRL', type:'OT — PLC Network Controller', loc:'Production Plant', os:'Firmware (proprietary)', cui:'No', crit:'High', auth:'None — physical access only (gap)', log:'No', patch:'Never', backup:'No', notes:'Manages conveyor/filling line PLCs; no authentication; no logging — critical gap' },
+  { id:'FFSI-017', name:'PROD-TABLET-01 through 08', type:'Mobile — Production Tablet', loc:'Production Plant', os:'Android 11', cui:'Partial', crit:'Medium', auth:'PIN only', log:'No', patch:'Inconsistent', backup:'No', notes:'Not MDM enrolled; used to view MRE production specs; no MDM — gap' },
+  { id:'FFSI-018', name:'QA-DB-01', type:'Server — Database', loc:'QA Lab', os:'Windows Server 2012 R2 (EOS)', cui:'Yes', crit:'Critical', auth:'SQL local accounts', log:'Partial', patch:'End of support', backup:'Yes', notes:'End of support OS — critical finding; CUI lab data; no patches since Oct 2023' },
+  { id:'FFSI-019', name:'QA-WORKSTATION-01 through 04', type:'Workstation', loc:'QA Lab', os:'Windows 11', cui:'Yes', crit:'High', auth:'AD Kerberos', log:'Yes', patch:'Current', backup:'OneDrive only', notes:'In-scope for CUI; on VLAN 40; Intune enrolled' },
+  { id:'FFSI-020', name:'WH-SHIP-01 through 06', type:'Workstation — Shipping', loc:'Warehouse', os:'Windows 10', cui:'Partial', crit:'Medium', auth:'Shared account: "warehouse" (gap)', log:'Partial', patch:'Delayed', backup:'No', notes:'Shared generic account — no individual accountability; audit finding' },
+  { id:'FFSI-021', name:'CORP-PC HQ General', type:'Workstation Pool — HQ', loc:'HQ', os:'Windows 11 (majority)', cui:'Partial', crit:'Medium', auth:'AD Kerberos + MFA', log:'Yes', patch:'Current (WSUS)', backup:'OneDrive', notes:'~120 workstations; Intune enrolled; CrowdStrike deployed' },
+  { id:'FFSI-022', name:'FFSI-VPN-GW', type:'Network — VPN Appliance', loc:'HQ', os:'FortiGate SSL VPN', cui:'No', crit:'Critical', auth:'SAML/AD — MFA not universal (gap)', log:'Yes', patch:'Current', backup:'Config backup', notes:'MFA enforced for contracts/IT; not enforced for all remote users — gap' },
+  { id:'FFSI-023', name:'CORP-CCTV-NVR', type:'Physical — CCTV/NVR', loc:'HQ', os:'Milestone XProtect (Linux)', cui:'No', crit:'Medium', auth:'Local admin', log:'Motion-triggered', patch:'Current', backup:'30-day local retention', notes:'VLAN 60; 47 cameras at HQ+plant; 30-day recording retention' },
+  { id:'FFSI-024', name:'BADGE-READER-ARRAY', type:'Physical — Badge Readers', loc:'All Locations', os:'Lenel hardware', cui:'No', crit:'High', auth:'HID badge credential', log:'Yes (CORP-BADGE-01)', patch:'Firmware current', backup:'N/A', notes:'24 readers across 4 locations; logs retained 90 days' },
+  { id:'FFSI-025', name:'M365-GCC-TENANT', type:'Cloud — SaaS', loc:'Cloud', os:'Microsoft 365 GCC', cui:'Yes', crit:'Critical', auth:'Entra ID + MFA', log:'Unified Audit Log', patch:'Auto (SaaS)', backup:'Native retention', notes:'Primary email/collaboration; DLP configured but not fully tuned' },
+  { id:'FFSI-026', name:'ENTRA-ID-TENANT', type:'Cloud — Identity', loc:'Cloud', os:'Microsoft Entra ID', cui:'Yes', crit:'Critical', auth:'MFA enforced', log:'Sign-in logs 30 days', patch:'Auto (SaaS)', backup:'N/A', notes:'Hybrid identity; 3 Global Admins — too many (gap)' },
+  { id:'FFSI-027', name:'AWS-GOVCLOUD-PROD', type:'Cloud — IaaS', loc:'Cloud', os:'AWS GovCloud', cui:'Yes', crit:'Critical', auth:'IAM + MFA (root only)', log:'CloudTrail', patch:'Amazon managed', backup:'S3 versioning', notes:'Backup replica and ERP DR; service accounts lack MFA — gap' },
+  { id:'FFSI-028', name:'INTUNE-MDM', type:'Cloud — MDM', loc:'Cloud', os:'Microsoft Intune', cui:'No', crit:'High', auth:'Entra ID', log:'Compliance reports', patch:'Auto (SaaS)', backup:'N/A', notes:'68% enrollment; 32% endpoints unmanaged — gap' },
+  { id:'FFSI-029', name:'CS-FALCON-EDR', type:'Cloud — EDR', loc:'Cloud', os:'CrowdStrike Falcon', cui:'No', crit:'High', auth:'Entra ID SSO', log:'Real-time telemetry', patch:'Auto (SaaS)', backup:'N/A', notes:'82% endpoint coverage; production tablets and QA lab PCs not enrolled' },
+  { id:'FFSI-030', name:'COLD-STORAGE-MON', type:'IoT — Environmental Monitor', loc:'Warehouse', os:'Sensaphone 400 (legacy firmware)', cui:'No', crit:'Medium', auth:'Web console — no MFA', log:'Alert-only', patch:'No updates available', backup:'No', notes:'Legacy system; unpatched firmware; VLAN 60; monitors cold storage temp' },
+  { id:'FFSI-031', name:'VENDOR-REMOTE-GW', type:'Network — Vendor Access', loc:'HQ', os:'Bomgar/BeyondTrust Remote Support', cui:'No', crit:'High', auth:'Session-based credential', log:'Session recording', patch:'Current', backup:'N/A', notes:'Used by SteadyPath IT and ProSeal; session recording enabled; no time-limited accounts — gap' },
+  { id:'FFSI-032', name:'QA-LAB-INSTRUMENTS', type:'Lab Equipment — Instruments', loc:'QA Lab', os:'Embedded firmware (proprietary)', cui:'Partial', crit:'Medium', auth:'Physical access only', log:'No', patch:'Manual (vendor only)', backup:'No', notes:'RS-232 connection to QA workstations; USB data transfer — media control gap' },
+  { id:'FFSI-033', name:'PROD-LABEL-PRINTERS', type:'OT — Label Printers', loc:'Production Plant', os:'Zebra ZPL firmware', cui:'No', crit:'Low', auth:'Network only', log:'No', patch:'Periodic', backup:'Template backup', notes:'Print MRE labels from MES data; on VLAN 30' },
+  { id:'FFSI-034', name:'CORP-UPS-GENERATOR', type:'Physical — Power Infrastructure', loc:'HQ', os:'APC SmartUPS + 150kW generator', cui:'No', crit:'High', auth:'Physical key + SNMP monitor', log:'SNMP alerts to SIEM', patch:'N/A', backup:'N/A', notes:'UPS covers server room; generator covers full HQ; monthly test; fuel contract active' },
+  { id:'FFSI-035', name:'FFSI-PRINT-MFPS', type:'Network — Multifunction Printers', loc:'HQ', os:'Ricoh IM series firmware', cui:'Partial', crit:'Low', auth:'PIN release + AD auth', log:'Print audit log', patch:'Delayed', backup:'N/A', notes:'5 MFPs; CUI print possible; no auto-shred policy; hard drives not encrypted (gap)' },
+];
+
+// ── PHYSICAL SECURITY DATA ────────────────────────────────
+const physicalControls = [
+  { name:'Electronic Badge Access System', loc:'All Locations', owner:'Reginald T. Norwood', evidence:'Lenel OnGuard access reports', status:'Active', concern:'Server room uses group badge credential — no individual logging' },
+  { name:'Visitor Management System (VMS)', loc:'HQ', owner:'Reginald T. Norwood', evidence:'Envoy Visitor digital log exports', status:'Active — paper backup at warehouse', concern:'Visitor log not always completed; escort policy not consistently enforced' },
+  { name:'CCTV Camera Network (47 cameras)', loc:'HQ + Production Plant', owner:'Reginald T. Norwood', evidence:'Milestone NVR export; camera map', status:'Active — 30-day retention', concern:'Warehouse and QA lab not fully covered; camera at loading dock has 3-day blind spot (maintenance)' },
+  { name:'Contract Security Guards (24/7)', loc:'Production Plant', owner:'Reginald T. Norwood', evidence:'Guard duty logs; BlueShield Security Services contract', status:'Active', concern:'Overnight shift guards allow contractor maintenance personnel unescorted access' },
+  { name:'Fenced Loading Dock with Controlled Gate', loc:'Warehouse', owner:'Bryant L. Vickers', evidence:'Gate access log; barrier inspection records', status:'Active', concern:'Delivery driver check-in process informal — no formal sign-in required before entering staging area' },
+  { name:'Burglar Alarm / Intrusion Detection System', loc:'All Locations', owner:'Reginald T. Norwood', evidence:'Alarm company monitoring report (SecureLink)', status:'Active', concern:'QA Lab alarm panel is in unlocked hallway — visible to visitors' },
+  { name:'Server Room Physical Locks (keyed and biometric)', loc:'HQ', owner:'Lena B. Forsythe', evidence:'Facility key log; biometric access report', status:'Active — biometric at HQ server room only', concern:'Biometric not deployed at QA Lab — equipment rack in unlocked closet' },
+  { name:'Production Floor Restricted Zone Signage & Access', loc:'Production Plant', owner:'Nathan G. Tillotson', evidence:'Restricted zone map; badge reader logs for Zone A', status:'Active', concern:'Zone B (packaging) has inconsistent enforcement — badge reader bypassed during busy shifts per observation' },
+  { name:'Key Control Cabinet', loc:'HQ', owner:'Reginald T. Norwood', evidence:'Key control log; signed key receipt records', status:'Active', concern:'Two master keys unaccounted for since August 2023' },
+  { name:'Secure Document Storage (locked cabinets)', loc:'HQ + QA Lab', owner:'Sandra M. Ogunyemi', evidence:'Cabinet key log; document inventory', status:'Active', concern:'QA Lab uses standard filing cabinet — not GSA-approved for CUI storage' },
+  { name:'Locked Shred Bins (Iron Mountain)', loc:'All Locations', owner:'Sandra M. Ogunyemi', evidence:'Iron Mountain destruction certificates', status:'Active', concern:'Warehouse shred bin overflows during peak season; CUI documents left on top of bin' },
+  { name:'Fire Suppression (FM-200 & Sprinkler)', loc:'HQ Server Room', owner:'Facilities Manager (vacant)', evidence:'Annual fire marshal inspection report', status:'Active — last inspection Oct 2023', concern:'Facilities Manager position vacant since June 2024 — no named owner' },
+  { name:'Environmental Monitoring (Temp/Humidity)', loc:'HQ Server Room + Cold Storage', owner:'Kevin L. Marsh', evidence:'Sensaphone alert logs; SNMP data in SIEM', status:'Active — HQ server room; legacy system at warehouse', concern:'Cold-storage monitor runs legacy unpatched firmware — see FFSI-030' },
+  { name:'Generator &amp; UPS', loc:'HQ', owner:'Kevin L. Marsh', evidence:'Generator test log; APC SmartUPS management console', status:'Active — monthly test', concern:'No generator coverage at QA Lab or Warehouse — extended power outage risk' },
+  { name:'Delivery Driver Check-In Process', loc:'Warehouse', owner:'Bryant L. Vickers', evidence:'Driver sign-in log (informal paper form)', status:'Informal — not consistently enforced', concern:'<strong>Known gap</strong> — drivers enter staging area without government-issued ID verification; potential for unauthorized CUI exposure' },
+  { name:'Shipping Cage (Secured Staging Area)', loc:'Warehouse', owner:'Bryant L. Vickers', evidence:'Cage access log; padlock inventory', status:'Active', concern:'Padlock combinations shared with multiple drivers — not rotated regularly' },
+];
+
+// ── RISKS & INCIDENTS DATA ─────────────────────────────────
+const risks = [
+  {
+    id:'INC-2024-001', date:'Feb 14, 2024', category:'Phishing', domain:'Incident Response',
+    title:'Spear-Phishing Attack — Contracts Department',
+    desc:'A spear-phishing email impersonating DLA Troop Support was sent to Sandra Ogunyemi and Calvin Reeves. Ogunyemi clicked a malicious link that initiated a credential harvest attempt. MFA blocked the attacker from accessing M365, but the endpoint was not isolated immediately.',
+    systems:'M365 (Exchange Online); CORP-PC (HQ)',
+    cuiImpact:'Contained — no CUI exfiltrated per investigation',
+    action:'Password reset; endpoint reimaged; staff briefed. Phishing simulation added to annual training.',
+    status:'Closed', evidence:'IR report IR-2024-001; M365 sign-in log; CrowdStrike alert'
+  },
+  {
+    id:'INC-2024-002', date:'Mar 22, 2024', category:'Media', domain:'Media Protection',
+    title:'Unencrypted USB Drive Found in Production Break Room',
+    desc:'A USB drive was discovered in the production plant break room containing four Excel files with MRE nutritional formulation data. The drive was not labeled, and the data had not been classified. The drive\'s owner was never identified.',
+    systems:'Unidentified endpoint; USB drive',
+    cuiImpact:'Potential CUI exposure — nutritional formulation data may qualify as Controlled Technical Information',
+    action:'Drive retained by IT; data reviewed; media sanitization policy re-issued. USB blocking via Intune being evaluated.',
+    status:'Open — USB policy update pending', evidence:'Media sanitization record MSR-2024-07; Intune media report'
+  },
+  {
+    id:'INC-2024-003', date:'May 3, 2024', category:'Access Control', domain:'Access Control',
+    title:'Former Employee Account Active 22 Days Post-Termination',
+    desc:'A production line supervisor who resigned in April 2024 had their Active Directory and ERP accounts active for 22 days after their last day. IT discovered the accounts during a routine access review triggered by an unrelated audit.',
+    systems:'Active Directory; ProvisionEdge ERP',
+    cuiImpact:'Account had Partial CUI access — no evidence of unauthorized access; no CUI exfiltration confirmed',
+    action:'Accounts disabled; termination checklist updated; HR-IT offboarding SLA established (same-day for privileged users).',
+    status:'Closed — SOP updated', evidence:'AD account report; ERP user audit log; HR termination checklist'
+  },
+  {
+    id:'INC-2024-004', date:'Jun 11, 2024', category:'Access Control', domain:'Identification & Authentication',
+    title:'Shared "Warehouse" Account Used by 14 Individual Users',
+    desc:'A generic shared account ("warehouse\\warehouseuser") was used by 14 shipping department employees across 6 workstations. When a shipping error was traced, individual accountability could not be established.',
+    systems:'WH-SHIP-01 through WH-SHIP-06 (VLAN 50)',
+    cuiImpact:'Delivery order data (FCI) accessed without individual accountability',
+    action:'Individual accounts created for all 14 users. Shared account disabled. Investigation ongoing regarding data accuracy.',
+    status:'Partially remediated — shared account disabled; individual accounts active', evidence:'AD user report; shipping system audit log; interviews'
+  },
+  {
+    id:'INC-2024-005', date:'Jul 29, 2024', category:'Configuration', domain:'System & Information Integrity',
+    title:'Critical Patch Undeployed on ERP Server for 94 Days',
+    desc:'A critical Microsoft SQL Server vulnerability (fictional CVE-2024-FFSI-004) was identified in the May 2024 Tenable scan. CORP-ERP-01 was not patched for 94 days due to vendor testing requirements. No exploitation detected, but the window of exposure was significant.',
+    systems:'CORP-ERP-01 (ProvisionEdge ERP)',
+    cuiImpact:'Partial CUI data (contract pricing) on system — patch delay created extended risk window',
+    action:'Patch applied Aug 12, 2024 after vendor approval. Patch testing SLA updated to 30-day maximum for critical vulnerabilities.',
+    status:'Closed — patch deployed', evidence:'Nessus scan reports; patch management log; vendor communication'
+  },
+  {
+    id:'INC-2024-006', date:'Aug 6, 2024', category:'Physical', domain:'Physical Protection',
+    title:'Unescorted Vendor Access During Overnight Maintenance',
+    desc:'A technician from SteadyPath IT Services performed overnight server maintenance at HQ without a security escort. The guard on duty allowed access based on a verbal authorization that could not be confirmed in writing.',
+    systems:'HQ server room (CORP-DC-01, CORP-DC-02 in proximity)',
+    cuiImpact:'Server room contains CUI backup infrastructure — potential physical access risk',
+    action:'Written authorization requirement implemented for all after-hours vendor access. Guard escort policy reinforced.',
+    status:'Closed — policy updated', evidence:'Vendor access log; guard duty report; updated maintenance SOP'
+  },
+  {
+    id:'INC-2024-007', date:'Sep 12, 2024', category:'Audit & Accountability', domain:'Audit & Accountability',
+    title:'90-Day Gap in SIEM Log Review',
+    desc:'Splunk SIEM alerts were generated but not reviewed for 90 days (June–September 2024) due to staff turnover in the security team. Three unacknowledged alerts related to failed login attempts on CORP-FS-02 (CUI file server) were found in backlog.',
+    systems:'CORP-SIEM-01 (Splunk); CORP-FS-02',
+    cuiImpact:'Failed access attempts to CUI file server went unreviewed — potential intrusion attempts missed',
+    action:'SIEM alerting escalation to M365 email configured. Daily log review checklist assigned to Kevin Marsh. Staffing review underway.',
+    status:'Open — daily review protocol established but understaffed', evidence:'Splunk alert export; staffing records; log review checklist'
+  },
+  {
+    id:'INC-2024-008', date:'Sep 28, 2024', category:'Physical', domain:'Physical Protection',
+    title:'Badge Access Anomaly — Unauthorized Attempt at CUI Area',
+    desc:'Lenel OnGuard reported a failed badge access attempt at the CUI contract office door (VLAN 20 area) at 11:47 PM on a Saturday. The badge ID belonged to a warehouse employee who should not have access to that area. Investigation ongoing.',
+    systems:'CORP-BADGE-01; CUI office badge reader',
+    cuiImpact:'Access was denied — no CUI compromise. Anomalous activity suggests possible insider threat or credential misuse.',
+    action:'Badge credential audit initiated; warehouse employee interviewed; IT reviewing physical access control lists.',
+    status:'Open — under investigation', evidence:'Lenel access report; badge audit; employee interview record'
+  },
+  {
+    id:'INC-2024-009', date:'Oct 14, 2024', category:'Configuration', domain:'System & Communications Protection',
+    title:'OT / Production Network Segment Found Communicating with CUI VLAN',
+    desc:'Kevin Marsh discovered that VLAN 80 (OT/Production) had an undocumented ACL rule permitting communication with VLAN 20 (CUI Contracts), apparently added during a network change in 2022. This creates a potential path from unmonitored OT systems to CUI data.',
+    systems:'VLAN 80 (OT); VLAN 20 (CUI); PA-3420 firewall ACL',
+    cuiImpact:'Unauthorized path exists — no confirmed CUI exfiltration via OT network, but risk is elevated',
+    action:'ACL rule removed Oct 15, 2024. Full ACL audit underway. Network segmentation assessment planned.',
+    status:'Partially remediated — ACL removed; full audit pending', evidence:'Firewall ACL review; change management log; network scan'
+  },
+  {
+    id:'INC-2024-010', date:'Nov 2, 2024', category:'Backup', domain:'System & Information Integrity',
+    title:'QA Lab Backup Failure — 47-Day Data Gap',
+    desc:'The nightly backup job for QA-DB-01 (QA Lab database) failed silently for 47 days due to a failed service account password rotation. The failure was not detected by monitoring. QA-DB-01 contains CUI (ingredient formulations for NATICK contract).',
+    systems:'QA-DB-01; FFSI-BKP-01; AWS S3 GovCloud',
+    cuiImpact:'CUI data had no recoverable backup for 47 days — significant data integrity risk',
+    action:'Backup job restored with new service account. Backup monitoring alert added to SIEM. All critical system backups now validated daily.',
+    status:'Closed — backup restored and monitoring active', evidence:'Veeam backup report; AWS S3 backup log; SIEM alert config'
+  },
+];
+
+// ── AUDIT GAPS DATA ────────────────────────────────────────
+const gapData = [
+  {
+    id:'GAP-001', sev:'Critical', domain:'System & Information Integrity', practice:'3.14.4',
+    title:'QA Database Server Running End-of-Support Operating System',
+    finding:'QA-DB-01 runs Windows Server 2012 R2, which reached end of extended support in October 2023. No patches or security updates have been applied since that date. CUI (ingredient formulations, dietary data) is stored on this system.',
+    evidence:'Tenable Nessus scan dated Nov 1, 2024; asset inventory FFSI-018; system properties screenshot',
+    why:'An unpatched, unsupported OS presents a critical risk to the confidentiality and integrity of CUI. NIST SP 800-171 practice 3.14.4 requires identifying and remediating system vulnerabilities in a timely manner.',
+    remediation:'Immediately migrate QA-DB-01 to Windows Server 2022 or 2019. Establish isolated backup of current data before migration. Validate CUI access controls post-migration. Target: 60 days.',
+    poam:'POA&M Entry: QA-DB-01 OS upgrade — Owner: Ingrid K. Larsson / Lena B. Forsythe — Milestone: DB migration plan by Dec 15, 2024; cutover by Jan 31, 2025',
+    question:'🎓 What immediate compensating controls could FFSI implement to reduce risk while awaiting migration? What evidence would you request to verify the migration plan?'
+  },
+  {
+    id:'GAP-002', sev:'Critical', domain:'Identification & Authentication', practice:'3.5.3',
+    title:'Multi-Factor Authentication Not Enforced for All VPN and ERP Access',
+    finding:'VPN (FortiGate SSL VPN) MFA is enforced for Contracts and IT staff but not for all remote users. ProvisionEdge ERP uses local application accounts not integrated with MFA or SSO, meaning ERP access has no MFA protection for any user role.',
+    evidence:'FortiGate VPN user policy export; ERP user configuration screenshot; Entra ID Conditional Access policy review',
+    why:'NIST SP 800-171 practice 3.5.3 requires multifactor authentication for privileged and non-privileged accounts when accessing CUI systems. ERP contains partial CUI (contract delivery pricing).',
+    remediation:'Integrate ERP with Entra ID via SAML SSO. Enforce MFA Conditional Access for all ERP users. Expand VPN MFA to all user accounts. Target: 90 days.',
+    poam:'POA&M Entry: ERP MFA integration — Owner: Jasmine C. Waters — Milestone: SSO design by Dec 1; integration pilot by Jan 15, 2025; production cutover by Mar 1, 2025',
+    question:'🎓 How would you prioritize MFA enforcement if FFSI can only do one system this quarter — ERP or VPN? Justify your recommendation with reference to CMMC practice 3.5.3.'
+  },
+  {
+    id:'GAP-003', sev:'High', domain:'Access Control', practice:'3.1.1 / 3.1.2',
+    title:'Shared Generic Accounts Used in Warehouse — No Individual Accountability',
+    finding:'Six shipping workstations at the Warehouse (LOC-03) use a shared generic account ("warehouseuser"). Fourteen employees use this account. Audit trails cannot be attributed to individuals. Partially remediated — shared account disabled, individual accounts created — but group-level access control policies not yet applied.',
+    evidence:'AD user report; shipping workstation login audit; WH-SHIP-01 through 06 session logs',
+    why:'NIST SP 800-171 practices 3.1.1 and 3.1.2 require limiting system access to authorized users and limiting access to authorized transactions and functions. Shared accounts prevent both.',
+    remediation:'Confirm individual accounts operational on all 6 workstations. Apply role-based access controls limiting access to shipping functions only. Conduct access review within 30 days.',
+    poam:'POA&M Entry: Warehouse access control — Owner: Lena B. Forsythe / Bryant L. Vickers — Milestone: RBAC policy applied by Dec 15, 2024',
+    question:'🎓 If a compliance violation occurs involving the warehouse workstations after individual accounts are created but before RBAC is applied, what is FFSI\'s accountability exposure?'
+  },
+  {
+    id:'GAP-004', sev:'High', domain:'System & Communications Protection', practice:'3.13.1 / 3.13.3',
+    title:'Unauthorized ACL Rule Permitted OT Network to Communicate with CUI VLAN',
+    finding:'An undocumented firewall ACL rule permitted communication between VLAN 80 (OT/Production — unmonitored) and VLAN 20 (CUI Contracts). The rule was present since approximately 2022 and was recently removed. A comprehensive ACL audit has not been completed.',
+    evidence:'Firewall ACL review; PA-3420 change management log; network topology diagram',
+    why:'NIST SP 800-171 practice 3.13.3 requires separating user functionality from system management functionality. 3.13.1 requires monitoring, controlling, and protecting communications at external boundaries and key internal boundaries.',
+    remediation:'Complete full ACL audit. Implement network segmentation assessment. Establish change management approval gate for all ACL modifications affecting CUI VLAN. Add VLAN 80 to SIEM monitoring scope.',
+    poam:'POA&M Entry: Full ACL audit and OT segmentation — Owner: Kevin L. Marsh — Milestone: ACL audit complete by Dec 31, 2024; segmentation assessment by Feb 28, 2025',
+    question:'🎓 What questions would you ask Kevin Marsh about change management practices to determine if this was an isolated incident or a systemic control failure?'
+  },
+  {
+    id:'GAP-005', sev:'High', domain:'Configuration Management', practice:'3.4.1 / 3.4.2',
+    title:'OT / Production Endpoints and Tablets Not Covered by Patch Management',
+    finding:'Production-line tablets (FFSI-017) and PLCs (FFSI-016) are not enrolled in Intune or covered by WSUS. Tablets run Android 11 with inconsistent manual updates. PLCs have never been patched — vendor states they are "not patchable." Tenable Nessus scans do not cover the OT segment (VLAN 80).',
+    evidence:'Intune enrollment report; Tenable scan scope configuration; tablet firmware screenshots; PLC vendor documentation',
+    why:'NIST SP 800-171 practice 3.4.1 requires establishing and maintaining baseline configurations. 3.4.2 requires establishing and enforcing security configuration settings. Unpatched and unmanaged endpoints create risk even in OT-adjacent environments.',
+    remediation:'Define formal asset baseline for tablets; enroll in Intune MDM. Engage PLC vendor on compensating controls. Expand Nessus scan scope to cover VLAN 30 at minimum. Document PLC risk acceptance with AO signature.',
+    poam:'POA&M Entry: OT endpoint configuration management — Owner: Owen F. Bradshaw / Lena B. Forsythe — Milestone: Tablet Intune enrollment by Jan 31, 2025; PLC compensating control plan by Mar 1, 2025',
+    question:'🎓 A vendor claims their PLCs "cannot be patched." How should FFSI document and handle this in their POA&M? What compensating controls are realistic?'
+  },
+  {
+    id:'GAP-006', sev:'High', domain:'Audit & Accountability', practice:'3.3.1 / 3.3.2',
+    title:'90-Day SIEM Log Review Gap — Failed CUI File Server Access Alerts Not Reviewed',
+    finding:'Splunk SIEM alerts (June–September 2024) were not reviewed due to staffing turnover. Three unacknowledged alerts involving failed login attempts on CORP-FS-02 (CUI file server) went uninvestigated for 90 days.',
+    evidence:'Splunk alert export (June–September); staffing records; log review checklist',
+    why:'NIST SP 800-171 practice 3.3.1 requires creating and retaining system audit records sufficient to enable monitoring, analysis, investigation, and reporting. Practice 3.3.2 requires that audit records are reviewed, analyzed, and reported to appropriate personnel.',
+    remediation:'Formalize daily log review assignment with backup coverage. Create escalation procedure for unacknowledged critical alerts. Test SIEM alert-to-email pipeline. Conduct retrospective analysis of the 3 unreviewed alerts.',
+    poam:'POA&M Entry: Log review SOD and escalation — Owner: Marcus A. Dillard — Milestone: Daily review SOP complete by Dec 1, 2024; retrospective analysis by Dec 15, 2024',
+    question:'🎓 How would you determine whether the three uninvestigated alerts represent an actual intrusion? What forensic steps would you take, and in what order?'
+  },
+  {
+    id:'GAP-007', sev:'High', domain:'Media Protection', practice:'3.8.1 / 3.8.7',
+    title:'No Enforced USB Media Control Policy — Unencrypted Media Found on Premises',
+    finding:'An unencrypted USB drive containing potential CUI was found in the production plant break room. FFSI has no technical USB blocking controls via Intune or Group Policy. No media marking or authorization policy is actively enforced.',
+    evidence:'INC-2024-002 incident report; Intune device configuration policy; Group Policy export',
+    why:'NIST SP 800-171 practice 3.8.1 requires protecting system media containing CUI, both paper and digital. Practice 3.8.7 requires controlling the use of removable media on system components.',
+    remediation:'Implement USB blocking policy via Intune and Group Policy (Deny Write to Removable Media) for all in-scope endpoints. Define authorized USB use procedure with IT approval. Conduct media marking training.',
+    poam:'POA&M Entry: USB media control — Owner: Lena B. Forsythe / Marcus A. Dillard — Milestone: GPO/Intune policy applied by Jan 15, 2025; training complete by Feb 1, 2025',
+    question:'🎓 Before implementing a blanket USB block, what business processes at FFSI might legitimately require USB media use? How would you accommodate those while maintaining CMMC compliance?'
+  },
+  {
+    id:'GAP-008', sev:'Medium', domain:'Awareness & Training', practice:'3.2.1 / 3.2.2',
+    title:'Security Awareness Training Overdue for 3 Staff Members with CUI Access',
+    finding:'Three employees — Tanya R. Holbrook (IT Systems Admin), Owen F. Bradshaw (MES Operator), and Flora A. Yeboah (Warehouse Supervisor) — have overdue annual security awareness training. Holbrook and Bradshaw have CUI access. Yeboah manages shared account systems.',
+    evidence:'LMS training completion report (Nov 2024); CUI access list; HR training tracker',
+    why:'NIST SP 800-171 practice 3.2.1 requires ensuring that personnel are aware of the security risks associated with their activities. Practice 3.2.2 requires ensuring that personnel are trained to carry out their assigned security responsibilities.',
+    remediation:'Issue immediate training completion notice for the 3 overdue employees. Suspend CUI access for Holbrook and Bradshaw until training is completed. Set automated LMS reminders 60/30/7 days before expiration.',
+    poam:'POA&M Entry: Overdue training remediation — Owner: Harold J. Pennington — Milestone: All 3 employees complete training by Dec 15, 2024',
+    question:'🎓 Should FFSI suspend Tanya Holbrook\'s CUI access immediately, or wait until training is completed? What risk and operational factors should inform that decision?'
+  },
+  {
+    id:'GAP-009', sev:'Medium', domain:'Physical Protection', practice:'3.10.1 / 3.10.3',
+    title:'Visitor Escort Policy Not Consistently Enforced — Incidents on Record',
+    finding:'FFSI\'s Physical Security Policy requires escorts for all visitors in secure areas. INC-2024-006 documents an unescorted overnight vendor in the server room. Visitor logs are not always completed at the warehouse. Two unescorted visitor incidents were noted in QA Lab access records.',
+    evidence:'INC-2024-006 IR report; visitor log samples (QA Lab); guard duty log; physical security policy v2.1',
+    why:'NIST SP 800-171 practice 3.10.3 requires escorting visitors and monitoring visitor activity. Practice 3.10.1 requires limiting physical access to organizational systems to authorized individuals.',
+    remediation:'Retrain all security personnel and front-desk staff on escort policy. Implement digital visitor management at all locations. Add visitor escort compliance to quarterly security reviews. Enforce written authorization for after-hours vendor access.',
+    poam:'POA&M Entry: Visitor escort and management — Owner: Reginald T. Norwood — Milestone: Digital VMS at all sites by Feb 1, 2025; training refresher by Dec 31, 2024',
+    question:'🎓 What evidence would you gather from the QA Lab to determine if the unescorted visitor incidents created any CUI risk? What controls would be most cost-effective to prevent recurrence?'
+  },
+  {
+    id:'GAP-010', sev:'Medium', domain:'Risk Assessment', practice:'3.11.1 / 3.11.2',
+    title:'Vulnerability Scans Do Not Cover All In-Scope Systems',
+    finding:'Tenable Nessus scans are configured to cover HQ and the cloud environment but do not cover VLAN 40 (QA Lab), VLAN 80 (OT/Production), or the warehouse (VLAN 50). QA-DB-01, production tablets, and cold storage monitors have not been scanned in over 12 months.',
+    evidence:'Tenable Nessus scan scope configuration; vulnerability scan reports Q1–Q3 2024; asset inventory FFSI-018, FFSI-017, FFSI-030',
+    why:'NIST SP 800-171 practice 3.11.2 requires scanning for vulnerabilities in organizational systems periodically and when new vulnerabilities affecting those systems are identified.',
+    remediation:'Expand Nessus scan scope to include VLAN 40 and VLAN 50. Define OT-safe scanning approach for VLAN 80. Schedule full coverage scan immediately.',
+    poam:'POA&M Entry: Expand vulnerability scan coverage — Owner: Marcus A. Dillard — Milestone: QA Lab and Warehouse scan configured by Jan 15, 2025; first full scan by Jan 31, 2025',
+    question:'🎓 Standard Nessus scans can disrupt OT/ICS equipment. How would you approach scanning VLAN 80 safely? What alternative methods exist for OT vulnerability assessment?'
+  },
+  {
+    id:'GAP-011', sev:'Medium', domain:'Supply Chain Risk', practice:'3.11.3 / 3.13.15 (CMMC L2)',
+    title:'No Formal Supply Chain Risk Management (SCRM) for Critical Subcontractors',
+    finding:'FFSI has five significant subcontractors — including SteadyPath IT Services (managed IT) and ProSeal Defense Packaging (packaging manufacturer) — who receive FCI or have remote access to FFSI systems. No formal SCRM assessments, questionnaires, or contractual CMMC flowdown verification has been completed.',
+    evidence:'Subcontractor list; SteadyPath MSP agreement; ProSeal subcontract; Sylvia Park vendor risk tracker (incomplete)',
+    why:'CMMC Level 2 requires contractor organizations to identify and manage cybersecurity risks in their supply chains. DFARS 252.204-7021 requires flowdown of CMMC requirements to subcontractors handling CUI.',
+    remediation:'Develop and deploy supplier security questionnaire. Conduct risk assessment of top 5 subcontractors. Include CMMC flowdown requirements in new and renewed subcontracts. Assign SCRM ownership to Sylvia N. Park.',
+    poam:'POA&M Entry: SCRM program development — Owner: Sylvia N. Park / Calvin T. Reeves — Milestone: Questionnaire deployed Dec 1; top 5 assessments complete by Feb 28, 2025',
+    question:'🎓 SteadyPath IT Services has remote access to CORP-DC-01. What CMMC and DFARS requirements apply to them? What contractual language would you recommend FFSI add to their MSP agreement?'
+  },
+  {
+    id:'GAP-012', sev:'Low', domain:'Incident Response', practice:'3.6.1 / 3.6.2',
+    title:'Incident Response Plan Not Tested in Over 18 Months',
+    finding:'FFSI maintains a written Incident Response Plan (IRP v1.3, dated April 2023). The plan has not been tested via tabletop exercise or simulation since its creation. Key personnel listed in the IRP have changed — the former ISSO (now departed) is still listed as IR Lead.',
+    evidence:'IRP v1.3 document; tabletop exercise records (none found); current org chart vs. IRP contact list',
+    why:'NIST SP 800-171 practice 3.6.2 requires tracking, documenting, and reporting incidents. An untested, outdated IRP increases response time and error probability during an actual incident.',
+    remediation:'Update IRP contact list immediately. Schedule tabletop exercise within 60 days. Include contracts, IT, HR, and executive staff. Document lessons learned and update IRP accordingly.',
+    poam:'POA&M Entry: IRP update and tabletop — Owner: Marcus A. Dillard — Milestone: IRP updated by Dec 1, 2024; tabletop exercise by Jan 31, 2025',
+    question:'🎓 Design a 1-hour tabletop exercise scenario based on INC-2024-001 (phishing attack). What would you test, and who are the essential participants from FFSI\'s personnel list?'
+  },
+];
+
+// ── EVIDENCE LIBRARY DATA ──────────────────────────────────
+const evidenceItems = [
+  { id:'EV-001', name:'System Security Plan (SSP) Excerpt', type:'Policy/Plan', practice:'CA.3.12.4', desc:'Excerpt from FFSI SSP v2.1, Section 3: System Boundary Description and VLAN scope definition', sample:'FFSI System Security Plan v2.1 (Excerpt)\n\n3.1 System Boundary\n\nThe FFSI CMMC Assessment Boundary (CAB) encompasses the following systems and network segments:\n\n• Corporate Headquarters (LOC-01): VLAN 10 (Corporate Admin), VLAN 20 (CUI Contracts), VLAN 60 (Physical Security/IoT), VLAN 99 (Network Management)\n• Primary Production Plant (LOC-02): VLAN 30 (Production Ops), VLAN 80 (OT/MFG Equipment)\n• QA Lab (LOC-04): VLAN 40 (QA Lab)\n• AWS GovCloud Tenant: S3 backup buckets, RDS replica\n• Microsoft 365 GCC Tenant: ffsi.onmicrosoft.us\n\n3.2 CUI Enclave\n\nThe CUI enclave consists of VLAN 20 and associated systems: CORP-FS-02, the CUI SharePoint site (ContractsCUI), and the ProvisionEdge ERP Contract Management module. Access is restricted to personnel with approved CUI access...' },
+  { id:'EV-002', name:'Network Diagram (Text Representation)', type:'Technical', practice:'SC.3.13.1', desc:'Simplified text-format network topology as documented in SSP Appendix B', sample:'FFSI Network Topology — Appendix B to SSP v2.1\n\nINTERNET\n    |\n    | (1Gbps fiber / 500Mbps failover)\n    |\n[PA-3420 Firewall — HQ]\n    |\n    |—— VLAN 10 (10.10.10.0/24): Corporate workstations, printers\n    |—— VLAN 20 (10.10.20.0/24): CUI Contracts — CORP-FS-02, Contracts PCs\n    |—— VLAN 60 (10.10.60.0/24): CCTV, badge readers [isolated, no routing]\n    |—— VLAN 99 (10.10.99.0/24): Network management\n    |\n    | (500Mbps private fiber)\n    |\n[Production Plant Network]\n    |—— VLAN 30 (10.20.30.0/24): Production supervisor PCs, MES terminals\n    |—— VLAN 80 (172.16.80.0/24): OT/PLCs [WARNING: previously undocumented ACL allowed communication to VLAN 20 — remediated 10/15/2024]' },
+  { id:'EV-003', name:'Asset Inventory (Partial)', type:'Technical', practice:'CM.3.4.1', desc:'Partial asset inventory for HQ and CUI enclave assets as of November 2024', sample:'FFSI IT Asset Inventory — CUI Enclave (VLAN 20)\nReport Date: November 15, 2024\n\nAsset ID    | Asset Name    | OS              | CUI | Last Patch | Owner\n------------|---------------|-----------------|-----|------------|-------\nFFSI-005    | CORP-FS-02    | WinSrv 2022     | YES | 11/01/2024 | L.Forsythe\nFFSI-021    | HQ-PC-CNTR-01 | Windows 11      | YES | 11/03/2024 | L.Forsythe\nFFSI-021    | HQ-PC-CNTR-02 | Windows 11      | YES | 11/03/2024 | L.Forsythe\nFFSI-025    | M365-GCC      | SaaS            | YES | Auto       | J.Waters\nFFSI-026    | Entra ID      | SaaS            | YES | Auto       | J.Waters\n\nNote: QA-DB-01 (FFSI-018, LOC-04, WinSrv 2012 R2, CUI=YES) is NOT patched — flagged as GAP-001.' },
+  { id:'EV-004', name:'Access Control Policy', type:'Policy/Plan', practice:'AC.3.1.1', desc:'Excerpt from FFSI Information Security Policy, Section 4: Access Control', sample:'FFSI Information Security Policy v3.0\nSection 4: Access Control\n\n4.1 Account Management\nAll user accounts shall be provisioned through the IT Help Desk using the approved Account Request Form (ARF-001). Accounts shall be based on the principle of least privilege.\n\n4.2 Privileged Access\nPrivileged accounts (Domain Admins, ERP Admins) require dual approval from the IT Director and the ISSO. Privileged account holders shall use separate standard accounts for daily work.\n\n4.3 Termination Procedures\nAll accounts shall be disabled on the employee\'s last working day. Privileged accounts shall be disabled same-day upon notice of termination.\n\n[AUDITOR NOTE: INC-2024-003 shows accounts remained active 22 days post-termination — policy exists but not enforced.]' },
+  { id:'EV-005', name:'Incident Response Plan (Excerpt)', type:'Policy/Plan', practice:'IR.3.6.1', desc:'Excerpt from FFSI IRP v1.3, April 2023 — contact list and response procedures', sample:'Federal Food Services Inc.\nIncident Response Plan v1.3 — April 2023\n\nSection 2: IR Team Contacts\n\nIR Lead: [FORMER EMPLOYEE — DEPARTED JUNE 2024] — NEEDS UPDATE\nIT Director: Lena B. Forsythe — lena.forsythe@ffsi.com — (706) 555-0142\nISSO: Marcus A. Dillard — marcus.dillard@ffsi.com — (706) 555-0199\nCompliance Manager: Amara E. Osei — amara.osei@ffsi.com\n\nSection 3: Incident Categories\n• Category 1: Data breach / CUI exfiltration — notify CEO within 1 hour\n• Category 2: Malware / ransomware — isolate affected systems immediately\n• Category 3: Physical security breach — notify Physical Security Manager\n\n[AUDITOR NOTE: IRP contact list is outdated. Plan not tested since creation. See GAP-012.]' },
+  { id:'EV-006', name:'Visitor Log Sample', type:'Physical', practice:'PE.3.10.3', desc:'Sample visitor log page from HQ front desk — October 2024', sample:'FFSI Corporate Headquarters — Visitor Log\nOctober 2024 (Page 3 of 4)\n\nDate     | Visitor Name           | Company         | Host Employee   | Badge # | Time In | Time Out | Escort?\n---------|------------------------|-----------------|-----------------|---------|---------|---------|--------\n10/14    | James Keller           | SteadyPath IT   | L. Forsythe     | VB-0341 | 09:15   | 11:47   | Yes\n10/16    | Maria Voss             | Blue Ridge Spice| C. Reeves       | VB-0342 | 13:30   | 14:05   | Yes\n10/22    | David Park             | Highview Pkg    | N. Tillotson    | VB-0343 | 08:00   | 09:30   | [BLANK]\n10/28    | [No entry]             | —               | —               | —       | 22:00   | 01:30*  | No*\n\n* Note: 10/28 entry reconstructed from CCTV and badge log. Front desk unoccupied at that time. See INC-2024-006.' },
+  { id:'EV-007', name:'Security Awareness Training Records', type:'HR', practice:'AT.3.2.1', desc:'LMS training completion report — November 2024', sample:'FFSI Learning Management System — Security Training Report\nReport Date: November 15, 2024\nCourse: Annual Cybersecurity Awareness Training (CUI Handling Focus)\n\nEmployee               | Dept       | CUI Access | Completed | Due Date | Status\n-----------------------|------------|------------|-----------|----------|-------\nMargaret L. Calloway   | Executive  | Full       | 10/01/24  | 10/31/24 | ✓ Current\nMarcus A. Dillard      | Cybersec   | Full       | 09/15/24  | 09/30/24 | ✓ Current\nTanya R. Holbrook      | IT         | Full       | [BLANK]   | 09/30/24 | ✗ OVERDUE\nOwen F. Bradshaw       | Production | Partial    | [BLANK]   | 09/30/24 | ✗ OVERDUE\nFlora A. Yeboah        | Logistics  | None       | [BLANK]   | 09/30/24 | ✗ OVERDUE\n...(22 additional records — all current except 3 above)' },
+  { id:'EV-008', name:'Vulnerability Scan Summary', type:'Technical', practice:'RA.3.11.2', desc:'Tenable Nessus scan summary report — November 1, 2024 (HQ and Cloud only)', sample:'Tenable Nessus Vulnerability Scan — Summary Report\nScan Date: November 1, 2024 | Scope: HQ (VLAN 10, 20, 99), AWS GovCloud\n\nHost Count Scanned: 47\nCritical: 1  |  High: 4  |  Medium: 12  |  Low: 23  |  Info: 156\n\nTop Critical Finding:\n- CORP-ERP-01 — CVE-FFSI-2024-004 — SQL Remote Code Execution [PATCHED 08/12/24]\n\nTop High Findings:\n- CORP-BADGE-01 — MS-FFSI-KB5031 — Privilege Escalation (Windows Server 2019)\n- FFSI-035 (MFP) — Ricoh-2024-Print-01 — Unencrypted hard drive configuration\n\nNOTE: VLAN 40 (QA Lab), VLAN 50 (Warehouse), VLAN 80 (OT) NOT INCLUDED in this scan.\nSee GAP-010 — Vulnerability scan coverage gap.' },
+  { id:'EV-009', name:'POA&M Excerpt (Current)', type:'Compliance', practice:'CA.3.12.2', desc:'Excerpt from FFSI Plan of Action and Milestones — November 2024', sample:'Federal Food Services Inc.\nPlan of Action & Milestones (POA&M) — November 2024\n\nItem #  | Practice | Finding                        | Owner            | Target Date | Status\n--------|----------|--------------------------------|------------------|-------------|-------\nPOA-001 | 3.14.4   | QA-DB-01 EOS OS                | I. Larsson       | 01/31/2025  | Open\nPOA-002 | 3.5.3    | VPN/ERP MFA not universal      | J. Waters        | 03/01/2025  | Open\nPOA-003 | 3.1.1    | Warehouse shared accounts      | L. Forsythe      | 12/15/2024  | In Progress\nPOA-004 | 3.13.3   | OT-CUI VLAN ACL (remediated)   | K. Marsh         | 12/31/2024  | Partial\nPOA-005 | 3.8.7    | USB media control              | M. Dillard       | 01/15/2025  | Open\nPOA-006 | 3.6.1    | IRP not tested                 | M. Dillard       | 01/31/2025  | Open\n\nNote: SPRS score pending full assessment. Preliminary self-assessment indicates score of +68 (vs. max +110).' },
+  { id:'EV-010', name:'Supplier Security Questionnaire (Draft)', type:'Supply Chain', practice:'SR.3.11.3', desc:'Draft supplier questionnaire distributed to SteadyPath IT Services — responses pending', sample:'FFSI Supplier Cybersecurity Security Questionnaire v1.0 (DRAFT)\nDistributed to: SteadyPath IT Services, LLC\nDate: October 28, 2024\n\n1. Does your organization have a current CMMC Level 2 certification or self-assessment? [ ] Yes [ ] No\n2. Do you maintain a System Security Plan (SSP)? [ ] Yes [ ] No\n3. Is multi-factor authentication enforced for all remote access to FFSI systems? [ ] Yes [ ] No\n4. Do you have a documented incident response plan tested within the past 12 months? [ ] Yes [ ] No\n5. Is all remote access session activity logged and retained? [ ] Yes [ ] No\n\n[AUDITOR NOTE: No responses received as of November 15, 2024. SteadyPath has remote access to CORP-DC-01 (FFSI-031). See GAP-011.]' },
+  { id:'EV-011', name:'Backup Verification Report', type:'Technical', practice:'SI.3.14.7 (via 800-53 ref)', desc:'Veeam B&R backup job report — October 2024 (QA-DB-01 failure identified)', sample:'Veeam Backup & Replication — Job Status Report\nPeriod: October 1–31, 2024\n\nJob Name               | Target            | Last Success    | Status\n-----------------------|-------------------|-----------------|-------\nHQ-Servers-Nightly     | FFSI-BKP-01       | 10/31/2024      | ✓ Success\nAWS-Offsite-Sync       | S3 us-gov-east-1  | 10/31/2024      | ✓ Success\nQA-DB-01-Nightly       | FFSI-BKP-01       | [SEP 14, 2024]  | ✗ FAILED (47-day gap)\nM365-Backup            | Veeam M365        | 10/31/2024      | ✓ Success\n\nRoot Cause (QA-DB-01): Service account password expired 09/15/2024 without automated alerting.\nSee INC-2024-010 for full incident report.' },
+  { id:'EV-012', name:'Firewall Rule Review', type:'Technical', practice:'SC.3.13.1', desc:'Partial firewall ACL review — PA-3420 VLAN-to-VLAN rules (post-remediation)', sample:'Palo Alto PA-3420 — VLAN Interzone Policy Review\nDate: October 20, 2024 (post-remediation of VLAN 80→20 ACL)\n\nRule Name             | Source VLAN | Dest VLAN | Action  | Logged?\n----------------------|-------------|-----------|---------|--------\nCUI-to-Internet-Deny  | VLAN 20     | Any       | DENY    | Yes\nCUI-to-Mgmt-Allow     | VLAN 20     | VLAN 99   | ALLOW   | Yes\nCorp-to-CUI-Allow     | VLAN 10     | VLAN 20   | ALLOW   | Yes (filtered)\nOT-Isolation          | VLAN 80     | Any       | DENY    | Yes\n[REMOVED 10/15/24]    | VLAN 80     | VLAN 20   | ALLOW   | Previously: No\n\nRecommendation: Conduct full change audit. Enable alert on any new ALLOW rules involving VLAN 20.' },
+  { id:'EV-013', name:'Log Review Checklist', type:'Compliance', practice:'AU.3.3.2', desc:'Daily SIEM log review checklist — Splunk — October/November 2024', sample:'FFSI Splunk SIEM — Daily Log Review Checklist\nAssigned to: Kevin L. Marsh (primary) | Marcus A. Dillard (backup)\n\nDate: November 14, 2024\n\nItem                                   | Reviewed | Anomalies? | Action Taken\n---------------------------------------|----------|------------|-------------\nFailed logins — CORP-FS-02 (CUI)       | ✓        | None today  | —\nPrivileged account activity            | ✓        | None today  | —\nVPN connection anomalies               | ✓        | None today  | —\nFirewall deny logs (VLAN 20)           | ✓        | 3 external blocked | Logged\nBadge access after-hours               | ✓        | None today  | —\nEndpoint protection alerts (CrowdStrike)| ✓       | None today  | —\n\nNote: Checklist not completed for any date June 1–September 10, 2024. See GAP-006.' },
+  { id:'EV-014', name:'CUI Data Flow Description', type:'Compliance', practice:'AC.3.1.3', desc:'CUI data flow narrative from SSP Appendix C — describing how CUI moves through FFSI systems', sample:'FFSI SSP v2.1 — Appendix C: CUI Data Flow Description\n\nCUI Entry Points:\n1. Army Contracting Command provides delivery orders via DoD SAFE portal (HTTPS/SFTP)\n2. DLA Troop Support transmits controlled technical data via encrypted email (S/MIME)\n\nCUI Processing:\n- Contracts department downloads from DoD SAFE to CORP-FS-02 (CUI VLAN 20)\n- ProvisionEdge ERP Contract Module processes unit pricing and delivery schedules\n- QA Lab (LOC-04) receives CUI tech data for dietary/formulation contracts via encrypted email → QA-DB-01\n\nCUI Transmission:\n- Internal: VLAN 20 only; email via M365 GCC with DLP\n- External: Outbound only via DoD SAFE or encrypted email\n\nCUI Destruction/Disposition:\n- Digital: Secure delete per NIST 800-88 guidelines\n- Paper: Shred bins → Iron Mountain destruction certificates' },
+  { id:'EV-015', name:'Media Sanitization Record', type:'Physical', practice:'MP.3.8.3', desc:'Iron Mountain destruction certificate for Q3 2024 document shredding cycle', sample:'Iron Mountain Certificate of Destruction\nClient: Federal Food Services Inc.\nService Date: September 30, 2024\nCollection Location: HQ (4200 Patriot Commerce Blvd), QA Lab (300 Science Park Dr)\n\nMaterials Destroyed:\n- 14 shred bins — paper documents\n- 3 hard drives (serial: [IM-2024-HDD-007 through 009]) — DoD 5220.22-M\n- 1 USB drive (serial: unknown — unlabeled, recovered from production break room — see INC-2024-002)\n\nMethod: Cross-cut shredding (paper); degaussing + physical destruction (media)\nCertificate #: IM-CRT-20240930-FFSI\n\n[AUDITOR NOTE: Hard drive destruction excellent. USB from INC-2024-002 included. Verify that all CUI-bearing media is tracked prior to destruction — current process relies on staff voluntarily submitting media without formal tracking log.]' },
+];
+
+// ── STUDENT TASKS DATA ─────────────────────────────────────
+const tasks = [
+  { num:1, label:'Identify CUI Data Flows', desc:'Using the Company Overview and IT Infrastructure sections, trace all paths where CUI enters, is processed, stored, and exits FFSI\'s systems. Create a data flow diagram identifying all in-scope systems and network segments. Distinguish CUI from FCI throughout.' },
+  { num:2, label:'Determine CMMC Assessment Scope', desc:'Based on the locations, IT infrastructure, and contract data, identify which systems, locations, and personnel are definitively in scope for the CMMC Level 2 assessment. Document your rationale for any assets you would exclude from scope and how FFSI should document that exclusion.' },
+  { num:3, label:'Assign CMMC Security Roles', desc:'Using the Personnel & CMMC Roles section, assign all 14 CMMC security roles to appropriate FFSI personnel. Some individuals may hold multiple roles; some roles may require filling. Document your reasoning for each assignment, including potential conflicts of interest.' },
+  { num:4, label:'Review Contracts and DFARS Clauses', desc:'For each of the 6 active contracts, identify which DFARS clauses are included and what compliance obligations they create. Determine which subcontractors receive CMMC flowdown requirements. Identify any contracts where the CMMC requirement is unclear.' },
+  { num:5, label:'Map Assets to CUI Processing', desc:'Using the Asset Inventory (35 assets), identify which assets process, store, or transmit CUI. For each CUI-touching asset, note whether it is adequately protected. Flag any CUI-adjacent assets that may extend the security boundary unexpectedly.' },
+  { num:6, label:'Request Evidence for Selected CMMC Practices', desc:'Select 5 CMMC practices from different domains (e.g., AC.L2-3.1.1, AU.L2-3.3.1, IA.L2-3.5.3, MP.L2-3.8.1, SC.L2-3.13.1). For each practice, list the specific evidence you would request from FFSI and which employee you would interview to validate it.' },
+  { num:7, label:'Prioritize Audit Gaps by Risk', desc:'Review all 12 audit gaps. Rank them in order of risk priority, considering confidentiality impact on CUI, likelihood of exploitation, and operational impact of remediation. Justify your top 3 priorities with reference to NIST SP 800-171 practices.' },
+  { num:8, label:'Create a Preliminary POA&M', desc:'Select the 5 highest-priority gaps and create a POA&M table including: Gap ID, CMMC practice, finding summary, responsible owner (from personnel list), remediation steps, target date, and required resources. Use the existing POA&M excerpt (EV-009) as a format reference.' },
+  { num:9, label:'Recommend Immediate Remediation Actions', desc:'Identify 3 remediation actions that FFSI could complete within 30 days requiring minimal budget but providing significant risk reduction. Write a one-paragraph justification for each, including which CMMC practice it addresses and which incident or gap it resolves.' },
+  { num:10, label:'Prepare Leadership Interview Questions', desc:'You are about to interview Margaret L. Calloway (CEO) and Marcus A. Dillard (ISSO). Write 5 questions for each that would help you assess FFSI\'s security culture, governance, and technical control environment. Questions should be open-ended and based on actual FFSI context from this case study.' },
+  { num:11, label:'Determine Which Locations Are In Scope', desc:'For each of the 4 FFSI locations, determine whether it is in scope for the CMMC Level 2 assessment and at what level. Consider CUI processing, network connectivity, and contract coverage. Document any locations you believe should be conditionally scoped based on compensating controls.' },
+  { num:12, label:'Classify Systems as CUI, FCI, or Out-of-Scope', desc:'Using the asset inventory and the CUI data flow description (EV-014), classify each of the 35 assets as: (a) CUI system — full CMMC control set applies; (b) FCI system — CMMC/FAR basic safeguarding applies; (c) Security protection asset — supports CMMC but not directly CUI; or (d) Out of scope — justify exclusion. Present your classification in a table.' },
+];
+
+// ── NODE DETAILS DATA ──────────────────────────────────────
+const nodeDetails = {
+  'internet': { title:'Internet / External Connections', body:'FFSI connects to the internet via ComState Business (1Gbps primary) and LibertyNet (500Mbps failover). External connections include DoD SAFE portal (SFTP/HTTPS), DLA email gateway, AWS Direct Connect, and Microsoft 365 GCC. All external traffic routes through the PA-3420 at HQ. <br><br><strong>Audit concern:</strong> Verify that DoD SAFE transfers are logged and that credentials used for portal access are MFA-protected.' },
+  'fw-hq': { title:'Palo Alto PA-3420 — HQ Primary Firewall', body:'PAN-OS 11.1. IPS/IDS with Threat Prevention license. Manages VLAN segmentation, external traffic filtering, and VLAN-to-VLAN ACLs. Admin access requires MFA. Recent finding: Undocumented ACL rule permitting VLAN 80 → VLAN 20 traffic (remediated 10/15/2024). Full ACL audit in progress.<br><br><strong>Evidence to request:</strong> Full ACL export; rule change log; threat prevention alert report.' },
+  'fw-wh': { title:'FortiGate 60F — Warehouse Firewall', body:'FortiOS 7.4. Serves as perimeter firewall for Warehouse (LOC-03) and SSL VPN endpoint for warehouse supervisor remote access. MFA enforced for warehouse VPN users only (contracts and IT staff have separate VPN profile).<br><br><strong>Audit concern:</strong> Verify SSL VPN certificate validity; review MFA enforcement for all VPN profiles.' },
+  'fw-lab': { title:'FortiGate IPsec VPN — QA Lab Tunnel', body:'Site-to-site IPsec VPN tunnel connecting QA Lab (LOC-04) to HQ. IKEv2 with AES-256 encryption. No local internet egress at QA Lab — all traffic routes through HQ firewall. Tunnel is up 99.7% per monitoring.<br><br><strong>Audit concern:</strong> Confirm QA-DB-01 traffic stays within tunnel and does not egress directly to internet.' },
+  'dc01': { title:'CORP-DC-01 / CORP-DC-02 — Active Directory', body:'Windows Server 2022. Active Directory Domain Services (AD DS), DNS, DHCP. DC-01 is primary FSMO role holder; DC-02 is replica. Both in HQ server room. Synced to Microsoft Entra ID for hybrid identity. Protected by CrowdStrike.<br><br><strong>Audit concern:</strong> Number of Domain Admin accounts; service account inventory; AD group policy review for CUI-related controls.' },
+  'erp': { title:'CORP-ERP-01 — ProvisionEdge ERP v7.4', body:'Windows Server 2019 + SQL Server 2019. Manages contract delivery scheduling, procurement, billing, and logistics. Contains Partial CUI (unit pricing, delivery order data). <br><br><strong>Known gaps:</strong> (1) ERP uses local application accounts — no SSO integration. (2) MFA not enforced for ERP access. (3) Patch was delayed 94 days (INC-2024-005).<br><br><strong>Evidence to request:</strong> ERP user account list; login audit log; patch history.' },
+  'fs01': { title:'CORP-FS-01 — Corporate File Server', body:'Windows Server 2022. General corporate file share (FCI present, no CUI). VLAN 10. AD Kerberos authentication. Backups run nightly via Veeam.<br><br><strong>Audit concern:</strong> Verify no CUI is stored here — confirm DLP policy routes CUI documents to CORP-FS-02 only. Review folder permissions for least privilege.' },
+  'cui-enclave': { title:'CUI Enclave — VLAN 20 / CORP-FS-02', body:'The CUI enclave consists of VLAN 20 and CORP-FS-02. CORP-FS-02 runs Windows Server 2022 with AES-256 encryption at rest. Access restricted to personnel with CUI access (Contracts team, ISSO, CUI Program Manager). MFA required. Separate network segment with strict ACL.<br><br><strong>This is the primary CMMC assessment focus area.</strong> All CUI stored here. Evidence: ACL configuration; access log; file classification review.' },
+  'siem': { title:'CORP-SIEM-01 — Splunk Enterprise', body:'Linux (RHEL 8) + Splunk Enterprise. Log aggregation from: AD, firewall, VPN, CORP-FS-02, badge system, M365, AWS CloudTrail. 90-day retention. Alerts configured for CUI file server access anomalies.<br><br><strong>Known gap:</strong> SIEM alerts not reviewed for 90 days (June–September 2024) — GAP-006. VLAN 80 (OT) not sending logs to SIEM.' },
+  'mes': { title:'PROD-MES-01 — FoodTrack MES v3.1', body:'Windows Server 2019. Manufacturing Execution System managing production scheduling, batch records, and equipment status. Contains Partial CUI (production specifications for Army contracts). Not enrolled in Intune. Delayed on patches.<br><br><strong>Audit concern:</strong> Local MES accounts not integrated with AD; no MFA. Verify what CUI specifications are accessible from MES and who can access them.' },
+  'plc': { title:'PLC Network — OT VLAN 80', body:'Proprietary firmware. Controls conveyor systems, filling lines, and environmental controls on production floor. No authentication on PLCs — physical access only. No logging capability. Never patched (vendor states not patchable). Communicates via Modbus TCP.<br><br><strong>Critical gap:</strong> Undocumented ACL previously connected this VLAN to CUI VLAN 20 (remediated). OT-specific vulnerability assessment not conducted. Risk acceptance documentation required.' },
+  'qadb': { title:'QA-DB-01 — Quality Assurance Database', body:'Windows Server 2012 R2 (END OF SUPPORT since October 2023). SQL Server 2014. Stores CUI including ingredient formulations, dietary specifications, and shelf-life study data for NATICK contract (W909MY-24-C-0152). Located at QA Lab (LOC-04) in an unlocked equipment closet.<br><br><strong>Critical gap (GAP-001):</strong> EOS operating system with no patches since October 2023. Must be migrated immediately.' },
+  'bkp': { title:'FFSI-BKP-01 — Backup Server (Veeam)', body:'Windows Server 2022 + Veeam Backup & Replication v12. Nightly backups of all in-scope servers. Encrypted backup jobs. Offsite replication to AWS S3 GovCloud (30-day versioning, 90-day Glacier).<br><br><strong>Known gap:</strong> QA-DB-01 backup job failed for 47 days (INC-2024-010). Backup server uses shared local admin credential (GAP not yet in POA&M — should be added).' },
+  'aws': { title:'AWS GovCloud (us-gov-east-1)', body:'FFSI uses AWS GovCloud for: S3 backup storage (CUI-PROD bucket — AES-256 encrypted), RDS replica (ERP disaster recovery), CloudTrail logging (shipped to Splunk), and GuardDuty threat detection.<br><br><strong>Known gap:</strong> IAM service accounts lack MFA enforcement. Root account MFA is enforced. 3 IAM users with excessive permissions under review.' },
+  'm365': { title:'Microsoft 365 GCC Tenant', body:'ffsi.onmicrosoft.us — M365 E3 GCC (847 seats). Exchange Online, Teams, SharePoint, OneDrive, Defender for Endpoint P1. CUI handled via SharePoint site "ContractsCUI" with restricted permissions.<br><br><strong>Known gaps:</strong> (1) DLP policies not fully tuned — CUI keyword detection active but generating false positives. (2) 3 Global Admins — too many for least privilege. (3) Compliant device Conditional Access not applied to all groups.' },
+  'entra': { title:'Microsoft Entra ID (Hybrid Identity)', body:'Hybrid identity: Entra ID synced to on-premises Active Directory via Entra Connect. MFA enforced for all M365 logins. SSO configured for M365 and CrowdStrike. ERP and some legacy applications still use local accounts (gap).<br><br><strong>Audit concern:</strong> Confirm Entra Connect sync health; verify no legacy authentication protocols enabled; review Conditional Access policies for CUI-adjacent apps.' },
+  'intune': { title:'Microsoft Intune — Endpoint Management', body:'68% enrollment rate across FFSI endpoints. Enrolled devices receive: Defender antivirus policy, BitLocker encryption, security baseline. Compliance policy gates M365 access.<br><br><strong>Known gap:</strong> 32% of endpoints NOT enrolled — includes production tablets (FFSI-017), QA Lab PCs (partial), warehouse shipping workstations. These endpoints do not receive security baselines or EDR.' },
+  'vlan10': { title:'VLAN 10 — Corporate Admin (10.10.10.0/24)', body:'General corporate user VLAN. ~120 workstations, printers, conference room equipment. FCI may be present (contract discussions via email). Separated from CUI VLAN 20 by ACL. CrowdStrike deployed on all enrolled endpoints.' },
+  'vlan20': { title:'VLAN 20 — CUI Contracts (10.10.20.0/24)', body:'<strong>Primary CUI enclave.</strong> Contracts department PCs, CORP-FS-02, contract management ERP module access. Strict ACL: only Contracts, ISSO, and IT admins can access. All traffic logged. MFA required for access.<br><br><strong>This VLAN is the core of the CMMC assessment boundary.</strong>' },
+  'vlan30': { title:'VLAN 30 — Production Operations (10.20.30.0/24)', body:'Production supervisor PCs and MES terminals at LOC-02. FCI present (production schedules). Partial segmentation from VLAN 80 (OT) — documented gap. Not fully isolated. CrowdStrike deployment: 60% of endpoints.' },
+  'vlan40': { title:'VLAN 40 — QA Lab (10.30.40.0/24)', body:'QA workstations (Windows 11) and QA-DB-01 (Windows Server 2012 R2 — EOS). CUI present. Connected via IPsec tunnel to HQ. Lab instruments interface via RS-232. Not covered by Tenable Nessus scans (GAP-010).' },
+  'vlan50': { title:'VLAN 50 — Warehouse Logistics (10.40.50.0/24)', body:'Shipping workstations (Windows 10), label printers, RF barcode guns. FCI present (delivery orders). Previously had 14 users sharing a single "warehouse" account — remediated. Patching delayed. Not covered by vulnerability scans (GAP-010).' },
+  'vlan60': { title:'VLAN 60 — Security Cameras / IoT (10.10.60.0/24)', body:'IP cameras (47 total), badge readers (24 across all sites), cold storage temperature sensors. Completely isolated — no routing to any other VLAN. Milestone XProtect NVR on this segment. 30-day recording retention.' },
+  'vlan70': { title:'VLAN 70 — Guest Wi-Fi (192.168.70.0/24)', body:'Internet-only SSID for visitors. Captive portal with use agreement. No internal network access. Separate DHCP scope. Used in all 4 locations. Completely isolated from all corporate VLANs.' },
+  'vlan80': { title:'VLAN 80 — OT / Manufacturing Equipment (172.16.80.0/24)', body:'PLCs, HMIs, conveyor controllers, environmental controls on production floor. Legacy Modbus TCP protocol. No authentication on PLCs. No logging. Never patched. <br><br><strong>Critical finding:</strong> Undocumented ACL previously connected VLAN 80 to VLAN 20 (CUI). Remediated 10/15/2024. OT segment not covered by SIEM or vulnerability scanning.' },
+  'vlan99': { title:'VLAN 99 — Network Management (10.10.99.0/24)', body:'Network switches, wireless controllers, firewall management interfaces, SIEM. Admin access only via TACACS+ (Cisco ISE). This VLAN is strictly controlled — only IT and network admins can access. Audit all accounts with VLAN 99 access during assessment.' },
+};
+
+/* ════════════════════════════════════════════════════════════
+   RENDER FUNCTIONS
+   ════════════════════════════════════════════════════════════ */
+
+// ── Contracts ──────────────────────────────────────────────
+function renderContracts() {
+  const container = document.getElementById('contractsContainer');
+  container.innerHTML = contracts.map(c => `
+    <div class="card" style="margin-bottom:1rem;">
+      <div class="card-header expandable" onclick="toggleExpand(this)">
+        <div>
+          <div style="font-size:0.7rem;color:var(--text-muted);font-family:var(--font-mono);">${c.num}</div>
+          <div class="card-title">${c.product}</div>
+          <div class="card-subtitle">${c.agency} · ${c.role} · ${c.value}</div>
+        </div>
+        <div style="display:flex;gap:0.4rem;align-items:center;flex-wrap:wrap;">
+          ${c.cui === 'FCI Only' ? '<span class="badge badge-fci">FCI Only</span>' : `<span class="badge badge-cui">CUI</span>`}
+          <span class="badge badge-green">${c.role}</span>
+          <span class="expand-icon">▼</span>
+        </div>
+      </div>
+      <div class="expand-body">
+        <div class="grid-2" style="gap:1rem;">
+          <div class="info-grid">
+            <span class="info-label">Period of Performance</span><span class="info-value">${c.period}</span>
+            <span class="info-label">CUI Category</span><span class="info-value">${c.cui}</span>
+            <span class="info-label">FCI Present</span><span class="info-value">${c.fci ? 'Yes' : 'No'}</span>
+          </div>
+          <div>
+            <div class="gap-section-title">DFARS Clauses</div>
+            <div style="display:flex;flex-wrap:wrap;gap:0.3rem;margin-bottom:0.5rem;">
+              ${c.dfars.map(d => `<span class="badge badge-fci">${d}</span>`).join('')}
+            </div>
+            <div class="gap-section-title">Systems Used</div>
+            <ul style="font-size:0.8rem;padding-left:1rem;line-height:1.7;">${c.systems.map(s=>`<li>${s}</li>`).join('')}</ul>
+          </div>
+        </div>
+        <div class="hr"></div>
+        <div class="gap-section-title">Data Types Involved</div>
+        <div style="display:flex;flex-wrap:wrap;gap:0.3rem;margin-bottom:0.75rem;">
+          ${c.dataTypes.map(d=>`<span class="badge badge-amber">${d}</span>`).join('')}
+        </div>
+        <div class="gap-section-title">Auditor Notes</div>
+        <p class="text-small">${c.notes}</p>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ── Personnel ──────────────────────────────────────────────
+function renderPersonnel() {
+  const grid = document.getElementById('personnelGrid');
+  const cuiBadgeMap = { 'Full':'badge-cui','Partial':'badge-amber','None':'badge-nc' };
+  grid.innerHTML = personnel.map((p,i) => {
+    const savedRole = localStorage.getItem('ffsi-role-'+i) || '';
+    return `
+    <div class="person-card" data-name="${p.name.toLowerCase()}" data-dept="${p.dept}" data-cui="${p.cui}">
+      <div class="person-name">${p.name}</div>
+      <div class="person-title">${p.title}</div>
+      <div class="person-meta">
+        <span class="badge badge-green">${p.dept}</span>
+        <span class="badge ${cuiBadgeMap[p.cui]}" style="margin-left:0.3rem;">CUI: ${p.cui}</span>
+        <span class="badge ${p.training==='Current'?'badge-green':'badge-red'}" style="margin-left:0.3rem;">Training: ${p.training}</span>
+      </div>
+      <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.4rem;">📍 ${p.loc}</div>
+      <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.5rem;font-style:italic;">${p.relevance}</div>
+      <select class="role-select" onchange="saveRole(${i},this.value)">
+        ${cmmc_roles.map(r=>`<option value="${r}" ${savedRole===r?'selected':''}>${r}</option>`).join('')}
+      </select>
+    </div>`;
+  }).join('');
+}
+
+function saveRole(idx, val) {
+  localStorage.setItem('ffsi-role-'+idx, val);
+}
+
+function filterPersonnel() {
+  const search = document.getElementById('personnelSearch').value.toLowerCase();
+  const dept = document.getElementById('deptFilter').value;
+  const cui = document.getElementById('cuiFilter').value;
+  document.querySelectorAll('.person-card').forEach(card => {
+    const matchSearch = card.dataset.name.includes(search) || card.textContent.toLowerCase().includes(search);
+    const matchDept = !dept || card.dataset.dept === dept;
+    const matchCUI = !cui || card.dataset.cui === cui;
+    card.style.display = (matchSearch && matchDept && matchCUI) ? '' : 'none';
+  });
+}
+
+function clearPersonnelFilters() {
+  document.getElementById('personnelSearch').value='';
+  document.getElementById('deptFilter').value='';
+  document.getElementById('cuiFilter').value='';
+  filterPersonnel();
+}
+
+function exportRoles() {
+  let csv = 'Name,Title,Dept,CUI Access,Assigned CMMC Role\n';
+  personnel.forEach((p,i) => {
+    const role = localStorage.getItem('ffsi-role-'+i) || '— Unassigned —';
+    csv += `"${p.name}","${p.title}","${p.dept}","${p.cui}","${role}"\n`;
+  });
+  const blob = new Blob([csv], {type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'FFSI-CMMC-Roles.csv'; a.click();
+}
+
+// ── Assets ─────────────────────────────────────────────────
+function renderAssets() {
+  const body = document.getElementById('assetTableBody');
+  const critMap = {'Critical':'badge-red','High':'badge-amber','Medium':'badge-fci','Low':'badge-nc'};
+  const cuiMap = {'Yes':'badge-cui','No':'badge-nc','Partial':'badge-amber'};
+  body.innerHTML = assets.map(a => `
+    <tr data-loc="${a.loc}" data-cui="${a.cui}" data-crit="${a.crit}"
+        data-name="${(a.name+a.type+a.loc).toLowerCase()}">
+      <td class="td-mono">${a.id}</td>
+      <td><strong>${a.name}</strong><div style="font-size:0.72rem;color:var(--text-muted);">${a.notes}</div></td>
+      <td>${a.type}</td>
+      <td>${a.loc}</td>
+      <td class="td-mono">${a.os}</td>
+      <td><span class="badge ${cuiMap[a.cui]}">${a.cui}</span></td>
+      <td><span class="badge ${critMap[a.crit]}">${a.crit}</span></td>
+      <td style="font-size:0.75rem;">${a.auth}</td>
+      <td><span class="badge ${a.log==='Yes'?'badge-green':a.log==='No'?'badge-red':'badge-amber'}">${a.log}</span></td>
+      <td><span class="badge ${a.patch==='Current'?'badge-green':a.patch.includes('EOS')||a.patch==='Never'?'badge-red':'badge-amber'}">${a.patch}</span></td>
+      <td><span class="badge ${a.backup==='Yes'||a.backup.includes('Yes')?'badge-green':a.backup==='No'?'badge-red':'badge-nc'}">${a.backup}</span></td>
+    </tr>
+  `).join('');
+}
+
+function filterAssets() {
+  const search = document.getElementById('assetSearch').value.toLowerCase();
+  const loc = document.getElementById('assetLocFilter').value;
+  const cui = document.getElementById('assetCUIFilter').value;
+  const crit = document.getElementById('assetCritFilter').value;
+  document.querySelectorAll('#assetTableBody tr').forEach(row => {
+    const matchS = row.dataset.name.includes(search) || row.textContent.toLowerCase().includes(search);
+    const matchL = !loc || row.dataset.loc.includes(loc);
+    const matchC = !cui || row.dataset.cui === cui;
+    const matchCr = !crit || row.dataset.crit === crit;
+    row.style.display = (matchS && matchL && matchC && matchCr) ? '' : 'none';
+  });
+}
+
+// ── Physical Security ──────────────────────────────────────
+function renderPhysical() {
+  const container = document.getElementById('physicalContainer');
+  container.innerHTML = `
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Control</th><th>Location</th><th>Owner</th><th>Evidence Artifact</th><th>Status</th><th>Audit Concern</th></tr></thead>
+        <tbody>
+          ${physicalControls.map(c => `
+          <tr>
+            <td><strong>${c.name}</strong></td>
+            <td>${c.loc}</td>
+            <td>${c.owner}</td>
+            <td style="font-size:0.75rem;font-style:italic;">${c.evidence}</td>
+            <td><span class="badge ${c.status.includes('Active')?'badge-green':c.status.includes('Informal')||c.status.includes('not')?'badge-red':'badge-amber'}">${c.status.split('—')[0].trim()}</span></td>
+            <td style="font-size:0.78rem;">${c.concern}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+// ── Risks ──────────────────────────────────────────────────
+function renderRisks() {
+  const container = document.getElementById('risksContainer');
+  container.innerHTML = risks.map(r => `
+    <div class="risk-card" data-cat="${r.category}" data-text="${(r.title+r.desc+r.category).toLowerCase()}">
+      <div class="risk-header">
+        <span class="risk-id">${r.id}</span>
+        <span class="badge badge-amber">${r.category}</span>
+        <span class="badge badge-fci">${r.domain}</span>
+        <span style="margin-left:auto;font-size:0.72rem;color:var(--text-muted);">${r.date}</span>
+      </div>
+      <div style="font-weight:700;margin-bottom:0.4rem;">${r.title}</div>
+      <p class="text-small" style="margin-bottom:0.5rem;">${r.desc}</p>
+      <div class="grid-2" style="gap:0.5rem;font-size:0.78rem;">
+        <div><strong>Systems Affected:</strong> ${r.systems}</div>
+        <div><strong>CUI Impact:</strong> ${r.cuiImpact}</div>
+        <div><strong>Action Taken:</strong> ${r.action}</div>
+        <div><strong>Status:</strong> <span class="badge ${r.status.includes('Closed')?'badge-green':r.status.includes('Open')?'badge-red':'badge-amber'}">${r.status.split('—')[0].trim()}</span></div>
+      </div>
+      <div style="margin-top:0.5rem;font-size:0.75rem;color:var(--text-muted);font-style:italic;">Evidence: ${r.evidence}</div>
+    </div>
+  `).join('');
+}
+
+function filterRisks() {
+  const search = document.getElementById('riskSearch').value.toLowerCase();
+  const cat = document.getElementById('riskCatFilter').value;
+  document.querySelectorAll('.risk-card').forEach(card => {
+    const matchS = card.dataset.text.includes(search);
+    const matchC = !cat || card.dataset.cat === cat;
+    card.style.display = (matchS && matchC) ? '' : 'none';
+  });
+}
+
+// ── Gaps ───────────────────────────────────────────────────
+function renderGaps() {
+  const container = document.getElementById('gapsContainer');
+  container.innerHTML = gapData.map(g => `
+    <div class="gap-card" data-sev="${g.sev}" data-domain="${g.domain}"
+         data-text="${(g.title+g.finding+g.domain).toLowerCase()}">
+      <div class="gap-header">
+        <span class="gap-id">${g.id}</span>
+        <span class="sev sev-${g.sev.toLowerCase()}">${g.sev}</span>
+        <span class="gap-practice">${g.practice}</span>
+        <span class="badge badge-fci" style="margin-left:auto;">${g.domain}</span>
+      </div>
+      <div class="gap-title">${g.title}</div>
+      <div class="expandable gap-body" onclick="toggleGap(this)" style="cursor:pointer;">
+        ${g.finding.substring(0,150)}… <span style="color:var(--accent);font-size:0.8rem;">Show more ▼</span>
+        <div class="expand-body">
+          <div class="gap-section-title">Full Finding</div>
+          <div class="gap-text">${g.finding}</div>
+          <div class="gap-section-title">Evidence to Request</div>
+          <div class="gap-text">${g.evidence}</div>
+          <div class="gap-section-title">Why It Matters</div>
+          <div class="gap-text">${g.why}</div>
+          <div class="gap-section-title">Recommended Remediation</div>
+          <div class="gap-text">${g.remediation}</div>
+          <div class="gap-section-title">Suggested POA&amp;M Entry</div>
+          <div class="gap-text text-mono" style="background:var(--bg-alt);padding:0.5rem;border-radius:4px;">${g.poam}</div>
+          <div class="question-box">${g.question}</div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleGap(el) {
+  el.classList.toggle('expanded');
+}
+
+function filterGaps() {
+  const search = document.getElementById('gapSearch').value.toLowerCase();
+  const sev = document.getElementById('gapSevFilter').value;
+  const domain = document.getElementById('gapDomainFilter').value;
+  let count = 0;
+  document.querySelectorAll('.gap-card').forEach(card => {
+    const matchS = card.dataset.text.includes(search);
+    const matchSev = !sev || card.dataset.sev === sev;
+    const matchD = !domain || card.dataset.domain === domain;
+    const show = matchS && matchSev && matchD;
+    card.style.display = show ? '' : 'none';
+    if(show) count++;
+  });
+  document.getElementById('gapCount').textContent = count;
+}
+
+// ── Evidence Library ───────────────────────────────────────
+function renderEvidence() {
+  const container = document.getElementById('evidenceContainer');
+  container.innerHTML = evidenceItems.map(e => {
+    const checked = localStorage.getItem('ffsi-ev-'+e.id) === '1';
+    return `
+    <div class="evidence-item ${checked?'checked':''}" id="evitem-${e.id}">
+      <input type="checkbox" ${checked?'checked':''} onchange="toggleEvidence('${e.id}',this)"/>
+      <div>
+        <div class="evidence-label" style="cursor:pointer;" onclick="showEvidence('${e.id}')">${e.name}</div>
+        <div class="evidence-desc">${e.desc}</div>
+        <div class="evidence-tag">CMMC Practice: ${e.practice} · ${e.type}</div>
+      </div>
+    </div>`;
+  }).join('');
+  updateEvidenceProgress();
+}
+
+function toggleEvidence(id, checkbox) {
+  localStorage.setItem('ffsi-ev-'+id, checkbox.checked?'1':'0');
+  document.getElementById('evitem-'+id).classList.toggle('checked', checkbox.checked);
+  updateEvidenceProgress();
+}
+
+function updateEvidenceProgress() {
+  const total = evidenceItems.length;
+  const done = evidenceItems.filter(e=>localStorage.getItem('ffsi-ev-'+e.id)==='1').length;
+  document.getElementById('evidenceCount').textContent = done;
+  document.getElementById('evidenceBar').style.width = (done/total*100)+'%';
+}
+
+function clearEvidence() {
+  evidenceItems.forEach(e=>localStorage.removeItem('ffsi-ev-'+e.id));
+  renderEvidence();
+}
+
+function showEvidence(id) {
+  const e = evidenceItems.find(x=>x.id===id);
+  document.getElementById('evidenceModalTitle').textContent = e.name;
+  document.getElementById('evidenceModalBody').innerHTML =
+    `<div class="callout callout-info" style="margin-bottom:0.75rem;"><span class="callout-icon">ℹ️</span><div class="callout-body"><strong>Type:</strong> ${e.type} · <strong>Practice:</strong> ${e.practice}<br>${e.desc}</div></div>
+     <pre class="code-block" style="font-size:0.72rem;white-space:pre-wrap;">${e.sample}</pre>`;
+  document.getElementById('evidenceModal').classList.add('open');
+}
+
+// ── Tasks ──────────────────────────────────────────────────
+function renderTasks() {
+  const container = document.getElementById('tasksContainer');
+  container.innerHTML = tasks.map(t => `
+    <div class="task-item">
+      <div class="task-num">${t.num}</div>
+      <div class="task-text">
+        <div class="task-label">${t.label}</div>
+        <div class="task-desc">${t.desc}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ════════════════════════════════════════════════════════════
+   UI CONTROLS
+   ════════════════════════════════════════════════════════════ */
+
+function toggleTheme() {
+  const html = document.documentElement;
+  const btn = document.getElementById('themeBtn');
+  const isLight = html.getAttribute('data-theme') === 'light';
+  html.setAttribute('data-theme', isLight ? 'dark' : 'light');
+  btn.textContent = isLight ? '☀️ Light Mode' : '🌙 Dark Mode';
+  localStorage.setItem('ffsi-theme', isLight ? 'dark' : 'light');
+}
+
+function toggleEdit() {
+  const btn = document.getElementById('editBtn');
+  const isEdit = document.body.getAttribute('contenteditable') === 'true';
+  document.body.setAttribute('contenteditable', isEdit ? 'false' : 'true');
+  btn.textContent = isEdit ? '✏️ Edit Mode' : '✅ Exit Edit Mode';
+  btn.classList.toggle('active', !isEdit);
+  if (!isEdit) {
+    document.querySelectorAll('select,input,button:not(#editBtn)').forEach(el => el.setAttribute('contenteditable','false'));
+  }
+}
+
+function toggleExpand(header) {
+  const card = header.closest('.card');
+  card.classList.toggle('expanded');
+}
+
+function scrollTo(id) {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({behavior:'smooth'});
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  event && event.currentTarget && event.currentTarget.classList.add('active');
+}
+
+function switchTab(prefix, panel, btn) {
+  document.querySelectorAll(`[id^="${prefix}-"]`).forEach(p=>p.classList.remove('active'));
+  document.getElementById(`${prefix}-${panel}`).classList.add('active');
+  btn.closest('.tabs').querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function showNodeDetail(node) {
+  const d = nodeDetails[node];
+  if (!d) return;
+  document.getElementById('nodeModalTitle').textContent = d.title;
+  document.getElementById('nodeModalBody').innerHTML = `<p style="font-size:0.85rem;line-height:1.6;">${d.body}</p>`;
+  document.getElementById('nodeModal').classList.add('open');
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+// Sidebar active highlight on scroll
+function onScroll() {
+  const sections = ['header','overview','locations','contracts','personnel','it-infra','assets','physical','risks','gaps','evidence','tasks'];
+  const scrollY = window.scrollY + 100;
+  let current = 'header';
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.offsetTop <= scrollY) current = id;
+  });
+  document.querySelectorAll('.nav-item').forEach(n => {
+    const onclick = n.getAttribute('onclick') || '';
+    n.classList.toggle('active', onclick.includes(`'${current}'`));
+  });
+}
+window.addEventListener('scroll', onScroll, {passive:true});
+
+// Init
+document.addEventListener('DOMContentLoaded', () => {
+  // Restore theme
+  const savedTheme = localStorage.getItem('ffsi-theme') || 'light';
+  document.documentElement.setAttribute('data-theme', savedTheme);
+  document.getElementById('themeBtn').textContent = savedTheme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
+
+  // Render all sections
+  renderContracts();
+  renderPersonnel();
+  renderAssets();
+  renderPhysical();
+  renderRisks();
+  renderGaps();
+  renderEvidence();
+  renderTasks();
+});
+</script>
+</body>
+</html>
