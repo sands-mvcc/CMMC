@@ -1,0 +1,1438 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FFSI — CMMC Applicability Study Exercise</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Inter:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap');
+
+/* ════════════════════════════
+   DESIGN: Federal Document
+   Charcoal + Forest + Cream
+════════════════════════════ */
+:root {
+  --char:      #1f2937;
+  --char-mid:  #374151;
+  --forest:    #14532d;
+  --forest-mid:#166534;
+  --forest-lt: #dcfce7;
+  --forest-pale:#f0fdf4;
+  --gold:      #92400e;
+  --gold-mid:  #b45309;
+  --gold-lt:   #fef3c7;
+  --red:       #991b1b;
+  --red-lt:    #fef2f2;
+  --blue:      #1e3a8a;
+  --blue-mid:  #1d4ed8;
+  --blue-lt:   #eff6ff;
+  --purple:    #4c1d95;
+  --purple-lt: #f5f3ff;
+  --gray-800:  #1f2937;
+  --gray-600:  #4b5563;
+  --gray-400:  #9ca3af;
+  --gray-200:  #e5e7eb;
+  --gray-50:   #f9fafb;
+  --white:     #ffffff;
+  --cream:     #fafaf8;
+
+  --bg:        var(--cream);
+  --bg-card:   var(--white);
+  --bg-alt:    var(--gray-50);
+  --text:      var(--gray-800);
+  --text-muted:var(--gray-400);
+  --border:    var(--gray-200);
+  --accent:    var(--forest);
+  --accent-mid:var(--forest-mid);
+
+  --serif: 'Lora', Georgia, serif;
+  --sans:  'Inter', system-ui, sans-serif;
+  --mono:  'Roboto Mono', monospace;
+  --rad:   8px;
+  --sh:    0 1px 3px rgba(0,0,0,.07),0 4px 12px rgba(0,0,0,.05);
+  --sh-md: 0 6px 24px rgba(0,0,0,.10);
+}
+[data-theme="dark"] {
+  --bg:        #0d1117;
+  --bg-card:   #161b22;
+  --bg-alt:    #0d1117;
+  --text:      #c9d1d9;
+  --text-muted:#6e7681;
+  --border:    #21262d;
+  --accent:    #3fb950;
+  --accent-mid:#56d364;
+  --forest-lt: #0a2616;
+  --forest-pale:#061510;
+  --gold-lt:   #1c1100;
+  --red-lt:    #1a0707;
+  --blue-lt:   #071128;
+  --purple-lt: #150930;
+  --gray-50:   #0d1117;
+  --cream:     #0d1117;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14.5px;line-height:1.7;transition:background .22s,color .22s;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:var(--bg-alt);}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+
+/* ── TOP BAR ─────────────────────────── */
+.topbar{
+  position:sticky;top:0;z-index:300;
+  background:var(--char);color:#fff;
+  padding:.5rem 1.75rem;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:.6rem;flex-wrap:wrap;
+  border-bottom:3px solid var(--forest);
+}
+.tb-brand{display:flex;align-items:center;gap:.6rem;}
+.tb-logo{
+  width:30px;height:30px;border-radius:5px;
+  background:var(--forest);display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:.62rem;font-weight:500;color:#fff;
+}
+.tb-text{font-size:.77rem;font-weight:600;color:rgba(255,255,255,.75);}
+.tb-right{display:flex;gap:.35rem;flex-wrap:wrap;}
+.btn{
+  display:inline-flex;align-items:center;gap:.3rem;
+  padding:.3rem .68rem;border-radius:5px;
+  border:1px solid rgba(255,255,255,.2);
+  background:rgba(255,255,255,.07);color:rgba(255,255,255,.85);
+  font-family:var(--sans);font-size:.71rem;font-weight:600;
+  cursor:pointer;transition:all .16s;white-space:nowrap;
+}
+.btn:hover{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.38);}
+.btn-green{background:var(--forest);border-color:var(--forest-mid);color:#fff;}
+.btn-green:hover{background:var(--forest-mid);}
+
+/* ── SECTION NAV ─────────────────────── */
+.secnav{
+  position:sticky;top:49px;z-index:200;
+  background:var(--bg-card);border-bottom:1px solid var(--border);
+  padding:.38rem 1.75rem;display:flex;gap:.2rem;overflow-x:auto;
+  scrollbar-width:none;box-shadow:0 2px 6px rgba(0,0,0,.05);
+}
+.secnav::-webkit-scrollbar{display:none;}
+.sn{
+  padding:.22rem .58rem;border-radius:4px;
+  border:1px solid transparent;background:none;
+  color:var(--text-muted);font-family:var(--sans);
+  font-size:.68rem;font-weight:600;cursor:pointer;
+  transition:all .13s;white-space:nowrap;letter-spacing:.01em;
+}
+.sn:hover{color:var(--accent);}
+.sn.on{background:var(--forest-lt);color:var(--forest);border-color:var(--forest);}
+[data-theme="dark"] .sn.on{background:var(--forest-lt);}
+
+/* ── PAGE ────────────────────────────── */
+.page{max-width:1040px;margin:0 auto;padding:1.75rem 1.5rem 5rem;}
+
+/* ── HERO ────────────────────────────── */
+.hero{
+  background:var(--char);color:#fff;
+  border-radius:var(--rad);padding:2rem 2.25rem 1.75rem;
+  margin-bottom:1.75rem;position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(20,83,45,.6) 0%,transparent 60%),
+    repeating-linear-gradient(-55deg,transparent,transparent 24px,rgba(255,255,255,.018) 24px,rgba(255,255,255,.018) 25px);
+  pointer-events:none;
+}
+.hero::after{
+  content:'CMMC';position:absolute;right:-8px;bottom:-20px;
+  font-family:var(--serif);font-size:8rem;font-weight:700;
+  color:rgba(255,255,255,.04);pointer-events:none;line-height:1;letter-spacing:-.04em;
+}
+.hero-kicker{font-size:.62rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.42);margin-bottom:.45rem;}
+.hero h1{font-family:var(--serif);font-size:clamp(1.4rem,3.2vw,2rem);line-height:1.1;margin-bottom:.4rem;font-style:italic;font-weight:600;}
+.hero h1 em{font-style:normal;color:#86efac;}
+.hero-sub{font-size:.85rem;color:rgba(255,255,255,.65);max-width:560px;margin-bottom:.9rem;}
+.hero-chips{display:flex;gap:.38rem;flex-wrap:wrap;}
+.hc{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16);font-size:.6rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:.14rem .48rem;border-radius:3px;}
+
+/* ── TIMER + PROGRESS ────────────────── */
+.meta-strip{display:flex;gap:.6rem;margin-bottom:1.5rem;flex-wrap:wrap;}
+.timer-pill{
+  display:flex;align-items:center;gap:.55rem;
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--rad);padding:.55rem .85rem;flex:1;min-width:210px;
+}
+.timer-lbl{font-size:.63rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);}
+.timer-val{font-family:var(--mono);font-size:1.05rem;font-weight:500;color:var(--accent);min-width:55px;}
+.timer-val.warn{color:var(--gold-mid);}
+.timer-val.exp{color:var(--red);}
+.timer-track{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
+.timer-fill{height:100%;background:var(--accent);border-radius:3px;transition:width 1s linear;}
+.progress-pill{
+  display:flex;align-items:center;gap:.6rem;
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--rad);padding:.55rem .85rem;flex:2;min-width:240px;
+}
+.pb-lbl{font-size:.63rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--forest);}
+.pb-track{flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden;}
+.pb-fill{height:100%;background:var(--forest);border-radius:4px;transition:width .35s;}
+.pb-pct{font-family:var(--mono);font-size:.76rem;font-weight:500;color:var(--forest);white-space:nowrap;}
+
+/* ── SECTION CHROME ─────────────────── */
+.section{margin-bottom:2.1rem;scroll-margin-top:92px;}
+.sec-hdr{display:flex;align-items:center;gap:.6rem;margin-bottom:.95rem;padding-bottom:.6rem;border-bottom:2px solid var(--border);}
+.sec-num{width:30px;height:30px;flex-shrink:0;background:var(--forest);color:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.7rem;font-weight:500;}
+.sec-title{font-family:var(--serif);font-size:1.1rem;font-weight:600;}
+.sec-pts{margin-left:auto;font-size:.64rem;font-weight:700;background:var(--forest-lt);color:var(--forest);border:1px solid var(--forest);padding:.11rem .45rem;border-radius:4px;white-space:nowrap;}
+[data-theme="dark"] .sec-pts{background:var(--forest-lt);}
+
+/* ── CALLOUTS ────────────────────────── */
+.cl{display:flex;gap:.55rem;align-items:flex-start;border-radius:var(--rad);padding:.76rem .92rem;font-size:.81rem;margin-bottom:.82rem;}
+.cl-green{background:var(--forest-lt);border-left:4px solid var(--forest);}
+.cl-gold {background:var(--gold-lt);border-left:4px solid var(--gold-mid);}
+.cl-red  {background:var(--red-lt);border-left:4px solid var(--red);}
+.cl-blue {background:var(--blue-lt);border-left:4px solid var(--blue-mid);}
+[data-theme="dark"] .cl-green{background:var(--forest-lt);}
+[data-theme="dark"] .cl-gold {background:var(--gold-lt);}
+[data-theme="dark"] .cl-red  {background:var(--red-lt);}
+[data-theme="dark"] .cl-blue {background:var(--blue-lt);}
+
+/* ── GLOSSARY ────────────────────────── */
+.gloss-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:.48rem;}
+.gc{background:var(--bg-card);border:1px solid var(--border);border-top:3px solid var(--forest);border-radius:var(--rad);padding:.68rem .88rem;transition:box-shadow .18s;}
+.gc:hover{box-shadow:var(--sh-md);}
+.gt{font-family:var(--mono);font-size:.66rem;font-weight:500;color:var(--forest);letter-spacing:.04em;margin-bottom:.2rem;}
+.gd{font-size:.74rem;color:var(--text-muted);line-height:1.48;}
+
+/* ── CARDS ───────────────────────────── */
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rad);padding:1rem;}
+.card+.card{margin-top:.6rem;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;}
+@media(max-width:640px){.g2{grid-template-columns:1fr;}}
+
+/* ── FORM ELEMENTS ───────────────────── */
+.fl{font-size:.61rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.2rem;display:block;}
+.fi{padding:.32rem .52rem;border:1px solid var(--border);border-radius:5px;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:.78rem;transition:border-color .15s;width:100%;}
+.fi:focus{outline:none;border-color:var(--forest);}
+.fta{padding:.32rem .52rem;border:1px solid var(--border);border-radius:5px;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:.78rem;resize:vertical;min-height:52px;line-height:1.5;transition:border-color .15s;width:100%;}
+.fta:focus{outline:none;border-color:var(--forest);}
+.fg{display:flex;flex-direction:column;gap:.2rem;margin-bottom:.48rem;}
+
+/* ── OBJECTIVES ──────────────────────── */
+.obj-list{display:flex;flex-direction:column;gap:.4rem;}
+.obj{display:flex;gap:.62rem;align-items:flex-start;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rad);padding:.62rem .88rem;}
+.obj-n{width:22px;height:22px;flex-shrink:0;background:var(--forest);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.64rem;font-weight:700;}
+.obj-t{font-size:.8rem;line-height:1.5;}
+
+/* ── CONTRACT ANALYSIS ───────────────── */
+.contract-card{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-left:4px solid var(--forest);border-radius:var(--rad);
+  padding:1rem 1.1rem;margin-bottom:.65rem;
+}
+.cc-head{display:flex;align-items:flex-start;gap:.75rem;flex-wrap:wrap;margin-bottom:.7rem;}
+.cc-num{font-family:var(--mono);font-size:.65rem;color:var(--text-muted);}
+.cc-title{font-weight:700;font-size:.88rem;}
+.cc-meta{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.15rem;}
+.cc-tag{font-size:.62rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.1rem .38rem;border-radius:3px;}
+.tag-prime{background:var(--blue-lt);color:var(--blue);border:1px solid var(--blue-mid);}
+.tag-sub{background:var(--purple-lt);color:var(--purple);border:1px solid var(--purple);}
+.tag-cui{background:var(--forest-lt);color:var(--forest);border:1px solid var(--forest);}
+.tag-fci{background:var(--blue-lt);color:var(--blue-mid);border:1px solid var(--blue-mid);}
+.tag-nc{background:var(--gray-50);color:var(--gray-600);border:1px solid var(--gray-200);}
+[data-theme="dark"] .tag-prime{background:var(--blue-lt);}
+[data-theme="dark"] .tag-cui{background:var(--forest-lt);}
+.cc-context{font-size:.76rem;color:var(--text-muted);line-height:1.5;margin-bottom:.7rem;font-style:italic;}
+.cc-questions{display:grid;grid-template-columns:1fr 1fr;gap:.45rem;}
+@media(max-width:580px){.cc-questions{grid-template-columns:1fr;}}
+.cq-row{background:var(--bg-alt);border-radius:5px;padding:.38rem .55rem;display:flex;align-items:center;gap:.55rem;}
+.cq-text{font-size:.74rem;flex:1;color:var(--text-muted);}
+.yn-grp{display:flex;gap:.28rem;flex-shrink:0;}
+.yn{padding:.17rem .48rem;border-radius:4px;border:1px solid var(--border);background:var(--bg-card);font-family:var(--sans);font-size:.66rem;font-weight:700;cursor:pointer;transition:all .14s;color:var(--text);}
+.yn:hover{border-color:var(--forest);}
+.yn-y.sel{background:var(--forest-lt);border-color:var(--forest);color:var(--forest);}
+.yn-n.sel{background:var(--red-lt);border-color:var(--red);color:var(--red);}
+.yn-u.sel{background:var(--gold-lt);border-color:var(--gold-mid);color:var(--gold);}
+[data-theme="dark"] .yn-y.sel{background:#061510;}
+[data-theme="dark"] .yn-n.sel{background:#1a0707;}
+[data-theme="dark"] .yn-u.sel{background:#1c1100;}
+
+/* ── DATA CLASSIFICATION ─────────────── */
+.data-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.55rem;}
+.data-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rad);padding:.82rem .95rem;transition:border-color .18s;}
+.data-card:hover{border-color:var(--accent);}
+.data-name{font-weight:700;font-size:.84rem;margin-bottom:.1rem;}
+.data-desc{font-size:.73rem;color:var(--text-muted);margin-bottom:.55rem;line-height:1.45;}
+.cls-row{display:flex;gap:.3rem;margin-bottom:.38rem;}
+.cls-btn{
+  flex:1;padding:.26rem .3rem;text-align:center;
+  border-radius:5px;border:1px solid var(--border);background:var(--bg);
+  font-family:var(--sans);font-size:.67rem;font-weight:700;cursor:pointer;transition:all .14s;color:var(--text);
+}
+.cls-btn:hover{border-color:var(--forest);}
+.cls-cui{background:var(--forest-lt);border-color:var(--forest);color:var(--forest);}
+.cls-fci{background:var(--blue-lt);border-color:var(--blue-mid);color:var(--blue-mid);}
+.cls-nei{background:var(--gray-50);border-color:var(--gray-400);color:var(--gray-600);}
+[data-theme="dark"] .cls-cui{background:#061510;}
+[data-theme="dark"] .cls-fci{background:#071128;}
+
+/* ── SCOPE ANALYSIS ──────────────────── */
+.scope-list{display:flex;flex-direction:column;gap:.5rem;}
+.scope-item{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--rad);padding:.78rem .95rem;
+  display:flex;gap:.75rem;align-items:flex-start;flex-wrap:wrap;
+}
+.scope-icon{font-size:1.1rem;flex-shrink:0;margin-top:.04rem;}
+.scope-body{flex:1;min-width:200px;}
+.scope-name{font-weight:700;font-size:.85rem;margin-bottom:.1rem;}
+.scope-context{font-size:.73rem;color:var(--text-muted);margin-bottom:.45rem;line-height:1.45;}
+.scope-sel-row{display:flex;gap:.3rem;margin-bottom:.38rem;flex-wrap:wrap;}
+.scope-opt{
+  padding:.23rem .55rem;border-radius:4px;
+  border:1px solid var(--border);background:var(--bg-card);
+  font-family:var(--sans);font-size:.67rem;font-weight:700;cursor:pointer;transition:all .14s;color:var(--text);
+}
+.scope-opt:hover{border-color:var(--forest);}
+.s-in  {background:var(--forest-lt);border-color:var(--forest);color:var(--forest);}
+.s-out {background:var(--red-lt);border-color:var(--red);color:var(--red);}
+.s-rev {background:var(--gold-lt);border-color:var(--gold-mid);color:var(--gold);}
+[data-theme="dark"] .s-in {background:#061510;}
+[data-theme="dark"] .s-out{background:#1a0707;}
+[data-theme="dark"] .s-rev{background:#1c1100;}
+
+/* ── ASSESSMENT BOUNDARY ─────────────── */
+.boundary-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.75rem;}
+@media(max-width:580px){.boundary-grid{grid-template-columns:1fr;}}
+.bz{border:2px dashed;border-radius:var(--rad);padding:.8rem;}
+.bz-in    {border-color:var(--forest);background:var(--forest-pale);}
+.bz-shared{border-color:var(--gold-mid);background:var(--gold-lt);}
+.bz-supp  {border-color:var(--blue-mid);background:var(--blue-lt);}
+.bz-excl  {border-color:var(--gray-400);background:var(--bg-alt);}
+[data-theme="dark"] .bz-in    {background:var(--forest-lt);}
+[data-theme="dark"] .bz-shared{background:var(--gold-lt);}
+[data-theme="dark"] .bz-supp  {background:var(--blue-lt);}
+.bz-title{font-size:.7rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:.45rem;}
+.bzt-in    {color:var(--forest);}
+.bzt-shared{color:var(--gold-mid);}
+.bzt-supp  {color:var(--blue-mid);}
+.bzt-excl  {color:var(--text-muted);}
+
+/* ── PERSONNEL REVIEW ────────────────── */
+.pers-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.55rem;}
+.pers-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rad);padding:.82rem .95rem;transition:border-color .18s;}
+.pers-card:hover{border-color:var(--accent);}
+.pers-head{display:flex;align-items:flex-start;gap:.6rem;margin-bottom:.55rem;}
+.pers-ava{width:34px;height:34px;flex-shrink:0;border-radius:7px;background:var(--forest-lt);border:1px solid var(--forest);display:flex;align-items:center;justify-content:center;font-size:.9rem;}
+[data-theme="dark"] .pers-ava{background:var(--forest-lt);}
+.pers-name{font-weight:700;font-size:.85rem;}
+.pers-title{font-size:.71rem;color:var(--text-muted);}
+.pers-dept{font-size:.61rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--forest);margin-top:.15rem;}
+.pers-context{font-size:.72rem;color:var(--text-muted);line-height:1.45;margin-bottom:.5rem;font-style:italic;}
+.pers-scope-row{display:flex;gap:.28rem;margin-bottom:.38rem;}
+.ps-btn{flex:1;padding:.22rem .28rem;text-align:center;border-radius:4px;border:1px solid var(--border);background:var(--bg);font-family:var(--sans);font-size:.65rem;font-weight:700;cursor:pointer;transition:all .14s;color:var(--text);}
+.ps-btn:hover{border-color:var(--forest);}
+.ps-sub{background:var(--forest-lt);border-color:var(--forest);color:var(--forest);}
+.ps-not{background:var(--red-lt);border-color:var(--red);color:var(--red);}
+.ps-rev{background:var(--gold-lt);border-color:var(--gold-mid);color:var(--gold);}
+[data-theme="dark"] .ps-sub{background:#061510;}
+[data-theme="dark"] .ps-not{background:#1a0707;}
+[data-theme="dark"] .ps-rev{background:#1c1100;}
+
+/* ── DOCUMENTATION MATRIX ────────────── */
+.doc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:.5rem;}
+.doc-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rad);padding:.78rem .92rem;}
+.doc-name{font-weight:700;font-size:.83rem;margin-bottom:.15rem;}
+.doc-desc{font-size:.72rem;color:var(--text-muted);margin-bottom:.5rem;line-height:1.43;}
+.doc-status-row{display:flex;gap:.28rem;margin-bottom:.38rem;}
+.ds-btn{flex:1;padding:.22rem .28rem;text-align:center;border-radius:4px;border:1px solid var(--border);background:var(--bg);font-family:var(--sans);font-size:.64rem;font-weight:700;cursor:pointer;transition:all .14s;color:var(--text);}
+.ds-btn:hover{border-color:var(--forest);}
+.ds-req{background:var(--red-lt);border-color:var(--red);color:var(--red);}
+.ds-rec{background:var(--gold-lt);border-color:var(--gold-mid);color:var(--gold);}
+.ds-nyr{background:var(--gray-50);border-color:var(--gray-400);color:var(--gray-600);}
+[data-theme="dark"] .ds-req{background:#1a0707;}
+[data-theme="dark"] .ds-rec{background:#1c1100;}
+
+/* ── DECISION MATRIX ─────────────────── */
+.matrix-wrap{overflow-x:auto;}
+.matrix{width:100%;border-collapse:collapse;font-size:.76rem;min-width:560px;}
+.matrix th{background:var(--char);color:rgba(255,255,255,.82);font-size:.59rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.46rem .68rem;text-align:left;border-bottom:2px solid var(--border);}
+[data-theme="dark"] .matrix th{background:#0a0e14;}
+.matrix td{padding:.42rem .68rem;border-bottom:1px solid var(--border);vertical-align:middle;}
+.matrix tr:last-child td{border-bottom:none;}
+.matrix tr:hover td{background:var(--bg-alt);}
+.mat-item{font-weight:600;font-size:.8rem;}
+.mat-check-row{display:flex;gap:.28rem;justify-content:center;}
+.mc-btn{padding:.2rem .5rem;border-radius:4px;border:1px solid var(--border);background:var(--bg);font-family:var(--sans);font-size:.65rem;font-weight:700;cursor:pointer;transition:all .14s;color:var(--text);}
+.mc-btn:hover{border-color:var(--forest);}
+.mc-app {background:var(--forest-lt);border-color:var(--forest);color:var(--forest);}
+.mc-nap {background:var(--red-lt);border-color:var(--red);color:var(--red);}
+[data-theme="dark"] .mc-app{background:#061510;}
+[data-theme="dark"] .mc-nap{background:#1a0707;}
+.mat-ta{width:100%;padding:.26rem .4rem;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:.73rem;resize:vertical;min-height:42px;line-height:1.45;}
+.mat-ta:focus{outline:none;border-color:var(--forest);}
+
+/* ── RISK CARDS ──────────────────────── */
+.risk-list{display:flex;flex-direction:column;gap:.5rem;}
+.risk-card{background:var(--bg-card);border:1px solid var(--border);border-left:4px solid var(--red);border-radius:var(--rad);padding:.82rem .95rem;}
+.risk-top{display:flex;align-items:center;gap:.55rem;margin-bottom:.5rem;flex-wrap:wrap;}
+.risk-id{font-family:var(--mono);font-size:.64rem;color:var(--text-muted);}
+.risk-title{font-weight:700;font-size:.84rem;}
+.risk-fields{display:grid;grid-template-columns:1fr 1fr;gap:.45rem;}
+@media(max-width:540px){.risk-fields{grid-template-columns:1fr;}}
+
+/* ── CERT DETERMINATION ──────────────── */
+.cert-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;}
+@media(max-width:580px){.cert-grid{grid-template-columns:1fr;}}
+.cert-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rad);padding:.88rem;}
+.cert-q{font-size:.72rem;font-weight:700;letter-spacing:.02em;color:var(--text-muted);margin-bottom:.35rem;}
+
+/* ── EXEC BRIEFING ───────────────────── */
+.exec-list{display:flex;flex-direction:column;gap:.52rem;}
+.exec-item{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rad);padding:.82rem .95rem;display:flex;gap:.65rem;align-items:flex-start;}
+.exec-n{width:22px;height:22px;flex-shrink:0;background:var(--forest);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.63rem;font-weight:700;margin-top:.06rem;}
+.exec-body{flex:1;}
+.exec-q{font-size:.82rem;font-weight:600;margin-bottom:.3rem;}
+.exec-hint{font-size:.71rem;color:var(--text-muted);margin-bottom:.4rem;font-style:italic;}
+
+/* ── RUBRIC ──────────────────────────── */
+.rubric-wrap{overflow-x:auto;}
+.rubric{width:100%;border-collapse:collapse;font-size:.74rem;min-width:680px;}
+.rubric th{background:var(--char);color:rgba(255,255,255,.82);font-size:.58rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.45rem .68rem;text-align:left;border-bottom:2px solid var(--border);}
+[data-theme="dark"] .rubric th{background:#0a0e14;}
+.rubric td{padding:.46rem .68rem;border-bottom:1px solid var(--border);vertical-align:top;}
+.rubric tr:hover td{background:var(--bg-alt);}
+.rub-total td{background:var(--forest-lt);font-weight:700;}
+[data-theme="dark"] .rub-total td{background:var(--forest-lt);}
+.pts-chip{display:inline-block;background:var(--forest-lt);color:var(--forest);border:1px solid var(--forest);font-size:.59rem;font-weight:700;padding:.08rem .36rem;border-radius:3px;}
+[data-theme="dark"] .pts-chip{background:var(--forest-lt);}
+.sc-in{width:44px;padding:.24rem .32rem;text-align:center;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text);font-family:var(--mono);font-size:.77rem;}
+.sc-in:focus{outline:none;border-color:var(--forest);}
+.rx{color:var(--forest);font-size:.69rem;font-weight:600;}
+.rp{color:var(--blue-mid);font-size:.69rem;font-weight:600;}
+.rd{color:var(--gold-mid);font-size:.69rem;font-weight:600;}
+.rn{color:var(--red);font-size:.69rem;font-weight:600;}
+.score-tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:.55rem;margin-top:.85rem;}
+@media(max-width:480px){.score-tiles{grid-template-columns:1fr 1fr;}}
+.st{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rad);padding:.75rem;text-align:center;}
+.st-val{font-family:var(--serif);font-size:1.8rem;color:var(--forest);line-height:1;margin-bottom:.18rem;}
+.st-lbl{font-size:.61rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);}
+.rating{display:inline-block;font-size:.8rem;font-weight:700;padding:.25rem .78rem;border-radius:14px;border:2px solid;}
+.r-ex{background:var(--forest-lt);color:var(--forest);border-color:var(--forest);}
+.r-pr{background:var(--blue-lt);color:var(--blue-mid);border-color:var(--blue-mid);}
+.r-de{background:var(--gold-lt);color:var(--gold-mid);border-color:var(--gold-mid);}
+.r-ni{background:var(--red-lt);color:var(--red);border-color:var(--red);}
+[data-theme="dark"] .r-ex{background:#061510;}
+[data-theme="dark"] .r-pr{background:#071128;}
+[data-theme="dark"] .r-de{background:#1c1100;}
+[data-theme="dark"] .r-ni{background:#1a0707;}
+
+/* ── DEBRIEF ─────────────────────────── */
+.dq-list{display:flex;flex-direction:column;gap:.42rem;}
+.dq{display:flex;gap:.6rem;align-items:flex-start;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rad);padding:.68rem .88rem;}
+.dq-n{width:20px;height:20px;flex-shrink:0;background:var(--char-mid);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:700;margin-top:.06rem;}
+.dq-body{flex:1;}
+.dq-q{font-size:.81rem;margin-bottom:.28rem;}
+
+/* ── MISC ────────────────────────────── */
+.hr{border:none;border-top:1px solid var(--border);margin:.9rem 0;}
+@media print{
+  .topbar,.secnav,.meta-strip,.btn,.tb-right{display:none!important;}
+  .section{break-inside:avoid;}
+  body{font-size:12px;}
+  .hero{background:#1f2937!important;-webkit-print-color-adjust:exact;}
+  .rub-total td{background:#dcfce7!important;-webkit-print-color-adjust:exact;}
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="tb-brand">
+    <div class="tb-logo">FFSI</div>
+    <div class="tb-text">CMMC Applicability Study Exercise</div>
+  </div>
+  <div class="tb-right">
+    <button class="btn" id="themeBtn" onclick="toggleTheme()">🌙 Dark Mode</button>
+    <button class="btn" onclick="window.print()">🖨 Print</button>
+    <button class="btn" onclick="clearAll()">↺ Reset</button>
+    <button class="btn btn-green" onclick="exportAll()">📤 Export</button>
+  </div>
+</div>
+
+<!-- SECTION NAV -->
+<div class="secnav">
+  <button class="sn on"  onclick="nav('intro',this)">Intro</button>
+  <button class="sn" onclick="nav('obj',this)">Objectives</button>
+  <button class="sn" onclick="nav('terms',this)">Key Terms</button>
+  <button class="sn" onclick="nav('act1',this)">Act 1 — Contracts</button>
+  <button class="sn" onclick="nav('act2',this)">Act 2 — FCI/CUI</button>
+  <button class="sn" onclick="nav('act3',this)">Act 3 — Scope</button>
+  <button class="sn" onclick="nav('act4',this)">Act 4 — Boundary</button>
+  <button class="sn" onclick="nav('act5',this)">Act 5 — Personnel</button>
+  <button class="sn" onclick="nav('act6',this)">Act 6 — Documents</button>
+  <button class="sn" onclick="nav('act7',this)">Act 7 — Decision Matrix</button>
+  <button class="sn" onclick="nav('act8',this)">Act 8 — Risks</button>
+  <button class="sn" onclick="nav('act9',this)">Act 9 — Certification</button>
+  <button class="sn" onclick="nav('act10',this)">Act 10 — Exec Briefing</button>
+  <button class="sn" onclick="nav('debrief',this)">Debrief</button>
+  <button class="sn" onclick="nav('rubric',this)">Rubric</button>
+</div>
+
+<div class="page">
+
+<!-- HERO -->
+<div class="hero" id="intro">
+  <div class="hero-kicker">CMMC 2.0 Workshop · Applicability Study · 45–60 Minutes</div>
+  <h1>FFSI CMMC Applicability<br><em>Analysis Exercise</em></h1>
+  <div class="hero-sub">Conduct a complete CMMC Applicability Study for Federal Food Services Inc. — determine whether CMMC applies, which contracts trigger requirements, which data is CUI or FCI, and what scope and certification level are required.</div>
+  <div class="hero-chips">
+    <span class="hc">CMMC Level 2</span>
+    <span class="hc">NIST SP 800-171</span>
+    <span class="hc">100 Points</span>
+    <span class="hc">10 Activities</span>
+    <span class="hc">⚠ Fictional — Training Use Only</span>
+  </div>
+</div>
+
+<!-- TIMER + PROGRESS -->
+<div class="meta-strip">
+  <div class="timer-pill">
+    <span class="timer-lbl">⏱ Timer</span>
+    <span class="timer-val" id="timerVal">60:00</span>
+    <div style="display:flex;gap:.28rem;">
+      <button class="btn" style="padding:.22rem .5rem;font-size:.68rem;" onclick="startT()">▶</button>
+      <button class="btn" style="padding:.22rem .5rem;font-size:.68rem;" onclick="pauseT()">⏸</button>
+      <button class="btn" style="padding:.22rem .5rem;font-size:.68rem;" onclick="resetT()">↺</button>
+    </div>
+    <div class="timer-track"><div class="timer-fill" id="timerFill" style="width:100%"></div></div>
+  </div>
+  <div class="progress-pill">
+    <span class="pb-lbl">Exercise Progress</span>
+    <div class="pb-track"><div class="pb-fill" id="pbFill" style="width:0%"></div></div>
+    <span class="pb-pct" id="pbPct">0%</span>
+  </div>
+</div>
+
+<!-- INTRODUCTION -->
+<div class="section">
+  <div class="sec-hdr"><div class="sec-num">📋</div><div class="sec-title">Introduction — The CMMC Applicability Study</div></div>
+  <div class="cl cl-green">
+    <span style="font-size:1rem;flex-shrink:0;">🎯</span>
+    <div>A CMMC Applicability Study is the foundational analysis every defense contractor should perform before investing in compliance activities. It answers the most basic — and most important — question: <strong>Does CMMC apply to us, and if so, why, where, and at what level?</strong> Getting this wrong wastes resources, creates blind spots, and can result in contract loss or failed assessments.</div>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <div style="font-weight:700;font-size:.87rem;margin-bottom:.38rem;">Why Applicability Studies Matter</div>
+      <ul style="font-size:.76rem;color:var(--text-muted);padding-left:1rem;line-height:1.85;">
+        <li>Not all DoD contracts trigger CMMC — FAR 52.204-21 vs. DFARS 252.204-7012 have different requirements</li>
+        <li>CUI handling — not just contract type — determines whether Level 1 or Level 2 applies</li>
+        <li>Scope decisions made here drive all downstream activities: SSP, POA&M, asset inventory, training</li>
+        <li>Over-scoping wastes resources; under-scoping creates compliance risk and assessment failure</li>
+        <li>Applicability studies establish the legal and contractual basis for all compliance decisions</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div style="font-weight:700;font-size:.87rem;margin-bottom:.38rem;">What Drives CMMC Obligations</div>
+      <ul style="font-size:.76rem;color:var(--text-muted);padding-left:1rem;line-height:1.85;">
+        <li><strong>Contract language</strong> — DFARS clauses 252.204-7012, -7019, -7020, -7021 trigger specific obligations</li>
+        <li><strong>Data classification</strong> — CUI presence requires Level 2; FCI-only may require only Level 1</li>
+        <li><strong>Subcontract flowdown</strong> — prime contractor clauses flow to subs who handle covered information</li>
+        <li><strong>System connectivity</strong> — systems connected to CUI assets expand the assessment boundary</li>
+        <li><strong>Personnel roles</strong> — staff who access, handle, or protect CUI are subject to CMMC requirements</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- OBJECTIVES -->
+<div class="section" id="obj">
+  <div class="sec-hdr"><div class="sec-num">🎯</div><div class="sec-title">Learning Objectives</div></div>
+  <div class="obj-list">
+    <div class="obj"><div class="obj-n">1</div><div class="obj-t">Explain the purpose of a CMMC Applicability Study and why it is the first — and most important — step in a contractor's CMMC compliance journey.</div></div>
+    <div class="obj"><div class="obj-n">2</div><div class="obj-t">Analyze FFSI's federal contracts to identify which DFARS clauses are present, which create CMMC obligations, and which specific requirements each clause triggers.</div></div>
+    <div class="obj"><div class="obj-n">3</div><div class="obj-t">Classify organizational data as FCI, CUI, or neither — justifying each determination using NIST SP 800-171 and CUI Registry definitions.</div></div>
+    <div class="obj"><div class="obj-n">4</div><div class="obj-t">Determine which FFSI facilities, departments, systems, cloud services, and vendors fall within the CMMC assessment scope and justify inclusions and exclusions.</div></div>
+    <div class="obj"><div class="obj-n">5</div><div class="obj-t">Identify the CMMC assessment boundary — distinguishing between included assets, shared assets, supporting assets, and excluded assets.</div></div>
+    <div class="obj"><div class="obj-n">6</div><div class="obj-t">Evaluate FFSI's personnel roster and determine which roles are subject to CMMC requirements, training obligations, and CUI handling responsibilities.</div></div>
+    <div class="obj"><div class="obj-n">7</div><div class="obj-t">Identify documentation FFSI must develop, update, or create as part of achieving CMMC Level 2 certification readiness.</div></div>
+    <div class="obj"><div class="obj-n">8</div><div class="obj-t">Synthesize applicability findings into a concise executive recommendation that answers whether CMMC applies, why, at what level, and what FFSI should do first.</div></div>
+  </div>
+</div>
+
+<!-- KEY TERMS -->
+<div class="section" id="terms">
+  <div class="sec-hdr"><div class="sec-num">📖</div><div class="sec-title">Key Terms</div></div>
+  <div class="gloss-grid" id="glossGrid"></div>
+</div>
+
+<!-- ACTIVITY 1: CONTRACT ANALYSIS -->
+<div class="section" id="act1">
+  <div class="sec-hdr">
+    <div class="sec-num">1</div>
+    <div class="sec-title">Activity 1 — Contract Analysis</div>
+    <div class="sec-pts">20 pts</div>
+  </div>
+  <div class="cl cl-green">
+    <span style="font-size:1rem;flex-shrink:0;">📋</span>
+    <div><strong>Instructions:</strong> Review each FFSI contract below. Answer the five diagnostic questions for each contract using Yes / No / Uncertain, then document your supporting evidence. This analysis forms the legal foundation of the applicability study.</div>
+  </div>
+  <div id="contractList"></div>
+</div>
+
+<!-- ACTIVITY 2: FCI/CUI CLASSIFICATION -->
+<div class="section" id="act2">
+  <div class="sec-hdr">
+    <div class="sec-num">2</div>
+    <div class="sec-title">Activity 2 — FCI and CUI Data Classification</div>
+    <div class="sec-pts">20 pts</div>
+  </div>
+  <div class="cl cl-green">
+    <span style="font-size:1rem;flex-shrink:0;">🗂</span>
+    <div><strong>Instructions:</strong> Classify each FFSI data type as <strong>CUI</strong>, <strong>FCI</strong>, or <strong>Neither</strong>. Then enter your justification. Use the CUI Registry definitions and DFARS 252.204-7012 as your reference. Remember: misclassification in either direction creates risk.</div>
+  </div>
+  <div class="data-grid" id="dataGrid"></div>
+</div>
+
+<!-- ACTIVITY 3: SCOPE ANALYSIS -->
+<div class="section" id="act3">
+  <div class="sec-hdr">
+    <div class="sec-num">3</div>
+    <div class="sec-title">Activity 3 — Organizational Scope Analysis</div>
+    <div class="sec-pts">20 pts</div>
+  </div>
+  <div class="cl cl-green">
+    <span style="font-size:1rem;flex-shrink:0;">🔭</span>
+    <div><strong>Instructions:</strong> For each FFSI organizational element, determine whether it is <strong>In Scope</strong>, <strong>Out of Scope</strong>, or <strong>Needs Additional Review</strong>. Document your rationale — reference CUI data flow, network connectivity, or contract requirements.</div>
+  </div>
+  <div class="scope-list" id="scopeList"></div>
+</div>
+
+<!-- ACTIVITY 4: ASSESSMENT BOUNDARY -->
+<div class="section" id="act4">
+  <div class="sec-hdr">
+    <div class="sec-num">4</div>
+    <div class="sec-title">Activity 4 — Assessment Boundary Definition</div>
+    <div class="sec-pts">Supporting Act 3</div>
+  </div>
+  <div class="cl cl-green">
+    <span style="font-size:1rem;flex-shrink:0;">🔲</span>
+    <div><strong>Instructions:</strong> Using your scope analysis from Activity 3, populate the four assessment boundary zones. Then answer the four boundary validation questions below.</div>
+  </div>
+  <div class="boundary-grid">
+    <div class="bz bz-in">
+      <div class="bz-title bzt-in">✅ Included Assets — Full CMMC Control Set</div>
+      <textarea class="fta" id="bz-in" placeholder="CUI Assets and Security Protection Assets within the assessment boundary..." oninput="sv('bz-in',this.value);updatePB()"></textarea>
+    </div>
+    <div class="bz bz-shared">
+      <div class="bz-title bzt-shared">⚠ Shared Assets — Documented Boundaries Required</div>
+      <textarea class="fta" id="bz-shared" placeholder="Shared infrastructure used by both in-scope and out-of-scope systems..." oninput="sv('bz-shared',this.value);updatePB()"></textarea>
+    </div>
+    <div class="bz bz-supp">
+      <div class="bz-title bzt-supp">🔗 Supporting Assets — Contractor Risk Managed</div>
+      <textarea class="fta" id="bz-supp" placeholder="Systems that support CUI operations but are managed through org risk processes..." oninput="sv('bz-supp',this.value);updatePB()"></textarea>
+    </div>
+    <div class="bz bz-excl">
+      <div class="bz-title bzt-excl">⬜ Excluded Assets — Document Basis for Exclusion</div>
+      <textarea class="fta" id="bz-excl" placeholder="Fully isolated systems with no CUI pathway; document why they are excluded..." oninput="sv('bz-excl',this.value);updatePB()"></textarea>
+    </div>
+  </div>
+  <div id="boundaryQsList"></div>
+</div>
+
+<!-- ACTIVITY 5: PERSONNEL REVIEW -->
+<div class="section" id="act5">
+  <div class="sec-hdr">
+    <div class="sec-num">5</div>
+    <div class="sec-title">Activity 5 — Personnel Applicability Review</div>
+    <div class="sec-pts">Supporting Scope</div>
+  </div>
+  <div class="cl cl-green">
+    <span style="font-size:1rem;flex-shrink:0;">👥</span>
+    <div><strong>Instructions:</strong> For each FFSI role, determine whether the personnel are <strong>Subject to CMMC</strong>, <strong>Not Subject</strong>, or <strong>Needs Review</strong>. Then justify your decision. Consider CUI access, system administration, and security responsibilities.</div>
+  </div>
+  <div class="pers-grid" id="persGrid"></div>
+</div>
+
+<!-- ACTIVITY 6: DOCUMENTATION -->
+<div class="section" id="act6">
+  <div class="sec-hdr">
+    <div class="sec-num">6</div>
+    <div class="sec-title">Activity 6 — Documentation Requirements</div>
+    <div class="sec-pts">15 pts</div>
+  </div>
+  <div class="cl cl-green">
+    <span style="font-size:1rem;flex-shrink:0;">📁</span>
+    <div><strong>Instructions:</strong> For each document below, determine whether it is <strong>Required</strong> (CMMC mandated), <strong>Recommended</strong> (best practice), or <strong>Not Yet Required</strong> for FFSI. Then identify who at FFSI should own this document.</div>
+  </div>
+  <div class="doc-grid" id="docGrid"></div>
+</div>
+
+<!-- ACTIVITY 7: DECISION MATRIX -->
+<div class="section" id="act7">
+  <div class="sec-hdr">
+    <div class="sec-num">7</div>
+    <div class="sec-title">Activity 7 — Applicability Decision Matrix</div>
+    <div class="sec-pts">Supporting Cert. Det.</div>
+  </div>
+  <div class="cl cl-gold">
+    <span style="font-size:1rem;flex-shrink:0;">📊</span>
+    <div><strong>Instructions:</strong> For each applicability item, select <strong>Applicable</strong> or <strong>Not Applicable</strong>, then document your justification citing specific FFSI evidence, contract numbers, DFARS clauses, or case study data.</div>
+  </div>
+  <div class="matrix-wrap">
+    <table class="matrix">
+      <thead><tr><th>Applicability Item</th><th>Decision</th><th>Justification</th></tr></thead>
+      <tbody id="matrixBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ACTIVITY 8: RISK ANALYSIS -->
+<div class="section" id="act8">
+  <div class="sec-hdr">
+    <div class="sec-num">8</div>
+    <div class="sec-title">Activity 8 — Gap and Risk Analysis</div>
+    <div class="sec-pts">10 pts</div>
+  </div>
+  <div class="cl cl-gold">
+    <span style="font-size:1rem;flex-shrink:0;">⚠️</span>
+    <div><strong>Instructions:</strong> For each identified applicability risk below, confirm whether it applies at FFSI, cite your evidence, and recommend a specific mitigation action. These risks represent common mistakes in applicability studies that can cause assessment failure.</div>
+  </div>
+  <div class="risk-list" id="riskList"></div>
+</div>
+
+<!-- ACTIVITY 9: CERTIFICATION DETERMINATION -->
+<div class="section" id="act9">
+  <div class="sec-hdr">
+    <div class="sec-num">9</div>
+    <div class="sec-title">Activity 9 — Certification Determination</div>
+    <div class="sec-pts">10 pts</div>
+  </div>
+  <div class="cl cl-green">
+    <span style="font-size:1rem;flex-shrink:0;">🏛</span>
+    <div><strong>Instructions:</strong> Answer the seven certification determination questions. Each answer should reference specific FFSI contracts, data types, systems, or personnel. These responses form the core of your Applicability Study conclusion.</div>
+  </div>
+  <div class="cert-grid" id="certGrid"></div>
+</div>
+
+<!-- ACTIVITY 10: EXEC BRIEFING -->
+<div class="section" id="act10">
+  <div class="sec-hdr">
+    <div class="sec-num">10</div>
+    <div class="sec-title">Activity 10 — Executive Recommendation Briefing</div>
+    <div class="sec-pts">5 pts</div>
+  </div>
+  <div class="cl cl-gold">
+    <span style="font-size:1rem;flex-shrink:0;">💼</span>
+    <div><strong>Instructions:</strong> Prepare a concise briefing for FFSI's CEO and COO. Each answer should be 2–4 sentences of specific, actionable guidance grounded in your analysis from Activities 1–9. You will present this to the group during the class debrief.</div>
+  </div>
+  <div class="exec-list" id="execList"></div>
+</div>
+
+<!-- DEBRIEF -->
+<div class="section" id="debrief">
+  <div class="sec-hdr"><div class="sec-num">🗣</div><div class="sec-title">Instructor Debrief Questions</div></div>
+  <div class="cl cl-green">
+    <span style="font-size:1rem;flex-shrink:0;">🎓</span>
+    <div>Use these questions to facilitate a 10–15 minute debrief discussion. Participants should reference specific FFSI case study details to support their answers.</div>
+  </div>
+  <div class="dq-list" id="debriefList"></div>
+</div>
+
+<!-- RUBRIC -->
+<div class="section" id="rubric">
+  <div class="sec-hdr"><div class="sec-num">📊</div><div class="sec-title">Facilitator Scoring Rubric</div></div>
+  <div class="cl cl-green">
+    <span style="font-size:1rem;flex-shrink:0;">📝</span>
+    <div>Enter scores per category. Total updates automatically. <strong>Excellent: 90–100</strong> · <strong>Proficient: 75–89</strong> · <strong>Developing: 60–74</strong> · <strong>Needs Improvement: &lt;60</strong></div>
+  </div>
+  <div class="rubric-wrap">
+    <table class="rubric">
+      <thead><tr><th>Category</th><th>Excellent</th><th>Proficient</th><th>Developing</th><th>Needs Improvement</th><th>Points</th><th>Score</th></tr></thead>
+      <tbody id="rubricBody"></tbody>
+      <tfoot>
+        <tr class="rub-total">
+          <td><strong>Total</strong></td><td colspan="4"></td>
+          <td><span class="pts-chip">100 pts</span></td>
+          <td><strong id="rubTotal" style="font-family:var(--mono);color:var(--forest);">0</strong>/100</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+  <div class="score-tiles">
+    <div class="st"><div class="st-val" id="scoreVal">0</div><div class="st-lbl">Total Points</div></div>
+    <div class="st"><div class="st-val" id="scorePct">0%</div><div class="st-lbl">Percentage</div></div>
+    <div class="st" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.38rem;">
+      <div id="ratingPill" class="rating r-ni">Needs Improvement</div>
+      <div class="st-lbl">Rating</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end .page -->
+
+<script>
+/* ════════════════════════════
+   DATA
+════════════════════════════ */
+const K = 'ffsi-app-';
+const sv = (k,v) => localStorage.setItem(K+k,v);
+const ld = k => localStorage.getItem(K+k)||'';
+
+const glossTerms = [
+  {t:'CMMC',d:'Cybersecurity Maturity Model Certification — DoD\'s framework requiring defense contractors to implement and certify cybersecurity practices based on the sensitivity of the information they handle.'},
+  {t:'Applicability Study',d:'A structured analysis performed to determine whether CMMC applies to an organization, which contracts trigger obligations, and what scope and level of certification is required.'},
+  {t:'FCI',d:'Federal Contract Information — information provided by or generated for the Government under a contract, not intended for public release; subject to FAR 52.204-21 (Level 1 safeguarding).'},
+  {t:'CUI',d:'Controlled Unclassified Information — government-designated information requiring safeguarding per law or policy; triggers DFARS 252.204-7012 and CMMC Level 2 obligations.'},
+  {t:'Assessment Scope',d:'The set of assets, personnel, technologies, and facilities subject to a CMMC evaluation; defined by the presence of CUI and supporting systems.'},
+  {t:'Assessment Boundary',d:'The formal perimeter within which all CMMC controls must be implemented and assessed; must be documented in the SSP and match the actual environment.'},
+  {t:'Contractor',d:'A non-federal organization that enters into contracts with the U.S. Government; subject to CMMC requirements when contracts include covered DFARS clauses.'},
+  {t:'Subcontractor',d:'A company that performs work under a prime contractor\'s federal contract; subject to CMMC flowdown when they handle FCI or CUI on behalf of the prime.'},
+  {t:'DFARS',d:'Defense Federal Acquisition Regulation Supplement — DoD-specific contract regulations; clauses 252.204-7012/7019/7020/7021 create CMMC and NIST 800-171 obligations.'},
+  {t:'FAR',d:'Federal Acquisition Regulation — government-wide contract rules; FAR 52.204-21 establishes basic FCI safeguarding requirements (15 practices, CMMC Level 1).'},
+  {t:'NIST SP 800-171',d:'NIST publication defining 110 security requirements across 14 domains for protecting CUI; the technical foundation for CMMC Level 2 certification.'},
+  {t:'SPRS',d:'Supplier Performance Risk System — DoD portal where contractors submit their NIST SP 800-171 self-assessment scores; required by DFARS 252.204-7019.'},
+  {t:'SSP',d:'System Security Plan — the authoritative document describing the system boundary, implemented security controls, responsible parties, and organizational cybersecurity posture.'},
+  {t:'POA&M',d:'Plan of Action and Milestones — documents unimplemented controls, responsible owners, remediation steps, and target completion dates for outstanding CMMC gaps.'},
+  {t:'CUI Asset',d:'Any hardware, software, or system that processes, stores, or transmits CUI; subject to the full CMMC Level 2 control set and included in the assessment boundary.'},
+  {t:'Security Protection Asset',d:'A system that directly protects CUI assets (firewalls, SIEM, EDR, IAM) without itself processing CUI; included in scope with applicable CMMC practices.'},
+  {t:'OSA',d:'Organization Seeking Assessment — a DIB contractor in the process of pursuing formal CMMC certification through a C3PAO; FFSI is an OSA once it engages the C3PAO process.'},
+];
+
+const contracts = [
+  {id:'W909MY-24-C-0038', title:'Standard MRE Production', agency:'ACC Rock Island', role:'Prime', value:'$148.2M', period:'Oct 2023 – Sep 2026',
+   dfars:['252.204-7012','252.204-7019','252.204-7020','252.204-7021'],
+   context:'Largest FFSI contract. Requires monthly production reports via DoD SAFE. CUI includes controlled packaging specs and unit pricing. Requires annual CMMC affirmation per 7021.'},
+  {id:'SPE300-24-D-F401', title:'Cold-Weather Ration Kits', agency:'DLA Troop Support', role:'Prime', value:'$34.75M', period:'Jan 2024 – Jan 2027',
+   dfars:['252.204-7012','252.204-7019','252.204-7021'],
+   context:'Controlled Technical Information (CTI) for insulated pouch specs. QA Lab in scope. Subcontracts to ProSeal Defense Packaging — flowdown required.'},
+  {id:'W52P1J-23-C-0911', title:'Humanitarian Daily Ration Packs', agency:'USARC (subcontract via Pinnacle Aid Corp)', role:'Subcontractor', value:'$12.4M', period:'Apr 2023 – Mar 2025',
+   dfars:['252.204-7012','52.204-21'],
+   context:'FCI only — no CUI designation. DFARS 7012 flows down from prime. FFSI receives shipping destination data classified as FCI. No CTI or procurement data involved.'},
+  {id:'W909MY-24-C-0152', title:'Special Dietary MRE Variants', agency:'Army Natick SSC', role:'Prime', value:'$9.875M', period:'Jul 2024 – Jun 2026',
+   dfars:['252.204-7012','252.204-7019','252.204-7020','252.204-7021'],
+   context:'Proprietary ingredient formulations and allergen certifications are CUI//CTI. Lab (LOC-04) processes most CUI for this contract. CMMC L2 annual affirmation required.'},
+  {id:'SPE300-23-G-F099', title:'Field Kitchen Support Products', agency:'DLA Troop Support', role:'Prime', value:'$6.32M', period:'Mar 2023 – Feb 2025',
+   dfars:['252.204-7012','52.204-21'],
+   context:'FCI only — delivery schedules and packaging standards. Stored on CORP-FS-01 (general file server, no CUI). Up for re-compete. Lower-sensitivity contract.'},
+  {id:'W52P1J-24-C-1047', title:'Army Depot Logistics & Distribution', agency:'AMC Susquehanna Depot', role:'Prime', value:'$22.65M', period:'Oct 2024 – Sep 2027',
+   dfars:['252.204-7012','252.204-7019','252.204-7020','252.204-7021'],
+   context:'Army logistics node identifiers are CUI//LOGISTICS. Warehouse (LOC-03) is in scope. CMMC Level 2 required at time of award. Flowdown clause applies to ThermaKit Distribution Inc.'},
+];
+
+const contractQs = [
+  'Does this contract contain cybersecurity requirements?',
+  'Does this contract involve FCI?',
+  'Does this contract involve CUI?',
+  'Does this contract reference DFARS 252.204-7012 or later clauses?',
+  'Does this contract likely trigger CMMC Level 2 certification?',
+];
+
+const dataItems = [
+  {id:'di-01', name:'Army Delivery Order Documents', desc:'Documents specifying quantities, delivery dates, locations, and logistics nodes for MRE shipments to Army depots.'},
+  {id:'di-02', name:'MRE Packaging Technical Specifications', desc:'Proprietary engineering specs for MRE pouch materials, seal integrity, insulation ratings, and packaging processes provided by or developed for the Army.'},
+  {id:'di-03', name:'Unit Pricing and Contract Award Data', desc:'Line-item unit prices negotiated under Army contracts, including pricing schedules and cost breakdowns in delivery orders.'},
+  {id:'di-04', name:'Supplier/Vendor Contact Information', desc:'General business contact information for FFSI\'s commercial food ingredient suppliers (Blue Ridge Spice, Highview Packaging, etc.).'},
+  {id:'di-05', name:'Employee Payroll and HR Records', desc:'FFSI employee compensation, tax records, personal addresses, and employment history maintained in the HR system.'},
+  {id:'di-06', name:'Cybersecurity Incident Reports', desc:'Reports documenting FFSI security incidents, including phishing events, unauthorized access attempts, and SIEM alerts.'},
+  {id:'di-07', name:'Army Logistics Node Identifiers', desc:'Government-assigned location codes and depot identifiers used in distribution scheduling under the AMC logistics contract.'},
+  {id:'di-08', name:'Quality Assurance Test Results', desc:'Lab test results, shelf-life data, and nutritional analysis reports for MRE products — some reference Army-specified acceptance criteria.'},
+  {id:'di-09', name:'Production Scheduling / Line Assignments', desc:'Internal FFSI production schedules and line assignments for MRE manufacturing runs, generated to fulfill Army delivery orders.'},
+  {id:'di-10', name:'FFSI Facility Floor Plans', desc:'Engineering drawings and facility layouts for FFSI\'s production plant and warehouse, some of which reference government-use restricted areas.'},
+  {id:'di-11', name:'Army Correspondence / Contracting Officer Emails', desc:'Emails between FFSI and Army Contracting Officers (ACOs) related to contract performance, modifications, and compliance matters.'},
+  {id:'di-12', name:'Ingredient Formulation Recipes (Special Dietary)', desc:'Proprietary and government-approved formulation data for halal, vegetarian, and allergen-free MRE variants developed under the Natick contract.'},
+];
+
+const scopeElements = [
+  {id:'se-hq',     icon:'🏢', name:'Corporate HQ — Hartwell, GA',    context:'Houses contracts staff, IT, compliance, and executive team. VLAN 20 CUI enclave located here. CORP-FS-02 (CUI file server), ERP, and SIEM all in this facility.'},
+  {id:'se-plant',  icon:'🏭', name:'Production Plant — Hartwell, GA',  context:'463 employees. MRE manufacturing, packaging, and staging. FoodTrack MES (CUI specs). Production tablets (Android, no MDM). OT network (VLAN 80) previously connected to CUI VLAN.'},
+  {id:'se-wh',     icon:'🏗', name:'Warehouse & Logistics — Elberton, GA', context:'187 employees. Finished goods, Army depot shipping, cold storage. CUI//LOGISTICS data on logistics workstations. Delivery driver check-in process informal.'},
+  {id:'se-lab',    icon:'🔬', name:'QA Laboratory — Lavonia, GA',      context:'55 employees. Ingredient testing, shelf-life studies, spec validation. QA-DB-01 stores CUI (ingredient formulations). End-of-support OS. No dedicated server room.'},
+  {id:'se-m365',   icon:'📧', name:'Microsoft 365 GCC Tenant',         context:'Primary email/collaboration. ContractsCUI SharePoint site stores CUI. DLP active but not fully tuned. 3 Global Admins — too many. Exchange, Teams, OneDrive in use.'},
+  {id:'se-aws',    icon:'☁️', name:'AWS GovCloud Environment',         context:'S3 backup (CUI-PROD bucket, AES-256), ERP disaster recovery, CloudTrail logging. Service accounts lack MFA. IAM reviewed; 3 over-permissioned users identified.'},
+  {id:'se-vlan20', icon:'🔐', name:'VLAN 20 — CUI Contracts Enclave',  context:'10.10.20.0/24. Contracts dept PCs and CORP-FS-02. Strict ACL. MFA required. Primary CUI storage and processing zone. Core assessment boundary asset.'},
+  {id:'se-vlan80', icon:'⚙️', name:'VLAN 80 — OT / Manufacturing',    context:'172.16.80.0/24. PLCs, HMIs, conveyor controllers. No authentication. No logging. Previously had undocumented ACL to VLAN 20 (remediated Oct 2024). No SIEM coverage.'},
+  {id:'se-steadypath', icon:'🔧', name:'SteadyPath IT Services (MSP)', context:'Managed IT provider with remote access to CORP-DC-01. No formal SCRM assessment completed. DFARS 7021 flowdown obligation unverified. Session-recorded access via BeyondTrust.'},
+  {id:'se-thermakit',  icon:'🚛', name:'ThermaKit Distribution Inc.',  context:'Cold-chain logistics subcontractor handling Army logistics node data (CUI//LOGISTICS) under contract W52P1J-24-C-1047. CMMC flowdown clause applies. No questionnaire submitted.'},
+  {id:'se-guest',  icon:'📶', name:'VLAN 70 — Guest Wi-Fi',            context:'192.168.70.0/24. Internet-only SSID. Captive portal. No internal access. Completely isolated from all corporate VLANs. Used by visitors at all locations.'},
+  {id:'se-cctv',   icon:'📹', name:'VLAN 60 — CCTV / Physical Security', context:'IP cameras, badge readers, cold-storage sensors. Completely isolated — no routing to any other VLAN. Physical security data only. No CUI processed or transmitted.'},
+];
+
+const boundaryQs = [
+  {id:'bq1', q:'Which FFSI assets must appear in the SSP because they process, store, or transmit CUI? List specific asset IDs and names.'},
+  {id:'bq2', q:'Which shared infrastructure assets (shared VLANs, switches, identity providers) require documentation in the SSP even if they don\'t directly process CUI?'},
+  {id:'bq3', q:'What evidence would a C3PAO expect to see that validates the exclusion of VLAN 60 (CCTV) and VLAN 70 (Guest Wi-Fi) from the assessment boundary?'},
+  {id:'bq4', q:'How does the remediated OT-CUI VLAN ACL gap affect the assessment boundary definition, and what must FFSI document in the SSP about this incident?'},
+];
+
+const personnel = [
+  {id:'p-ceo', emoji:'👩‍💼', name:'Margaret L. Calloway', title:'President & CEO', dept:'Executive',       context:'Sets organizational cybersecurity tone. Signs CMMC affirmations. Final authority on certification investment decisions and contract compliance strategy.'},
+  {id:'p-coo', emoji:'👨‍💼', name:'Douglas R. Vance',     title:'COO',            dept:'Executive',       context:'Oversees operational decisions affecting CUI handling. Authorizes changes to production systems. Signs off on CMMC program resource allocation.'},
+  {id:'p-vp',  emoji:'📋', name:'Calvin T. Reeves',    title:'VP Contracts',   dept:'Contracts',       context:'Primary CUI data steward. Manages all DFARS contract relationships. Interfaces daily with Army contracting officers. Reviews and signs delivery orders.'},
+  {id:'p-isso',emoji:'🔐', name:'Marcus A. Dillard',   title:'ISSO',           dept:'Cybersecurity',   context:'Primary CMMC technical POC. Manages Splunk SIEM, incident response, and NIST 800-171 practice ownership. Will be primary assessor interview subject.'},
+  {id:'p-itd', emoji:'💻', name:'Lena B. Forsythe',    title:'IT Director',    dept:'IT',              context:'Responsible for all IT infrastructure. System owner for domain controllers, ERP, and file servers. Configuration management authority across all locations.'},
+  {id:'p-sys', emoji:'🖥', name:'Tanya R. Holbrook',   title:'Sysadmin',       dept:'IT',              context:'Sole system administrator. Manages AD, WSUS, backups. Overdue on security awareness training. Manages CUI-bearing systems including CORP-FS-02.'},
+  {id:'p-cmp', emoji:'✅', name:'Amara E. Osei',       title:'Compliance Mgr', dept:'Compliance',      context:'Maintains POA&M and CMMC documentation. Will own SSP development. Limited CMMC-specific prior experience. Primary point of contact for documentation.'},
+  {id:'p-hr',  emoji:'👥', name:'Harold J. Pennington', title:'HR Director',   dept:'HR',              context:'Manages employee records in HR system (personal data, not CUI). Owns onboarding/offboarding and user account provisioning process. Manages training completion records.'},
+  {id:'p-prod',emoji:'🏭', name:'Nathan G. Tillotson', title:'Plant Manager',  dept:'Production',      context:'Physical authority over production plant. Approves badge access for production floor. Manages production supervisors who use MES to view CUI specifications.'},
+  {id:'p-log', emoji:'🚛', name:'Bryant L. Vickers',   title:'Logistics Dir.', dept:'Logistics',       context:'Manages warehouse operations and Army depot shipping. Oversees staff who process CUI//LOGISTICS data on shipping workstations. Manages subcontractor relationships.'},
+  {id:'p-qa',  emoji:'🔬', name:'Ingrid K. Larsson',   title:'QA Director',    dept:'Quality Assurance',context:'Owns QA-DB-01 which stores CUI ingredient formulations for the Natick contract. Manages QA staff who directly access CUI technical data.'},
+  {id:'p-hd',  emoji:'🛠', name:'Roberto P. Fuentes',  title:'Help Desk Tech', dept:'IT',              context:'Handles password resets and user account management. Does not directly access CUI. Manages tickets for systems that process CUI. Limited CMMC-specific role.'},
+];
+
+const documents = [
+  {id:'doc-ssp',   name:'System Security Plan (SSP)',           desc:'Authoritative document describing system boundary, implemented controls, and responsible parties. Required by DFARS 252.204-7012 and CMMC Level 2.'},
+  {id:'doc-asset', name:'Asset Inventory',                      desc:'Complete list of all hardware, software, and cloud services within the assessment boundary. Required for CMMC scope validation.'},
+  {id:'doc-netd',  name:'Network Diagram',                      desc:'Visual representation of the network architecture showing VLAN segmentation, firewall placement, and CUI data flows. Assessors expect to review this during interviews.'},
+  {id:'doc-risk',  name:'Risk Register',                        desc:'Documented list of identified risks, likelihood ratings, impact assessments, and mitigation actions. Supports risk assessment practices under NIST 800-171 Domain 11.'},
+  {id:'doc-irp',   name:'Incident Response Plan (IRP)',         desc:'Documented procedures for detecting, reporting, responding to, and recovering from security incidents involving CUI. Required by NIST 800-171 practices 3.6.1 and 3.6.2.'},
+  {id:'doc-acp',   name:'Access Control Policy',                desc:'Formal policy governing user account management, least privilege, separation of duties, and CUI access authorization. Required for CMMC Domain 1 practices.'},
+  {id:'doc-train', name:'Training Records',                     desc:'Documented evidence that personnel received role-based and security awareness training. Required by NIST 800-171 Domain 2; assessors will request these records.'},
+  {id:'doc-cmp',   name:'Configuration Management Plan',        desc:'Documented baselines, change management procedures, and configuration settings for in-scope systems. Required for CMMC Domain 4 practices.'},
+  {id:'doc-scrm',  name:'Supplier Security Procedures',         desc:'Formal SCRM process including questionnaires, assessments, and DFARS flowdown verification for subcontractors handling FCI or CUI.'},
+  {id:'doc-poam',  name:'Plan of Action & Milestones (POA&M)',  desc:'Tracks unimplemented NIST 800-171 controls with owners, milestones, and target dates. Required for SPRS score submission and C3PAO assessment.'},
+  {id:'doc-sprs',  name:'SPRS Score Submission',                desc:'Self-assessment score submitted to the Supplier Performance Risk System per DFARS 252.204-7019. Required before contract award for covered contracts.'},
+  {id:'doc-cui',   name:'CUI Data Flow Diagram',                desc:'Documented map showing how CUI enters, is processed, stored, transmitted, and destroyed within the FFSI environment. Critical for SSP accuracy.'},
+];
+
+const matrixItems = [
+  {id:'mx-cmmc',   label:'CMMC Certification Requirement'},
+  {id:'mx-fci',    label:'FCI Handling Obligations (FAR 52.204-21)'},
+  {id:'mx-cui',    label:'CUI Handling Obligations (DFARS 252.204-7012)'},
+  {id:'mx-dfars',  label:'DFARS 252.204-7019 (Self-Assessment Submission)'},
+  {id:'mx-7020',   label:'DFARS 252.204-7020 (DoD Assessment Requirement)'},
+  {id:'mx-7021',   label:'DFARS 252.204-7021 (CMMC Requirement)'},
+  {id:'mx-scope',  label:'Multi-Location Assessment Scope'},
+  {id:'mx-ssp',    label:'SSP Development Requirement'},
+  {id:'mx-asset',  label:'Asset Inventory Requirement'},
+  {id:'mx-train',  label:'Role-Based Training Requirement'},
+  {id:'mx-cert',   label:'Third-Party C3PAO Assessment Required'},
+  {id:'mx-flow',   label:'Subcontractor Flowdown Obligations'},
+];
+
+const risks = [
+  {id:'R-01', title:'Failure to Identify All CUI-Bearing Contracts',    context:'FFSI has 6 contracts with different DFARS clauses. Missing one CUI-bearing contract could leave its associated systems, personnel, and data flows out of scope — creating a hidden compliance gap.'},
+  {id:'R-02', title:'Misclassification of CUI as FCI or Neither',       context:'Ingredient formulations, logistics node IDs, and unit pricing may be classified too broadly. Downgrading CUI to FCI removes it from CMMC Level 2 requirements — increasing assessment failure risk.'},
+  {id:'R-03', title:'Improper Scope Exclusion of Connected Systems',    context:'The OT network (VLAN 80) was previously connected to the CUI enclave. If this is documented as "out of scope" without addressing the historical ACL gap, assessors may challenge the exclusion.'},
+  {id:'R-04', title:'Missing Documentation Before Assessment Engagement',context:'FFSI\'s SSP is incomplete, SCRM procedures don\'t exist, and the IRP is 18 months old. Engaging a C3PAO without these documents increases assessment cost and the risk of a failed first attempt.'},
+  {id:'R-05', title:'Untrained Personnel with CUI Access',              context:'Three employees with CUI access (Holbrook, Bradshaw, Yeboah) have overdue security training. CMMC practice 3.2.1 requires role-based training before CUI access — creating an immediate finding.'},
+  {id:'R-06', title:'Subcontractor Flowdown Not Verified',              context:'SteadyPath IT and ThermaKit Distribution Inc. receive FCI or CUI and have remote access to FFSI systems. No SCRM assessment or DFARS flowdown verification has been completed for either.'},
+];
+
+const certQs = [
+  {id:'cq1', q:'Is FFSI subject to CMMC certification requirements?',                  hint:'Consider the DFARS clauses present in FFSI\'s highest-value contracts.'},
+  {id:'cq2', q:'What specific evidence supports your conclusion?',                     hint:'Cite contract numbers, DFARS clauses, and CUI categories identified in Activities 1–2.'},
+  {id:'cq3', q:'Which contracts most directly drive the CMMC compliance obligation?',  hint:'Which contracts include all four DFARS clauses (7012, 7019, 7020, 7021)?'},
+  {id:'cq4', q:'What assessment level is required — CMMC Level 1 or Level 2?',        hint:'Is CUI present? Is the 7021 clause present? What does CMMC Level 2 require vs. Level 1?'},
+  {id:'cq5', q:'Which FFSI business units are affected by the assessment scope?',      hint:'Consider which departments handle CUI or operate systems connected to the CUI enclave.'},
+  {id:'cq6', q:'Which specific FFSI systems fall within the assessment boundary?',     hint:'Reference the CUI data flow and asset inventory from the case study. Which assets touch CUI?'},
+  {id:'cq7', q:'What are FFSI\'s three most important immediate actions?',             hint:'Think about documentation, staffing gaps, subcontractor flowdown, and SPRS score submission.'},
+];
+
+const execQs = [
+  {id:'eq1', q:'Does CMMC apply to FFSI?',                            hint:'Bottom-line answer — yes, no, or partially — with the key contract and data type evidence.'},
+  {id:'eq2', q:'Why does CMMC apply, and which contracts drive it?',  hint:'Name the specific contracts and DFARS clauses that create the obligation.'},
+  {id:'eq3', q:'What is the likely CMMC assessment scope?',           hint:'Locations, systems, departments, cloud services, and vendors that are in scope.'},
+  {id:'eq4', q:'What documentation should be developed first?',       hint:'Prioritize by assessment impact and current state of completion at FFSI.'},
+  {id:'eq5', q:'What are the most significant compliance risks?',     hint:'Reference specific FFSI gaps — EOS OS, missing MFA, untrained staff, unverified flowdown.'},
+  {id:'eq6', q:'What is the estimated timeline to assessment readiness?',hint:'Given FFSI\'s current posture (SPRS +68, SSP 60% complete, no C3PAO engaged), what\'s realistic?'},
+  {id:'eq7', q:'What should FFSI leadership do in the next 30 days?', hint:'Specific, prioritized actions the CEO and COO can authorize immediately.'},
+];
+
+const debriefQs = [
+  'Which of FFSI\'s six contracts most clearly and unambiguously triggered CMMC Level 2 requirements? Which was most ambiguous?',
+  'Which data classifications generated the most disagreement in your group? What made ingredient formulations, logistics node IDs, or QA test results difficult to classify?',
+  'The OT network (VLAN 80) was previously connected to the CUI enclave. How did this incident affect your scope determination, and what documentation does FFSI need?',
+  'Which FFSI personnel roles surprised your group when they turned out to be in scope — or out of scope? What drove that determination?',
+  'What are the most common mistakes organizations make during applicability studies, and what is the cost of getting the scope wrong in either direction?',
+  'Why is the applicability study the logical prerequisite for SSP development, asset inventory creation, and POA&M planning?',
+  'What evidence would a C3PAO expect to review in order to validate FFSI\'s applicability decisions and scope determination?',
+];
+
+const rubricData = [
+  {cat:'Contract Analysis', pts:20,
+   ex:'All 6 contracts analyzed with all 5 questions answered; DFARS clauses correctly identified; CUI vs FCI distinction accurate; evidence cited by contract number.',
+   pr:'5–6 contracts analyzed; most DFARS identifications correct; 1–2 questions answered generically.',
+   de:'3–4 contracts; DFARS clause analysis incomplete; CUI/FCI distinction confused on 2+ contracts.',
+   ni:'Fewer than 3 contracts meaningfully analyzed; DFARS clauses not correctly identified.'},
+  {cat:'FCI/CUI Identification', pts:20,
+   ex:'All 12 data items correctly classified with specific, CUI Registry-grounded justifications; CUI subtypes (CTI, Logistics, Procurement) correctly identified.',
+   pr:'10–11 correct; justifications mostly sound; 1 subtype confused or missing.',
+   de:'7–9 correct; several justifications generic; CUI/FCI boundary not consistently applied.',
+   ni:'Fewer than 7 correct; CUI and FCI definitions not operationally applied.'},
+  {cat:'Scope Determination', pts:20,
+   ex:'All 12 scope elements correctly determined with rationale referencing CUI flow, network connectivity, or contract requirements; boundary zones accurately populated.',
+   pr:'10–11 correct; 1 questionable exclusion without adequate rationale.',
+   de:'7–9 correct; 2–3 scope decisions not well-justified; OT or subcontractor scope missed.',
+   ni:'Fewer than 7 correct; scope analysis not grounded in FFSI data.'},
+  {cat:'Documentation Analysis', pts:15,
+   ex:'All 12 documents correctly classified (Required/Recommended/Not Yet Required); owners named from FFSI roster; justifications reference specific DFARS or NIST 800-171 practices.',
+   pr:'10–11 correct; owners mostly named; justifications reference relevant regulations.',
+   de:'7–9 correct; owners missing for several; required vs. recommended confused on 2+ items.',
+   ni:'Fewer than 7 correct; document classifications not grounded in CMMC requirements.'},
+  {cat:'Risk Analysis', pts:10,
+   ex:'All 6 risks confirmed or rebutted with specific FFSI evidence; mitigation actions are concrete, name responsible owners, and address root causes.',
+   pr:'5–6 risks addressed; evidence mostly FFSI-specific; 1 mitigation is generic.',
+   de:'3–4 risks addressed; evidence vague; mitigation actions not FFSI-specific.',
+   ni:'Fewer than 3 meaningful risk entries; analysis absent or generic.'},
+  {cat:'Certification Determination', pts:10,
+   ex:'All 7 certification questions answered with specific, evidence-based responses; CMMC level correctly determined; scope and immediate actions are actionable and FFSI-specific.',
+   pr:'5–6 questions substantive; level correctly identified; 1–2 responses lack FFSI specifics.',
+   de:'3–4 substantive; level correct but reasoning thin; immediate actions generic.',
+   ni:'Fewer than 3 meaningful responses; level determination unsupported.'},
+  {cat:'Executive Recommendations', pts:5,
+   ex:'All 7 briefing answers are specific, actionable, synthesize prior activities, and would be useful to FFSI\'s CEO and COO in making compliance investment decisions.',
+   pr:'5–6 answers substantive; most are FFSI-specific; 1 is generic advice.',
+   de:'3–4 substantive; briefing reads as generic compliance advice, not tailored to FFSI.',
+   ni:'Fewer than 3 meaningful; briefing not grounded in FFSI case study analysis.'},
+];
+
+/* ════════════════════════════
+   RENDER
+════════════════════════════ */
+function renderGloss() {
+  document.getElementById('glossGrid').innerHTML = glossTerms.map(g =>
+    `<div class="gc"><div class="gt">${g.t}</div><div class="gd">${g.d}</div></div>`
+  ).join('');
+}
+
+function renderContracts() {
+  document.getElementById('contractList').innerHTML = contracts.map(c => `
+    <div class="contract-card">
+      <div class="cc-head">
+        <div>
+          <div class="cc-num">${c.id}</div>
+          <div class="cc-title">${c.title}</div>
+          <div class="cc-meta">
+            <span class="cc-tag ${c.role==='Prime'?'tag-prime':'tag-sub'}">${c.role}</span>
+            <span class="cc-tag tag-fci">${c.value}</span>
+            <span class="cc-tag tag-nc">${c.agency}</span>
+            ${c.dfars.map(d=>`<span class="cc-tag tag-cui" style="font-size:.58rem;">${d}</span>`).join('')}
+          </div>
+        </div>
+        <div style="font-size:.72rem;color:var(--text-muted);margin-left:auto;white-space:nowrap;">${c.period}</div>
+      </div>
+      <div class="cc-context">📌 ${c.context}</div>
+      <div class="cc-questions">
+        ${contractQs.map((q,i) => {
+          const sv_key = `cq-${c.id}-${i}`;
+          const saved = ld(sv_key);
+          return `
+          <div class="cq-row">
+            <span class="cq-text">Q${i+1}: ${q}</span>
+            <div class="yn-grp">
+              ${[['Yes','y'],['No','n'],['Uncertain','u']].map(([lbl,cls])=>`
+              <button class="yn yn-${cls} ${saved===lbl?'sel':''}"
+                onclick="setYN('${sv_key}','${lbl}',this)">${lbl}</button>`).join('')}
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+      <div class="fg" style="margin-top:.6rem;">
+        <label class="fl">Supporting Evidence & Notes</label>
+        <textarea class="fta" placeholder="Document which DFARS clauses trigger requirements, what CUI/FCI data types are involved, and why your Q5 determination is correct..."
+          oninput="sv('ce-${c.id}',this.value);updatePB()">${ld('ce-'+c.id)}</textarea>
+      </div>
+    </div>`).join('');
+}
+
+function setYN(key, val, btn) {
+  sv(key, val);
+  const grp = btn.closest('.yn-grp');
+  grp.querySelectorAll('.yn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+  updatePB();
+}
+
+function renderData() {
+  document.getElementById('dataGrid').innerHTML = dataItems.map(d => {
+    const saved = ld('dc-'+d.id);
+    const savedJ = ld('dj-'+d.id);
+    return `
+    <div class="data-card">
+      <div class="data-name">${d.name}</div>
+      <div class="data-desc">${d.desc}</div>
+      <div class="cls-row">
+        ${[['CUI','cui'],['FCI','fci'],['Neither','nei']].map(([lbl,cls])=>`
+        <button class="cls-btn ${saved===lbl?'cls-'+cls:''}"
+          onclick="setCls('${d.id}','${lbl}','${cls}',this)">${lbl}</button>`).join('')}
+      </div>
+      <div class="fg">
+        <label class="fl">Justification</label>
+        <textarea class="fta" style="min-height:46px;" placeholder="Why is this CUI, FCI, or neither? Reference CUI Registry categories, DFARS clauses, or data flow context..."
+          oninput="sv('dj-${d.id}',this.value);updatePB()">${savedJ}</textarea>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function setCls(id, val, cls, btn) {
+  sv('dc-'+id, val);
+  const row = btn.closest('.cls-row');
+  row.querySelectorAll('.cls-btn').forEach(b=>{b.className='cls-btn';});
+  btn.classList.add('cls-'+cls);
+  updatePB();
+}
+
+function renderScope() {
+  document.getElementById('scopeList').innerHTML = scopeElements.map(e => {
+    const saved = ld('sc-'+e.id);
+    const savedR = ld('sr-'+e.id);
+    return `
+    <div class="scope-item">
+      <div class="scope-icon">${e.icon}</div>
+      <div class="scope-body">
+        <div class="scope-name">${e.name}</div>
+        <div class="scope-context">${e.context}</div>
+        <div class="scope-sel-row">
+          ${[['In Scope','in'],['Out of Scope','out'],['Needs Review','rev']].map(([lbl,cls])=>`
+          <button class="scope-opt ${saved===lbl?'s-'+cls:''}"
+            onclick="setScopeOpt('${e.id}','${lbl}','${cls}',this)">${lbl}</button>`).join('')}
+        </div>
+        <div class="fg" style="margin-bottom:0;">
+          <label class="fl">Rationale</label>
+          <textarea class="fta" style="min-height:44px;" placeholder="Why? Reference CUI data flow, VLAN connectivity, contract obligations, or known gaps..."
+            oninput="sv('sr-${e.id}',this.value);updatePB()">${savedR}</textarea>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function setScopeOpt(id, val, cls, btn) {
+  sv('sc-'+id, val);
+  const row = btn.closest('.scope-sel-row');
+  row.querySelectorAll('.scope-opt').forEach(b=>{b.className='scope-opt';});
+  btn.classList.add('s-'+cls);
+  updatePB();
+}
+
+function renderBoundaryQs() {
+  document.getElementById('boundaryQsList').innerHTML = boundaryQs.map(q => `
+    <div class="card" style="margin-bottom:.5rem;">
+      <label class="fl" style="margin-bottom:.3rem;">${q.q}</label>
+      <textarea class="fta" id="${q.id}" placeholder="Answer with specific FFSI asset names, IDs, VLAN references, and case study evidence..."
+        oninput="sv('${q.id}',this.value);updatePB()">${ld(q.id)}</textarea>
+    </div>`).join('');
+}
+
+function renderPersonnel() {
+  document.getElementById('persGrid').innerHTML = personnel.map(p => {
+    const saved = ld('ps-'+p.id);
+    const savedJ = ld('pj-'+p.id);
+    return `
+    <div class="pers-card">
+      <div class="pers-head">
+        <div class="pers-ava">${p.emoji}</div>
+        <div>
+          <div class="pers-name">${p.name}</div>
+          <div class="pers-title">${p.title}</div>
+          <div class="pers-dept">${p.dept}</div>
+        </div>
+      </div>
+      <div class="pers-context">${p.context}</div>
+      <div class="pers-scope-row">
+        ${[['Subject to CMMC','sub'],['Not Subject','not'],['Needs Review','rev']].map(([lbl,cls])=>`
+        <button class="ps-btn ${saved===lbl?'ps-'+cls:''}"
+          onclick="setPersScope('${p.id}','${lbl}','${cls}',this)">${lbl}</button>`).join('')}
+      </div>
+      <div class="fg" style="margin-bottom:0;">
+        <label class="fl">Justification</label>
+        <textarea class="fta" style="min-height:44px;" placeholder="Why is this person subject to or exempt from CMMC requirements?"
+          oninput="sv('pj-${p.id}',this.value)">${savedJ}</textarea>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function setPersScope(id, val, cls, btn) {
+  sv('ps-'+id, val);
+  const row = btn.closest('.pers-scope-row');
+  row.querySelectorAll('.ps-btn').forEach(b=>{b.className='ps-btn';});
+  btn.classList.add('ps-'+cls);
+}
+
+function renderDocs() {
+  document.getElementById('docGrid').innerHTML = documents.map(d => {
+    const saved = ld('ds-'+d.id);
+    const savedO = ld('do-'+d.id);
+    return `
+    <div class="doc-card">
+      <div class="doc-name">${d.name}</div>
+      <div class="doc-desc">${d.desc}</div>
+      <div class="doc-status-row">
+        ${[['Required','req'],['Recommended','rec'],['Not Yet Required','nyr']].map(([lbl,cls])=>`
+        <button class="ds-btn ${saved===lbl?'ds-'+cls:''}"
+          onclick="setDocStatus('${d.id}','${lbl}','${cls}',this)">${lbl}</button>`).join('')}
+      </div>
+      <div class="fg" style="margin-bottom:0;">
+        <label class="fl">Owner (FFSI personnel)</label>
+        <input class="fi" type="text" value="${savedO}" placeholder="Name from FFSI roster..."
+          oninput="sv('do-${d.id}',this.value)"/>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function setDocStatus(id, val, cls, btn) {
+  sv('ds-'+id, val);
+  const row = btn.closest('.doc-status-row');
+  row.querySelectorAll('.ds-btn').forEach(b=>{b.className='ds-btn';});
+  btn.classList.add('ds-'+cls);
+  updatePB();
+}
+
+function renderMatrix() {
+  document.getElementById('matrixBody').innerHTML = matrixItems.map(m => {
+    const saved = ld('mx-'+m.id);
+    const savedJ = ld('mj-'+m.id);
+    return `
+    <tr>
+      <td><div class="mat-item">${m.label}</div></td>
+      <td>
+        <div class="mat-check-row">
+          ${[['Applicable','app'],['Not Applicable','nap']].map(([lbl,cls])=>`
+          <button class="mc-btn ${saved===lbl?'mc-'+cls:''}"
+            onclick="setMatrix('${m.id}','${lbl}','${cls}',this)">${lbl}</button>`).join('')}
+        </div>
+      </td>
+      <td>
+        <textarea class="mat-ta" placeholder="Cite contract numbers, DFARS clauses, or case study evidence..."
+          oninput="sv('mj-${m.id}',this.value)">${savedJ}</textarea>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function setMatrix(id, val, cls, btn) {
+  sv('mx-'+id, val);
+  const row = btn.closest('.mat-check-row');
+  row.querySelectorAll('.mc-btn').forEach(b=>{b.className='mc-btn';});
+  btn.classList.add('mc-'+cls);
+  updatePB();
+}
+
+function renderRisks() {
+  document.getElementById('riskList').innerHTML = risks.map(r => {
+    const savedE = ld('re-'+r.id);
+    const savedM = ld('rm-'+r.id);
+    const savedC = ld('rc-'+r.id);
+    return `
+    <div class="risk-card">
+      <div class="risk-top">
+        <span class="risk-id">${r.id}</span>
+        <span class="risk-title">${r.title}</span>
+      </div>
+      <div style="font-size:.74rem;color:var(--text-muted);font-style:italic;margin-bottom:.55rem;background:var(--bg-alt);padding:.35rem .55rem;border-radius:4px;">📌 ${r.context}</div>
+      <div class="risk-fields">
+        <div class="fg">
+          <label class="fl">FFSI Evidence (confirm or rebut)</label>
+          <textarea class="fta" style="min-height:46px;" placeholder="Cite specific case study data confirming this risk exists at FFSI..."
+            oninput="sv('re-${r.id}',this.value)">${savedE}</textarea>
+        </div>
+        <div class="fg">
+          <label class="fl">Recommended Mitigation Action</label>
+          <textarea class="fta" style="min-height:46px;" placeholder="Specific action, owner from FFSI roster, and target timeline..."
+            oninput="sv('rm-${r.id}',this.value)">${savedM}</textarea>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderCert() {
+  document.getElementById('certGrid').innerHTML = certQs.map(q => `
+    <div class="cert-card">
+      <div class="cert-q">${q.q}</div>
+      <div style="font-size:.7rem;color:var(--text-muted);font-style:italic;margin-bottom:.35rem;">💡 ${q.hint}</div>
+      <textarea class="fta" placeholder="Answer with specific FFSI evidence..." style="min-height:58px;"
+        oninput="sv('cq-${q.id}',this.value);updatePB()">${ld('cq-'+q.id)}</textarea>
+    </div>`).join('');
+}
+
+function renderExec() {
+  document.getElementById('execList').innerHTML = execQs.map(q => `
+    <div class="exec-item">
+      <div class="exec-n">${q.id.replace('eq','')}</div>
+      <div class="exec-body">
+        <div class="exec-q">${q.q}</div>
+        <div class="exec-hint">💡 ${q.hint}</div>
+        <textarea class="fta" placeholder="Write 2–4 sentences of FFSI-specific executive guidance..."
+          oninput="sv('eq-${q.id}',this.value)">${ld('eq-'+q.id)}</textarea>
+      </div>
+    </div>`).join('');
+}
+
+function renderDebrief() {
+  document.getElementById('debriefList').innerHTML = debriefQs.map((q,i) => `
+    <div class="dq">
+      <div class="dq-n">${i+1}</div>
+      <div class="dq-body">
+        <div class="dq-q">${q}</div>
+        <textarea class="fta" style="min-height:46px;" placeholder="Participant response..."
+          oninput="sv('dbq-${i}',this.value)">${ld('dbq-'+i)}</textarea>
+      </div>
+    </div>`).join('');
+}
+
+function renderRubric() {
+  document.getElementById('rubricBody').innerHTML = rubricData.map((r,i) => {
+    const saved = ld('rub-'+i) || '';
+    return `
+    <tr>
+      <td><strong>${r.cat}</strong></td>
+      <td class="rx">${r.ex}</td>
+      <td class="rp">${r.pr}</td>
+      <td class="rd">${r.de}</td>
+      <td class="rn">${r.ni}</td>
+      <td><span class="pts-chip">${r.pts}</span></td>
+      <td><input type="number" class="sc-in" min="0" max="${r.pts}" value="${saved}" placeholder="0"
+        oninput="saveRubric(${i},this.value,${r.pts})"/></td>
+    </tr>`;
+  }).join('');
+  updateRubric();
+}
+
+/* ════════════════════════════
+   STATE & SCORING
+════════════════════════════ */
+function saveRubric(i, val, max) {
+  const c = Math.min(Math.max(parseInt(val)||0,0),max);
+  localStorage.setItem(K+'rub-'+i, c);
+  updateRubric();
+}
+function updateRubric() {
+  const total = rubricData.reduce((s,_,i)=>s+(parseInt(localStorage.getItem(K+'rub-'+i))||0),0);
+  document.getElementById('rubTotal').textContent = total;
+  document.getElementById('scoreVal').textContent = total;
+  document.getElementById('scorePct').textContent = Math.round(total)+'%';
+  const rp = document.getElementById('ratingPill');
+  if(total>=90){rp.textContent='Excellent';rp.className='rating r-ex';}
+  else if(total>=75){rp.textContent='Proficient';rp.className='rating r-pr';}
+  else if(total>=60){rp.textContent='Developing';rp.className='rating r-de';}
+  else{rp.textContent='Needs Improvement';rp.className='rating r-ni';}
+}
+
+function updatePB() {
+  let filled = 0, total = 0;
+  // Contract evidence fields (6)
+  contracts.forEach(c=>{ total++; if((ld('ce-'+c.id)||'').length>5) filled++; });
+  // Data classifications (12)
+  dataItems.forEach(d=>{ total++; if(ld('dc-'+d.id)) filled++; });
+  // Scope decisions (12)
+  scopeElements.forEach(e=>{ total++; if(ld('sc-'+e.id)) filled++; });
+  // Doc statuses (12)
+  documents.forEach(d=>{ total++; if(ld('ds-'+d.id)) filled++; });
+  // Matrix decisions (12)
+  matrixItems.forEach(m=>{ total++; if(ld('mx-'+m.id)) filled++; });
+  // Cert questions (7)
+  certQs.forEach(q=>{ total++; if((ld('cq-'+q.id)||'').length>5) filled++; });
+  const pct = Math.round(filled/total*100);
+  document.getElementById('pbFill').style.width = pct+'%';
+  document.getElementById('pbPct').textContent = pct+'%';
+}
+
+/* ════════════════════════════
+   THEME
+════════════════════════════ */
+function toggleTheme() {
+  const html = document.documentElement;
+  const btn = document.getElementById('themeBtn');
+  const isDark = html.getAttribute('data-theme')==='dark';
+  html.setAttribute('data-theme', isDark?'light':'dark');
+  btn.textContent = isDark?'🌙 Dark Mode':'☀️ Light Mode';
+  localStorage.setItem(K+'theme', isDark?'light':'dark');
+}
+
+/* ════════════════════════════
+   TIMER
+════════════════════════════ */
+const TT=60*60; let ts=TT, ti=null, tr=false;
+function startT(){if(tr)return;tr=true;ti=setInterval(()=>{ts=Math.max(0,ts-1);renderTimer();if(ts===0){clearInterval(ti);tr=false;}},1000);}
+function pauseT(){clearInterval(ti);tr=false;}
+function resetT(){clearInterval(ti);tr=false;ts=TT;renderTimer();}
+function renderTimer(){
+  const m=Math.floor(ts/60),s=ts%60;
+  const el=document.getElementById('timerVal');
+  el.textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  el.className=`timer-val${ts===0?' exp':ts<600?' warn':''}`;
+  document.getElementById('timerFill').style.width=(ts/TT*100)+'%';
+}
+
+/* ════════════════════════════
+   NAV
+════════════════════════════ */
+function nav(id, btn) {
+  document.getElementById(id)?.scrollIntoView({behavior:'smooth'});
+  document.querySelectorAll('.sn').forEach(b=>b.classList.remove('on'));
+  if(btn) btn.classList.add('on');
+}
+window.addEventListener('scroll',()=>{
+  const ids=['intro','obj','terms','act1','act2','act3','act4','act5','act6','act7','act8','act9','act10','debrief','rubric'];
+  const sy=window.scrollY+100; let cur='intro';
+  ids.forEach(id=>{const el=document.getElementById(id);if(el&&el.offsetTop<=sy)cur=id;});
+  document.querySelectorAll('.sn').forEach(b=>{
+    b.classList.toggle('on',(b.getAttribute('onclick')||'').includes(`'${cur}'`));
+  });
+},{passive:true});
+
+/* ════════════════════════════
+   EXPORT
+════════════════════════════ */
+function exportAll() {
+  let out = 'FFSI — CMMC APPLICABILITY STUDY EXERCISE\n'+'='.repeat(52)+'\n\n';
+  out += 'ACTIVITY 1 — CONTRACT ANALYSIS\n'+'-'.repeat(40)+'\n';
+  contracts.forEach(c=>{
+    out += `\n${c.id} — ${c.title}\n`;
+    contractQs.forEach((q,i)=>{ out+=`  Q${i+1}: ${ld('cq-'+c.id+'-'+i)||'[Not answered]'}\n`; });
+    out += `  Evidence: ${ld('ce-'+c.id)||'[None]'}\n`;
+  });
+  out += '\nACTIVITY 2 — DATA CLASSIFICATION\n'+'-'.repeat(40)+'\n';
+  dataItems.forEach(d=>{ out+=`${d.name}: ${ld('dc-'+d.id)||'[Not classified]'} — ${ld('dj-'+d.id)||'[No justification]'}\n`; });
+  out += '\nACTIVITY 3 — SCOPE ANALYSIS\n'+'-'.repeat(40)+'\n';
+  scopeElements.forEach(e=>{ out+=`${e.name}: ${ld('sc-'+e.id)||'[Not set]'} — ${ld('sr-'+e.id)||'[No rationale]'}\n`; });
+  out += '\nACTIVITY 6 — DOCUMENTATION\n'+'-'.repeat(40)+'\n';
+  documents.forEach(d=>{ out+=`${d.name}: ${ld('ds-'+d.id)||'[Not set]'} — Owner: ${ld('do-'+d.id)||'[None]'}\n`; });
+  out += '\nACTIVITY 7 — DECISION MATRIX\n'+'-'.repeat(40)+'\n';
+  matrixItems.forEach(m=>{ out+=`${m.label}: ${ld('mx-'+m.id)||'[Not decided]'}\n  Justification: ${ld('mj-'+m.id)||'[None]'}\n`; });
+  out += '\nACTIVITY 9 — CERTIFICATION DETERMINATION\n'+'-'.repeat(40)+'\n';
+  certQs.forEach(q=>{ out+=`${q.q}\n  ${ld('cq-'+q.id)||'[No response]'}\n\n`; });
+  out += 'ACTIVITY 10 — EXECUTIVE BRIEFING\n'+'-'.repeat(40)+'\n';
+  execQs.forEach(q=>{ out+=`${q.q}\n  ${ld('eq-'+q.id)||'[No response]'}\n\n`; });
+  const total = rubricData.reduce((s,_,i)=>s+(parseInt(localStorage.getItem(K+'rub-'+i))||0),0);
+  out += `RUBRIC SCORE: ${total}/100\n`;
+  const blob = new Blob([out],{type:'text/plain'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='FFSI-Applicability-Study.txt'; a.click();
+}
+
+function clearAll() {
+  if(!confirm('Clear all responses? This cannot be undone.')) return;
+  Object.keys(localStorage).filter(k=>k.startsWith(K)).forEach(k=>localStorage.removeItem(k));
+  location.reload();
+}
+
+/* ════════════════════════════
+   INIT
+════════════════════════════ */
+document.addEventListener('DOMContentLoaded',()=>{
+  const theme = localStorage.getItem(K+'theme')||'light';
+  document.documentElement.setAttribute('data-theme',theme);
+  document.getElementById('themeBtn').textContent = theme==='dark'?'☀️ Light Mode':'🌙 Dark Mode';
+  renderGloss();
+  renderContracts();
+  renderData();
+  renderScope();
+  renderBoundaryQs();
+  renderPersonnel();
+  renderDocs();
+  renderMatrix();
+  renderRisks();
+  renderCert();
+  renderExec();
+  renderDebrief();
+  renderRubric();
+  renderTimer();
+  updatePB();
+});
+</script>
+</body>
+</html>
