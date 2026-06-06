@@ -699,24 +699,24 @@ pre.code-block {
 
   <div class="sidebar-nav">
     <div class="nav-group-label">Case Study</div>
-    <div class="nav-item active" onclick="scrollTo('header')"><span class="nav-icon">🏛</span> Dashboard</div>
-    <div class="nav-item" onclick="scrollTo('overview')"><span class="nav-icon">🏢</span> Company Overview</div>
-    <div class="nav-item" onclick="scrollTo('locations')"><span class="nav-icon">📍</span> Locations</div>
-    <div class="nav-item" onclick="scrollTo('contracts')"><span class="nav-icon">📋</span> Federal Contracts <span class="nav-num">6</span></div>
+    <div class="nav-item active" onclick="navTo('header',this)"><span class="nav-icon">🏛</span> Dashboard</div>
+    <div class="nav-item" onclick="navTo('overview',this)"><span class="nav-icon">🏢</span> Company Overview</div>
+    <div class="nav-item" onclick="navTo('locations',this)"><span class="nav-icon">📍</span> Locations</div>
+    <div class="nav-item" onclick="navTo('contracts',this)"><span class="nav-icon">📋</span> Federal Contracts <span class="nav-num">6</span></div>
 
     <div class="nav-group-label">Audit Materials</div>
-    <div class="nav-item" onclick="scrollTo('personnel')"><span class="nav-icon">👥</span> Personnel &amp; Roles <span class="nav-num">25</span></div>
-    <div class="nav-item" onclick="scrollTo('it-infra')"><span class="nav-icon">🌐</span> IT Infrastructure</div>
-    <div class="nav-item" onclick="scrollTo('assets')"><span class="nav-icon">💻</span> Asset Inventory <span class="nav-num">35</span></div>
-    <div class="nav-item" onclick="scrollTo('physical')"><span class="nav-icon">🔒</span> Physical Security</div>
+    <div class="nav-item" onclick="navTo('personnel',this)"><span class="nav-icon">👥</span> Personnel &amp; Roles <span class="nav-num">25</span></div>
+    <div class="nav-item" onclick="navTo('it-infra',this)"><span class="nav-icon">🌐</span> IT Infrastructure</div>
+    <div class="nav-item" onclick="navTo('assets',this)"><span class="nav-icon">💻</span> Asset Inventory <span class="nav-num">35</span></div>
+    <div class="nav-item" onclick="navTo('physical',this)"><span class="nav-icon">🔒</span> Physical Security</div>
 
     <div class="nav-group-label">Audit Findings</div>
-    <div class="nav-item" onclick="scrollTo('risks')"><span class="nav-icon">⚠️</span> Risks &amp; Incidents <span class="nav-num">10</span></div>
-    <div class="nav-item" onclick="scrollTo('gaps')"><span class="nav-icon">🔍</span> Audit Gaps <span class="nav-num">12</span></div>
-    <div class="nav-item" onclick="scrollTo('evidence')"><span class="nav-icon">📁</span> Evidence Library <span class="nav-num">15</span></div>
+    <div class="nav-item" onclick="navTo('risks',this)"><span class="nav-icon">⚠️</span> Risks &amp; Incidents <span class="nav-num">10</span></div>
+    <div class="nav-item" onclick="navTo('gaps',this)"><span class="nav-icon">🔍</span> Audit Gaps <span class="nav-num">12</span></div>
+    <div class="nav-item" onclick="navTo('evidence',this)"><span class="nav-icon">📁</span> Evidence Library <span class="nav-num">15</span></div>
 
     <div class="nav-group-label">Student Work</div>
-    <div class="nav-item" onclick="scrollTo('tasks')"><span class="nav-icon">📝</span> Student Tasks <span class="nav-num">12</span></div>
+    <div class="nav-item" onclick="navTo('tasks',this)"><span class="nav-icon">📝</span> Student Tasks <span class="nav-num">12</span></div>
   </div>
 </nav>
 
@@ -2259,11 +2259,11 @@ function toggleExpand(header) {
   card.classList.toggle('expanded');
 }
 
-function scrollTo(id) {
-  const el = document.getElementById(id);
-  if (el) el.scrollIntoView({behavior:'smooth'});
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  event && event.currentTarget && event.currentTarget.classList.add('active');
+function navTo(id, el) {
+  const target = document.getElementById(id);
+  if (target) target.scrollIntoView({behavior:'smooth'});
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (el) el.classList.add('active');
 }
 
 function switchTab(prefix, panel, btn) {
