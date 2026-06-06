@@ -48,7 +48,7 @@
             padding-bottom: 60px;
         }
 
-        /* --- Header & Navigation Banner --- */
+        /* --- Header Banner --- */
         header {
             background-color: var(--bg-secondary);
             border-bottom: 1px solid var(--border-color);
@@ -76,7 +76,6 @@
             letter-spacing: 0.5px;
         }
 
-        /* --- Premium Theme Toggle Button --- */
         .theme-toggle-btn {
             background-color: var(--bg-primary);
             color: var(--text-primary);
@@ -97,7 +96,7 @@
             color: var(--brand-green);
         }
 
-        /* --- Main Content Layout --- */
+        /* --- Main Layout Frame --- */
         main {
             max-width: 1280px;
             margin: 0 auto;
@@ -124,12 +123,12 @@
             margin: 0 auto;
         }
 
-        /* --- 3D Flippable Grid Mechanics --- */
+        /* --- 3D Flippable Configuration --- */
         .exercise-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 30px;
-            perspective: 1000px; /* Essential for 3D card layout depth */
+            perspective: 1000px;
         }
 
         .card-container {
@@ -148,7 +147,6 @@
             box-shadow: var(--shadow-md);
         }
 
-        /* Target class appended by JavaScript on interaction */
         .card-container.is-flipped .card-inner {
             transform: rotateY(180deg);
         }
@@ -166,7 +164,6 @@
             border: 1px solid var(--border-color);
         }
 
-        /* --- Card Front Face Styling --- */
         .card-front {
             background-color: var(--bg-card-front);
             color: var(--text-primary);
@@ -226,7 +223,6 @@
             color: #22c55e;
         }
 
-        /* --- Card Back Face Styling --- */
         .card-back {
             background-color: var(--bg-card-back);
             color: var(--text-light);
@@ -242,7 +238,6 @@
             margin-bottom: 16px;
         }
 
-        /* Custom Scrollbar for Card Descriptions if text runs long */
         .card-description::-webkit-scrollbar {
             width: 4px;
         }
@@ -272,7 +267,6 @@
             transform: translateY(-1px);
         }
 
-        /* --- Footer Real Estate --- */
         footer {
             text-align: center;
             margin-top: 80px;
@@ -298,173 +292,88 @@
     <main>
         <section class="hero-section">
             <h1>Practical Exercises in Understanding and Implementing CMMC in an Organization</h1>
-            <p>Select an architectural challenge or auditing workbook card below to view requirements and build operational artifacts for validation.</p>
+            <p>Select a module card below to view requirements. All tasks resolve to links inside the current directory.</p>
         </section>
 
         <div class="exercise-grid" id="exercisesGrid"></div>
 
         <footer>
-            <p>© 2026 CMMC Faculty Development Training Workspace. Built with white, emerald green, and black accents for course framework continuity.</p>
+            <p>© 2026 CMMC Faculty Development Training Workspace. Built using white, emerald green, and black accents.</p>
         </footer>
     </main>
 
     <script>
-        // Comprehensive Dataset Mapping for 12 Custom Content Objects
-        const exercises = [
-            {
-                id: 1,
-                title: "CMMC Role Assignment and Governance Exercise",
-                desc: "Map organizational administrative structures against core CMMC operational frameworks. Establish accountability matrices, review critical leadership mandates, and document oversight configurations across corporate administrative domains.",
-                file: "assignment1.html"
-            },
-            {
-                id: 2,
-                title: "CMMC Ecosystem Workforce Planning",
-                desc: "Architect human capital development pipelines aligned to maturity benchmarks. Project security awareness mandates, calculate necessary credentialing pathways, and plan long-term talent profiles across information domains.",
-                file: "assignment2.html"
-            },
-            {
-                id: 3,
-                title: "CMMC Asset Inventory and Categorization",
-                desc: "Discover, classify, and track physical and logical elements interacting with critical datasets. Construct technical inventory registers separating scoping assets into specialized corporate processing tiers.",
-                file: "assignment3.html"
-            },
-            {
-                id: 4,
-                title: "Building a CMMC System Security Plan (SSP)",
-                desc: "Author formal security boundary profiles detailing technical operations, implementation scopes, and boundary architectures protecting complex corporate technical environments.",
-                file: "assignment4.html"
-            },
-            {
-                id: 5,
-                title: "Building a CMMC Maintenance Report",
-                desc: "Formulate technical logging architectures tracking infrastructure alterations, equipment upkeep, and operational equipment maintenance processes ensuring asset consistency.",
-                file: "assignment5.html"
-            },
-            {
-                id: 6,
-                title: "Performing a CMMC Applicability Study",
-                desc: "Execute systematic review routines cross-referencing organizational infrastructure with standard framework controls to isolate irrelevant rules and clarify high-impact criteria.",
-                file: "assignment6.html"
-            },
-            {
-                id: 7,
-                title: "Constructing a CMMC Access Control Matrix",
-                desc: "Map granular privilege schemas establishing role-based parameters, identity validation processes, and context-dependent rules restricting administrative data views.",
-                file: "assignment7.html"
-            },
-            {
-                id: 8,
-                title: "Building a CMMC Audit Log & Monitoring Report",
-                desc: "Engineer automated capture routines recording technical system interactions, system exceptions, and security events to satisfy modern data forensic requirements.",
-                file: "assignment8.html"
-            },
-            {
-                id: 9,
-                title: "Building and Maintaining a CMMC Configuration Management Plan",
-                desc: "Develop explicit baselines, tracking mechanics, and control parameters regulating unexpected deviations from established software and hardware states.",
-                file: "assignment9.html"
-            },
-            {
-                id: 10,
-                title: "Implementing a CMMC Incident Response Plan (IRP)",
-                desc: "Draft operational notification chains, classification tiers, and recovery procedures to isolate threats, mitigate vector impact, and report network anomalies.",
-                file: "assignment10.html"
-            },
-            {
-                id: 11,
-                title: "Constructing a CMMC Vulnerability Report",
-                desc: "Analyze technical environments for security flaws, configuration defects, and outdated system configurations to prioritize urgent remediation actions across assets.",
-                file: "assignment11.html"
-            },
-            {
-                id: 12,
-                title: "Constructing the Plan of Action & Milestones (POA&M) Dashboard",
-                desc: "Design remediation tracking modules evaluating current implementation delays, assigning remediation assets, and projecting task correction dates.",
-                file: "assignment12.html"
-            },
-            {
-                id: 13, // Mapped to follow the 12th logical distinct item requested
-                title: "Completing a CMMC Security Assessment Report (SAR)",
-                desc: "Compile final audit feedback detailing testing methods, performance metrics, and compliance statuses to state corporate readiness for authorization.",
-                file: "assignment13.html"
-            }
+        const exercisesData = [
+            { title: "CMMC Role Assignment and Governance Exercise", desc: "Map organizational administrative structures against core CMMC operational frameworks. Establish accountability matrices and review leadership mandates." },
+            { title: "CMMC Ecosystem Workforce Planning", desc: "Architect human capital development pipelines aligned to maturity benchmarks. Project security awareness mandates and plan long-term talent profiles." },
+            { title: "CMMC Asset Inventory and Categorization", desc: "Discover, classify, and track physical and logical elements interacting with critical datasets. Construct technical inventory registers for specialized processing tiers." },
+            { title: "Building a CMMC System Security Plan (SSP)", desc: "Author formal security boundary profiles detailing technical operations, implementation scopes, and boundary architectures protecting complex environments." },
+            { title: "Building a CMMC Maintenance Report", desc: "Formulate technical logging architectures tracking infrastructure alterations, equipment upkeep, and operational maintenance processes." },
+            { title: "Performing a CMMC Applicability Study", desc: "Execute systematic review routines cross-referencing organizational infrastructure with standard framework controls to isolate irrelevant rules and clarify high-impact criteria." },
+            { title: "Constructing a CMMC Access Control Matrix", desc: "Map granular privilege schemas establishing role-based parameters, identity validation processes, and context-dependent rules for data access." },
+            { title: "Building a CMMC Audit Log & Monitoring Report", desc: "Engineer automated capture routines recording technical system interactions, system exceptions, and security events for data forensics." },
+            { title: "Building and Maintaining a CMMC Configuration Management Plan", desc: "Develop explicit baselines, tracking mechanics, and control parameters regulating unexpected deviations from established software and hardware states." },
+            { title: "Implementing a CMMC Incident Response Plan (IRP)", desc: "Draft operational notification chains, classification tiers, and recovery procedures to isolate threats and mitigate vector impact." },
+            { title: "Constructing a CMMC Vulnerability Report", desc: "Analyze technical environments for security flaws and configuration defects to prioritize urgent remediation actions across assets." },
+            { title: "Constructing the Plan of Action & Milestones (POA&M) Dashboard", desc: "Design remediation tracking modules evaluating current implementation delays, assigning assets, and projecting correction dates." },
+            { title: "Completing a CMMC Security Assessment Report (SAR)", desc: "Compile final audit feedback detailing testing methods, performance metrics, and compliance statuses for authorization readiness." }
         ];
 
-        // Process the sequential list (Compensating for user's double "4)" input to cleanly yield exactly 12 continuous visual objects)
-        // Array item slice/adjustment to perfectly maintain exactly 12 structured items:
-        const cleanExercisesList = exercises.slice(0, 12).map((item, index) => {
+        // Slice to exactly 12 items and use continuous clean indexing
+        const finalExercises = exercisesData.slice(0, 12).map((item, index) => {
+            const num = index + 1;
             return {
                 ...item,
-                displayId: index + 1,
-                file: `assignment ${index + 1}.html`
+                id: num,
+                url: `./assignment${num}.html` // Local directory relative path structure
             };
         });
 
-        const gridEl = document.getElementById('exercisesGrid');
+        const grid = document.getElementById('exercisesGrid');
 
-        // Dynamically build and inject card DOM components
-        cleanExercisesList.forEach(ex => {
-            const container = document.createElement('div');
-            container.className = 'card-container';
-            container.setAttribute('role', 'button');
-            container.setAttribute('tabindex', '0');
-            container.setAttribute('aria-label', `Exercise ${ex.displayId}: ${ex.title}. Click to flip for description.`);
+        finalExercises.forEach(ex => {
+            const card = document.createElement('div');
+            card.className = 'card-container';
+            card.setAttribute('role', 'button');
+            card.setAttribute('tabindex', '0');
 
-            container.innerHTML = `
+            card.innerHTML = `
                 <div class="card-inner">
                     <div class="card-face card-front">
                         <div class="card-header-meta">
-                            <span class="exercise-badge">Exercise ${ex.displayId}</span>
+                            <span class="exercise-badge">Exercise ${ex.id}</span>
                             <span class="action-indicator">🔄 Flip</span>
                         </div>
                         <h2 class="card-title">${ex.title}</h2>
-                        <div class="card-hint">
-                            <span>Read Scope Details</span> ➔
-                        </div>
+                        <div class="card-hint">View Details ➔</div>
                     </div>
                     <div class="card-face card-back">
                         <div class="card-description">
                             <p>${ex.desc}</p>
                         </div>
-                        <a href="${ex.file}" class="launch-btn" onclick="event.stopPropagation();">Launch Assignment</a>
+                        <a href="${ex.url}" class="launch-btn" onclick="event.stopPropagation();">Launch Assignment</a>
                     </div>
                 </div>
             `;
 
-            // Click Interaction triggers 3D Transform flip
-            container.addEventListener('click', () => {
-                container.classList.toggle('is-flipped');
-            });
-
-            // Accessibility Keypress Handling
-            container.addEventListener('keydown', (e) => {
+            card.addEventListener('click', () => card.classList.toggle('is-flipped'));
+            card.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
-                    container.classList.toggle('is-flipped');
+                    card.classList.toggle('is-flipped');
                 }
             });
 
-            gridEl.appendChild(container);
+            grid.appendChild(card);
         });
 
-        // --- Theme Engine Control Routine ---
-        const themeToggleBtn = document.getElementById('themeToggle');
-        const themeIcon = document.getElementById('themeIcon');
-        const themeText = document.getElementById('themeText');
-
-        // Initialize and handle UI toggles
-        themeToggleBtn.addEventListener('click', () => {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            if (currentTheme === 'dark') {
-                document.documentElement.removeAttribute('data-theme');
-                themeIcon.textContent = '☀️';
-                themeText.textContent = 'Light Mode';
-            } else {
-                document.documentElement.setAttribute('data-theme', 'dark');
-                themeIcon.textContent = '🌙';
-                themeText.textContent = 'Dark Mode';
-            }
+        // --- Theme Egnine ---
+        const themeBtn = document.getElementById('themeToggle');
+        themeBtn.addEventListener('click', () => {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+            document.getElementById('themeIcon').textContent = isDark ? '☀️' : '🌙';
+            document.getElementById('themeText').textContent = isDark ? 'Light Mode' : 'Dark Mode';
         });
     </script>
 </body>
