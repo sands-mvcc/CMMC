@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FFSI — Incident Response Plan Exercise</title>
+<style>
+/* ═══════════════════════════════════════════════
+   ROOT & THEME
+═══════════════════════════════════════════════ */
+:root {
+  --navy:    #0d1f3c;
+  --navy2:   #112244;
+  --navy3:   #0a1628;
+  --ox:      #8b1a1a;
+  --ox2:     #a52020;
+  --gold:    #c8a84b;
+  --gold2:   #e0c060;
+  --teal:    #1a7a6e;
+  --teal2:   #22a090;
+  --cyan:    #4fc3c3;
+  --slate:   #1e2d45;
+  --slate2:  #253550;
+  --text:    #e2e8f4;
+  --text-m:  #94a8c4;
+  --text-d:  #607090;
+  --border:  #1e3058;
+  --border2: #2a4070;
+  --bg:      #0a0f1e;
+  --bg-card: #111827;
+  --bg-inp:  #0d1830;
+  --green:   #22c55e;
+  --red:     #ef4444;
+  --amber:   #f59e0b;
+  --blue:    #3b82f6;
+  --purple:  #a855f7;
+  --shadow:  0 4px 24px rgba(0,0,0,.5);
+  --radius:  10px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.6}
+a{color:var(--cyan)}
+
+/* ── TOPBAR ── */
+#topbar{
+  background:var(--navy3);border-bottom:1px solid var(--border);
+  padding:.45rem 1.25rem;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;
+  position:sticky;top:0;z-index:200;
+}
+.topbar-left{display:flex;align-items:center;gap:.75rem}
+.domain-badge{
+  background:var(--ox);color:#fff;font-weight:800;font-size:1rem;
+  width:2.4rem;height:2.4rem;border-radius:6px;
+  display:flex;align-items:center;justify-content:center;letter-spacing:.05em;flex-shrink:0;
+}
+.topbar-title{font-size:.9rem;font-weight:600;color:var(--text);line-height:1.3}
+.topbar-title small{display:block;font-size:.73rem;color:var(--text-m);font-weight:400}
+.topbar-right{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+.tb-btn{
+  background:var(--slate);border:1px solid var(--border2);color:var(--text-m);
+  border-radius:6px;padding:.28rem .75rem;font-size:.78rem;cursor:pointer;
+  transition:background .15s,color .15s;white-space:nowrap;
+}
+.tb-btn:hover{background:var(--slate2);color:var(--text)}
+.tb-btn.danger{border-color:#4a1a1a;color:#f88}
+.tb-btn.danger:hover{background:#2a0f0f;color:#faa}
+
+/* ── HERO ── */
+#hero{
+  background:linear-gradient(135deg,var(--navy3) 0%,#0f1e40 45%,#14102a 100%);
+  border-bottom:2px solid var(--ox);
+  padding:2.5rem 1.5rem 2rem;text-align:center;position:relative;overflow:hidden;
+}
+#hero::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 65% 35%,rgba(139,26,26,.14) 0%,transparent 55%),
+             radial-gradient(ellipse at 20% 70%,rgba(79,195,195,.05) 0%,transparent 45%);
+  pointer-events:none;
+}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:.5rem;
+  font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:.75rem;
+}
+#hero h1{font-size:clamp(1.5rem,4vw,2.4rem);font-weight:800;color:#fff;letter-spacing:-.02em;margin-bottom:.5rem;line-height:1.2}
+#hero h1 em{color:var(--gold);font-style:normal}
+#hero .hero-sub{font-size:.9rem;color:var(--text-m);max-width:600px;margin:0 auto 1.4rem}
+.hero-chips{display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem}
+.chip{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:999px;padding:.28rem .85rem;font-size:.75rem;font-weight:600;color:var(--text-m)}
+.chip.warn{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.3);color:var(--amber)}
+.chip.alert{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.3);color:#f99}
+
+/* ── TIMER ── */
+#timer-bar{
+  background:var(--navy2);border-bottom:1px solid var(--border);
+  padding:.5rem 1.25rem;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;
+}
+.timer-display{font-family:'Courier New',monospace;font-size:1.4rem;font-weight:700;color:var(--cyan);letter-spacing:.08em}
+.timer-display.warn{color:var(--amber)}
+.timer-display.danger{color:var(--red);animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
+.timer-controls{display:flex;gap:.4rem;align-items:center}
+.tc-btn{background:var(--slate);border:1px solid var(--border2);color:var(--text);border-radius:5px;padding:.22rem .7rem;font-size:.82rem;cursor:pointer}
+.tc-btn:hover{background:var(--slate2)}
+.progress-wrap{flex:1;min-width:180px;max-width:340px}
+.progress-label{font-size:.73rem;color:var(--text-m);margin-bottom:.3rem}
+.progress-bar{background:var(--slate);border-radius:999px;height:8px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--ox),var(--gold));border-radius:999px;transition:width .4s}
+
+/* ── TAB NAV ── */
+#tab-nav{
+  background:var(--navy3);border-bottom:1px solid var(--border);
+  padding:0 1.25rem;overflow-x:auto;white-space:nowrap;
+  position:sticky;top:52px;z-index:150;
+}
+.tab-nav-inner{display:inline-flex;gap:0;min-width:100%}
+.tab-btn{
+  background:none;border:none;border-bottom:3px solid transparent;
+  color:var(--text-d);font-size:.78rem;font-weight:600;
+  padding:.7rem .9rem;cursor:pointer;transition:color .15s,border-color .15s;
+  white-space:nowrap;letter-spacing:.02em;
+}
+.tab-btn:hover{color:var(--text-m)}
+.tab-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
+
+/* ── MAIN ── */
+main{max-width:1100px;margin:0 auto;padding:1.75rem 1.25rem 5rem}
+
+/* ── SECTION CARDS ── */
+.section-card{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:1.5rem 1.6rem;margin-bottom:1.5rem;
+  box-shadow:var(--shadow);display:none;
+}
+.section-card.active{display:block}
+.section-header{display:flex;align-items:flex-start;gap:1rem;margin-bottom:1.1rem}
+.section-icon{font-size:1.8rem;flex-shrink:0;width:3rem;height:3rem;background:var(--slate);border-radius:8px;display:flex;align-items:center;justify-content:center}
+.section-meta h2{font-size:1.2rem;font-weight:800;color:#fff;margin-bottom:.2rem}
+.pts{display:inline-block;background:var(--ox);color:#fff;font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.12rem .55rem;border-radius:4px}
+.pts.no-pts{background:var(--slate)}
+.instr{background:var(--slate);border-left:3px solid var(--gold);border-radius:0 6px 6px 0;padding:.7rem 1rem;font-size:.85rem;color:var(--text-m);margin-bottom:1.25rem}
+.instr strong{color:var(--gold)}
+
+/* ── SCENARIO BOX ── */
+.scenario-box{
+  background:linear-gradient(135deg,rgba(139,26,26,.15),rgba(26,26,60,.15));
+  border:1px solid rgba(239,68,68,.3);border-radius:8px;
+  padding:1.1rem 1.25rem;margin-bottom:1.25rem;position:relative;
+}
+.scenario-box::before{content:'🚨 ACTIVE INCIDENT';position:absolute;top:-1px;left:1rem;
+  background:var(--red);color:#fff;font-size:.65rem;font-weight:800;letter-spacing:.08em;
+  padding:.12rem .6rem;border-radius:0 0 5px 5px}
+.scenario-box .sc-title{font-weight:800;color:#f99;margin-bottom:.5rem;font-size:.95rem;padding-top:.6rem}
+.scenario-body{font-size:.86rem;color:var(--text-m);line-height:1.7}
+.scenario-body p{margin-bottom:.6rem}
+.scenario-body strong{color:var(--text)}
+
+/* ── GLOSSARY ── */
+.glossary-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(265px,1fr));gap:.75rem}
+.gloss-item{background:var(--slate);border:1px solid var(--border2);border-radius:7px;padding:.75rem .9rem}
+.gloss-term{font-weight:700;color:var(--cyan);font-size:.85rem;margin-bottom:.3rem}
+.gloss-def{font-size:.8rem;color:var(--text-m);line-height:1.5}
+
+/* ── INTRO ── */
+.intro-body{font-size:.88rem;color:var(--text-m);line-height:1.7}
+.intro-body p{margin-bottom:.85rem}
+.intro-body h3{color:var(--gold);font-size:.95rem;margin:1.1rem 0 .45rem}
+.intro-body ul{padding-left:1.4rem;margin-bottom:.85rem}
+.intro-body ul li{margin-bottom:.3rem}
+.nist-tag{display:inline-block;background:var(--navy2);border:1px solid var(--border2);border-radius:4px;padding:.1rem .5rem;font-size:.75rem;font-weight:700;color:var(--cyan);font-family:'Courier New',monospace;margin-right:.25rem}
+
+/* ── OBJECTIVES ── */
+.objectives-list{counter-reset:obj;display:flex;flex-direction:column;gap:.7rem}
+.obj-item{display:flex;gap:.9rem;align-items:flex-start;background:var(--slate);border-radius:7px;padding:.75rem 1rem;font-size:.86rem;color:var(--text-m)}
+.obj-num{counter-increment:obj;background:var(--ox);color:#fff;font-weight:800;font-size:.8rem;min-width:1.6rem;height:1.6rem;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+/* ── TABLES ── */
+.tbl-wrap{overflow-x:auto;margin:1rem 0}
+table{width:100%;border-collapse:collapse;font-size:.82rem}
+thead tr{background:var(--navy2)}
+thead th{padding:.6rem .75rem;text-align:left;font-weight:700;color:var(--gold);font-size:.75rem;letter-spacing:.05em;text-transform:uppercase;border-bottom:2px solid var(--ox);white-space:nowrap}
+tbody tr{border-bottom:1px solid var(--border)}
+tbody tr:nth-child(even){background:rgba(255,255,255,.02)}
+tbody tr:hover{background:rgba(255,255,255,.04)}
+tbody td{padding:.55rem .75rem;color:var(--text);vertical-align:top}
+td.pre-fill{color:var(--text-m);font-style:italic;font-size:.79rem}
+td.label-cell{font-weight:600;color:var(--text);white-space:nowrap;font-size:.82rem}
+td.field-label{font-weight:700;color:var(--cyan);white-space:nowrap;font-size:.8rem;width:170px}
+
+/* ── FORM CONTROLS ── */
+select,textarea,input[type=text],input[type=number]{
+  background:var(--bg-inp);border:1px solid var(--border2);color:var(--text);
+  border-radius:5px;font-size:.82rem;font-family:inherit;
+  padding:.35rem .55rem;width:100%;transition:border-color .15s;
+}
+select:focus,textarea:focus,input:focus{outline:none;border-color:var(--cyan)}
+textarea{resize:vertical;min-height:52px;line-height:1.5}
+
+/* ── YES/NO TOGGLES ── */
+.yn-group{display:flex;gap:.4rem;align-items:center;flex-wrap:wrap}
+.yn-btn{background:var(--slate);border:1px solid var(--border2);color:var(--text-m);border-radius:4px;padding:.2rem .6rem;font-size:.75rem;font-weight:600;cursor:pointer;transition:all .12s;white-space:nowrap}
+.yn-btn.yes.active{background:#0d2a0d;border-color:var(--green);color:var(--green)}
+.yn-btn.no.active{background:#2a0d0d;border-color:var(--red);color:var(--red)}
+.yn-btn.unc.active{background:#1a150a;border-color:var(--amber);color:var(--amber)}
+.yn-btn.med.active{background:#0d1a2a;border-color:var(--blue);color:var(--blue)}
+
+/* ── SEVERITY BADGES ── */
+.sev-btn{background:var(--slate);border:1px solid var(--border2);color:var(--text-m);border-radius:5px;padding:.22rem .75rem;font-size:.76rem;font-weight:700;cursor:pointer;transition:all .12s;white-space:nowrap}
+.sev-btn.critical.active{background:#2a0505;border-color:#cc2222;color:#ff6666}
+.sev-btn.high.active{background:#2a1005;border-color:#cc5500;color:#ff9944}
+.sev-btn.medium.active{background:#1a150a;border-color:var(--amber);color:var(--amber)}
+.sev-btn.low.active{background:#0d1a0d;border-color:var(--green);color:var(--green)}
+
+/* ── FINDING BLOCKS ── */
+.finding-block{background:var(--slate);border:1px solid var(--border2);border-radius:8px;padding:1rem 1.1rem;margin-bottom:.85rem}
+.finding-block .fb-header{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:.7rem}
+.finding-badge{background:var(--ox);color:#fff;font-size:.7rem;font-weight:700;padding:.15rem .55rem;border-radius:4px;white-space:nowrap;flex-shrink:0;font-family:'Courier New',monospace}
+.finding-badge.teal{background:var(--teal)}
+.finding-badge.amber{background:#7a5a0a}
+.finding-badge.blue{background:#1a3a7a}
+.finding-badge.purple{background:#4a1a7a}
+.finding-badge.green{background:#0d5a20}
+.finding-text{font-size:.88rem;color:var(--text);font-weight:600}
+.finding-sub{font-size:.78rem;color:var(--text-m);margin-top:.2rem;line-height:1.5}
+.fb-fields{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+@media(max-width:600px){.fb-fields{grid-template-columns:1fr}}
+.fb-fields label{font-size:.73rem;color:var(--text-d);margin-bottom:.2rem;display:block}
+
+/* ── LIFECYCLE PHASES ── */
+.lifecycle-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:.9rem;margin:1rem 0}
+.phase-card{background:var(--slate);border:1px solid var(--border2);border-radius:8px;padding:.9rem 1rem}
+.phase-header{display:flex;align-items:center;gap:.6rem;margin-bottom:.6rem}
+.phase-num{width:1.8rem;height:1.8rem;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:800;flex-shrink:0}
+.ph-prep{background:#0d2a3a;color:#4fc3c3;border:1px solid #1a5a7a}
+.ph-det{background:#2a2a0a;color:#c8a84b;border:1px solid #5a5a0a}
+.ph-con{background:#2a100a;color:#ff9944;border:1px solid #7a2a0a}
+.ph-era{background:#2a0a0a;color:#ff6666;border:1px solid #7a0a0a}
+.ph-rec{background:#0a2a0a;color:#22c55e;border:1px solid #0a5a0a}
+.ph-les{background:#1a0a2a;color:#c084fc;border:1px solid #4a0a7a}
+.phase-title{font-weight:800;font-size:.88rem;color:var(--text)}
+.phase-nist{font-size:.68rem;font-family:'Courier New',monospace;color:var(--text-d);margin-bottom:.5rem}
+
+/* ── TEAM ASSIGNMENT TABLE ── */
+.team-role-badge{display:inline-block;padding:.12rem .5rem;border-radius:4px;font-size:.72rem;font-weight:700;letter-spacing:.04em}
+.role-coord{background:#1a3a0a;border:1px solid #3a7a0a;color:#88cc44}
+.role-tech{background:#0a1a3a;border:1px solid #0a3a7a;color:#44aaff}
+.role-comm{background:#2a1a0a;border:1px solid #7a4a0a;color:#ffaa44}
+.role-comp{background:#0a2a2a;border:1px solid #0a5a5a;color:#44cccc}
+.role-mgmt{background:#2a0a2a;border:1px solid #5a0a5a;color:#cc44cc}
+.role-evid{background:#1a1a0a;border:1px solid #4a4a0a;color:#bbbb44}
+
+/* ── RUBRIC ── */
+.rubric-table thead th:first-child{width:180px}
+.score-input{background:var(--bg-inp);border:1px solid var(--border2);color:var(--text);border-radius:5px;font-size:.9rem;font-weight:700;width:70px;text-align:center;padding:.3rem}
+.score-total-row{background:var(--navy2)!important}
+.score-total-row td{font-weight:800;color:var(--gold)!important;font-size:.9rem}
+.rating-badge{display:inline-block;padding:.2rem .7rem;border-radius:5px;font-size:.8rem;font-weight:700;letter-spacing:.04em}
+.rating-excellent{background:#0d2a0d;border:1px solid var(--green);color:var(--green)}
+.rating-proficient{background:#0d1a2a;border:1px solid var(--blue);color:var(--blue)}
+.rating-developing{background:#1a150a;border:1px solid var(--amber);color:var(--amber)}
+.rating-needs{background:#2a0d0d;border:1px solid var(--red);color:var(--red)}
+
+/* ── DEBRIEF ── */
+.debrief-list{display:flex;flex-direction:column;gap:.7rem;counter-reset:dq}
+.dq-item{background:var(--slate);border-radius:7px;padding:.75rem 1rem;display:flex;gap:.85rem;align-items:flex-start}
+.dq-num{counter-increment:dq;background:var(--teal);color:#fff;font-weight:800;font-size:.78rem;min-width:1.6rem;height:1.6rem;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.dq-text{color:var(--text-m);line-height:1.55;font-size:.86rem}
+
+/* ── SCORE BAR ── */
+#score-bar{position:fixed;bottom:0;left:0;right:0;background:var(--navy3);border-top:1px solid var(--border);padding:.5rem 1.25rem;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;z-index:100;font-size:.82rem}
+.sb-stat{display:flex;flex-direction:column;align-items:center}
+.sb-val{font-size:1.1rem;font-weight:800;color:var(--gold)}
+.sb-label{font-size:.68rem;color:var(--text-d);text-transform:uppercase;letter-spacing:.06em}
+.sb-rating{font-size:.85rem;font-weight:700;padding:.2rem .7rem;border-radius:5px}
+
+/* ── UTILITIES ── */
+.mt1{margin-top:.75rem}.mt2{margin-top:1.25rem}
+.text-sm{font-size:.8rem;color:var(--text-m)}
+.text-gold{color:var(--gold)}.text-cyan{color:var(--cyan)}.text-red{color:var(--red)}
+.hr{border:none;border-top:1px solid var(--border);margin:1.25rem 0}
+.pill{display:inline-block;background:var(--slate);border:1px solid var(--border2);border-radius:4px;padding:.08rem .45rem;font-size:.72rem;color:var(--text-m);margin:.1rem}
+.pill.cui{background:#2a0d0d;border-color:#6a1a1a;color:#f99}
+.pill.fci{background:#0d1a2a;border-color:#1a4a6a;color:#6ac}
+.pill.sys{background:#0a1a2a;border-color:#1a3a5a;color:#8ac}
+.alert-box{background:rgba(139,26,26,.15);border:1px solid var(--ox2);border-radius:6px;padding:.7rem 1rem;font-size:.82rem;color:#f99;margin:.75rem 0}
+.info-box{background:rgba(26,122,110,.12);border:1px solid var(--teal);border-radius:6px;padding:.7rem 1rem;font-size:.82rem;color:var(--cyan);margin:.75rem 0}
+.amber-box{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.3);border-radius:6px;padding:.7rem 1rem;font-size:.82rem;color:var(--amber);margin:.75rem 0}
+
+/* ── TIMELINE STRIP ── */
+.timeline{display:flex;overflow-x:auto;gap:0;margin:1rem 0;padding-bottom:.5rem}
+.tl-step{flex:1;min-width:110px;text-align:center;position:relative;padding:.75rem .5rem .5rem}
+.tl-step::after{content:'→';position:absolute;right:-.5rem;top:50%;transform:translateY(-50%);color:var(--text-d);font-size:.9rem;z-index:1}
+.tl-step:last-child::after{display:none}
+.tl-dot{width:2.2rem;height:2.2rem;border-radius:50%;margin:0 auto .4rem;display:flex;align-items:center;justify-content:center;font-size:.9rem;border:2px solid}
+.tl-label{font-size:.72rem;font-weight:700;color:var(--text-m);line-height:1.3}
+
+/* ── PRINT ── */
+@media print{
+  #topbar,#timer-bar,#tab-nav,#score-bar{display:none!important}
+  .section-card{display:block!important;break-inside:avoid;box-shadow:none;border:1px solid #ccc}
+  body{background:#fff;color:#000}
+  select,textarea,input{border:1px solid #999}
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════ TOPBAR ════════════ -->
+<div id="topbar">
+  <div class="topbar-left">
+    <div class="domain-badge">IR</div>
+    <div class="topbar-title">
+      FFSI — Incident Response Plan Exercise
+      <small>CMMC 2.0 Workshop · NIST SP 800-171 Domain IR · 20 Minutes</small>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <button class="tb-btn" onclick="window.print()">🖨 Print</button>
+    <button class="tb-btn" onclick="exportAnswers()">📤 Export</button>
+    <button class="tb-btn danger" onclick="confirmReset()">↺ Reset</button>
+  </div>
+</div>
+
+<!-- ════════════ HERO ════════════ -->
+<div id="hero">
+  <div class="hero-eyebrow">🚨 CMMC 2.0 · Incident Response Domain</div>
+  <h1>FFSI Cyber Incident<br/><em>Response Plan Exercise</em></h1>
+  <p class="hero-sub">Identify, classify, contain, and document a live cybersecurity incident at Federal Food Services Inc. — applying the NIST IR lifecycle to protect CUI and support CMMC assessment readiness.</p>
+  <div class="hero-chips">
+    <span class="chip">NIST 800-171 IR Domain</span>
+    <span class="chip">100 Points</span>
+    <span class="chip">6 Activities</span>
+    <span class="chip">⏱ 20 Minutes</span>
+    <span class="chip alert">🚨 Active Incident Scenario</span>
+    <span class="chip warn">⚠ Fictional — Training Use Only</span>
+  </div>
+</div>
+
+<!-- ════════════ TIMER ════════════ -->
+<div id="timer-bar">
+  <div>
+    <div class="timer-display" id="timer-display">20:00</div>
+    <div style="font-size:.7rem;color:var(--text-d);margin-top:.1rem">Exercise Timer</div>
+  </div>
+  <div class="timer-controls">
+    <button class="tc-btn" id="timer-start" onclick="startTimer()">▶ Start</button>
+    <button class="tc-btn" id="timer-pause" onclick="pauseTimer()" style="display:none">⏸ Pause</button>
+    <button class="tc-btn" onclick="resetTimer()">↺</button>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-label">Exercise Progress — <span id="prog-pct">0%</span></div>
+    <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+  </div>
+</div>
+
+<!-- ════════════ TAB NAV ════════════ -->
+<div id="tab-nav">
+  <div class="tab-nav-inner">
+    <button class="tab-btn active" onclick="showTab('intro')">Intro</button>
+    <button class="tab-btn" onclick="showTab('objectives')">Objectives</button>
+    <button class="tab-btn" onclick="showTab('terms')">Key Terms</button>
+    <button class="tab-btn" onclick="showTab('act1')">Act 1 — Identification</button>
+    <button class="tab-btn" onclick="showTab('act2')">Act 2 — Team Assignment</button>
+    <button class="tab-btn" onclick="showTab('act3')">Act 3 — IRP Completion</button>
+    <button class="tab-btn" onclick="showTab('act4')">Act 4 — IR Lifecycle</button>
+    <button class="tab-btn" onclick="showTab('act5')">Act 5 — Reporting</button>
+    <button class="tab-btn" onclick="showTab('act6')">Act 6 — Root Cause</button>
+    <button class="tab-btn" onclick="showTab('debrief')">Debrief</button>
+    <button class="tab-btn" onclick="showTab('rubric')">Rubric</button>
+  </div>
+</div>
+
+<!-- ════════════ MAIN ════════════ -->
+<main>
+
+<!-- ─────────────── INTRO ─────────────── -->
+<div id="tab-intro" class="section-card active">
+  <div class="section-header">
+    <div class="section-icon">📋</div>
+    <div class="section-meta">
+      <h2>Introduction — Incident Response and CMMC</h2>
+      <span class="pts no-pts">Overview</span>
+    </div>
+  </div>
+
+  <div class="scenario-box">
+    <div class="sc-title">⚡ FFSI Incident Scenario — Credential Compromise via Phishing</div>
+    <div class="scenario-body">
+      <p>It is <strong>Tuesday, October 14, 2025 at 9:47 AM</strong>. Marcus Webb, FFSI's Contracts Manager, receives an email that appears to originate from a DoD contracting officer at the Defense Logistics Agency. The email subject reads: <em>"ACTION REQUIRED: FY2026 Contract Modification — FFSI-MRE-2026-0047."</em></p>
+      <p>Webb clicks the link in the email, which redirects him to a convincing but fraudulent DoD login portal. He enters his FFSI Microsoft 365 credentials. Within <strong>four minutes</strong>, the attacker uses those credentials to authenticate to the FFSI Contract Management System — a system that contains <strong>Controlled Unclassified Information (CUI)</strong> including contract specifications, delivery schedules, production quantities, and Army end-use statements.</p>
+      <p>At <strong>10:23 AM</strong>, FFSI's SIEM platform generates an alert: <em>"Anomalous authentication — Contract Management System — user mwebb — source IP: 185.220.101.47 (Tor exit node, Netherlands)."</em> The Security Analyst on duty escalates the alert to the IT Manager. The Help Desk receives a separate call from Webb asking why his password "stopped working."</p>
+      <p><strong>Affected systems:</strong> <span class="pill sys">M365</span> <span class="pill sys">Contract Mgmt System</span> <span class="pill sys">Active Directory</span> <span class="pill sys">VPN</span> &nbsp;·&nbsp; <strong>Data at risk:</strong> <span class="pill cui">CUI Contract Data</span> <span class="pill fci">FCI Documents</span></p>
+    </div>
+  </div>
+
+  <div class="intro-body">
+    <h3>Why Incident Response Is a Critical CMMC Requirement</h3>
+    <p>Cybersecurity incidents are inevitable — no organization is impervious to phishing, credential theft, ransomware, or insider threats. CMMC Level 2 mandates a documented, tested, and operational Incident Response Plan as a prerequisite for certification. Without it, an organization cannot demonstrate the ability to contain damage, protect CUI, or recover operations in a controlled manner. The IR domain maps directly to three NIST SP 800-171 practices that are among the most scrutinized during C3PAO assessments.</p>
+
+    <h3>Why Assessors Review IRPs and Incident Records</h3>
+    <p>A C3PAO assessor will request the IRP as a primary artifact and will look for evidence that the plan has been exercised within the past 12 months. Assessors interview personnel to verify they know their roles. They review historical incident logs to confirm that actual incidents were handled in accordance with the plan — and that lessons learned were incorporated into policy updates. A plan that exists on paper but has never been practiced is not evidence of control implementation.</p>
+
+    <h3>How Incident Response Protects CUI</h3>
+    <p>Every minute an attacker maintains access to systems containing CUI, the scope of potential disclosure expands. Rapid detection, immediate containment, and systematic eradication — following a pre-defined IR plan — dramatically limits CUI exposure. NIST practice <span class="nist-tag">3.6.1</span> requires establishing an operational incident-handling capability. Practice <span class="nist-tag">3.6.2</span> requires tracking, documenting, and reporting incidents. Practice <span class="nist-tag">3.6.3</span> requires testing the plan.</p>
+
+    <h3>Why Documentation Is Essential</h3>
+    <p>Incident documentation serves three critical purposes: it creates the audit trail a C3PAO will review; it satisfies DFARS 252.204-7012's requirement to report cyber incidents to DoD within 72 hours; and it provides the data needed for root cause analysis and corrective action planning. Undocumented incidents — even if handled effectively — will generate findings during an assessment because there is no evidence the response occurred.</p>
+
+    <h3>Relevant NIST SP 800-171 IR Practices</h3>
+    <ul>
+      <li><span class="nist-tag">3.6.1</span> Establish an operational incident-handling capability including preparation, detection, analysis, containment, recovery, and user activities</li>
+      <li><span class="nist-tag">3.6.2</span> Track, document, and report incidents to designated officials and/or authorities both internal and external to the organization</li>
+      <li><span class="nist-tag">3.6.3</span> Test the organizational incident response capability</li>
+    </ul>
+
+    <div class="info-box">
+      <strong>DFARS Requirement:</strong> Under DFARS 252.204-7012, defense contractors must report cyber incidents affecting CUI to the DoD Cyber Crime Center (DC3) within <strong>72 hours</strong> of discovery. Failure to report is a contract compliance violation independent of the technical incident itself.
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────── OBJECTIVES ─────────────── -->
+<div id="tab-objectives" class="section-card">
+  <div class="section-header">
+    <div class="section-icon">🎯</div>
+    <div class="section-meta">
+      <h2>Learning Objectives</h2>
+      <span class="pts no-pts">6 Objectives</span>
+    </div>
+  </div>
+  <div class="objectives-list">
+    <div class="obj-item"><div class="obj-num">1</div><div>Explain the purpose of an Incident Response Plan within the CMMC Level 2 assessment framework and identify the three NIST SP 800-171 IR practices that assessors evaluate as primary evidence.</div></div>
+    <div class="obj-item"><div class="obj-num">2</div><div>Distinguish between a security event and a security incident using the FFSI phishing scenario, and apply severity classification criteria to determine the appropriate response urgency level.</div></div>
+    <div class="obj-item"><div class="obj-num">3</div><div>Assign FFSI personnel to the six incident response team roles — coordinating a structured response that covers technical, compliance, communications, and management functions.</div></div>
+    <div class="obj-item"><div class="obj-num">4</div><div>Complete a formal Incident Response Report for the FFSI phishing incident, documenting all required fields including affected systems, CUI involvement, severity, initial response actions, and incident ownership.</div></div>
+    <div class="obj-item"><div class="obj-num">5</div><div>Apply all six phases of the NIST incident response lifecycle — Preparation, Detection, Containment, Eradication, Recovery, and Lessons Learned — to the FFSI incident scenario with specific, actionable responses for each phase.</div></div>
+    <div class="obj-item"><div class="obj-num">6</div><div>Identify the root cause and contributing factors of the FFSI credential compromise and recommend prioritized corrective actions that reduce the probability and impact of recurrence.</div></div>
+  </div>
+</div>
+
+<!-- ─────────────── KEY TERMS ─────────────── -->
+<div id="tab-terms" class="section-card">
+  <div class="section-header">
+    <div class="section-icon">📖</div>
+    <div class="section-meta">
+      <h2>Key Terms</h2>
+      <span class="pts no-pts">Reference Glossary</span>
+    </div>
+  </div>
+  <div class="glossary-grid">
+    <div class="gloss-item"><div class="gloss-term">Incident Response Plan (IRP)</div><div class="gloss-def">A documented set of procedures defining how an organization detects, analyzes, contains, eradicates, recovers from, and reports cybersecurity incidents. Required by NIST 800-171 practice 3.6.1 and evaluated by C3PAO assessors as primary IR domain evidence.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Cybersecurity Incident</div><div class="gloss-def">An event that actually or potentially compromises the confidentiality, integrity, or availability of information or an information system — or that constitutes a violation or imminent threat of violation of security policies.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Security Event</div><div class="gloss-def">Any observable occurrence in a system or network that may have security implications but has not been confirmed as a breach or policy violation. All incidents begin as events, but not all events escalate to incidents.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Containment</div><div class="gloss-def">Actions taken to limit the spread or impact of an active incident — including isolating affected systems, revoking compromised credentials, blocking malicious IPs, or disabling affected accounts — while preserving evidence for analysis.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Eradication</div><div class="gloss-def">The process of removing the root cause of an incident from all affected systems — including malware removal, patching exploited vulnerabilities, closing unauthorized access paths, and verifying no persistence mechanisms remain.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Recovery</div><div class="gloss-def">The process of restoring affected systems and operations to normal, verified-clean status after eradication — including restoring from backups, re-enabling services, resetting credentials, and confirming normal operations.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Root Cause Analysis</div><div class="gloss-def">A structured investigation to identify the fundamental reason an incident occurred — not just the immediate trigger, but the underlying technical or procedural vulnerabilities that enabled it — enabling effective corrective action.</div></div>
+    <div class="gloss-item"><div class="gloss-term">CUI (Controlled Unclassified Information)</div><div class="gloss-def">Government-created or -possessed information requiring safeguarding per law, regulation, or policy. DoD contractors handling CUI must comply with NIST SP 800-171 and CMMC requirements. Any incident touching CUI triggers mandatory DoD reporting.</div></div>
+    <div class="gloss-item"><div class="gloss-term">FCI (Federal Contract Information)</div><div class="gloss-def">Information provided by or generated for the government under a contract. While less sensitive than CUI, FCI exposure in a breach context still requires documentation and may require disclosure depending on contract terms.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Incident Handler</div><div class="gloss-def">A designated individual with assigned responsibilities in the incident response process — such as the Incident Coordinator, Technical Lead, or Evidence Custodian. CMMC requires that IR roles be defined in advance and trained.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Evidence Preservation</div><div class="gloss-def">The process of collecting, securing, and documenting forensic artifacts — logs, memory captures, disk images, and network captures — in a manner that maintains their integrity and admissibility for legal or regulatory proceedings.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Chain of Custody</div><div class="gloss-def">A documented record tracking who collected, handled, transferred, and accessed digital evidence — ensuring its integrity and establishing that it has not been altered or tampered with since collection.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Escalation</div><div class="gloss-def">The formal process of elevating an incident to higher organizational authority — management, legal, or external agencies — based on severity, CUI involvement, or regulatory obligations. Escalation paths must be defined in the IRP before an incident occurs.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Breach Notification</div><div class="gloss-def">The legal or regulatory obligation to notify affected parties — including DoD via DC3 within 72 hours under DFARS 252.204-7012 — when a cyber incident affects CUI or other protected information. Failure to notify is an independent compliance violation.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Lessons Learned</div><div class="gloss-def">A structured post-incident review that identifies what worked, what failed, and what controls should be improved or added. Lessons learned must be documented and used to update the IRP — assessors look for evidence that the plan evolves based on actual incidents.</div></div>
+  </div>
+</div>
+
+<!-- ─────────────── ACT 1 ─────────────── -->
+<div id="tab-act1" class="section-card">
+  <div class="section-header">
+    <div class="section-icon">🔎</div>
+    <div class="section-meta">
+      <h2>Activity 1 — Incident Identification &amp; Classification</h2>
+      <span class="pts">20 pts</span>
+    </div>
+  </div>
+  <div class="instr"><strong>Instructions:</strong> Review the FFSI incident scenario (Introduction tab). Answer all five classification questions using the Yes / No / Uncertain toggle buttons. Then provide written analysis in the justification field for each question. Accurate classification directly determines the scope and urgency of the response.</div>
+
+  <!-- Q1 -->
+  <div class="finding-block">
+    <div class="fb-header">
+      <span class="finding-badge">Q1</span>
+      <div>
+        <div class="finding-text">Is this a security event, a confirmed security incident, or both?</div>
+        <div class="finding-sub">Consider: Has a policy violation been confirmed? Has CUI been accessed by an unauthorized party? Is there ongoing attacker presence?</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:.65rem">
+      <button class="yn-btn yes" onclick="ynToggle(this,'yes')">Security Event Only</button>
+      <button class="yn-btn med" onclick="ynToggle(this,'med')">Confirmed Incident</button>
+      <button class="yn-btn unc" onclick="ynToggle(this,'unc')">Requires Investigation to Determine</button>
+    </div>
+    <label class="text-sm" style="display:block;margin-bottom:.2rem">Justification — cite specific evidence from the scenario that supports your determination:</label>
+    <textarea placeholder="Example: The SIEM alert confirming authentication from a Tor exit node, combined with Webb's credential entry on the spoofed portal, meets the threshold for a confirmed incident. Unauthorized access to a CUI system has occurred. This is not merely an event..." oninput="updateProgress()"></textarea>
+  </div>
+
+  <!-- Q2 -->
+  <div class="finding-block">
+    <div class="fb-header">
+      <span class="finding-badge">Q2</span>
+      <div>
+        <div class="finding-text">Which FFSI systems are confirmed or potentially affected?</div>
+        <div class="finding-sub">Review the systems list. Consider: direct access, lateral movement potential, and credential reuse risk across connected systems.</div>
+      </div>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>System</th><th>Confirmed Affected?</th><th>Potentially Affected?</th><th>Basis for Determination</th></tr></thead>
+        <tbody>
+          <tr><td class="label-cell">Microsoft 365</td><td><div class="yn-group"><button class="yn-btn yes" onclick="ynToggle(this,'yes')">Yes</button><button class="yn-btn no" onclick="ynToggle(this,'no')">No</button></div></td><td><div class="yn-group"><button class="yn-btn yes" onclick="ynToggle(this,'yes')">Yes</button><button class="yn-btn no" onclick="ynToggle(this,'no')">No</button></div></td><td><textarea rows="1" placeholder="Webb's M365 credentials were entered on spoofed portal..." oninput="updateProgress()"></textarea></td></tr>
+          <tr><td class="label-cell">Contract Mgmt System</td><td><div class="yn-group"><button class="yn-btn yes" onclick="ynToggle(this,'yes')">Yes</button><button class="yn-btn no" onclick="ynToggle(this,'no')">No</button></div></td><td><div class="yn-group"><button class="yn-btn yes" onclick="ynToggle(this,'yes')">Yes</button><button class="yn-btn no" onclick="ynToggle(this,'no')">No</button></div></td><td><textarea rows="1" placeholder="SIEM alert confirms attacker authenticated to Contract Mgmt System..." oninput="updateProgress()"></textarea></td></tr>
+          <tr><td class="label-cell">Active Directory / Entra ID</td><td><div class="yn-group"><button class="yn-btn yes" onclick="ynToggle(this,'yes')">Yes</button><button class="yn-btn no" onclick="ynToggle(this,'no')">No</button></div></td><td><div class="yn-group"><button class="yn-btn yes" onclick="ynToggle(this,'yes')">Yes</button><button class="yn-btn no" onclick="ynToggle(this,'no')">No</button></div></td><td><textarea rows="1" placeholder="Webb's AD credentials were compromised; AD must be treated as affected..." oninput="updateProgress()"></textarea></td></tr>
+          <tr><td class="label-cell">VPN Platform</td><td><div class="yn-group"><button class="yn-btn yes" onclick="ynToggle(this,'yes')">Yes</button><button class="yn-btn no" onclick="ynToggle(this,'no')">No</button></div></td><td><div class="yn-group"><button class="yn-btn yes" onclick="ynToggle(this,'yes')">Yes</button><button class="yn-btn no" onclick="ynToggle(this,'no')">No</button></div></td><td><textarea rows="1" placeholder="If Webb's account was used for VPN, attacker may have internal network access..." oninput="updateProgress()"></textarea></td></tr>
+          <tr><td class="label-cell">ERP System</td><td><div class="yn-group"><button class="yn-btn yes" onclick="ynToggle(this,'yes')">Yes</button><button class="yn-btn no" onclick="ynToggle(this,'no')">No</button></div></td><td><div class="yn-group"><button class="yn-btn yes" onclick="ynToggle(this,'yes')">Yes</button><button class="yn-btn no" onclick="ynToggle(this,'no')">No</button></div></td><td><textarea rows="1" placeholder="ERP not directly confirmed but credential reuse risk exists..." oninput="updateProgress()"></textarea></td></tr>
+          <tr><td class="label-cell">File Servers</td><td><div class="yn-group"><button class="yn-btn yes" onclick="ynToggle(this,'yes')">Yes</button><button class="yn-btn no" onclick="ynToggle(this,'no')">No</button></div></td><td><div class="yn-group"><button class="yn-btn yes" onclick="ynToggle(this,'yes')">Yes</button><button class="yn-btn no" onclick="ynToggle(this,'no')">No</button></div></td><td><textarea rows="1" placeholder="If Webb's account had file server access, those shares may be at risk..." oninput="updateProgress()"></textarea></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="finding-block">
+    <div class="fb-header">
+      <span class="finding-badge">Q3</span>
+      <div>
+        <div class="finding-text">Is CUI involved in this incident?</div>
+        <div class="finding-sub">If CUI is confirmed as accessible to the attacker, DFARS 252.204-7012 breach notification to DoD within 72 hours is mandatory.</div>
+      </div>
+    </div>
+    <div class="yn-group" style="margin-bottom:.65rem">
+      <button class="yn-btn yes" onclick="ynToggle(this,'yes')">Yes — CUI Confirmed Accessible</button>
+      <button class="yn-btn unc" onclick="ynToggle(this,'unc')">Possible — Requires Investigation</button>
+      <button class="yn-btn no" onclick="ynToggle(this,'no')">No — No CUI Exposure</button>
+    </div>
+    <label class="text-sm" style="display:block;margin-bottom:.2rem">What specific CUI data was at risk? Does this trigger DFARS 72-hour notification?</label>
+    <textarea placeholder="Identify the CUI types in the Contract Management System (contract specifications, delivery schedules, production quantities, Army end-use statements). Confirm whether DFARS notification is triggered and to whom..." oninput="updateProgress()"></textarea>
+  </div>
+
+  <!-- Q4 -->
+  <div class="finding-block">
+    <div class="fb-header">
+      <span class="finding-badge">Q4</span>
+      <div>
+        <div class="finding-text">What evidence supports the incident determination?</div>
+        <div class="finding-sub">Evidence collected now will form the basis of the forensic investigation, the IRP documentation, and the C3PAO audit record.</div>
+      </div>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Evidence Type</th><th>Available at FFSI?</th><th>Evidence Description / What to Collect</th></tr></thead>
+        <tbody>
+          <tr><td class="label-cell">SIEM Alert</td><td><div class="yn-group"><button class="yn-btn yes" onclick="ynToggle(this,'yes')">Yes</button><button class="yn-btn no" onclick="ynToggle(this,'no')">No</button></div></td><td><textarea rows="1" placeholder="Anomalous authentication alert, source IP 185.220.101.47, timestamp 10:23 AM..." oninput="updateProgress()"></textarea></td></tr>
+          <tr><td class="label-cell">Authentication Logs</td><td><div class="yn-group"><button class="yn-btn yes" onclick="ynToggle(this,'yes')">Yes</button><button class="yn-btn no" onclick="ynToggle(this,'no')">No</button></div></td><td><textarea rows="1" placeholder="M365 and Entra ID sign-in logs showing mwebb authentication from foreign IP..." oninput="updateProgress()"></textarea></td></tr>
+          <tr><td class="label-cell">Email Records</td><td><div class="yn-group"><button class="yn-btn yes" onclick="ynToggle(this,'yes')">Yes</button><button class="yn-btn no" onclick="ynToggle(this,'no')">No</button></div></td><td><textarea rows="1" placeholder="Phishing email headers, sending domain, embedded link URL, receipt timestamp..." oninput="updateProgress()"></textarea></td></tr>
+          <tr><td class="label-cell">EDR Platform Alerts</td><td><div class="yn-group"><button class="yn-btn yes" onclick="ynToggle(this,'yes')">Yes</button><button class="yn-btn no" onclick="ynToggle(this,'no')">No</button></div></td><td><textarea rows="1" placeholder="Browser process activity on Webb's workstation at time of phishing click..." oninput="updateProgress()"></textarea></td></tr>
+          <tr><td class="label-cell">User Statement</td><td><div class="yn-group"><button class="yn-btn yes" onclick="ynToggle(this,'yes')">Yes</button><button class="yn-btn no" onclick="ynToggle(this,'no')">No</button></div></td><td><textarea rows="1" placeholder="Webb's help desk call confirming he entered credentials. Formal statement needed..." oninput="updateProgress()"></textarea></td></tr>
+          <tr><td class="label-cell">Contract System Access Logs</td><td><div class="yn-group"><button class="yn-btn yes" onclick="ynToggle(this,'yes')">Yes</button><button class="yn-btn no" onclick="ynToggle(this,'no')">No</button></div></td><td><textarea rows="1" placeholder="Which CUI records were accessed or downloaded by the attacker session..." oninput="updateProgress()"></textarea></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="finding-block">
+    <div class="fb-header">
+      <span class="finding-badge">Q5</span>
+      <div>
+        <div class="finding-text">What is the severity level of this incident?</div>
+        <div class="finding-sub">Severity determines response speed, escalation path, and resource commitment. CUI involvement always elevates severity.</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.65rem">
+      <button class="sev-btn critical" onclick="sevToggle(this)">🔴 Critical — Active breach, confirmed CUI exfil, executive response</button>
+      <button class="sev-btn high" onclick="sevToggle(this)">🟠 High — Confirmed unauthorized access to CUI system, containment urgent</button>
+      <button class="sev-btn medium" onclick="sevToggle(this)">🟡 Medium — Suspicious activity, CUI exposure unconfirmed</button>
+      <button class="sev-btn low" onclick="sevToggle(this)">🟢 Low — Security event, no confirmed access or data exposure</button>
+    </div>
+    <label class="text-sm" style="display:block;margin-bottom:.2rem">Justify your severity selection. What factors elevated or reduced severity?</label>
+    <textarea placeholder="The SIEM-confirmed authentication from a known malicious IP (Tor exit node) to a CUI system, combined with confirmed credential compromise, makes this at minimum HIGH severity. Escalation to Critical depends on whether exfiltration of CUI is confirmed during investigation..." oninput="updateProgress()"></textarea>
+  </div>
+</div>
+
+<!-- ─────────────── ACT 2 ─────────────── -->
+<div id="tab-act2" class="section-card">
+  <div class="section-header">
+    <div class="section-icon">👥</div>
+    <div class="section-meta">
+      <h2>Activity 2 — Incident Response Team Assignment</h2>
+      <span class="pts">15 pts</span>
+    </div>
+  </div>
+  <div class="instr"><strong>Instructions:</strong> Assign FFSI personnel to each Incident Response Team (IRT) role. Select a specific individual from the FFSI roster and explain why that person is the most appropriate choice. Note any backup personnel if the primary is unavailable. Each role must be filled — gaps in team coverage are a CMMC finding.</div>
+
+  <div class="amber-box">📋 <strong>FFSI Personnel Roster:</strong> CEO · CIO · Compliance Manager · Security Analyst · IT Manager · Network Administrator · System Administrator · Cloud Administrator · Help Desk Manager · Contracts Manager · HR Director · Legal Advisor · Third-Party IR Vendor</div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:160px">IRT Role</th>
+          <th style="width:45px"></th>
+          <th style="width:210px">Assigned FFSI Personnel</th>
+          <th style="width:150px">Backup / Alternate</th>
+          <th>Justification — Why This Person?</th>
+        </tr>
+      </thead>
+      <tbody id="irt-body"></tbody>
+    </table>
+  </div>
+
+  <div class="mt2">
+    <label class="text-sm" style="display:block;margin-bottom:.3rem">Additional Team Notes (cross-functional considerations, external resources, escalation triggers):</label>
+    <textarea rows="3" placeholder="Note any cases where the same person may hold multiple roles (a risk in small organizations), when to engage the Third-Party IR Vendor, and what triggers executive notification to the CEO..." oninput="updateProgress()"></textarea>
+  </div>
+</div>
+
+<!-- ─────────────── ACT 3 ─────────────── -->
+<div id="tab-act3" class="section-card">
+  <div class="section-header">
+    <div class="section-icon">📄</div>
+    <div class="section-meta">
+      <h2>Activity 3 — Incident Response Report Completion</h2>
+      <span class="pts">30 pts</span>
+    </div>
+  </div>
+  <div class="instr"><strong>Instructions:</strong> Complete the formal FFSI Incident Response Report below. Gray pre-filled cells contain information drawn from the scenario. White input cells must be completed by participants based on your analysis from Activity 1. Every field is required — incomplete IRP documentation is a CMMC assessment finding.</div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th style="width:190px">Field</th><th>Response</th></tr></thead>
+      <tbody>
+        <tr><td class="field-label">Incident ID</td><td><input type="text" placeholder="Assign a unique ID (e.g., FFSI-IR-2025-0014)..." oninput="updateProgress()"/></td></tr>
+        <tr><td class="field-label">Date / Time Detected</td><td><input type="text" placeholder="Enter date and time the incident was first detected by FFSI..." oninput="updateProgress()"/></td></tr>
+        <tr><td class="field-label">Date / Time Reported</td><td><input type="text" placeholder="When was the incident formally reported to the Incident Coordinator?" oninput="updateProgress()"/></td></tr>
+        <tr><td class="field-label">Reporting Individual</td><td><input type="text" placeholder="Who first reported or escalated the incident?" oninput="updateProgress()"/></td></tr>
+        <tr><td class="field-label">Detection Method</td><td>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.4rem">
+            <button class="yn-btn yes" onclick="ynToggle(this,'yes')">SIEM Alert</button>
+            <button class="yn-btn yes" onclick="ynToggle(this,'yes')">EDR Alert</button>
+            <button class="yn-btn yes" onclick="ynToggle(this,'yes')">User Report</button>
+            <button class="yn-btn yes" onclick="ynToggle(this,'yes')">Help Desk Call</button>
+            <button class="yn-btn yes" onclick="ynToggle(this,'yes')">External Notification</button>
+          </div>
+          <textarea rows="1" placeholder="Describe the specific detection event that triggered the response..." oninput="updateProgress()"></textarea>
+        </td></tr>
+        <tr><td class="field-label">Affected Systems</td><td><textarea rows="2" placeholder="List all confirmed and potentially affected systems (include asset names)..." oninput="updateProgress()"></textarea></td></tr>
+        <tr><td class="field-label">Affected Data / Records</td><td><textarea rows="2" placeholder="Identify data types exposed: CUI contract data, FCI documents, credentials. Estimate record count if possible..." oninput="updateProgress()"></textarea></td></tr>
+        <tr><td class="field-label">Incident Description</td><td><textarea rows="4" placeholder="Write a clear, factual narrative of what happened: Contracts Manager received phishing email appearing to originate from DoD. User clicked link and entered M365 credentials on a fraudulent portal. Attacker authenticated to the Contract Management System containing CUI at approximately 9:51 AM using stolen credentials. SIEM detected anomalous authentication from Tor exit node at 10:23 AM..." oninput="updateProgress()"></textarea></td></tr>
+        <tr><td class="field-label">CUI Involved?</td><td>
+          <div class="yn-group" style="margin-bottom:.4rem">
+            <button class="yn-btn yes" onclick="ynToggle(this,'yes')">Yes — DFARS Notification Required</button>
+            <button class="yn-btn unc" onclick="ynToggle(this,'unc')">Under Investigation</button>
+            <button class="yn-btn no" onclick="ynToggle(this,'no')">No CUI Exposure</button>
+          </div>
+          <textarea rows="1" placeholder="Describe the specific CUI involved and DoD notification status..." oninput="updateProgress()"></textarea>
+        </td></tr>
+        <tr><td class="field-label">Severity Level</td><td>
+          <div style="display:flex;gap:.4rem;flex-wrap:wrap">
+            <button class="sev-btn critical" onclick="sevToggle(this)">🔴 Critical</button>
+            <button class="sev-btn high" onclick="sevToggle(this)">🟠 High</button>
+            <button class="sev-btn medium" onclick="sevToggle(this)">🟡 Medium</button>
+            <button class="sev-btn low" onclick="sevToggle(this)">🟢 Low</button>
+          </div>
+        </td></tr>
+        <tr><td class="field-label">Initial Response Actions</td><td><textarea rows="4" placeholder="Document the immediate steps taken in the first 30 minutes: disable mwebb account in AD, revoke M365 session tokens, block source IP at firewall, preserve SIEM logs, notify IT Manager and Compliance Manager, begin chain of custody for evidence..." oninput="updateProgress()"></textarea></td></tr>
+        <tr><td class="field-label">Incident Owner / Coordinator</td><td><input type="text" placeholder="Name the FFSI individual responsible for coordinating the overall response..." oninput="updateProgress()"/></td></tr>
+        <tr><td class="field-label">Current Status</td><td>
+          <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.4rem">
+            <button class="yn-btn yes" onclick="ynToggle(this,'yes')">Active — Ongoing</button>
+            <button class="yn-btn unc" onclick="ynToggle(this,'unc')">Contained — Under Investigation</button>
+            <button class="yn-btn med" onclick="ynToggle(this,'med')">In Eradication</button>
+            <button class="yn-btn no" onclick="ynToggle(this,'no')">Closed — Resolved</button>
+          </div>
+        </td></tr>
+        <tr><td class="field-label">DFARS 72-hr Notification</td><td>
+          <div class="yn-group" style="margin-bottom:.4rem">
+            <button class="yn-btn yes" onclick="ynToggle(this,'yes')">Required — In Progress</button>
+            <button class="yn-btn unc" onclick="ynToggle(this,'unc')">Required — Pending</button>
+            <button class="yn-btn no" onclick="ynToggle(this,'no')">Not Required</button>
+          </div>
+          <textarea rows="1" placeholder="72-hour deadline: [calculate from detection time]. Notification target: DoD DC3 and Contracting Officer..." oninput="updateProgress()"></textarea>
+        </td></tr>
+        <tr><td class="field-label">Report Prepared By</td><td><input type="text" placeholder="Participant name / IRT role..." oninput="updateProgress()"/></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ─────────────── ACT 4 ─────────────── -->
+<div id="tab-act4" class="section-card">
+  <div class="section-header">
+    <div class="section-icon">🔄</div>
+    <div class="section-meta">
+      <h2>Activity 4 — Incident Response Lifecycle</h2>
+      <span class="pts">20 pts</span>
+    </div>
+  </div>
+  <div class="instr"><strong>Instructions:</strong> Apply all six phases of the NIST Incident Response Lifecycle to the FFSI phishing incident. For each phase, document specific, actionable activities — not generic descriptions. Reference FFSI systems, personnel, and data. Assign a phase owner from the FFSI IRT.</div>
+
+  <!-- Timeline -->
+  <div class="timeline">
+    <div class="tl-step"><div class="tl-dot ph-prep" style="border-color:#4fc3c3">🛡</div><div class="tl-label">1. Preparation</div></div>
+    <div class="tl-step"><div class="tl-dot ph-det" style="border-color:#c8a84b">🔎</div><div class="tl-label">2. Detection &amp; Analysis</div></div>
+    <div class="tl-step"><div class="tl-dot ph-con" style="border-color:#ff9944">🧱</div><div class="tl-label">3. Containment</div></div>
+    <div class="tl-step"><div class="tl-dot ph-era" style="border-color:#ff6666">🧹</div><div class="tl-label">4. Eradication</div></div>
+    <div class="tl-step"><div class="tl-dot ph-rec" style="border-color:#22c55e">♻</div><div class="tl-label">5. Recovery</div></div>
+    <div class="tl-step"><div class="tl-dot ph-les" style="border-color:#c084fc">📝</div><div class="tl-label">6. Lessons Learned</div></div>
+  </div>
+
+  <div id="lifecycle-phases"></div>
+</div>
+
+<!-- ─────────────── ACT 5 ─────────────── -->
+<div id="tab-act5" class="section-card">
+  <div class="section-header">
+    <div class="section-icon">📡</div>
+    <div class="section-meta">
+      <h2>Activity 5 — Reporting &amp; Escalation Review</h2>
+      <span class="pts">no-pts</span>
+    </div>
+  </div>
+  <div class="instr"><strong>Instructions:</strong> Determine who must be notified of this incident, at what threshold, and through what mechanism. Escalation failures — notifying too late, notifying the wrong parties, or failing to document notifications — are independently scored CMMC findings.</div>
+
+  <!-- Notification Matrix -->
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Notification Target</th><th style="width:110px">Must Notify?</th><th style="width:110px">Notify Immediately?</th><th style="width:130px">Notify Within 72 hrs?</th><th>Method / Documentation Required</th></tr></thead>
+      <tbody id="notify-body"></tbody>
+    </table>
+  </div>
+
+  <div class="mt2">
+    <div class="finding-block">
+      <div class="fb-header"><span class="finding-badge blue">Q3</span><div><div class="finding-text">Should Legal Counsel be involved in this incident response?</div><div class="finding-sub">Consider: CUI exposure, DFARS obligations, potential litigation, contractual notification requirements, and privilege considerations for internal communications.</div></div></div>
+      <div class="yn-group" style="margin-bottom:.5rem">
+        <button class="yn-btn yes" onclick="ynToggle(this,'yes')">Yes — Immediately</button>
+        <button class="yn-btn unc" onclick="ynToggle(this,'unc')">Yes — After Initial Containment</button>
+        <button class="yn-btn no" onclick="ynToggle(this,'no')">No — Not Required</button>
+      </div>
+      <textarea rows="2" placeholder="Explain when and why Legal should be engaged. Which communications should be privileged? What contractual obligations are triggered?" oninput="updateProgress()"></textarea>
+    </div>
+
+    <div class="finding-block">
+      <div class="fb-header"><span class="finding-badge teal">Q4</span><div><div class="finding-text">Should external partners or vendors be notified?</div><div class="finding-sub">Consider: Microsoft (M365 tenant), Third-Party IR Vendor, cyber insurance carrier, and any sub-contractors who may have received contracts via the compromised system.</div></div></div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>External Party</th><th style="width:110px">Notify?</th><th>Purpose / What to Share</th></tr></thead>
+          <tbody>
+            <tr><td class="label-cell">Microsoft (M365 / Entra ID)</td><td><div class="yn-group"><button class="yn-btn yes" onclick="ynToggle(this,'yes')">Yes</button><button class="yn-btn no" onclick="ynToggle(this,'no')">No</button></div></td><td><textarea rows="1" placeholder="Request tenant sign-in logs, enable enhanced audit logging, revoke all active sessions..." oninput="updateProgress()"></textarea></td></tr>
+            <tr><td class="label-cell">Third-Party IR Vendor</td><td><div class="yn-group"><button class="yn-btn yes" onclick="ynToggle(this,'yes')">Yes</button><button class="yn-btn no" onclick="ynToggle(this,'no')">No</button></div></td><td><textarea rows="1" placeholder="Engage for forensic investigation if internal capability is insufficient..." oninput="updateProgress()"></textarea></td></tr>
+            <tr><td class="label-cell">Cyber Insurance Carrier</td><td><div class="yn-group"><button class="yn-btn yes" onclick="ynToggle(this,'yes')">Yes</button><button class="yn-btn no" onclick="ynToggle(this,'no')">No</button></div></td><td><textarea rows="1" placeholder="Most policies require prompt notification to preserve coverage eligibility..." oninput="updateProgress()"></textarea></td></tr>
+            <tr><td class="label-cell">Sub-contractors / Supply Chain</td><td><div class="yn-group"><button class="yn-btn yes" onclick="ynToggle(this,'yes')">Yes</button><button class="yn-btn no" onclick="ynToggle(this,'no')">No</button></div></td><td><textarea rows="1" placeholder="If CUI shared with sub-contractors was at risk, they may have independent obligations..." oninput="updateProgress()"></textarea></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="finding-block">
+      <div class="fb-header"><span class="finding-badge amber">Q5</span><div><div class="finding-text">What documentation must be retained as incident records?</div><div class="finding-sub">CMMC assessors will request all of these. Documents must be retained per the SSP records retention policy — typically 3 years for CUI incidents.</div></div></div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Document / Artifact</th><th style="width:130px">Retained?</th><th>Location / Custodian</th></tr></thead>
+          <tbody id="docs-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────── ACT 6 ─────────────── -->
+<div id="tab-act6" class="section-card">
+  <div class="section-header">
+    <div class="section-icon">🔬</div>
+    <div class="section-meta">
+      <h2>Activity 6 — Root Cause Analysis &amp; Corrective Actions</h2>
+      <span class="pts">15 pts</span>
+    </div>
+  </div>
+  <div class="instr"><strong>Instructions:</strong> Conduct a root cause analysis for the FFSI phishing incident. Identify the immediate cause, contributing factors, and systemic weaknesses. Then recommend specific corrective actions with priority ratings, estimated effort, and named owners. Corrective actions must make it into the POA&amp;M if not immediately resolvable.</div>
+
+  <!-- Root Cause -->
+  <div class="finding-block">
+    <div class="fb-header"><span class="finding-badge">RCA-01</span><div><div class="finding-text">Root Cause Identification</div></div></div>
+    <div class="fb-fields">
+      <div>
+        <label>Immediate Cause (what directly enabled the breach):</label>
+        <textarea rows="3" placeholder="Webb entered credentials on a spoofed DoD login portal after clicking a phishing link. No MFA was enforced on the Contract Management System to block the attacker from using stolen credentials..." oninput="updateProgress()"></textarea>
+      </div>
+      <div>
+        <label>Underlying / Root Cause (systemic weakness that enabled the immediate cause):</label>
+        <textarea rows="3" placeholder="MFA was not enforced for Contract Management System access. Phishing awareness training was either absent or insufficient to train users to recognize spoofed government portals. Email security controls did not flag or quarantine the phishing email..." oninput="updateProgress()"></textarea>
+      </div>
+    </div>
+    <div style="margin-top:.6rem">
+      <label style="font-size:.73rem;color:var(--text-d);display:block;margin-bottom:.2rem">Contributing Factors (what made it easier for the attacker to succeed):</label>
+      <textarea rows="3" placeholder="1. No MFA on Contract Management System — single-factor credential theft sufficient for access. 2. No email filtering to detect spoofed .gov-like domains. 3. Webb had Modify access to CUI — access was not read-only even for routine tasks. 4. SIEM alert took 36 minutes to be acted on — detection-to-escalation gap..." oninput="updateProgress()"></textarea>
+    </div>
+  </div>
+
+  <!-- Corrective Actions -->
+  <h3 style="color:var(--gold);font-size:.95rem;margin:1.1rem 0 .65rem">Corrective Action Plan</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:80px">ID</th>
+          <th>Corrective Action</th>
+          <th style="width:100px">Priority</th>
+          <th style="width:100px">Effort</th>
+          <th style="width:140px">Owner</th>
+          <th style="width:110px">Timeline</th>
+          <th>NIST Practice</th>
+        </tr>
+      </thead>
+      <tbody id="ca-body"></tbody>
+    </table>
+  </div>
+
+  <div class="mt2">
+    <label class="text-sm" style="display:block;margin-bottom:.3rem">IRP Update Recommendations (what changes should be made to the Incident Response Plan based on this incident):</label>
+    <textarea rows="4" placeholder="Based on the 36-minute detection-to-escalation gap: Add an IRP requirement for automated alert routing to the IT Manager when SIEM flags authentication from Tor exit nodes. Add a DFARS notification checklist to the IRP with pre-populated DC3 contact information. Add a parallel task to the IRP for legal counsel engagement when CUI is confirmed. Review SIEM alert triage SLAs..." oninput="updateProgress()"></textarea>
+  </div>
+</div>
+
+<!-- ─────────────── DEBRIEF ─────────────── -->
+<div id="tab-debrief" class="section-card">
+  <div class="section-header">
+    <div class="section-icon">🗣</div>
+    <div class="section-meta">
+      <h2>Instructor Debrief Questions</h2>
+      <span class="pts no-pts">Discussion — 5–10 min</span>
+    </div>
+  </div>
+  <p class="text-sm" style="margin-bottom:1rem">Use these questions to facilitate a post-exercise discussion. Participants should reference specific FFSI systems, personnel decisions, and IRP documentation from their completed exercise to support responses.</p>
+  <div class="debrief-list" id="debrief-body"></div>
+</div>
+
+<!-- ─────────────── RUBRIC ─────────────── -->
+<div id="tab-rubric" class="section-card">
+  <div class="section-header">
+    <div class="section-icon">📊</div>
+    <div class="section-meta">
+      <h2>Facilitator Scoring Rubric</h2>
+      <span class="pts no-pts">100 Points Total</span>
+    </div>
+  </div>
+  <p class="text-sm" style="margin-bottom:1rem">Enter scores per category. Total and rating update automatically. <strong>Excellent: 90–100</strong> · <strong>Proficient: 75–89</strong> · <strong>Developing: 60–74</strong> · <strong>Needs Improvement: &lt;60</strong></p>
+  <div class="tbl-wrap">
+    <table class="rubric-table">
+      <thead><tr><th>Category</th><th>Excellent</th><th>Proficient</th><th>Developing</th><th>Needs Improvement</th><th>Max</th><th>Score</th></tr></thead>
+      <tbody id="rubric-body"></tbody>
+    </table>
+  </div>
+  <div class="mt2" style="display:flex;gap:1.5rem;flex-wrap:wrap;align-items:center">
+    <div class="sb-stat"><div class="sb-val" id="rubric-total">0</div><div class="sb-label">Total Points</div></div>
+    <div class="sb-stat"><div class="sb-val" id="rubric-pct">0%</div><div class="sb-label">Percentage</div></div>
+    <div id="rubric-rating-badge" class="rating-badge rating-needs">Needs Improvement</div>
+  </div>
+  <div class="hr mt2"></div>
+  <h3 style="font-size:.9rem;color:var(--gold);margin-bottom:.75rem">Performance Level Descriptions</h3>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.7rem">
+    <div class="finding-block"><div class="finding-badge green">Excellent · 90–100</div><p class="text-sm mt1">Accurately classifies the incident and severity with scenario-specific evidence. Completes all IRP fields with specific, actionable entries. Assigns all 6 IRT roles with justified selections. Applies all 6 lifecycle phases with FFSI-specific actions. Produces a rigorous root cause analysis with prioritized, NIST-cited corrective actions.</p></div>
+    <div class="finding-block"><div class="finding-badge blue">Proficient · 75–89</div><p class="text-sm mt1">Correctly classifies the incident with adequate justification. Completes most IRP fields with only minor omissions. Assigns IRT roles with reasonable rationale. Addresses all 6 lifecycle phases. Root cause identified; corrective actions are reasonable but may lack NIST citations or specific ownership.</p></div>
+    <div class="finding-block"><div class="finding-badge amber">Developing · 60–74</div><p class="text-sm mt1">Incident classified but severity misjudged or justification is thin. IRP fields partially completed; some required fields blank. IRT assignments made but some roles missing or poorly justified. Lifecycle phases present but actions are generic. Root cause vague; corrective actions lack priority or ownership.</p></div>
+    <div class="finding-block"><div class="finding-badge">Needs Improvement · &lt;60</div><p class="text-sm mt1">Incident misclassified or evidence not engaged. IRP report largely incomplete. Fewer than 4 IRT roles assigned. Lifecycle phases confused or missing. No root cause analysis. Corrective actions absent or disconnected from the scenario. Demonstrates limited understanding of DFARS notification obligations.</p></div>
+  </div>
+</div>
+
+</main>
+
+<!-- ════════════ SCORE BAR ════════════ -->
+<div id="score-bar">
+  <div class="sb-stat"><div class="sb-val" id="sb-total">0</div><div class="sb-label">Total Points</div></div>
+  <div class="sb-stat"><div class="sb-val" id="sb-pct">0%</div><div class="sb-label">Percentage</div></div>
+  <div id="sb-rating" class="sb-rating rating-needs">Needs Improvement</div>
+  <div style="flex:1"></div>
+  <div class="text-sm" style="color:var(--text-d)">CMMC 2.0 · NIST SP 800-171 IR Domain · FFSI Training Exercise</div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════
+//  DATA
+// ═══════════════════════════════════════════════════
+const IRT_ROLES = [
+  {role:'Incident Coordinator', badge:'role-coord', desc:'Overall response leadership, stakeholder communication, timeline ownership'},
+  {role:'Technical Lead',       badge:'role-tech',  desc:'Forensic investigation, system analysis, containment actions'},
+  {role:'Communications Lead',  badge:'role-comm',  desc:'Internal and external messaging, management briefings, DoD notification coordination'},
+  {role:'Compliance Representative', badge:'role-comp', desc:'CMMC/DFARS obligations, documentation integrity, regulatory reporting'},
+  {role:'Management Representative', badge:'role-mgmt', desc:'Executive visibility, resource authorization, business continuity decisions'},
+  {role:'Evidence Custodian',   badge:'role-evid',  desc:'Chain of custody, log collection, forensic evidence preservation'},
+];
+
+const PERSONNEL = ['CEO','CIO','Compliance Manager','Security Analyst','IT Manager',
+  'Network Administrator','System Administrator','Cloud Administrator',
+  'Help Desk Manager','Contracts Manager','HR Director','Legal Advisor',
+  'Third-Party IR Vendor'];
+
+const LIFECYCLE_PHASES = [
+  {
+    id:'prep', num:'ph-prep', icon:'🛡', title:'Phase 1 — Preparation',
+    nist:'NIST 3.6.1 / 3.6.3',
+    prompt:'What controls and capabilities should already exist at FFSI BEFORE this incident occurred? What preparation gaps did this incident expose?',
+    ph:'IRP documented and tested · Phishing simulation training program · MFA enforced on all CUI systems · SIEM configured with alert playbooks · IR team roles defined and trained · Incident reporting procedures communicated to all staff · Evidence handling procedures established...',
+    who:'Who owns the Preparation phase at FFSI?'
+  },
+  {
+    id:'det', num:'ph-det', icon:'🔎', title:'Phase 2 — Detection &amp; Analysis',
+    nist:'NIST 3.6.1',
+    prompt:'How was this incident detected? What analysis confirmed it was a real incident vs. a false positive? What data sources were used?',
+    ph:'SIEM alert at 10:23 AM — anomalous auth from 185.220.101.47 · EDR review of Webb workstation browser activity · Authentication log analysis in Entra ID · Help Desk call cross-referenced with SIEM timestamp · Email header analysis of phishing message · Confirm CUI access scope via Contract Mgmt audit log...',
+    who:'Who leads Detection &amp; Analysis at FFSI?'
+  },
+  {
+    id:'con', num:'ph-con', icon:'🧱', title:'Phase 3 — Containment',
+    nist:'NIST 3.6.1',
+    prompt:'What immediate actions should FFSI take to stop the attacker and prevent further access — without destroying evidence? Distinguish short-term from long-term containment.',
+    ph:'IMMEDIATE: Disable mwebb AD account · Revoke all active M365 sessions for mwebb · Block source IP 185.220.101.47 at perimeter firewall · Preserve SIEM and auth logs before any remediation · LONG-TERM: Force global password reset for all accounts using same password · Isolate Contract Mgmt System from internet pending investigation · Enable enhanced audit logging on all CUI systems...',
+    who:'Who owns Containment actions at FFSI?'
+  },
+  {
+    id:'era', num:'ph-era', icon:'🧹', title:'Phase 4 — Eradication',
+    nist:'NIST 3.6.1',
+    prompt:'After containment, how does FFSI fully remove the threat from the environment? What verification steps confirm the attacker has been expelled?',
+    ph:'Verify no persistence mechanisms installed on Webb workstation (malware scan via EDR) · Remove any attacker-created accounts or forwarding rules in M365 · Audit all OAuth application grants on Webb account · Review all Contract Mgmt System sessions for attacker data access or download · Confirm no lateral movement to other accounts via AD review · Force credential reset for any accounts sharing credentials with Webb...',
+    who:'Who owns Eradication at FFSI?'
+  },
+  {
+    id:'rec', num:'ph-rec', icon:'♻', title:'Phase 5 — Recovery',
+    nist:'NIST 3.6.1',
+    prompt:'How does FFSI restore normal operations safely after eradication? What monitoring should be heightened during the recovery window?',
+    ph:'Re-enable mwebb account with new credentials after MFA is enforced · Restore Contract Mgmt System access in phased manner with enhanced monitoring · Run integrity check on CUI records in Contract Mgmt System · Confirm no CUI data was modified or deleted by attacker · Verify SIEM alerts remain clean for 24–48 hrs post-recovery · Communicate all-clear to business operations after IR team sign-off...',
+    who:'Who owns Recovery at FFSI?'
+  },
+  {
+    id:'les', num:'ph-les', icon:'📝', title:'Phase 6 — Lessons Learned',
+    nist:'NIST 3.6.1 / 3.6.3',
+    prompt:'What worked? What failed? What changes must be made to the IRP, training, and technical controls? Who reviews and approves the lessons learned report?',
+    ph:'36-minute detection-to-escalation gap — tighten SIEM alert response SLA · MFA absence on Contract Mgmt System was root cause — add to POA&M as immediate action · Phishing simulation results reviewed — training cadence increased · IRP updated with DFARS notification checklist · Tabletop exercise scheduled within 60 days · CIO presents lessons learned to CEO and Board...',
+    who:'Who facilitates the Lessons Learned review at FFSI?'
+  },
+];
+
+const NOTIFY_TARGETS = [
+  {target:'FFSI CEO / Executive Team', imm:true,  h72:false, notes:'Management notification required for all High/Critical incidents per FFSI IRP...'},
+  {target:'CIO / IT Manager',          imm:true,  h72:false, notes:'Immediate technical response coordination required...'},
+  {target:'Compliance Manager',        imm:true,  h72:false, notes:'CMMC and DFARS obligation tracking begins at incident confirmation...'},
+  {target:'Legal Advisor',             imm:false, h72:true,  notes:'Engage for privilege considerations and contractual notification obligations...'},
+  {target:'HR Director',               imm:false, h72:true,  notes:'If insider threat element present; employee investigation coordination...'},
+  {target:'DoD / DC3',                 imm:false, h72:true,  notes:'DFARS 252.204-7012 requires cyber incident reporting within 72 hours of discovery...'},
+  {target:'DoD Contracting Officer',   imm:false, h72:true,  notes:'Contract-level notification required when CUI under active contract is involved...'},
+  {target:'Third-Party IR Vendor',     imm:false, h72:false, notes:'Engage if internal forensic capability is insufficient for full investigation scope...'},
+];
+
+const DOCS_TO_RETAIN = [
+  'Completed Incident Response Report (IRR-FFSI-2025-0014)',
+  'SIEM alert export (raw log with timestamp)',
+  'Authentication log export (Entra ID sign-in logs)',
+  'Phishing email (original headers and attachments)',
+  'EDR forensic artifacts from Webb workstation',
+  'Chain of custody form for all digital evidence',
+  'DFARS 72-hour notification to DC3 (with timestamp)',
+  'IRT role assignment record',
+  'Communications log (all internal IR communications)',
+  'Lessons Learned report',
+];
+
+const CORRECTIVE_ACTIONS = [
+  {id:'CA-01', action:'Enforce MFA on Contract Management System and all CUI-accessing applications', priority:'Critical', effort:'Low', owner:'IT Manager / CIO', timeline:'24 hours', nist:'3.5.3'},
+  {id:'CA-02', action:'Deploy phishing-resistant email filtering and enhanced URL detonation for all M365 inbound mail', priority:'High', effort:'Medium', owner:'Cloud Administrator', timeline:'30 days', nist:'3.14.2'},
+  {id:'CA-03', action:'Conduct mandatory phishing awareness training for all FFSI personnel; implement quarterly phishing simulation program', priority:'High', effort:'Medium', owner:'Compliance Manager', timeline:'30 days', nist:'3.2.1'},
+  {id:'CA-04', action:'Reduce Contract Manager access in Contract Management System from Modify to minimum required; implement Approve-only workflow', priority:'Medium', effort:'Low', owner:'IT Manager', timeline:'14 days', nist:'3.1.5'},
+  {id:'CA-05', action:'Establish SIEM alert escalation SLA — Tier 1 alerts must be escalated to IT Manager within 15 minutes of generation; automate paging', priority:'Medium', effort:'Medium', owner:'Security Analyst', timeline:'14 days', nist:'3.6.1'},
+  {id:'CA-06', action:'Add all uncorrected items to the FFSI POA&M and schedule quarterly POA&M review with CIO and Compliance Manager', priority:'Medium', effort:'Low', owner:'Compliance Manager', timeline:'7 days', nist:'3.12.2'},
+];
+
+const DEBRIEF_QS = [
+  'At what specific point in the FFSI scenario did a security event become a confirmed security incident? What single piece of evidence was most decisive in making that determination?',
+  'Which FFSI personnel were most critical to the first 60 minutes of this incident response? What would have broken down if those individuals were unavailable?',
+  'What evidence would a C3PAO assessor expect to find in FFSI\'s records 6 months after this incident? List at least five specific artifacts and explain where each would be stored.',
+  'How does a well-documented incident response directly protect CUI? Walk through the FFSI incident and explain how each IR phase limited CUI exposure.',
+  'Of the six corrective actions identified, which one would provide the greatest single reduction in incident probability? Which would provide the greatest reduction in impact if an incident did occur?',
+  'How often should FFSI test its Incident Response Plan? What form should that testing take — tabletop exercise, simulation, or full-scale drill? What does NIST 800-171 require?',
+  'What is the relationship between the FFSI IRP, the System Security Plan (SSP), the Risk Register, and the Plan of Action &amp; Milestones (POA&amp;M)? How does an incident create obligations across all four documents?',
+];
+
+const RUBRIC_ROWS = [
+  {cat:'Incident Classification (Act 1)', max:20,
+   exc:'Event vs. incident correctly determined with scenario-specific evidence. All affected systems identified. CUI involvement confirmed with DFARS trigger recognized. Severity level accurately justified with multi-factor rationale.',
+   pro:'Incident correctly classified; most affected systems identified. CUI involvement addressed. Severity reasonable but missing one or two justifying factors.',
+   dev:'Incident classification correct but insufficiently justified. Some systems missed. CUI involvement acknowledged but DFARS obligation not addressed. Severity assigned without clear rationale.',
+   ni:'Incident misclassified or classification not justified. Affected systems incomplete. CUI and DFARS obligations not recognized. Severity assigned without analysis.'},
+  {cat:'IRP Completion Accuracy (Act 3)', max:30,
+   exc:'All 14 IRP fields completed with specific, scenario-grounded entries. Affected systems and CUI data precisely named. Initial response actions are sequenced and actionable. DFARS notification status addressed with calculated deadline.',
+   pro:'12–13 fields completed with adequate specificity. Minor gaps in CUI description or response actions. DFARS notification mentioned but deadline not calculated.',
+   dev:'9–11 fields completed. Several fields contain generic placeholder responses rather than FFSI-specific content. DFARS notification not addressed.',
+   ni:'Fewer than 9 fields completed. Responses are generic or disconnected from the scenario. DFARS notification absent. Report would not satisfy assessment evidence requirements.'},
+  {cat:'IR Team Assignment (Act 2)', max:15,
+   exc:'All 6 IRT roles assigned with justified FFSI personnel selections. Backup personnel identified. Team composition appropriately covers technical, compliance, legal, and management functions.',
+   pro:'5–6 roles assigned with reasonable justifications. One role may lack a backup or justification may be thin for one assignment.',
+   dev:'4–5 roles assigned. Justifications vague. Some mismatches between role requirements and personnel selected (e.g., assigning technical lead to non-technical personnel).',
+   ni:'Fewer than 4 roles assigned. Multiple obvious mismatches. No justification provided. Critical functions (legal, compliance) unrepresented.'},
+  {cat:'Response Lifecycle Analysis (Act 4)', max:20,
+   exc:'All 6 lifecycle phases addressed with FFSI-specific actions. Clear distinction between short-term and long-term containment. Eradication and recovery steps are sequenced. Lessons learned are substantive and tied to observed failures.',
+   pro:'All 6 phases present; actions mostly specific to FFSI. One or two phases have generic responses. Lessons learned addressed.',
+   dev:'4–5 phases present. Several phases have generic "best practice" responses not grounded in the FFSI scenario. Lessons learned superficial.',
+   ni:'Fewer than 4 phases addressed. Responses are generic or absent. Demonstrates confusion about phase sequencing (e.g., recovery before eradication).'},
+  {cat:'Corrective Actions (Act 6)', max:15,
+   exc:'Root cause and contributing factors clearly identified and distinguished. All corrective actions are specific, feasible, prioritized, assigned to named FFSI owners, and reference relevant NIST 800-171 practices. POA&M update recommended.',
+   pro:'Root cause identified. 4–5 corrective actions specific and prioritized. NIST references present for most. Ownership partially assigned.',
+   dev:'Root cause vague. 2–3 corrective actions specific; others generic. Limited NIST references. No ownership assigned.',
+   ni:'Root cause not identified or incorrectly stated. Corrective actions generic (e.g., "improve training"). No NIST references. No priority or ownership.'},
+];
+
+// ═══════════════════════════════════════════════════
+//  BUILD FUNCTIONS
+// ═══════════════════════════════════════════════════
+function buildIRT(){
+  const tb = document.getElementById('irt-body');
+  IRT_ROLES.forEach(r => {
+    const tr = document.createElement('tr');
+    const opts = PERSONNEL.map(p=>`<option value="${p}">${p}</option>`).join('');
+    tr.innerHTML = `
+      <td class="label-cell">
+        <span class="team-role-badge ${r.badge}">${r.role}</span>
+        <div class="text-sm" style="margin-top:.25rem;white-space:normal;font-weight:400">${r.desc}</div>
+      </td>
+      <td></td>
+      <td><select onchange="updateProgress()"><option value="">— Select personnel —</option>${opts}</select></td>
+      <td><select onchange="updateProgress()"><option value="">— Select backup —</option>${opts}</select></td>
+      <td><textarea rows="2" placeholder="Why is this person the best fit for this role? What qualifications or organizational authority do they bring?" oninput="updateProgress()"></textarea></td>
+    `;
+    tb.appendChild(tr);
+  });
+}
+
+function buildLifecycle(){
+  const div = document.getElementById('lifecycle-phases');
+  LIFECYCLE_PHASES.forEach(ph => {
+    div.innerHTML += `
+    <div class="finding-block" style="margin-bottom:1rem">
+      <div class="fb-header">
+        <div class="phase-num ${ph.num}" style="width:2.2rem;height:2.2rem;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0">${ph.icon}</div>
+        <div style="flex:1">
+          <div class="finding-text">${ph.title}</div>
+          <div class="phase-nist">${ph.nist}</div>
+          <div class="finding-sub">${ph.prompt}</div>
+        </div>
+      </div>
+      <div class="fb-fields">
+        <div>
+          <label>Specific Actions for This Phase at FFSI:</label>
+          <textarea rows="4" placeholder="${ph.ph}" oninput="updateProgress()"></textarea>
+        </div>
+        <div>
+          <div style="margin-bottom:.6rem">
+            <label>${ph.who}</label>
+            <select onchange="updateProgress()" style="margin-top:.2rem;background:var(--bg-inp);border:1px solid var(--border2);color:var(--text);border-radius:5px;font-size:.8rem;padding:.3rem;width:100%">
+              <option value="">— Assign phase owner —</option>
+              ${PERSONNEL.map(p=>`<option>${p}</option>`).join('')}
+            </select>
+          </div>
+          <div>
+            <label>Key Evidence / Artifacts for This Phase:</label>
+            <textarea rows="3" placeholder="What logs, records, or documents must be created or preserved during this phase?" oninput="updateProgress()"></textarea>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:.6rem">
+        <label style="font-size:.73rem;color:var(--text-d);display:block;margin-bottom:.2rem">Timeline / Urgency — How quickly must this phase be completed? What triggers transition to the next phase?</label>
+        <textarea rows="1" placeholder="Containment: Immediate — must begin within 15 minutes of incident confirmation..." oninput="updateProgress()"></textarea>
+      </div>
+    </div>`;
+  });
+}
+
+function buildNotify(){
+  const tb = document.getElementById('notify-body');
+  NOTIFY_TARGETS.forEach(n => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="label-cell">${n.target}</td>
+      <td><div class="yn-group"><button class="yn-btn yes" onclick="ynToggle(this,'yes')">Yes</button><button class="yn-btn no" onclick="ynToggle(this,'no')">No</button></div></td>
+      <td><div class="yn-group"><button class="yn-btn yes" onclick="ynToggle(this,'yes')">Immediate</button><button class="yn-btn no" onclick="ynToggle(this,'no')">No</button></div></td>
+      <td><div class="yn-group"><button class="yn-btn yes" onclick="ynToggle(this,'yes')">Within 72h</button><button class="yn-btn no" onclick="ynToggle(this,'no')">No</button></div></td>
+      <td><textarea rows="1" placeholder="${n.notes}" oninput="updateProgress()"></textarea></td>
+    `;
+    tb.appendChild(tr);
+  });
+}
+
+function buildDocs(){
+  const tb = document.getElementById('docs-body');
+  DOCS_TO_RETAIN.forEach(doc => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="label-cell" style="white-space:normal">${doc}</td>
+      <td><div class="yn-group"><button class="yn-btn yes" onclick="ynToggle(this,'yes')">Yes</button><button class="yn-btn no" onclick="ynToggle(this,'no')">No</button><button class="yn-btn unc" onclick="ynToggle(this,'unc')">TBD</button></div></td>
+      <td><textarea rows="1" placeholder="Storage location / Responsible party..." oninput="updateProgress()"></textarea></td>
+    `;
+    tb.appendChild(tr);
+  });
+}
+
+function buildCA(){
+  const tb = document.getElementById('ca-body');
+  CORRECTIVE_ACTIONS.forEach(ca => {
+    const tr = document.createElement('tr');
+    const pClass = ca.priority==='Critical'?'text-red':ca.priority==='High'?'risk-high':ca.priority==='Medium'?'risk-med':'risk-low';
+    tr.innerHTML = `
+      <td style="font-family:'Courier New',monospace;font-size:.75rem;font-weight:700;color:var(--cyan)">${ca.id}</td>
+      <td><textarea rows="2" oninput="updateProgress()">${ca.action}</textarea></td>
+      <td><span class="${pClass}">${ca.priority}</span></td>
+      <td class="text-sm">${ca.effort}</td>
+      <td><select onchange="updateProgress()" style="background:var(--bg-inp);border:1px solid var(--border2);color:var(--text);border-radius:5px;font-size:.78rem;padding:.28rem;width:100%">
+        <option value="${ca.owner}">${ca.owner}</option>
+        ${PERSONNEL.map(p=>p!==ca.owner?`<option>${p}</option>`:'').join('')}
+      </select></td>
+      <td><input type="text" value="${ca.timeline}" oninput="updateProgress()"/></td>
+      <td><span class="nist-tag">${ca.nist}</span></td>
+    `;
+    tb.appendChild(tr);
+  });
+}
+
+function buildDebrief(){
+  const div = document.getElementById('debrief-body');
+  DEBRIEF_QS.forEach(q => {
+    div.innerHTML += `
+    <div class="dq-item">
+      <div class="dq-num"></div>
+      <div style="flex:1">
+        <div class="dq-text">${q}</div>
+        <div style="margin-top:.45rem"><textarea rows="2" placeholder="Discussion notes / participant responses..." oninput="updateProgress()"></textarea></div>
+      </div>
+    </div>`;
+  });
+}
+
+function buildRubric(){
+  const tb = document.getElementById('rubric-body');
+  RUBRIC_ROWS.forEach(r => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="label-cell" style="font-size:.8rem">${r.cat}</td>
+      <td class="text-sm">${r.exc}</td>
+      <td class="text-sm">${r.pro}</td>
+      <td class="text-sm">${r.dev}</td>
+      <td class="text-sm">${r.ni}</td>
+      <td style="text-align:center;font-weight:700;color:var(--gold)">${r.max}</td>
+      <td><input type="number" class="score-input rubric-score" min="0" max="${r.max}" placeholder="0" oninput="calcRubric()"/></td>
+    `;
+    tb.appendChild(tr);
+  });
+  const tot = document.createElement('tr');
+  tot.className = 'score-total-row';
+  tot.innerHTML = `<td colspan="5" style="font-weight:800;padding:.6rem .75rem">Total</td><td style="text-align:center">100</td><td style="text-align:center" id="rubric-score-total">0/100</td>`;
+  tb.appendChild(tot);
+}
+
+// ═══════════════════════════════════════════════════
+//  INTERACTIONS
+// ═══════════════════════════════════════════════════
+function ynToggle(btn, type){
+  const group = btn.closest('.yn-group');
+  group.querySelectorAll('.yn-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  updateProgress();
+}
+
+function sevToggle(btn){
+  const group = btn.closest('div');
+  group.querySelectorAll('.sev-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  updateProgress();
+}
+
+// ═══════════════════════════════════════════════════
+//  TABS
+// ═══════════════════════════════════════════════════
+function showTab(id){
+  document.querySelectorAll('.section-card').forEach(c=>c.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  const card = document.getElementById('tab-'+id);
+  if(card) card.classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(b=>{
+    if(b.getAttribute('onclick') && b.getAttribute('onclick').includes("'"+id+"'"))
+      b.classList.add('active');
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ═══════════════════════════════════════════════════
+//  PROGRESS
+// ═══════════════════════════════════════════════════
+function updateProgress(){
+  let filled=0, total=0;
+  document.querySelectorAll('textarea, select, input[type=text], input[type=number]').forEach(el=>{
+    if(el.closest('#rubric-body')) return;
+    total++;
+    if(el.tagName==='SELECT' && el.value) filled++;
+    else if(el.tagName==='TEXTAREA' && el.value.trim().length>8) filled++;
+    else if(el.tagName==='INPUT' && el.value.trim()) filled++;
+  });
+  const ynActive = document.querySelectorAll('.yn-btn.active, .sev-btn.active').length;
+  const ynTotal  = document.querySelectorAll('.yn-group').length + document.querySelectorAll('.sev-btn').length/4;
+  const pct = Math.min(100, Math.round(((filled+ynActive)/(total+ynTotal))*100));
+  document.getElementById('prog-pct').textContent = pct+'%';
+  document.getElementById('prog-fill').style.width = pct+'%';
+}
+
+// ═══════════════════════════════════════════════════
+//  RUBRIC CALC
+// ═══════════════════════════════════════════════════
+function calcRubric(){
+  let total=0;
+  document.querySelectorAll('.rubric-score').forEach(i=>{ total+=parseInt(i.value)||0; });
+  total = Math.min(100, total);
+  const pct = Math.round(total/100*100);
+  document.getElementById('rubric-total').textContent = total;
+  document.getElementById('rubric-pct').textContent = pct+'%';
+  document.getElementById('rubric-score-total').textContent = total+'/100';
+  document.getElementById('sb-total').textContent = total;
+  document.getElementById('sb-pct').textContent = pct+'%';
+  let rating='Needs Improvement', cls='rating-needs';
+  if(pct>=90){rating='Excellent';cls='rating-excellent'}
+  else if(pct>=75){rating='Proficient';cls='rating-proficient'}
+  else if(pct>=60){rating='Developing';cls='rating-developing'}
+  ['rubric-rating-badge','sb-rating'].forEach(id=>{
+    const el=document.getElementById(id);
+    el.textContent=rating;
+    el.className=(id==='rubric-rating-badge'?'rating-badge ':'sb-rating ')+cls;
+  });
+}
+
+// ═══════════════════════════════════════════════════
+//  TIMER
+// ═══════════════════════════════════════════════════
+let timerSecs=1200, timerInt=null, timerOn=false;
+function updateTimerDisplay(){
+  const m=Math.floor(timerSecs/60), s=timerSecs%60;
+  const el=document.getElementById('timer-display');
+  el.textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+  el.className='timer-display';
+  if(timerSecs<=300) el.classList.add('warn');
+  if(timerSecs<=60)  el.classList.add('danger');
+}
+function startTimer(){
+  if(timerOn) return;
+  timerOn=true;
+  document.getElementById('timer-start').style.display='none';
+  document.getElementById('timer-pause').style.display='';
+  timerInt=setInterval(()=>{
+    if(timerSecs>0){timerSecs--;updateTimerDisplay();}
+    else{clearInterval(timerInt);timerOn=false;}
+  },1000);
+}
+function pauseTimer(){
+  clearInterval(timerInt);timerOn=false;
+  document.getElementById('timer-start').style.display='';
+  document.getElementById('timer-pause').style.display='none';
+}
+function resetTimer(){
+  pauseTimer();timerSecs=1200;updateTimerDisplay();
+}
+
+// ═══════════════════════════════════════════════════
+//  EXPORT
+// ═══════════════════════════════════════════════════
+function exportAnswers(){
+  let out='FFSI — INCIDENT RESPONSE PLAN EXERCISE\nExport: '+new Date().toLocaleString()+'\n'+'='.repeat(60)+'\n\n';
+  out+='IRP REPORT FIELDS:\n'+'-'.repeat(40)+'\n';
+  document.querySelectorAll('#tab-act3 textarea, #tab-act3 input[type=text]').forEach((el,i)=>{
+    if(el.value.trim()) out+='Field '+(i+1)+': '+el.value.trim()+'\n';
+  });
+  out+='\nROOT CAUSE ANALYSIS:\n'+'-'.repeat(40)+'\n';
+  document.querySelectorAll('#tab-act6 textarea').forEach((el,i)=>{
+    if(el.value.trim()) out+='Entry '+(i+1)+': '+el.value.trim()+'\n';
+  });
+  const blob=new Blob([out],{type:'text/plain'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='FFSI_IRP_Exercise_Answers.txt';
+  a.click();
+}
+
+// ═══════════════════════════════════════════════════
+//  RESET
+// ═══════════════════════════════════════════════════
+function confirmReset(){
+  if(confirm('Reset all exercise answers? This cannot be undone.')){
+    document.querySelectorAll('textarea').forEach(t=>t.value='');
+    document.querySelectorAll('select').forEach(s=>s.selectedIndex=0);
+    document.querySelectorAll('input[type=text]').forEach(i=>i.value='');
+    document.querySelectorAll('.rubric-score').forEach(i=>i.value='');
+    document.querySelectorAll('.yn-btn, .sev-btn').forEach(b=>b.classList.remove('active'));
+    calcRubric(); updateProgress();
+  }
+}
+
+// ═══════════════════════════════════════════════════
+//  INIT — pre-populate corrective action table
+// ═══════════════════════════════════════════════════
+buildIRT();
+buildLifecycle();
+buildNotify();
+buildDocs();
+buildCA();
+buildDebrief();
+buildRubric();
+updateTimerDisplay();
+
+// Show CSS counter numbers in debrief
+document.querySelectorAll('.dq-num').forEach((el,i)=>{ el.textContent = i+1; });
+</script>
+</body>
+</html>
