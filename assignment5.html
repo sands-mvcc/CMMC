@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FFSI — Cybersecurity Maintenance Report Exercise</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,500;0,600;0,700;1,500&family=Nunito:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap');
+
+/* ══════════════════════════════════════
+   DESIGN: Technical Field Manual
+   Steel blue + orange utility aesthetic
+══════════════════════════════════════ */
+:root {
+  --steel:       #1e3050;
+  --steel-mid:   #2c4a72;
+  --steel-lt:    #e8eef7;
+  --steel-pale:  #f2f5fb;
+  --orange:      #c05218;
+  --orange-mid:  #d96030;
+  --orange-lt:   #fff0e8;
+  --green:       #155a2e;
+  --green-mid:   #1a7339;
+  --green-lt:    #e6f4ec;
+  --red:         #9b1c1c;
+  --red-lt:      #fef2f2;
+  --amber:       #92400e;
+  --amber-mid:   #b45309;
+  --amber-lt:    #fef3c7;
+  --purple:      #4c1d95;
+  --purple-lt:   #f5f3ff;
+  --gray-900:    #111827;
+  --gray-700:    #374151;
+  --gray-500:    #6b7280;
+  --gray-300:    #d1d5db;
+  --gray-100:    #f9fafb;
+  --white:       #ffffff;
+
+  --bg:          #f5f6f8;
+  --bg-card:     var(--white);
+  --bg-alt:      var(--gray-100);
+  --text:        var(--gray-900);
+  --text-muted:  var(--gray-500);
+  --border:      var(--gray-300);
+  --accent:      var(--steel);
+  --accent-2:    var(--orange);
+
+  --serif: 'Bitter', Georgia, serif;
+  --sans:  'Nunito', system-ui, sans-serif;
+  --mono:  'Space Mono', monospace;
+  --rad:   8px;
+  --sh:    0 1px 3px rgba(0,0,0,.07), 0 4px 12px rgba(0,0,0,.05);
+  --sh-md: 0 6px 24px rgba(0,0,0,.10);
+}
+[data-theme="dark"] {
+  --bg:          #0c1220;
+  --bg-card:     #111d30;
+  --bg-alt:      #0a1020;
+  --text:        #c8d4e8;
+  --text-muted:  #5a7090;
+  --border:      #1e3050;
+  --accent:      #4a7cc0;
+  --steel-lt:    #0a1630;
+  --steel-pale:  #06100a;
+  --orange-lt:   #200c00;
+  --green-lt:    #061a10;
+  --red-lt:      #1a0707;
+  --amber-lt:    #1a1000;
+  --purple-lt:   #120830;
+  --gray-100:    #0a1020;
+}
+
+/* ── BASE ────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14px;line-height:1.7;transition:background .22s,color .22s;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:var(--bg-alt);}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+
+/* ── TOP BAR ─────────────────────────── */
+.topbar{
+  position:sticky;top:0;z-index:300;
+  background:var(--steel);color:#fff;
+  padding:.5rem 1.75rem;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:.6rem;flex-wrap:wrap;
+  border-bottom:3px solid var(--orange);
+}
+.tb-brand{display:flex;align-items:center;gap:.6rem;}
+.tb-logo{
+  width:30px;height:30px;border-radius:4px;
+  background:var(--orange);display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:.6rem;font-weight:700;color:#fff;letter-spacing:.03em;
+}
+.tb-text{font-size:.76rem;font-weight:700;color:rgba(255,255,255,.8);letter-spacing:.01em;}
+.tb-right{display:flex;gap:.32rem;flex-wrap:wrap;}
+.btn{
+  display:inline-flex;align-items:center;gap:.28rem;
+  padding:.28rem .65rem;border-radius:5px;
+  border:1px solid rgba(255,255,255,.2);
+  background:rgba(255,255,255,.08);color:rgba(255,255,255,.88);
+  font-family:var(--sans);font-size:.7rem;font-weight:700;
+  cursor:pointer;transition:all .15s;white-space:nowrap;
+}
+.btn:hover{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.38);}
+.btn-orange{background:var(--orange);border-color:var(--orange-mid);color:#fff;}
+.btn-orange:hover{background:var(--orange-mid);}
+
+/* ── SECTION NAV ─────────────────────── */
+.secnav{
+  position:sticky;top:49px;z-index:200;
+  background:var(--bg-card);border-bottom:1px solid var(--border);
+  padding:.36rem 1.75rem;display:flex;gap:.18rem;overflow-x:auto;
+  scrollbar-width:none;box-shadow:0 2px 6px rgba(0,0,0,.04);
+}
+.secnav::-webkit-scrollbar{display:none;}
+.sn{
+  padding:.2rem .56rem;border-radius:4px;
+  border:1px solid transparent;background:none;
+  color:var(--text-muted);font-family:var(--sans);
+  font-size:.67rem;font-weight:700;cursor:pointer;
+  transition:all .13s;white-space:nowrap;
+}
+.sn:hover{color:var(--accent);}
+.sn.on{background:var(--steel-lt);color:var(--steel);border-color:var(--steel);}
+[data-theme="dark"] .sn.on{background:var(--steel-lt);color:var(--accent);}
+
+/* ── PAGE ────────────────────────────── */
+.page{max-width:1040px;margin:0 auto;padding:1.75rem 1.5rem 5rem;}
+
+/* ── HERO ────────────────────────────── */
+.hero{
+  background:var(--steel);color:#fff;
+  border-radius:var(--rad);padding:1.9rem 2.2rem 1.7rem;
+  margin-bottom:1.6rem;position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(120deg,rgba(192,82,24,.35) 0%,transparent 55%),
+    repeating-linear-gradient(70deg,transparent,transparent 20px,rgba(255,255,255,.016) 20px,rgba(255,255,255,.016) 21px);
+  pointer-events:none;
+}
+.hero::after{
+  content:'MA';position:absolute;right:1.5rem;bottom:-1.5rem;
+  font-family:var(--serif);font-size:9rem;font-weight:700;
+  color:rgba(255,255,255,.05);pointer-events:none;line-height:1;
+}
+.hero-kicker{font-size:.6rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:.42rem;}
+.hero h1{font-family:var(--serif);font-size:clamp(1.35rem,3vw,1.95rem);line-height:1.1;margin-bottom:.38rem;font-style:italic;}
+.hero h1 em{font-style:normal;color:#fdba74;}
+.hero-sub{font-size:.83rem;color:rgba(255,255,255,.65);max-width:560px;margin-bottom:.88rem;}
+.hero-chips{display:flex;gap:.36rem;flex-wrap:wrap;}
+.hc{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.18);font-size:.59rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:.13rem .46rem;border-radius:3px;}
+
+/* ── META STRIP ──────────────────────── */
+.meta-strip{display:flex;gap:.55rem;margin-bottom:1.4rem;flex-wrap:wrap;}
+.timer-pill{display:flex;align-items:center;gap:.5rem;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rad);padding:.52rem .82rem;flex:1;min-width:200px;}
+.tl{font-size:.61rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);}
+.tv{font-family:var(--mono);font-size:1rem;font-weight:700;color:var(--accent);min-width:54px;}
+.tv.warn{color:var(--amber-mid);}
+.tv.exp{color:var(--red);}
+.t-track{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
+.t-fill{height:100%;background:var(--accent);border-radius:3px;transition:width 1s linear;}
+.prog-pill{display:flex;align-items:center;gap:.55rem;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rad);padding:.52rem .82rem;flex:2;min-width:230px;}
+.pl{font-size:.61rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--orange);}
+.p-track{flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden;}
+.p-fill{height:100%;background:var(--orange);border-radius:4px;transition:width .35s;}
+.p-pct{font-family:var(--mono);font-size:.74rem;font-weight:700;color:var(--orange);white-space:nowrap;}
+
+/* ── SECTION CHROME ─────────────────── */
+.section{margin-bottom:2rem;scroll-margin-top:90px;}
+.sec-hdr{display:flex;align-items:center;gap:.58rem;margin-bottom:.9rem;padding-bottom:.58rem;border-bottom:2px solid var(--border);}
+.sec-num{width:28px;height:28px;flex-shrink:0;background:var(--orange);color:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.68rem;font-weight:700;}
+.sec-title{font-family:var(--serif);font-size:1.08rem;font-weight:600;}
+.sec-pts{margin-left:auto;font-size:.63rem;font-weight:700;background:var(--orange-lt);color:var(--orange);border:1px solid var(--orange);padding:.1rem .42rem;border-radius:4px;white-space:nowrap;}
+[data-theme="dark"] .sec-pts{background:var(--orange-lt);}
+
+/* ── CALLOUTS ────────────────────────── */
+.cl{display:flex;gap:.55rem;align-items:flex-start;border-radius:var(--rad);padding:.74rem .9rem;font-size:.8rem;margin-bottom:.78rem;}
+.cl-steel{background:var(--steel-lt);border-left:4px solid var(--steel);}
+.cl-orange{background:var(--orange-lt);border-left:4px solid var(--orange);}
+.cl-red{background:var(--red-lt);border-left:4px solid var(--red);}
+.cl-green{background:var(--green-lt);border-left:4px solid var(--green-mid);}
+[data-theme="dark"] .cl-steel{background:var(--steel-lt);}
+[data-theme="dark"] .cl-orange{background:var(--orange-lt);}
+[data-theme="dark"] .cl-red{background:var(--red-lt);}
+[data-theme="dark"] .cl-green{background:var(--green-lt);}
+
+/* ── GLOSSARY ────────────────────────── */
+.gloss-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:.46rem;}
+.gc{background:var(--bg-card);border:1px solid var(--border);border-top:3px solid var(--steel);border-radius:var(--rad);padding:.65rem .86rem;transition:box-shadow .18s;}
+.gc:hover{box-shadow:var(--sh-md);}
+.gt{font-family:var(--mono);font-size:.63rem;font-weight:700;color:var(--steel);letter-spacing:.04em;margin-bottom:.18rem;}
+[data-theme="dark"] .gt{color:var(--accent);}
+.gd{font-size:.73rem;color:var(--text-muted);line-height:1.46;}
+
+/* ── CARDS ───────────────────────────── */
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rad);padding:.95rem;}
+.card+.card{margin-top:.55rem;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+@media(max-width:620px){.g2{grid-template-columns:1fr;}}
+
+/* ── FORM ELEMENTS ───────────────────── */
+.fl{font-size:.6rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.18rem;display:block;}
+.fi{padding:.3rem .5rem;border:1px solid var(--border);border-radius:5px;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:.77rem;transition:border-color .15s;width:100%;}
+.fi:focus{outline:none;border-color:var(--orange);}
+.fta{padding:.3rem .5rem;border:1px solid var(--border);border-radius:5px;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:.77rem;resize:vertical;min-height:50px;line-height:1.5;transition:border-color .15s;width:100%;}
+.fta:focus{outline:none;border-color:var(--orange);}
+.fg{display:flex;flex-direction:column;gap:.18rem;margin-bottom:.42rem;}
+.fsel{padding:.3rem .5rem;border:1px solid var(--border);border-radius:5px;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:.77rem;cursor:pointer;width:100%;}
+.fsel:focus{outline:none;border-color:var(--orange);}
+
+/* ── OBJECTIVES ──────────────────────── */
+.obj-list{display:flex;flex-direction:column;gap:.4rem;}
+.obj{display:flex;gap:.6rem;align-items:flex-start;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rad);padding:.6rem .85rem;}
+.obj-n{width:20px;height:20px;flex-shrink:0;background:var(--orange);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:700;}
+.obj-t{font-size:.79rem;line-height:1.5;}
+
+/* ── MAINTENANCE EVENT CARDS ─────────── */
+.maint-card{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-left:4px solid var(--steel);border-radius:var(--rad);
+  padding:.92rem 1rem;margin-bottom:.6rem;
+}
+.mc-head{display:flex;align-items:flex-start;gap:.65rem;flex-wrap:wrap;margin-bottom:.6rem;}
+.mc-id{font-family:var(--mono);font-size:.62rem;color:var(--text-muted);background:var(--bg-alt);border:1px solid var(--border);padding:.08rem .36rem;border-radius:3px;}
+.mc-title{font-weight:700;font-size:.87rem;}
+.mc-tags{display:flex;gap:.3rem;flex-wrap:wrap;margin-top:.12rem;}
+.mt-tag{font-size:.6rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.1rem .36rem;border-radius:3px;}
+.t-asset{background:var(--steel-lt);color:var(--steel);border:1px solid var(--steel-mid);}
+.t-ext{background:var(--purple-lt);color:var(--purple);border:1px solid var(--purple);}
+.t-int{background:var(--green-lt);color:var(--green-mid);border:1px solid var(--green-mid);}
+.t-emrg{background:var(--red-lt);color:var(--red);border:1px solid var(--red);}
+.t-plan{background:var(--steel-lt);color:var(--steel-mid);border:1px solid var(--steel-mid);}
+[data-theme="dark"] .t-asset{background:var(--steel-lt);}
+[data-theme="dark"] .t-int{background:var(--green-lt);}
+[data-theme="dark"] .t-ext{background:var(--purple-lt);}
+[data-theme="dark"] .t-emrg{background:var(--red-lt);}
+.mc-context{font-size:.74rem;color:var(--text-muted);line-height:1.5;font-style:italic;margin-bottom:.65rem;background:var(--bg-alt);border-radius:5px;padding:.35rem .5rem;}
+.mc-questions{display:grid;grid-template-columns:1fr 1fr;gap:.4rem;}
+@media(max-width:560px){.mc-questions{grid-template-columns:1fr;}}
+.mq-row{background:var(--bg-alt);border-radius:5px;padding:.36rem .52rem;display:flex;align-items:center;gap:.5rem;}
+.mq-text{font-size:.72rem;flex:1;color:var(--text-muted);}
+.yn-grp{display:flex;gap:.25rem;flex-shrink:0;}
+.yn{padding:.15rem .45rem;border-radius:4px;border:1px solid var(--border);background:var(--bg-card);font-family:var(--sans);font-size:.64rem;font-weight:700;cursor:pointer;transition:all .14s;color:var(--text);}
+.yn:hover{border-color:var(--orange);}
+.yn-y.sel{background:var(--green-lt);border-color:var(--green-mid);color:var(--green-mid);}
+.yn-n.sel{background:var(--red-lt);border-color:var(--red);color:var(--red);}
+.yn-u.sel{background:var(--amber-lt);border-color:var(--amber-mid);color:var(--amber);}
+[data-theme="dark"] .yn-y.sel{background:#061a10;}
+[data-theme="dark"] .yn-n.sel{background:#1a0707;}
+[data-theme="dark"] .yn-u.sel{background:#1a1000;}
+
+/* ── REPORT TABLE ────────────────────── */
+.report-wrap{overflow-x:auto;}
+.report-table{width:100%;border-collapse:collapse;font-size:.75rem;min-width:800px;}
+.report-table th{
+  background:var(--steel);color:rgba(255,255,255,.88);
+  font-size:.59rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  padding:.44rem .65rem;text-align:left;border-bottom:2px solid var(--border);
+  white-space:nowrap;
+}
+[data-theme="dark"] .report-table th{background:#0a1424;}
+.report-table td{padding:.4rem .6rem;border-bottom:1px solid var(--border);vertical-align:top;}
+.report-table tr:hover td{background:var(--bg-alt);}
+.rt-locked{font-size:.74rem;color:var(--text-muted);font-style:italic;}
+.rt-bold{font-weight:700;font-size:.78rem;}
+.rt-in{width:100%;padding:.25rem .38rem;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:.73rem;transition:border-color .15s;min-width:80px;}
+.rt-in:focus{outline:none;border-color:var(--orange);}
+.rt-sel{width:100%;padding:.25rem .38rem;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:.73rem;cursor:pointer;}
+.rt-sel:focus{outline:none;border-color:var(--orange);}
+.status-badge{display:inline-block;font-size:.6rem;font-weight:700;letter-spacing:.05em;padding:.09rem .36rem;border-radius:3px;}
+.sb-complete{background:var(--green-lt);color:var(--green-mid);border:1px solid var(--green-mid);}
+.sb-partial{background:var(--amber-lt);color:var(--amber);border:1px solid var(--amber-mid);}
+.sb-missing{background:var(--red-lt);color:var(--red);border:1px solid var(--red);}
+[data-theme="dark"] .sb-complete{background:#061a10;}
+[data-theme="dark"] .sb-partial{background:#1a1000;}
+[data-theme="dark"] .sb-missing{background:#1a0707;}
+
+/* ── VENDOR ANALYSIS ─────────────────── */
+.vendor-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:.55rem;}
+.vendor-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rad);padding:.88rem .95rem;transition:border-color .18s;}
+.vendor-card:hover{border-color:var(--orange);}
+.vc-head{display:flex;align-items:flex-start;gap:.6rem;margin-bottom:.55rem;}
+.vc-icon{font-size:1.1rem;flex-shrink:0;}
+.vc-name{font-weight:700;font-size:.86rem;}
+.vc-sub{font-size:.71rem;color:var(--text-muted);}
+.vc-context{font-size:.72rem;color:var(--text-muted);font-style:italic;line-height:1.45;margin-bottom:.55rem;}
+.vc-qs{display:flex;flex-direction:column;gap:.32rem;margin-bottom:.45rem;}
+.vcq-row{display:flex;align-items:center;gap:.5rem;background:var(--bg-alt);border-radius:4px;padding:.3rem .48rem;}
+.vcq-text{font-size:.7rem;flex:1;color:var(--text-muted);}
+
+/* ── COMPLIANCE FINDINGS ─────────────── */
+.finding-card{background:var(--bg-card);border:1px solid var(--border);border-left:4px solid var(--red);border-radius:var(--rad);padding:.88rem .95rem;margin-bottom:.55rem;}
+.fc-top{display:flex;align-items:center;gap:.55rem;margin-bottom:.5rem;flex-wrap:wrap;}
+.fc-id{font-family:var(--mono);font-size:.62rem;color:var(--text-muted);background:var(--bg-alt);border:1px solid var(--border);padding:.08rem .36rem;border-radius:3px;}
+.fc-title{font-weight:700;font-size:.84rem;}
+.fc-fields{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.42rem;}
+@media(max-width:540px){.fc-fields{grid-template-columns:1fr;}}
+
+/* ── RISK ASSESSMENT ─────────────────── */
+.risk-wrap{overflow-x:auto;}
+.risk-table{width:100%;border-collapse:collapse;font-size:.76rem;min-width:600px;}
+.risk-table th{background:var(--steel);color:rgba(255,255,255,.88);font-size:.59rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.42rem .65rem;text-align:left;border-bottom:2px solid var(--border);}
+[data-theme="dark"] .risk-table th{background:#0a1424;}
+.risk-table td{padding:.4rem .65rem;border-bottom:1px solid var(--border);vertical-align:middle;}
+.risk-table tr:last-child td{border-bottom:none;}
+.risk-table tr:hover td{background:var(--bg-alt);}
+.risk-title{font-weight:700;font-size:.8rem;}
+.rsel{padding:.26rem .42rem;border:1px solid var(--border);border-radius:5px;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:.73rem;cursor:pointer;width:100%;min-width:90px;}
+.rsel:focus{outline:none;border-color:var(--orange);}
+.rsel.r-high{border-color:var(--red);background:var(--red-lt);color:var(--red);}
+.rsel.r-med {border-color:var(--amber-mid);background:var(--amber-lt);color:var(--amber);}
+.rsel.r-low {border-color:var(--green-mid);background:var(--green-lt);color:var(--green-mid);}
+[data-theme="dark"] .rsel.r-high{background:#1a0707;}
+[data-theme="dark"] .rsel.r-med {background:#1a1000;}
+[data-theme="dark"] .rsel.r-low {background:#061a10;}
+
+/* ── EXEC SUMMARY ────────────────────── */
+.exec-list{display:flex;flex-direction:column;gap:.5rem;}
+.exec-item{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rad);padding:.82rem .92rem;display:flex;gap:.62rem;align-items:flex-start;}
+.exec-n{width:20px;height:20px;flex-shrink:0;background:var(--orange);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:700;margin-top:.06rem;}
+.exec-body{flex:1;}
+.exec-q{font-size:.81rem;font-weight:700;margin-bottom:.28rem;}
+.exec-hint{font-size:.7rem;color:var(--text-muted);font-style:italic;margin-bottom:.36rem;}
+
+/* ── RUBRIC ──────────────────────────── */
+.rub-wrap{overflow-x:auto;}
+.rub{width:100%;border-collapse:collapse;font-size:.73rem;min-width:680px;}
+.rub th{background:var(--steel);color:rgba(255,255,255,.88);font-size:.57rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.42rem .65rem;text-align:left;border-bottom:2px solid var(--border);}
+[data-theme="dark"] .rub th{background:#0a1424;}
+.rub td{padding:.44rem .65rem;border-bottom:1px solid var(--border);vertical-align:top;}
+.rub tr:hover td{background:var(--bg-alt);}
+.rub-total td{background:var(--orange-lt);font-weight:700;}
+[data-theme="dark"] .rub-total td{background:var(--orange-lt);}
+.pts-chip{display:inline-block;background:var(--orange-lt);color:var(--orange);border:1px solid var(--orange);font-size:.58rem;font-weight:700;padding:.08rem .34rem;border-radius:3px;}
+[data-theme="dark"] .pts-chip{background:var(--orange-lt);}
+.sc-in{width:44px;padding:.23rem .3rem;text-align:center;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text);font-family:var(--mono);font-size:.76rem;}
+.sc-in:focus{outline:none;border-color:var(--orange);}
+.rx{color:var(--green-mid);font-size:.69rem;font-weight:600;}
+.rp{color:var(--steel-mid);font-size:.69rem;font-weight:600;}
+[data-theme="dark"] .rp{color:var(--accent);}
+.rd{color:var(--amber-mid);font-size:.69rem;font-weight:600;}
+.rn{color:var(--red);font-size:.69rem;font-weight:600;}
+.score-tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:.52rem;margin-top:.82rem;}
+@media(max-width:460px){.score-tiles{grid-template-columns:1fr 1fr;}}
+.st{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rad);padding:.72rem;text-align:center;}
+.st-val{font-family:var(--serif);font-size:1.75rem;color:var(--orange);line-height:1;margin-bottom:.16rem;}
+.st-lbl{font-size:.59rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);}
+.rating{display:inline-block;font-size:.78rem;font-weight:700;padding:.24rem .74rem;border-radius:14px;border:2px solid;}
+.r-ex{background:var(--green-lt);color:var(--green-mid);border-color:var(--green-mid);}
+.r-pr{background:var(--steel-lt);color:var(--steel-mid);border-color:var(--steel-mid);}
+.r-de{background:var(--amber-lt);color:var(--amber-mid);border-color:var(--amber-mid);}
+.r-ni{background:var(--red-lt);color:var(--red);border-color:var(--red);}
+[data-theme="dark"] .r-ex{background:#061a10;}
+[data-theme="dark"] .r-pr{background:var(--steel-lt);}
+[data-theme="dark"] .r-de{background:#1a1000;}
+[data-theme="dark"] .r-ni{background:#1a0707;}
+
+/* ── DEBRIEF ─────────────────────────── */
+.dq-list{display:flex;flex-direction:column;gap:.4rem;}
+.dq{display:flex;gap:.58rem;align-items:flex-start;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rad);padding:.65rem .86rem;}
+.dq-n{width:19px;height:19px;flex-shrink:0;background:var(--steel);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;margin-top:.07rem;}
+.dq-body{flex:1;}
+.dq-q{font-size:.8rem;margin-bottom:.26rem;}
+
+/* ── MISC ────────────────────────────── */
+.hr{border:none;border-top:1px solid var(--border);margin:.88rem 0;}
+@media print{
+  .topbar,.secnav,.meta-strip,.btn,.tb-right{display:none!important;}
+  .section{break-inside:avoid;}
+  body{font-size:12px;}
+  .hero{background:#1e3050!important;-webkit-print-color-adjust:exact;}
+  .rub-total td,.report-table th,.rub th,.risk-table th,.report-table th{-webkit-print-color-adjust:exact;}
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="tb-brand">
+    <div class="tb-logo">MA</div>
+    <div class="tb-text">FFSI — Cybersecurity Maintenance Report Exercise</div>
+  </div>
+  <div class="tb-right">
+    <button class="btn" id="themeBtn" onclick="toggleTheme()">🌙 Dark Mode</button>
+    <button class="btn" onclick="window.print()">🖨 Print</button>
+    <button class="btn" onclick="clearAll()">↺ Reset</button>
+    <button class="btn btn-orange" onclick="exportAll()">📤 Export</button>
+  </div>
+</div>
+
+<!-- SECTION NAV -->
+<div class="secnav">
+  <button class="sn on" onclick="nav('intro',this)">Intro</button>
+  <button class="sn" onclick="nav('obj',this)">Objectives</button>
+  <button class="sn" onclick="nav('terms',this)">Key Terms</button>
+  <button class="sn" onclick="nav('act1',this)">Act 1 — Events</button>
+  <button class="sn" onclick="nav('act2',this)">Act 2 — Report</button>
+  <button class="sn" onclick="nav('act3',this)">Act 3 — Vendors</button>
+  <button class="sn" onclick="nav('act4',this)">Act 4 — Findings</button>
+  <button class="sn" onclick="nav('act5',this)">Act 5 — Risk</button>
+  <button class="sn" onclick="nav('act6',this)">Act 6 — Exec Summary</button>
+  <button class="sn" onclick="nav('debrief',this)">Debrief</button>
+  <button class="sn" onclick="nav('rubric',this)">Rubric</button>
+</div>
+
+<div class="page">
+
+<!-- HERO -->
+<div class="hero" id="intro">
+  <div class="hero-kicker">CMMC 2.0 Workshop · NIST SP 800-171 Domain MA · 30 Minutes</div>
+  <h1>FFSI Quarterly<br><em>Cybersecurity Maintenance Report</em></h1>
+  <div class="hero-sub">Review, classify, and document FFSI's recent maintenance activities — evaluating compliance with NIST SP 800-171 Maintenance requirements and CMMC Level 2 assessment expectations.</div>
+  <div class="hero-chips">
+    <span class="hc">NIST 800-171 MA Domain</span>
+    <span class="hc">100 Points</span>
+    <span class="hc">6 Activities</span>
+    <span class="hc">Q4 FY2024 Report Period</span>
+    <span class="hc">⚠ Fictional — Training Use Only</span>
+  </div>
+</div>
+
+<!-- TIMER + PROGRESS -->
+<div class="meta-strip">
+  <div class="timer-pill">
+    <span class="tl">⏱ Timer</span>
+    <span class="tv" id="timerVal">30:00</span>
+    <div style="display:flex;gap:.26rem;">
+      <button class="btn" style="padding:.2rem .46rem;font-size:.66rem;" onclick="startT()">▶</button>
+      <button class="btn" style="padding:.2rem .46rem;font-size:.66rem;" onclick="pauseT()">⏸</button>
+      <button class="btn" style="padding:.2rem .46rem;font-size:.66rem;" onclick="resetT()">↺</button>
+    </div>
+    <div class="t-track"><div class="t-fill" id="tFill" style="width:100%"></div></div>
+  </div>
+  <div class="prog-pill">
+    <span class="pl">Report Progress</span>
+    <div class="p-track"><div class="p-fill" id="pFill" style="width:0%"></div></div>
+    <span class="p-pct" id="pPct">0%</span>
+  </div>
+</div>
+
+<!-- INTRODUCTION -->
+<div class="section">
+  <div class="sec-hdr"><div class="sec-num">📋</div><div class="sec-title">Introduction — Maintenance Documentation and CMMC</div></div>
+  <div class="cl cl-steel">
+    <span style="font-size:1rem;flex-shrink:0;">🔧</span>
+    <div>NIST SP 800-171 Domain MA (Maintenance) requires organizations to maintain and control maintenance on organizational systems. Every firmware update, vendor repair, emergency patch, and OS upgrade that touches a CUI asset must be authorized, documented, and reviewed. During a CMMC Level 2 assessment, a C3PAO will ask: <em>Who did this? When? Was it authorized? Was CUI at risk?</em> If you cannot answer those questions with evidence, the maintenance event becomes a finding.</div>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <div style="font-weight:700;font-size:.86rem;margin-bottom:.36rem;">Why Assessors Focus on Maintenance Records</div>
+      <ul style="font-size:.76rem;color:var(--text-muted);padding-left:1rem;line-height:1.88;">
+        <li>Maintenance activities can introduce unauthorized changes, malware, or misconfigurations</li>
+        <li>Unescorted vendor access to CUI systems violates NIST 800-171 practice 3.7.4</li>
+        <li>Emergency changes made without approval create undocumented security posture changes</li>
+        <li>Maintenance logs serve as the audit trail that validates SSP control implementation claims</li>
+        <li>Missing records suggest the organization doesn't control its own security environment</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div style="font-weight:700;font-size:.86rem;margin-bottom:.36rem;">NIST SP 800-171 Maintenance Practices</div>
+      <ul style="font-size:.76rem;color:var(--text-muted);padding-left:1rem;line-height:1.88;">
+        <li><strong>3.7.1</strong> — Perform maintenance on organizational systems</li>
+        <li><strong>3.7.2</strong> — Provide controls on tools used for maintenance</li>
+        <li><strong>3.7.3</strong> — Ensure equipment removed for maintenance is sanitized</li>
+        <li><strong>3.7.4</strong> — Check media containing diagnostic programs for malicious code</li>
+        <li><strong>3.7.5</strong> — Require MFA for remote maintenance sessions</li>
+        <li><strong>3.7.6</strong> — Supervise maintenance activities of personnel without required access authorization</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- OBJECTIVES -->
+<div class="section" id="obj">
+  <div class="sec-hdr"><div class="sec-num">🎯</div><div class="sec-title">Learning Objectives</div></div>
+  <div class="obj-list">
+    <div class="obj"><div class="obj-n">1</div><div class="obj-t">Identify which FFSI maintenance activities fall within the scope of NIST SP 800-171 Maintenance requirements and explain why each is relevant to CMMC Level 2 assessment.</div></div>
+    <div class="obj"><div class="obj-n">2</div><div class="obj-t">Classify maintenance events as planned or unplanned, internal or external, and authorized or unauthorized — determining whether CUI systems were potentially affected.</div></div>
+    <div class="obj"><div class="obj-n">3</div><div class="obj-t">Complete a Cybersecurity Maintenance Report by filling in missing fields using FFSI case study data — including technician identity, approval status, CUI impact, and documentation status.</div></div>
+    <div class="obj"><div class="obj-n">4</div><div class="obj-t">Analyze vendor maintenance activities to determine whether third-party access was properly authorized, monitored, documented, and compliant with NIST 800-171 practice 3.7.6.</div></div>
+    <div class="obj"><div class="obj-n">5</div><div class="obj-t">Identify maintenance compliance weaknesses and develop corrective actions with risk ratings that reflect the impact on CUI security and CMMC assessment readiness.</div></div>
+    <div class="obj"><div class="obj-n">6</div><div class="obj-t">Prepare a concise executive maintenance summary that answers key questions about documentation completeness, vendor management, and compliance risk for FFSI leadership.</div></div>
+  </div>
+</div>
+
+<!-- KEY TERMS -->
+<div class="section" id="terms">
+  <div class="sec-hdr"><div class="sec-num">📖</div><div class="sec-title">Key Terms</div></div>
+  <div class="gloss-grid" id="glossGrid"></div>
+</div>
+
+<!-- ACTIVITY 1: MAINTENANCE EVENT REVIEW -->
+<div class="section" id="act1">
+  <div class="sec-hdr">
+    <div class="sec-num">1</div>
+    <div class="sec-title">Activity 1 — Maintenance Event Review</div>
+    <div class="sec-pts">25 pts</div>
+  </div>
+  <div class="cl cl-steel">
+    <span style="font-size:1rem;flex-shrink:0;">🔧</span>
+    <div><strong>Instructions:</strong> Review each FFSI maintenance event below. Answer all six diagnostic questions (Yes / No / Uncertain) for each event. Then document any notes on authorization, CUI impact, or evidence concerns. Your classifications feed directly into Activity 2.</div>
+  </div>
+  <div id="maintList"></div>
+</div>
+
+<!-- ACTIVITY 2: MAINTENANCE REPORT COMPLETION -->
+<div class="section" id="act2">
+  <div class="sec-hdr">
+    <div class="sec-num">2</div>
+    <div class="sec-title">Activity 2 — Maintenance Report Completion</div>
+    <div class="sec-pts">25 pts</div>
+  </div>
+  <div class="cl cl-orange">
+    <span style="font-size:1rem;flex-shrink:0;">📄</span>
+    <div><strong>Instructions:</strong> Complete the Quarterly Cybersecurity Maintenance Report below. Gray pre-filled fields are drawn from the case study. White input fields must be completed by participants. Select status, enter technician names from the FFSI roster, and document CUI impact determinations.</div>
+  </div>
+  <div class="report-wrap">
+    <table class="report-table">
+      <thead>
+        <tr>
+          <th>Event ID</th>
+          <th>Date</th>
+          <th>Asset / System</th>
+          <th>Maintenance Activity</th>
+          <th>Technician / Vendor</th>
+          <th>Approval Required?</th>
+          <th>CUI Impact?</th>
+          <th>Status / Evidence</th>
+        </tr>
+      </thead>
+      <tbody id="reportBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ACTIVITY 3: VENDOR MAINTENANCE ANALYSIS -->
+<div class="section" id="act3">
+  <div class="sec-hdr">
+    <div class="sec-num">3</div>
+    <div class="sec-title">Activity 3 — Vendor Maintenance Analysis</div>
+    <div class="sec-pts">15 pts</div>
+  </div>
+  <div class="cl cl-steel">
+    <span style="font-size:1rem;flex-shrink:0;">🏢</span>
+    <div><strong>Instructions:</strong> For each third-party vendor maintenance event below, answer the five compliance questions and document what evidence FFSI should retain. NIST 800-171 practice 3.7.6 requires supervising maintenance personnel without required access authorization.</div>
+  </div>
+  <div class="vendor-grid" id="vendorGrid"></div>
+</div>
+
+<!-- ACTIVITY 4: COMPLIANCE FINDINGS -->
+<div class="section" id="act4">
+  <div class="sec-hdr">
+    <div class="sec-num">4</div>
+    <div class="sec-title">Activity 4 — Maintenance Compliance Findings</div>
+    <div class="sec-pts">15 pts</div>
+  </div>
+  <div class="cl cl-orange">
+    <span style="font-size:1rem;flex-shrink:0;">⚠️</span>
+    <div><strong>Instructions:</strong> For each maintenance compliance weakness below, confirm whether it exists at FFSI (cite evidence from Activities 1–3), describe the compliance risk, and recommend a specific corrective action with a named owner from the FFSI roster.</div>
+  </div>
+  <div id="findingList"></div>
+</div>
+
+<!-- ACTIVITY 5: RISK ASSESSMENT -->
+<div class="section" id="act5">
+  <div class="sec-hdr">
+    <div class="sec-num">5</div>
+    <div class="sec-title">Activity 5 — Maintenance Risk Assessment</div>
+    <div class="sec-pts">10 pts</div>
+  </div>
+  <div class="cl cl-steel">
+    <span style="font-size:1rem;flex-shrink:0;">📊</span>
+    <div><strong>Instructions:</strong> Assign a risk level to each maintenance issue from Activity 4. Select High, Medium, or Low and provide a one-sentence justification referencing the CUI impact and NIST 800-171 practice affected. <strong>High</strong> = immediate CUI risk · <strong>Medium</strong> = compliance concern · <strong>Low</strong> = administrative improvement.</div>
+  </div>
+  <div class="risk-wrap">
+    <table class="risk-table">
+      <thead>
+        <tr><th>Finding ID</th><th>Issue</th><th>Risk Level</th><th>Justification</th></tr>
+      </thead>
+      <tbody id="riskBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ACTIVITY 6: EXECUTIVE SUMMARY -->
+<div class="section" id="act6">
+  <div class="sec-hdr">
+    <div class="sec-num">6</div>
+    <div class="sec-title">Activity 6 — Executive Maintenance Summary</div>
+    <div class="sec-pts">10 pts</div>
+  </div>
+  <div class="cl cl-orange">
+    <span style="font-size:1rem;flex-shrink:0;">💼</span>
+    <div><strong>Instructions:</strong> Prepare the Executive Summary section of the Quarterly Cybersecurity Maintenance Report for FFSI leadership. Each response should be 2–3 sentences of specific, FFSI-grounded analysis. This section will be the first thing the CISO and Compliance Manager read.</div>
+  </div>
+  <div class="exec-list" id="execList"></div>
+</div>
+
+<!-- DEBRIEF -->
+<div class="section" id="debrief">
+  <div class="sec-hdr"><div class="sec-num">🗣</div><div class="sec-title">Instructor Debrief Questions</div></div>
+  <div class="cl cl-steel">
+    <span style="font-size:1rem;flex-shrink:0;">🎓</span>
+    <div>Use these questions to facilitate a 5–10 minute debrief discussion. Participants should reference specific FFSI maintenance events to support their responses.</div>
+  </div>
+  <div class="dq-list" id="debriefList"></div>
+</div>
+
+<!-- RUBRIC -->
+<div class="section" id="rubric">
+  <div class="sec-hdr"><div class="sec-num">📊</div><div class="sec-title">Facilitator Scoring Rubric</div></div>
+  <div class="cl cl-steel">
+    <span style="font-size:1rem;flex-shrink:0;">📝</span>
+    <div>Enter scores per category. Total updates automatically. <strong>Excellent: 90–100</strong> · <strong>Proficient: 75–89</strong> · <strong>Developing: 60–74</strong> · <strong>Needs Improvement: &lt;60</strong></div>
+  </div>
+  <div class="rub-wrap">
+    <table class="rub">
+      <thead><tr><th>Category</th><th>Excellent</th><th>Proficient</th><th>Developing</th><th>Needs Improvement</th><th>Points</th><th>Score</th></tr></thead>
+      <tbody id="rubricBody"></tbody>
+      <tfoot>
+        <tr class="rub-total">
+          <td><strong>Total</strong></td><td colspan="4"></td>
+          <td><span class="pts-chip">100 pts</span></td>
+          <td><strong id="rubTotal" style="font-family:var(--mono);color:var(--orange);">0</strong>/100</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+  <div class="score-tiles">
+    <div class="st"><div class="st-val" id="sVal">0</div><div class="st-lbl">Total Points</div></div>
+    <div class="st"><div class="st-val" id="sPct">0%</div><div class="st-lbl">Percentage</div></div>
+    <div class="st" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.36rem;">
+      <div id="ratingPill" class="rating r-ni">Needs Improvement</div>
+      <div class="st-lbl">Rating</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end .page -->
+
+<script>
+/* ════════════════════════════
+   DATA
+════════════════════════════ */
+const K = 'ffsi-ma-';
+const sv = (k,v) => localStorage.setItem(K+k,v);
+const ld = k => localStorage.getItem(K+k)||'';
+
+const glossTerms = [
+  {t:'Maintenance',              d:'Any action that modifies, tests, repairs, or replaces components of an information system — including hardware, software, firmware, or embedded systems.'},
+  {t:'Preventive Maintenance',   d:'Scheduled maintenance performed to reduce the likelihood of failure; includes patching, firmware updates, and hardware inspections performed before problems occur.'},
+  {t:'Corrective Maintenance',   d:'Maintenance performed in response to a detected failure or degradation; restores a system to its operational baseline after a problem has occurred.'},
+  {t:'Emergency Maintenance',    d:'Unplanned, immediate maintenance performed to address a critical failure or active security incident; requires post-event documentation even when pre-approval is impractical.'},
+  {t:'Remote Maintenance',       d:'Maintenance performed by personnel who are not physically present at the system location; requires MFA per NIST 800-171 practice 3.7.5 and session monitoring.'},
+  {t:'Authorized Maintenance Personnel', d:'Individuals specifically approved to perform maintenance on organizational systems; must be documented in maintenance policies and system security plans.'},
+  {t:'Maintenance Log',          d:'A formal record of maintenance activities documenting who performed work, what was changed, when it occurred, whether it was authorized, and what evidence was retained.'},
+  {t:'Change Management',        d:'A structured process for requesting, reviewing, approving, implementing, and documenting changes to information systems; prevents unauthorized modifications.'},
+  {t:'Vendor Maintenance',       d:'Maintenance performed by external parties (manufacturers, MSPs, contractors); requires access authorization, supervision, and documentation per NIST 800-171 3.7.6.'},
+  {t:'Security Protection Asset',d:'A system component that provides security capabilities to protect CUI — firewalls, SIEM, EDR, IAM — but does not itself process CUI directly.'},
+  {t:'CUI Asset',                d:'Any system component that processes, stores, or transmits Controlled Unclassified Information; maintenance on these assets has the highest compliance documentation requirements.'},
+  {t:'Configuration Baseline',   d:'An approved, documented snapshot of a system\'s security settings; maintenance activities should be evaluated against the baseline to detect unauthorized changes.'},
+  {t:'Maintenance Approval',     d:'Formal authorization from an appropriate authority (ISSO, IT Director, or System Owner) before maintenance is performed on CUI-affecting systems.'},
+  {t:'Maintenance Record',       d:'Supporting documentation for a maintenance event — including work orders, service tickets, change requests, and technician logs — retained as audit evidence.'},
+  {t:'Audit Trail',              d:'A chronological record of system activities and events that allows reconstruction of what happened; maintenance records form part of the audit trail reviewable by C3PAO assessors.'},
+];
+
+const maintEvents = [
+  {
+    id:'ME-01', title:'Palo Alto PA-3420 Firewall Firmware Upgrade',
+    asset:'PA-3420-HQ', type:'Planned', source:'Internal',
+    tags:['t-asset','t-plan','t-int'],
+    context:'Kevin L. Marsh (Network/Security Admin) upgraded the HQ perimeter firewall from PAN-OS 11.0 to PAN-OS 11.1 on October 12, 2024. A maintenance window was scheduled 2 weeks in advance. The upgrade required a 45-minute outage. Change request CR-2024-047 was submitted. The firewall protects VLAN 20 (CUI enclave).'
+  },
+  {
+    id:'ME-02', title:'QA-DB-01 Emergency OS Security Patch Attempt',
+    asset:'QA-DB-01', type:'Unplanned', source:'Internal',
+    tags:['t-asset','t-emrg','t-int'],
+    context:'Tanya R. Holbrook (Sysadmin) attempted to apply KB emergency patches to QA-DB-01 on November 3, 2024, following a critical vulnerability alert. The server runs Windows Server 2012 R2 (end-of-support). No patches were available from Microsoft. The attempt was logged in a personal notepad, not the ticketing system. QA-DB-01 stores CUI ingredient formulations for the Natick contract.'
+  },
+  {
+    id:'ME-03', title:'SteadyPath IT — Remote Domain Controller Maintenance',
+    asset:'CORP-DC-01', type:'Planned', source:'External',
+    tags:['t-asset','t-plan','t-ext'],
+    context:'SteadyPath IT Services (managed IT MSP) remotely accessed CORP-DC-01 on October 28, 2024 via BeyondTrust Remote Support to resolve AD replication latency. Session was recorded. However, no formal work order was submitted by SteadyPath prior to access — verbal approval from Lena Forsythe was given. CORP-DC-01 is in scope as it serves the CUI enclave.'
+  },
+  {
+    id:'ME-04', title:'FortiGate SSL VPN Appliance Replacement',
+    asset:'FFSI-VPN-GW', type:'Planned', source:'Internal',
+    tags:['t-asset','t-plan','t-int'],
+    context:'Kevin L. Marsh replaced the FortiGate VPN appliance on November 15, 2024 following hardware end-of-life notification. The new unit was configured from scratch. A change request was approved (CR-2024-062). Configuration was validated against baseline. VPN is used by Contracts staff to remotely access the CUI enclave. CrowdStrike was not deployed to the new appliance until 3 days later.'
+  },
+  {
+    id:'ME-05', title:'CrowdStrike Falcon EDR Agent Mass Deployment',
+    asset:'All HQ Endpoints + QA Lab', type:'Planned', source:'Internal',
+    tags:['t-asset','t-plan','t-int'],
+    context:'Jasmine C. Waters (Cloud Admin) deployed CrowdStrike Falcon agents to 47 previously uncovered endpoints via Intune on November 20, 2024, increasing coverage from 82% to 96%. Production tablets (Android, 8 devices) were excluded — no MDM enrollment available. QA Lab workstations were included. Deployment log available in Intune. No separate maintenance record created.'
+  },
+  {
+    id:'ME-06', title:'Warehouse Cold-Storage Temperature Monitor Firmware Update',
+    asset:'COLD-STORAGE-MON (FFSI-030)', type:'Planned', source:'External',
+    tags:['t-asset','t-plan','t-ext'],
+    context:'Sensaphone field technician updated firmware on the cold-storage monitoring system at the Elberton warehouse on October 5, 2024. No maintenance record was created by FFSI staff. Bryant L. Vickers (Logistics Director) verbally approved. The device is on VLAN 60 (isolated IoT segment) and does not process CUI. However, it shares a physical facility with CUI logistics workstations.'
+  },
+  {
+    id:'ME-07', title:'Splunk SIEM Configuration Tuning — Alert Rules Update',
+    asset:'CORP-SIEM-01', type:'Planned', source:'Internal',
+    tags:['t-asset','t-plan','t-int'],
+    context:'Marcus A. Dillard (ISSO) updated Splunk alert correlation rules on December 2, 2024 to address the 90-day log review gap identified in INC-2024-007. New alert rules added for CORP-FS-02 failed access attempts and VLAN 20 anomalies. No change request was submitted — change was classified as "minor tuning." No pre/post configuration baseline snapshot was taken. SIEM is a Security Protection Asset.'
+  },
+  {
+    id:'ME-08', title:'ProSeal Defense Packaging — On-Site ERP Integration Maintenance',
+    asset:'CORP-ERP-01 (ProvisionEdge)', type:'Planned', source:'External',
+    tags:['t-asset','t-plan','t-ext'],
+    context:'A ProSeal Defense Packaging IT contractor performed on-site maintenance on the ProvisionEdge ERP system on November 8, 2024, troubleshooting an EDI integration issue. The contractor was unescorted in the server room for approximately 25 minutes. No visitor log entry was created. ERP contains Partial CUI (contract unit pricing, delivery scheduling). A service ticket exists in ProSeal\'s system but not in FFSI\'s ticketing system.'
+  },
+  {
+    id:'ME-09', title:'Cisco Meraki Wireless Controller Replacement — Warehouse',
+    asset:'MERAKI-WH-AP', type:'Planned', source:'Internal',
+    tags:['t-asset','t-plan','t-int'],
+    context:'Kevin L. Marsh replaced the Meraki wireless controller at the Elberton warehouse on December 10, 2024. The replacement controller was pre-configured. Change request CR-2024-078 was approved. The new controller was configured with WPA2-Enterprise — not upgraded to WPA3 as recommended. No post-installation security scan was performed. Warehouse VLAN 50 carries FCI delivery order data.'
+  },
+  {
+    id:'ME-10', title:'Emergency MFA Reset — Executive Laptop (Calloway)',
+    asset:'HQ-PC-EXEC-CEO', type:'Unplanned', source:'Internal',
+    tags:['t-plan','t-int','t-emrg'],
+    context:'Roberto P. Fuentes (Help Desk) performed an emergency MFA reset on Margaret Calloway\'s executive laptop on November 29, 2024 after an authenticator app failure locked her out before a critical contract meeting. The reset bypassed normal approval process (ISSO approval required per policy). No ticket was created until 3 days later when Fuentes was reminded by the Compliance Manager. The laptop has Partial CUI access via M365 GCC.'
+  },
+];
+
+const maintQs = [
+  'Was this maintenance planned or unplanned?',
+  'Was formal approval required per FFSI policy?',
+  'Was the activity performed internally or by a third party?',
+  'Could this maintenance affect CUI systems or data?',
+  'Was the maintenance properly documented in FFSI systems?',
+  'Should evidence of this activity be retained for CMMC assessment?',
+];
+
+const reportRows = [
+  {id:'ME-01', date:'Oct 12, 2024', asset:'PA-3420-HQ Firewall', activity:'PAN-OS firmware upgrade 11.0 → 11.1', tech_locked:null, appr_locked:'Yes', cui_locked:null, status_locked:null},
+  {id:'ME-02', date:'Nov 3, 2024',  asset:'QA-DB-01 (EOS Server)', activity:'Emergency patch attempt — no patches available for EOS OS', tech_locked:'T. Holbrook (Sysadmin)', appr_locked:null, cui_locked:'Yes', status_locked:null},
+  {id:'ME-03', date:'Oct 28, 2024', asset:'CORP-DC-01 (Domain Controller)', activity:'Remote AD replication repair by external MSP', tech_locked:null, appr_locked:null, cui_locked:'Yes', status_locked:null},
+  {id:'ME-04', date:'Nov 15, 2024', asset:'FFSI-VPN-GW (FortiGate VPN)', activity:'VPN appliance hardware replacement + reconfiguration', tech_locked:'K. Marsh (Net/Sec Admin)', appr_locked:'Yes — CR-2024-062', cui_locked:null, status_locked:null},
+  {id:'ME-05', date:'Nov 20, 2024', asset:'47 HQ + QA Lab Endpoints', activity:'CrowdStrike EDR agent mass deployment via Intune', tech_locked:'J. Waters (Cloud Admin)', appr_locked:null, cui_locked:null, status_locked:null},
+  {id:'ME-06', date:'Oct 5, 2024',  asset:'COLD-STORAGE-MON (IoT)', activity:'Firmware update by Sensaphone vendor technician', tech_locked:'Sensaphone field tech (external)', appr_locked:null, cui_locked:'No — VLAN 60 isolated', status_locked:null},
+  {id:'ME-07', date:'Dec 2, 2024',  asset:'CORP-SIEM-01 (Splunk)', activity:'Alert correlation rule tuning — post-gap remediation', tech_locked:'M. Dillard (ISSO)', appr_locked:null, cui_locked:null, status_locked:null},
+  {id:'ME-08', date:'Nov 8, 2024',  asset:'CORP-ERP-01 (ProvisionEdge)', activity:'On-site EDI integration maintenance by ProSeal contractor', tech_locked:null, appr_locked:null, cui_locked:'Yes (Partial CUI)', status_locked:null},
+  {id:'ME-09', date:'Dec 10, 2024', asset:'MERAKI-WH-AP (Wireless)', activity:'Wireless controller hardware replacement at warehouse', tech_locked:'K. Marsh (Net/Sec Admin)', appr_locked:'Yes — CR-2024-078', cui_locked:null, status_locked:null},
+  {id:'ME-10', date:'Nov 29, 2024', asset:'HQ-PC-EXEC-CEO (Exec Laptop)', activity:'Emergency MFA reset — CEO lockout', tech_locked:null, appr_locked:null, cui_locked:'Yes (M365 GCC access)', status_locked:null},
+];
+
+const vendors = [
+  {
+    id:'VND-01', icon:'🔥', name:'SteadyPath IT Services', type:'Managed Service Provider',
+    event:'Remote access to CORP-DC-01 for AD replication repair (ME-03)',
+    context:'SteadyPath has an active MSP agreement with FFSI and regular remote access to domain controllers via BeyondTrust. Lena Forsythe gave verbal approval before access. Session was recorded but no formal work order exists for this specific session. SteadyPath has not undergone a formal SCRM assessment.',
+  },
+  {
+    id:'VND-02', icon:'📦', name:'ProSeal Defense Packaging IT Contractor', type:'Subcontractor IT Staff',
+    event:'On-site ERP maintenance — unescorted server room access (ME-08)',
+    context:'ProSeal IT contractor visited HQ for ProvisionEdge ERP troubleshooting. No visitor badge was issued, no visitor log entry was made, and the contractor was unescorted for ~25 minutes in the server room. CORP-ERP-01 contains partial CUI. A service ticket exists in ProSeal\'s system but not in FFSI\'s. ProSeal is a subcontractor handling FCI under contract W909MY-24-C-0038.',
+  },
+  {
+    id:'VND-03', icon:'🌡', name:'Sensaphone / Cold-Storage Vendor', type:'IoT/Equipment Vendor',
+    event:'Firmware update to COLD-STORAGE-MON at warehouse (ME-06)',
+    context:'Sensaphone field technician updated firmware on the warehouse cold-storage monitor. No FFSI maintenance record was created. The device is on isolated VLAN 60 with no CUI access. Bryant Vickers gave verbal approval. This vendor has no CMMC flowdown obligation as the device is out of scope — but documentation practices set a pattern.',
+  },
+  {
+    id:'VND-04', icon:'🏢', name:'Palo Alto Networks TAC Support', type:'Equipment Manufacturer TAC',
+    event:'Technical Assistance Center phone support during PA-3420 upgrade (ME-01)',
+    context:'Kevin Marsh engaged Palo Alto TAC via phone during the firmware upgrade to resolve a configuration issue. TAC did not directly access FFSI systems — guidance was verbal. No formal record of the TAC case number or guidance received was retained by FFSI. The firewall protects the CUI enclave.',
+  },
+];
+
+const vendorQs = [
+  'Was vendor access formally authorized before the session?',
+  'Was remote access used? If so, was MFA enforced?',
+  'Was the maintenance session monitored or supervised?',
+  'Was the activity documented in FFSI\'s systems (not just the vendor\'s)?',
+  'What evidence should FFSI retain to support assessment review?',
+];
+
+const findings = [
+  {id:'CF-01', title:'Emergency Maintenance Performed Without ISSO Approval (ME-10)', context:'Help Desk tech reset CEO\'s MFA without ISSO pre-approval, bypassing the policy-required approval gate. Ticket created 3 days post-event.'},
+  {id:'CF-02', title:'Third-Party Vendor Accessed Server Room Without Escort or Visitor Log (ME-08)', context:'ProSeal contractor was unescorted in the server room for 25 minutes. No FFSI visitor log entry. Physical access to ERP server containing CUI without proper controls.'},
+  {id:'CF-03', title:'SIEM Configuration Change Made Without Change Request (ME-07)', context:'ISSO updated Splunk alert rules without submitting a change request, classifying it as "minor tuning." No pre/post configuration baseline snapshot was taken.'},
+  {id:'CF-04', title:'No FFSI Maintenance Record Created for Vendor Firmware Update (ME-06)', context:'Sensaphone vendor updated firmware and no FFSI-side maintenance log entry was created. Verbal approval only. Inconsistent documentation posture across facilities.'},
+  {id:'CF-05', title:'QA-DB-01 Patch Failure Not Escalated or Formally Documented (ME-02)', context:'Failed emergency patch attempt on EOS server was logged in a personal notepad, not the ITSM system. CUI-bearing system with no compensating controls documented.'},
+  {id:'CF-06', title:'EDR Gap Between VPN Replacement and CrowdStrike Deployment (ME-04)', context:'New VPN appliance operated without CrowdStrike EDR for 3 days post-deployment, creating a monitoring gap on a security-critical asset protecting the CUI enclave.'},
+  {id:'CF-07', title:'No Formal Work Order from External MSP for Domain Controller Access (ME-03)', context:'SteadyPath IT accessed CORP-DC-01 without submitting a formal work order. Verbal approval does not satisfy NIST 800-171 audit trail requirements for CUI-adjacent maintenance.'},
+  {id:'CF-08', title:'Wireless Controller Replacement Did Not Include Post-Installation Security Scan (ME-09)', context:'Replaced Meraki wireless controller was not scanned for vulnerabilities or configuration drift post-installation. WPA3 upgrade was skipped despite recommendation.'},
+];
+
+const riskIssues = findings.map(f => ({id:f.id, title:f.title}));
+
+const execQs = [
+  {id:'eq1', q:'Were maintenance activities properly documented during the Q4 2024 reporting period?',              hint:'Reference which events had complete records vs. gaps. Cite ME IDs.'},
+  {id:'eq2', q:'Were formal approvals consistently obtained before maintenance was performed?',                     hint:'Identify approvals that were missing, bypassed, or obtained verbally only.'},
+  {id:'eq3', q:'Were third-party vendors properly managed — authorized, monitored, and documented?',               hint:'Reference VND-01 through VND-04 findings and NIST practice 3.7.6.'},
+  {id:'eq4', q:'Were any maintenance activities potentially noncompliant with NIST SP 800-171 or FFSI policy?',    hint:'Identify the highest-risk noncompliant events and their associated practices.'},
+  {id:'eq5', q:'What corrective actions should be prioritized before the C3PAO assessment engagement?',            hint:'Rank by CUI impact and assessment risk. Name responsible owners from the FFSI roster.'},
+];
+
+const debriefQs = [
+  'Which of the 10 maintenance events posed the greatest risk to CUI? Why — and what NIST 800-171 practice is most directly implicated?',
+  'The ProSeal contractor accessed the server room unescorted for 25 minutes. What CMMC findings does this create, and what evidence would a C3PAO expect FFSI to produce?',
+  'Marcus Dillard classified the Splunk rule update as "minor tuning" and skipped the change request. Is this a valid classification? What are the compliance implications?',
+  'Why is vendor maintenance a significant focus during CMMC assessments? What specific evidence would a C3PAO request for each of FFSI\'s four vendor events?',
+  'How do maintenance records support SSP and POA&M development? Give a specific example using an FFSI maintenance event from this exercise.',
+  'What are the most common maintenance documentation deficiencies observed during CMMC assessments, and which of those did FFSI exhibit this quarter?',
+];
+
+const rubricData = [
+  {cat:'Maintenance Activity Classification', pts:25,
+   ex:'All 10 events correctly classified on all 6 questions with specific FFSI-grounded reasoning; planned/unplanned, internal/external, and CUI impact determinations are accurate.',
+   pr:'8–9 events correct on most questions; 1–2 minor classification errors without significant CUI impact misidentification.',
+   de:'6–7 events correct; CUI impact confused on 2+ events; planned/unplanned distinction inconsistently applied.',
+   ni:'Fewer than 6 events correct; classification framework not consistently applied.'},
+  {cat:'Report Completion Accuracy', pts:25,
+   ex:'All 10 report rows complete; technician/vendor names drawn from FFSI roster; CUI impact and approval fields consistent with Activity 1; status accurately reflects documentation posture.',
+   pr:'8–9 rows complete; most fields consistent with case study; 1–2 technician names generic or missing.',
+   de:'6–7 rows complete; several fields blank or inconsistent with Activity 1 findings.',
+   ni:'Fewer than 6 rows meaningful; report largely incomplete.'},
+  {cat:'Vendor Maintenance Analysis', pts:15,
+   ex:'All 4 vendor events analyzed on all 5 questions; evidence requirements are specific; NIST 3.7.6 supervision requirement correctly applied; highest-risk vendors identified.',
+   pr:'3–4 vendors fully analyzed; supervision requirement applied correctly to most; 1 evidence item generic.',
+   de:'2–3 vendors analyzed; supervision requirement not consistently applied; evidence requirements vague.',
+   ni:'Fewer than 2 meaningful vendor analyses; 3.7.6 not applied.'},
+  {cat:'Compliance Findings', pts:15,
+   ex:'All 8 findings confirmed with FFSI evidence; corrective actions are specific, name FFSI owners, and address root causes; NIST practices cited.',
+   pr:'6–7 findings with evidence; most corrective actions specific; 1–2 lack named owner.',
+   de:'4–5 findings supported; corrective actions generic; FFSI context missing from several.',
+   ni:'Fewer than 4 meaningful findings; corrective actions absent.'},
+  {cat:'Risk Assessment', pts:10,
+   ex:'All 8 risk ratings are defensible; High/Medium/Low distinction correctly reflects CUI impact; justifications cite specific NIST 800-171 practices and FFSI context.',
+   pr:'7–8 ratings defensible; justifications mostly specific; 1–2 could be argued differently.',
+   de:'5–6 ratings defensible; High/Medium distinction confused; justifications vague.',
+   ni:'Fewer than 5 defensible ratings; risk levels not grounded in CUI impact.'},
+  {cat:'Executive Summary', pts:10,
+   ex:'All 5 questions answered in 2–3 FFSI-specific sentences; responses synthesize Activities 1–5; corrective actions prioritized by CUI impact; actionable for FFSI leadership.',
+   pr:'4–5 questions substantive; most FFSI-specific; 1 reads as generic compliance advice.',
+   de:'2–3 substantive; briefing not grounded in FFSI event data.',
+   ni:'Fewer than 2 meaningful responses; not useful to FFSI leadership.'},
+];
+
+/* ════════════════════════════
+   RENDER
+════════════════════════════ */
+function renderGloss() {
+  document.getElementById('glossGrid').innerHTML = glossTerms.map(g =>
+    `<div class="gc"><div class="gt">${g.t}</div><div class="gd">${g.d}</div></div>`
+  ).join('');
+}
+
+function renderMaint() {
+  document.getElementById('maintList').innerHTML = maintEvents.map(m => {
+    const savedNote = ld('mn-'+m.id);
+    return `
+    <div class="maint-card">
+      <div class="mc-head">
+        <span class="mc-id">${m.id}</span>
+        <div>
+          <div class="mc-title">${m.title}</div>
+          <div class="mc-tags">
+            <span class="mt-tag t-asset">Asset: ${m.asset}</span>
+            <span class="mt-tag ${m.type==='Planned'?'t-plan':'t-emrg'}">${m.type}</span>
+            <span class="mt-tag ${m.source==='Internal'?'t-int':'t-ext'}">${m.source}</span>
+          </div>
+        </div>
+      </div>
+      <div class="mc-context">📌 ${m.context}</div>
+      <div class="mc-questions">
+        ${maintQs.map((q,i) => {
+          const sv_key = `mq-${m.id}-${i}`;
+          const saved = ld(sv_key);
+          return `
+          <div class="mq-row">
+            <span class="mq-text">Q${i+1}: ${q}</span>
+            <div class="yn-grp">
+              ${[['Yes','y'],['No','n'],['Uncertain','u']].map(([lbl,cls])=>`
+              <button class="yn yn-${cls} ${saved===lbl?'sel':''}"
+                onclick="setYN('${sv_key}','${lbl}',this)">${lbl}</button>`).join('')}
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+      <div class="fg" style="margin-top:.55rem;">
+        <label class="fl">Authorization, CUI impact, or evidence concerns</label>
+        <textarea class="fta" placeholder="Note any authorization gaps, missing documentation, CUI exposure concerns, or evidence requirements..."
+          oninput="sv('mn-${m.id}',this.value);updatePB()">${savedNote}</textarea>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function setYN(key, val, btn) {
+  sv(key, val);
+  btn.closest('.yn-grp').querySelectorAll('.yn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+  updatePB();
+}
+
+function renderReport() {
+  document.getElementById('reportBody').innerHTML = reportRows.map(r => {
+    const sTech   = ld('rt-tech-'+r.id);
+    const sAppr   = ld('rt-appr-'+r.id);
+    const sCUI    = ld('rt-cui-'+r.id);
+    const sStatus = ld('rt-status-'+r.id);
+    return `
+    <tr>
+      <td><span class="rt-bold">${r.id}</span></td>
+      <td class="rt-locked">${r.date}</td>
+      <td class="rt-locked">${r.asset}</td>
+      <td style="font-size:.73rem;">${r.activity}</td>
+      <td>${r.tech_locked ? `<span class="rt-locked">${r.tech_locked}</span>` : `<input class="rt-in" type="text" value="${sTech}" placeholder="Name + role..." oninput="sv('rt-tech-${r.id}',this.value)"/>`}</td>
+      <td>${r.appr_locked ? `<span class="rt-locked">${r.appr_locked}</span>` : `<select class="rt-sel" onchange="sv('rt-appr-${r.id}',this.value)"><option value="">—</option><option ${sAppr==='Yes'?'selected':''}>Yes</option><option ${sAppr==='No'?'selected':''}>No</option><option ${sAppr==='Emergency bypass'?'selected':''}>Emergency bypass</option></select>`}</td>
+      <td>${r.cui_locked ? `<span class="rt-locked">${r.cui_locked}</span>` : `<select class="rt-sel" onchange="sv('rt-cui-${r.id}',this.value)"><option value="">—</option><option ${sCUI==='Yes'?'selected':''}>Yes</option><option ${sCUI==='No'?'selected':''}>No</option><option ${sCUI==='Partial'?'selected':''}>Partial</option></select>`}</td>
+      <td>${r.status_locked ? `<span class="rt-locked">${r.status_locked}</span>` : `<select class="rt-sel" onchange="sv('rt-status-${r.id}',this.value);updatePB()"><option value="">— Status —</option><option ${sStatus==='Complete'?'selected':''}>Complete</option><option ${sStatus==='Partial — gaps noted'?'selected':''}>Partial — gaps noted</option><option ${sStatus==='Missing documentation'?'selected':''}>Missing documentation</option></select>`}</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderVendors() {
+  document.getElementById('vendorGrid').innerHTML = vendors.map(v => {
+    const savedEvid = ld('ve-'+v.id);
+    return `
+    <div class="vendor-card">
+      <div class="vc-head">
+        <div class="vc-icon">${v.icon}</div>
+        <div>
+          <div class="vc-name">${v.name}</div>
+          <div class="vc-sub">${v.type} · ${v.id}</div>
+        </div>
+      </div>
+      <div style="font-size:.7rem;font-weight:700;color:var(--orange);margin-bottom:.25rem;">Event: ${v.event}</div>
+      <div class="vc-context">${v.context}</div>
+      <div class="vc-qs">
+        ${vendorQs.map((q,i) => {
+          const sv_key = `vq-${v.id}-${i}`;
+          const saved = ld(sv_key);
+          return `
+          <div class="vcq-row">
+            <span class="vcq-text">Q${i+1}: ${q}</span>
+            <div class="yn-grp">
+              ${[['Yes','y'],['No','n'],['Uncertain','u']].map(([lbl,cls])=>`
+              <button class="yn yn-${cls} ${saved===lbl?'sel':''}"
+                onclick="setYN('${sv_key}','${lbl}',this)">${lbl}</button>`).join('')}
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+      <div class="fg" style="margin-bottom:0;">
+        <label class="fl">Evidence FFSI should retain</label>
+        <textarea class="fta" style="min-height:46px;" placeholder="List specific artifacts: work orders, session logs, visitor records, screenshots..."
+          oninput="sv('ve-${v.id}',this.value);updatePB()">${savedEvid}</textarea>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderFindings() {
+  document.getElementById('findingList').innerHTML = findings.map(f => {
+    const savedE = ld('fe-'+f.id);
+    const savedR = ld('fr-'+f.id);
+    const savedC = ld('fc-'+f.id);
+    return `
+    <div class="finding-card">
+      <div class="fc-top">
+        <span class="fc-id">${f.id}</span>
+        <span class="fc-title">${f.title}</span>
+      </div>
+      <div style="font-size:.73rem;color:var(--text-muted);font-style:italic;margin-bottom:.52rem;background:var(--bg-alt);padding:.32rem .5rem;border-radius:4px;">📌 ${f.context}</div>
+      <div class="fc-fields">
+        <div class="fg">
+          <label class="fl">FFSI Evidence (confirm with ME/VND reference)</label>
+          <textarea class="fta" style="min-height:46px;" placeholder="Cite the specific maintenance event ID and supporting facts..."
+            oninput="sv('fe-${f.id}',this.value)">${savedE}</textarea>
+        </div>
+        <div class="fg">
+          <label class="fl">Compliance Risk</label>
+          <textarea class="fta" style="min-height:46px;" placeholder="What NIST practice is affected? What is the assessment risk?"
+            oninput="sv('fr-${f.id}',this.value)">${savedR}</textarea>
+        </div>
+        <div class="fg">
+          <label class="fl">Corrective Action (name owner)</label>
+          <textarea class="fta" style="min-height:46px;" placeholder="Specific action + responsible owner from FFSI roster..."
+            oninput="sv('fc-${f.id}',this.value)">${savedC}</textarea>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderRisk() {
+  document.getElementById('riskBody').innerHTML = riskIssues.map(r => {
+    const savedLevel = ld('rl-'+r.id);
+    const savedJust  = ld('rj-'+r.id);
+    return `
+    <tr>
+      <td><span style="font-family:var(--mono);font-size:.66rem;color:var(--text-muted);">${r.id}</span></td>
+      <td><div class="risk-title">${r.title}</div></td>
+      <td>
+        <select class="rsel ${savedLevel==='High'?'r-high':savedLevel==='Medium'?'r-med':savedLevel==='Low'?'r-low':''}"
+          onchange="setRiskStyle(this,'${r.id}')">
+          <option value="">— Set Level —</option>
+          <option ${savedLevel==='High'?'selected':''}>High</option>
+          <option ${savedLevel==='Medium'?'selected':''}>Medium</option>
+          <option ${savedLevel==='Low'?'selected':''}>Low</option>
+        </select>
+      </td>
+      <td><input type="text" class="rt-in" style="min-width:200px;" value="${savedJust}"
+        placeholder="One sentence — NIST practice + CUI impact..."
+        oninput="sv('rj-${r.id}',this.value);updatePB()"/></td>
+    </tr>`;
+  }).join('');
+}
+
+function setRiskStyle(sel, id) {
+  sv('rl-'+id, sel.value);
+  sel.className = 'rsel' + (sel.value==='High'?' r-high':sel.value==='Medium'?' r-med':sel.value==='Low'?' r-low':'');
+  updatePB();
+}
+
+function renderExec() {
+  document.getElementById('execList').innerHTML = execQs.map(q => `
+    <div class="exec-item">
+      <div class="exec-n">${q.id.replace('eq','')}</div>
+      <div class="exec-body">
+        <div class="exec-q">${q.q}</div>
+        <div class="exec-hint">💡 ${q.hint}</div>
+        <textarea class="fta" placeholder="Write 2–3 FFSI-specific sentences for leadership..."
+          oninput="sv('eq-${q.id}',this.value)">${ld('eq-'+q.id)}</textarea>
+      </div>
+    </div>`).join('');
+}
+
+function renderDebrief() {
+  document.getElementById('debriefList').innerHTML = debriefQs.map((q,i) => `
+    <div class="dq">
+      <div class="dq-n">${i+1}</div>
+      <div class="dq-body">
+        <div class="dq-q">${q}</div>
+        <textarea class="fta" style="min-height:46px;" placeholder="Participant response..."
+          oninput="sv('dq-${i}',this.value)">${ld('dq-'+i)}</textarea>
+      </div>
+    </div>`).join('');
+}
+
+function renderRubric() {
+  document.getElementById('rubricBody').innerHTML = rubricData.map((r,i) => {
+    const saved = ld('rub-'+i)||'';
+    return `
+    <tr>
+      <td><strong>${r.cat}</strong></td>
+      <td class="rx">${r.ex}</td>
+      <td class="rp">${r.pr}</td>
+      <td class="rd">${r.de}</td>
+      <td class="rn">${r.ni}</td>
+      <td><span class="pts-chip">${r.pts}</span></td>
+      <td><input type="number" class="sc-in" min="0" max="${r.pts}" value="${saved}" placeholder="0"
+        oninput="saveRubric(${i},this.value,${r.pts})"/></td>
+    </tr>`;
+  }).join('');
+  updateRubric();
+}
+
+/* ════════════════════════════
+   STATE
+════════════════════════════ */
+function saveRubric(i, val, max) {
+  const c = Math.min(Math.max(parseInt(val)||0,0),max);
+  localStorage.setItem(K+'rub-'+i, c);
+  updateRubric();
+}
+function updateRubric() {
+  const total = rubricData.reduce((s,_,i)=>s+(parseInt(localStorage.getItem(K+'rub-'+i))||0),0);
+  document.getElementById('rubTotal').textContent = total;
+  document.getElementById('sVal').textContent = total;
+  document.getElementById('sPct').textContent = Math.round(total)+'%';
+  const rp = document.getElementById('ratingPill');
+  if(total>=90){rp.textContent='Excellent';rp.className='rating r-ex';}
+  else if(total>=75){rp.textContent='Proficient';rp.className='rating r-pr';}
+  else if(total>=60){rp.textContent='Developing';rp.className='rating r-de';}
+  else{rp.textContent='Needs Improvement';rp.className='rating r-ni';}
+}
+
+function updatePB() {
+  let filled=0, total=0;
+  // Event notes (10)
+  maintEvents.forEach(m=>{total++;if((ld('mn-'+m.id)||'').length>5)filled++;});
+  // Report status fields (10)
+  reportRows.forEach(r=>{total++;if(ld('rt-status-'+r.id))filled++;});
+  // Vendor evidence (4)
+  vendors.forEach(v=>{total++;if((ld('ve-'+v.id)||'').length>5)filled++;});
+  // Risk levels (8)
+  riskIssues.forEach(r=>{total++;if(ld('rl-'+r.id))filled++;});
+  const pct=Math.round(filled/total*100);
+  document.getElementById('pFill').style.width=pct+'%';
+  document.getElementById('pPct').textContent=pct+'%';
+}
+
+/* ════════════════════════════
+   THEME
+════════════════════════════ */
+function toggleTheme() {
+  const html=document.documentElement;
+  const btn=document.getElementById('themeBtn');
+  const isDark=html.getAttribute('data-theme')==='dark';
+  html.setAttribute('data-theme',isDark?'light':'dark');
+  btn.textContent=isDark?'🌙 Dark Mode':'☀️ Light Mode';
+  localStorage.setItem(K+'theme',isDark?'light':'dark');
+}
+
+/* ════════════════════════════
+   TIMER
+════════════════════════════ */
+const TT=30*60; let ts=TT,ti=null,tr=false;
+function startT(){if(tr)return;tr=true;ti=setInterval(()=>{ts=Math.max(0,ts-1);renderTimer();if(ts===0){clearInterval(ti);tr=false;}},1000);}
+function pauseT(){clearInterval(ti);tr=false;}
+function resetT(){clearInterval(ti);tr=false;ts=TT;renderTimer();}
+function renderTimer(){
+  const m=Math.floor(ts/60),s=ts%60;
+  const el=document.getElementById('timerVal');
+  el.textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  el.className=`tv${ts===0?' exp':ts<300?' warn':''}`;
+  document.getElementById('tFill').style.width=(ts/TT*100)+'%';
+}
+
+/* ════════════════════════════
+   NAV
+════════════════════════════ */
+function nav(id,btn){
+  document.getElementById(id)?.scrollIntoView({behavior:'smooth'});
+  document.querySelectorAll('.sn').forEach(b=>b.classList.remove('on'));
+  if(btn) btn.classList.add('on');
+}
+window.addEventListener('scroll',()=>{
+  const ids=['intro','obj','terms','act1','act2','act3','act4','act5','act6','debrief','rubric'];
+  const sy=window.scrollY+100; let cur='intro';
+  ids.forEach(id=>{const el=document.getElementById(id);if(el&&el.offsetTop<=sy)cur=id;});
+  document.querySelectorAll('.sn').forEach(b=>{
+    b.classList.toggle('on',(b.getAttribute('onclick')||'').includes(`'${cur}'`));
+  });
+},{passive:true});
+
+/* ════════════════════════════
+   EXPORT
+════════════════════════════ */
+function exportAll(){
+  let out='FFSI — CYBERSECURITY MAINTENANCE REPORT EXERCISE\n'+'='.repeat(52)+'\n';
+  out+='Q4 FY2024 Reporting Period\n\n';
+  out+='ACTIVITY 1 — MAINTENANCE EVENT CLASSIFICATION\n'+'-'.repeat(40)+'\n';
+  maintEvents.forEach(m=>{
+    out+=`\n${m.id} — ${m.title}\n`;
+    maintQs.forEach((q,i)=>{out+=`  Q${i+1}: ${ld('mq-'+m.id+'-'+i)||'[Not answered]'}\n`;});
+    out+=`  Notes: ${ld('mn-'+m.id)||'[None]'}\n`;
+  });
+  out+='\nACTIVITY 3 — VENDOR ANALYSIS\n'+'-'.repeat(40)+'\n';
+  vendors.forEach(v=>{
+    out+=`\n${v.id} — ${v.name}\n`;
+    vendorQs.forEach((q,i)=>{out+=`  Q${i+1}: ${ld('vq-'+v.id+'-'+i)||'[Not answered]'}\n`;});
+    out+=`  Evidence: ${ld('ve-'+v.id)||'[None]'}\n`;
+  });
+  out+='\nACTIVITY 4 — COMPLIANCE FINDINGS\n'+'-'.repeat(40)+'\n';
+  findings.forEach(f=>{
+    out+=`${f.id}: ${f.title}\n  Evidence: ${ld('fe-'+f.id)||'[None]'}\n  Risk: ${ld('fr-'+f.id)||'[None]'}\n  Action: ${ld('fc-'+f.id)||'[None]'}\n\n`;
+  });
+  out+='ACTIVITY 5 — RISK ASSESSMENT\n'+'-'.repeat(40)+'\n';
+  riskIssues.forEach(r=>{out+=`${r.id}: ${ld('rl-'+r.id)||'[Not set]'} — ${ld('rj-'+r.id)||'[No justification]'}\n`;});
+  out+='\nACTIVITY 6 — EXECUTIVE SUMMARY\n'+'-'.repeat(40)+'\n';
+  execQs.forEach(q=>{out+=`${q.q}\n  ${ld('eq-'+q.id)||'[No response]'}\n\n`;});
+  const total=rubricData.reduce((s,_,i)=>s+(parseInt(localStorage.getItem(K+'rub-'+i))||0),0);
+  out+=`RUBRIC SCORE: ${total}/100\n`;
+  const blob=new Blob([out],{type:'text/plain'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='FFSI-Maintenance-Report.txt';a.click();
+}
+
+function clearAll(){
+  if(!confirm('Clear all responses? This cannot be undone.')) return;
+  Object.keys(localStorage).filter(k=>k.startsWith(K)).forEach(k=>localStorage.removeItem(k));
+  location.reload();
+}
+
+/* ════════════════════════════
+   INIT
+════════════════════════════ */
+document.addEventListener('DOMContentLoaded',()=>{
+  const theme=localStorage.getItem(K+'theme')||'light';
+  document.documentElement.setAttribute('data-theme',theme);
+  document.getElementById('themeBtn').textContent=theme==='dark'?'☀️ Light Mode':'🌙 Dark Mode';
+  renderGloss();
+  renderMaint();
+  renderReport();
+  renderVendors();
+  renderFindings();
+  renderRisk();
+  renderExec();
+  renderDebrief();
+  renderRubric();
+  renderTimer();
+  updatePB();
+});
+</script>
+</body>
+</html>
