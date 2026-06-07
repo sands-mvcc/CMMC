@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FFSI — Access Control Matrix Exercise</title>
+<style>
+/* ═══════════════════════════════════════════════
+   ROOT & THEME
+═══════════════════════════════════════════════ */
+:root {
+  --navy:       #0d1f3c;
+  --navy2:      #112244;
+  --navy3:      #0a1628;
+  --oxblood:    #8b1a1a;
+  --oxblood2:   #a52020;
+  --gold:       #c8a84b;
+  --gold2:      #e0c060;
+  --teal:       #1a7a6e;
+  --teal2:      #22a090;
+  --cyan:       #4fc3c3;
+  --slate:      #1e2d45;
+  --slate2:     #253550;
+  --text:       #e2e8f4;
+  --text-m:     #94a8c4;
+  --text-d:     #607090;
+  --border:     #1e3058;
+  --border2:    #2a4070;
+  --bg:         #0a0f1e;
+  --bg-card:    #111827;
+  --bg-input:   #0d1830;
+  --green:      #22c55e;
+  --red:        #ef4444;
+  --amber:      #f59e0b;
+  --blue:       #3b82f6;
+  --shadow:     0 4px 24px rgba(0,0,0,.5);
+  --radius:     10px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Segoe UI',system-ui,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  font-size:15px;
+  line-height:1.6;
+}
+a{color:var(--cyan);text-decoration:none}
+
+/* ═══════════════════════════════════════════════
+   TOPBAR
+═══════════════════════════════════════════════ */
+#topbar{
+  background:var(--navy3);
+  border-bottom:1px solid var(--border);
+  padding:.45rem 1.25rem;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:.5rem;
+  position:sticky;top:0;z-index:200;
+}
+.topbar-left{display:flex;align-items:center;gap:.75rem}
+.domain-badge{
+  background:var(--oxblood);
+  color:#fff;font-weight:800;font-size:1rem;
+  width:2.4rem;height:2.4rem;
+  border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  letter-spacing:.05em;flex-shrink:0;
+}
+.topbar-title{font-size:.9rem;font-weight:600;color:var(--text);line-height:1.3}
+.topbar-title small{display:block;font-size:.73rem;color:var(--text-m);font-weight:400}
+.topbar-right{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+.tb-btn{
+  background:var(--slate);border:1px solid var(--border2);color:var(--text-m);
+  border-radius:6px;padding:.28rem .75rem;font-size:.78rem;cursor:pointer;
+  transition:background .15s,color .15s;white-space:nowrap;
+}
+.tb-btn:hover{background:var(--slate2);color:var(--text)}
+.tb-btn.danger{border-color:#4a1a1a;color:#f88}
+.tb-btn.danger:hover{background:#2a0f0f;color:#faa}
+
+/* ═══════════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════════ */
+#hero{
+  background:linear-gradient(135deg,var(--navy3) 0%,var(--navy2) 55%,#0f2855 100%);
+  border-bottom:2px solid var(--oxblood);
+  padding:2.5rem 1.5rem 2rem;
+  text-align:center;
+  position:relative;overflow:hidden;
+}
+#hero::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 70% 40%,rgba(139,26,26,.12) 0%,transparent 60%);
+  pointer-events:none;
+}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:.5rem;
+  font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:.75rem;
+}
+#hero h1{
+  font-size:clamp(1.5rem,4vw,2.4rem);font-weight:800;
+  color:#fff;letter-spacing:-.02em;margin-bottom:.5rem;line-height:1.2;
+}
+#hero h1 em{color:var(--gold);font-style:normal}
+#hero .hero-sub{font-size:.9rem;color:var(--text-m);max-width:580px;margin:0 auto 1.4rem}
+.hero-chips{display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem}
+.chip{
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+  border-radius:999px;padding:.28rem .85rem;font-size:.75rem;font-weight:600;
+  color:var(--text-m);
+}
+.chip.warn{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.3);color:var(--amber)}
+
+/* ═══════════════════════════════════════════════
+   TIMER
+═══════════════════════════════════════════════ */
+#timer-bar{
+  background:var(--navy2);border-bottom:1px solid var(--border);
+  padding:.5rem 1.25rem;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;
+}
+.timer-display{
+  font-family:'Courier New',monospace;font-size:1.4rem;font-weight:700;
+  color:var(--cyan);letter-spacing:.08em;
+}
+.timer-display.warn{color:var(--amber)}
+.timer-display.danger{color:var(--red);animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+.timer-controls{display:flex;gap:.4rem;align-items:center}
+.tc-btn{
+  background:var(--slate);border:1px solid var(--border2);color:var(--text);
+  border-radius:5px;padding:.22rem .7rem;font-size:.82rem;cursor:pointer;
+}
+.tc-btn:hover{background:var(--slate2)}
+.progress-wrap{flex:1;min-width:180px;max-width:340px}
+.progress-label{font-size:.73rem;color:var(--text-m);margin-bottom:.3rem}
+.progress-bar{background:var(--slate);border-radius:999px;height:8px;overflow:hidden}
+.progress-fill{
+  height:100%;background:linear-gradient(90deg,var(--oxblood),var(--gold));
+  border-radius:999px;transition:width .4s;
+}
+
+/* ═══════════════════════════════════════════════
+   TAB NAV
+═══════════════════════════════════════════════ */
+#tab-nav{
+  background:var(--navy3);border-bottom:1px solid var(--border);
+  padding:0 1.25rem;overflow-x:auto;white-space:nowrap;
+  position:sticky;top:52px;z-index:150;
+}
+.tab-nav-inner{display:inline-flex;gap:0;min-width:100%}
+.tab-btn{
+  background:none;border:none;border-bottom:3px solid transparent;
+  color:var(--text-d);font-size:.78rem;font-weight:600;
+  padding:.7rem .9rem;cursor:pointer;transition:color .15s,border-color .15s;
+  white-space:nowrap;letter-spacing:.02em;
+}
+.tab-btn:hover{color:var(--text-m)}
+.tab-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
+
+/* ═══════════════════════════════════════════════
+   MAIN LAYOUT
+═══════════════════════════════════════════════ */
+main{max-width:1100px;margin:0 auto;padding:1.75rem 1.25rem 5rem}
+
+/* ═══════════════════════════════════════════════
+   SECTION CARDS
+═══════════════════════════════════════════════ */
+.section-card{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:1.5rem 1.6rem;margin-bottom:1.5rem;
+  box-shadow:var(--shadow);display:none;
+}
+.section-card.active{display:block}
+.section-header{display:flex;align-items:flex-start;gap:1rem;margin-bottom:1.1rem}
+.section-icon{
+  font-size:1.8rem;flex-shrink:0;
+  width:3rem;height:3rem;background:var(--slate);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+}
+.section-meta{}
+.section-meta h2{font-size:1.2rem;font-weight:800;color:#fff;margin-bottom:.2rem}
+.section-meta .pts{
+  display:inline-block;background:var(--oxblood);color:#fff;
+  font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  padding:.12rem .55rem;border-radius:4px;
+}
+.section-meta .pts.no-pts{background:var(--slate)}
+.instr{
+  background:var(--slate);border-left:3px solid var(--gold);
+  border-radius:0 6px 6px 0;padding:.7rem 1rem;
+  font-size:.85rem;color:var(--text-m);margin-bottom:1.25rem;
+}
+.instr strong{color:var(--gold)}
+
+/* ═══════════════════════════════════════════════
+   GLOSSARY GRID
+═══════════════════════════════════════════════ */
+.glossary-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.75rem;
+}
+.gloss-item{
+  background:var(--slate);border:1px solid var(--border2);border-radius:7px;
+  padding:.75rem .9rem;
+}
+.gloss-term{font-weight:700;color:var(--cyan);font-size:.85rem;margin-bottom:.3rem}
+.gloss-def{font-size:.8rem;color:var(--text-m);line-height:1.5}
+
+/* ═══════════════════════════════════════════════
+   INTRO CONTENT
+═══════════════════════════════════════════════ */
+.intro-body{font-size:.88rem;color:var(--text-m);line-height:1.7}
+.intro-body p{margin-bottom:.85rem}
+.intro-body h3{color:var(--gold);font-size:.95rem;margin:1.1rem 0 .45rem}
+.intro-body ul{padding-left:1.4rem;margin-bottom:.85rem}
+.intro-body ul li{margin-bottom:.3rem}
+.nist-tag{
+  display:inline-block;background:var(--navy2);border:1px solid var(--border2);
+  border-radius:4px;padding:.1rem .5rem;font-size:.75rem;font-weight:700;
+  color:var(--cyan);font-family:'Courier New',monospace;margin-right:.35rem;
+}
+.objectives-list{counter-reset:obj;display:flex;flex-direction:column;gap:.7rem}
+.obj-item{
+  display:flex;gap:.9rem;align-items:flex-start;
+  background:var(--slate);border-radius:7px;padding:.75rem 1rem;
+  font-size:.86rem;color:var(--text-m);
+}
+.obj-num{
+  counter-increment:obj;
+  background:var(--oxblood);color:#fff;font-weight:800;font-size:.8rem;
+  min-width:1.6rem;height:1.6rem;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+
+/* ═══════════════════════════════════════════════
+   ACTIVITY TABLES
+═══════════════════════════════════════════════ */
+.tbl-wrap{overflow-x:auto;margin:1rem 0}
+table{
+  width:100%;border-collapse:collapse;font-size:.82rem;
+}
+thead tr{background:var(--navy2)}
+thead th{
+  padding:.6rem .75rem;text-align:left;font-weight:700;
+  color:var(--gold);font-size:.75rem;letter-spacing:.05em;text-transform:uppercase;
+  border-bottom:2px solid var(--oxblood);white-space:nowrap;
+}
+tbody tr{border-bottom:1px solid var(--border)}
+tbody tr:nth-child(even){background:rgba(255,255,255,.02)}
+tbody tr:hover{background:rgba(255,255,255,.04)}
+tbody td{
+  padding:.55rem .75rem;color:var(--text);vertical-align:top;
+}
+td.pre-fill{color:var(--text-m);font-style:italic;font-size:.79rem}
+td.label-cell{font-weight:600;color:var(--text);white-space:nowrap}
+td.small-text{font-size:.78rem;color:var(--text-m)}
+
+/* ═══════════════════════════════════════════════
+   FORM CONTROLS
+═══════════════════════════════════════════════ */
+select,textarea,input[type=text],input[type=number]{
+  background:var(--bg-input);border:1px solid var(--border2);color:var(--text);
+  border-radius:5px;font-size:.82rem;font-family:inherit;
+  padding:.35rem .55rem;width:100%;transition:border-color .15s;
+}
+select:focus,textarea:focus,input:focus{
+  outline:none;border-color:var(--cyan);
+}
+textarea{resize:vertical;min-height:52px;line-height:1.5}
+select.inline{width:auto;min-width:100px}
+
+/* Access level pills in ACM */
+.acc-select{
+  background:var(--bg-input);border:1px solid var(--border2);
+  color:var(--text);border-radius:5px;font-size:.78rem;
+  padding:.28rem .45rem;width:100%;cursor:pointer;
+}
+.acc-select.no-access{background:#1a0d0d;border-color:#4a1818;color:#f88}
+.acc-select.read-only{background:#0d1a2a;border-color:#1a4a6a;color:#6ac}
+.acc-select.modify{background:#0d1a0d;border-color:#1a4a1a;color:#6c6}
+.acc-select.approve{background:#1a180d;border-color:#4a3a0d;color:#ca6}
+.acc-select.admin{background:#1a0d1a;border-color:#4a1a4a;color:#c6c}
+.acc-select.cui-yes{background:#1a0d0d;border-color:#6a1a1a;color:#f88;font-weight:700}
+.acc-select.cui-no{background:#0d1a0d;border-color:#1a4a1a;color:#6c6}
+
+/* Yes/No radios */
+.yn-group{display:flex;gap:.4rem;align-items:center}
+.yn-btn{
+  background:var(--slate);border:1px solid var(--border2);
+  color:var(--text-m);border-radius:4px;padding:.2rem .6rem;
+  font-size:.75rem;font-weight:600;cursor:pointer;transition:all .12s;
+}
+.yn-btn.yes.active{background:#0d2a0d;border-color:var(--green);color:var(--green)}
+.yn-btn.no.active{background:#2a0d0d;border-color:var(--red);color:var(--red)}
+.yn-btn.uncertain.active{background:#1a150a;border-color:var(--amber);color:var(--amber)}
+
+/* ═══════════════════════════════════════════════
+   FINDING ROWS (Act 3 & 4)
+═══════════════════════════════════════════════ */
+.finding-block{
+  background:var(--slate);border:1px solid var(--border2);border-radius:8px;
+  padding:1rem 1.1rem;margin-bottom:.85rem;
+}
+.finding-block .fb-header{
+  display:flex;align-items:flex-start;gap:.75rem;margin-bottom:.7rem;
+}
+.finding-badge{
+  background:var(--oxblood);color:#fff;font-size:.7rem;font-weight:700;
+  padding:.15rem .55rem;border-radius:4px;white-space:nowrap;flex-shrink:0;
+  font-family:'Courier New',monospace;
+}
+.finding-badge.green{background:var(--teal)}
+.finding-badge.amber{background:#7a5a0a}
+.finding-badge.blue{background:#1a3a7a}
+.finding-text{font-size:.85rem;color:var(--text);font-weight:600}
+.finding-sub{font-size:.78rem;color:var(--text-m);margin-top:.15rem}
+.fb-fields{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+@media(max-width:600px){.fb-fields{grid-template-columns:1fr}}
+.fb-fields label{font-size:.73rem;color:var(--text-d);margin-bottom:.2rem;display:block}
+
+/* ═══════════════════════════════════════════════
+   RISK BADGE COLORS
+═══════════════════════════════════════════════ */
+.risk-high{color:var(--red);font-weight:700}
+.risk-med{color:var(--amber);font-weight:700}
+.risk-low{color:var(--green);font-weight:700}
+
+/* ═══════════════════════════════════════════════
+   RUBRIC
+═══════════════════════════════════════════════ */
+.rubric-table thead th:first-child{width:180px}
+.score-input{
+  background:var(--bg-input);border:1px solid var(--border2);color:var(--text);
+  border-radius:5px;font-size:.9rem;font-weight:700;width:70px;
+  text-align:center;padding:.3rem;
+}
+.score-total-row{background:var(--navy2)!important}
+.score-total-row td{font-weight:800;color:var(--gold)!important;font-size:.9rem}
+.rating-badge{
+  display:inline-block;padding:.2rem .7rem;border-radius:5px;
+  font-size:.8rem;font-weight:700;letter-spacing:.04em;
+}
+.rating-excellent{background:#0d2a0d;border:1px solid var(--green);color:var(--green)}
+.rating-proficient{background:#0d1a2a;border:1px solid var(--blue);color:var(--blue)}
+.rating-developing{background:#1a150a;border:1px solid var(--amber);color:var(--amber)}
+.rating-needs{background:#2a0d0d;border:1px solid var(--red);color:var(--red)}
+
+/* ═══════════════════════════════════════════════
+   DEBRIEF
+═══════════════════════════════════════════════ */
+.debrief-list{display:flex;flex-direction:column;gap:.7rem;counter-reset:dq}
+.dq-item{
+  background:var(--slate);border-radius:7px;padding:.75rem 1rem;
+  font-size:.86rem;display:flex;gap:.85rem;align-items:flex-start;
+}
+.dq-num{
+  counter-increment:dq;
+  background:var(--teal);color:#fff;font-weight:800;font-size:.78rem;
+  min-width:1.6rem;height:1.6rem;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.dq-text{color:var(--text-m);line-height:1.55}
+.dq-textarea{margin-top:.5rem}
+
+/* ═══════════════════════════════════════════════
+   SCORE SUMMARY BAR
+═══════════════════════════════════════════════ */
+#score-bar{
+  position:fixed;bottom:0;left:0;right:0;
+  background:var(--navy3);border-top:1px solid var(--border);
+  padding:.5rem 1.25rem;
+  display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;
+  z-index:100;font-size:.82rem;
+}
+.sb-stat{display:flex;flex-direction:column;align-items:center}
+.sb-val{font-size:1.1rem;font-weight:800;color:var(--gold)}
+.sb-label{font-size:.68rem;color:var(--text-d);text-transform:uppercase;letter-spacing:.06em}
+.sb-rating{font-size:.85rem;font-weight:700;padding:.2rem .7rem;border-radius:5px}
+
+/* ═══════════════════════════════════════════════
+   PRINT
+═══════════════════════════════════════════════ */
+@media print{
+  #topbar,#timer-bar,#tab-nav,#score-bar{display:none!important}
+  .section-card{display:block!important;break-inside:avoid;box-shadow:none;border:1px solid #ccc}
+  body{background:#fff;color:#000}
+  select,textarea,input{border:1px solid #999}
+}
+
+/* ═══════════════════════════════════════════════
+   UTILITIES
+═══════════════════════════════════════════════ */
+.mt1{margin-top:.75rem}.mt2{margin-top:1.25rem}
+.text-gold{color:var(--gold)}.text-cyan{color:var(--cyan)}.text-red{color:var(--red)}
+.text-sm{font-size:.8rem;color:var(--text-m)}
+.hr{border:none;border-top:1px solid var(--border);margin:1.25rem 0}
+.pill{
+  display:inline-block;background:var(--slate);border:1px solid var(--border2);
+  border-radius:4px;padding:.08rem .45rem;font-size:.72rem;color:var(--text-m);
+  margin:.1rem;
+}
+.pill.cui{background:#2a0d0d;border-color:#6a1a1a;color:#f99}
+.pill.fci{background:#0d1a2a;border-color:#1a4a6a;color:#6ac}
+.alert-box{
+  background:rgba(139,26,26,.15);border:1px solid var(--oxblood2);border-radius:6px;
+  padding:.7rem 1rem;font-size:.82rem;color:#f99;margin:.75rem 0;
+}
+.info-box{
+  background:rgba(26,122,110,.12);border:1px solid var(--teal);border-radius:6px;
+  padding:.7rem 1rem;font-size:.82rem;color:var(--cyan);margin:.75rem 0;
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════ TOPBAR ════════════════════ -->
+<div id="topbar">
+  <div class="topbar-left">
+    <div class="domain-badge">AC</div>
+    <div class="topbar-title">
+      FFSI — Access Control Matrix Exercise
+      <small>CMMC 2.0 Workshop · NIST SP 800-171 Domain AC · 20 Minutes</small>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <button class="tb-btn" onclick="window.print()">🖨 Print</button>
+    <button class="tb-btn" onclick="exportAnswers()">📤 Export</button>
+    <button class="tb-btn danger" onclick="confirmReset()">↺ Reset</button>
+  </div>
+</div>
+
+<!-- ════════════════════ HERO ════════════════════ -->
+<div id="hero">
+  <div class="hero-eyebrow">🛡 CMMC 2.0 · Access Control Domain</div>
+  <h1>FFSI Access Control<br/><em>Matrix Review Exercise</em></h1>
+  <p class="hero-sub">Review, assign, and validate access permissions for Federal Food Services Inc. — applying least privilege, need-to-know, and separation of duties to protect CUI.</p>
+  <div class="hero-chips">
+    <span class="chip">NIST 800-171 AC Domain</span>
+    <span class="chip">100 Points</span>
+    <span class="chip">5 Activities</span>
+    <span class="chip">⏱ 20 Minutes</span>
+    <span class="chip warn">⚠ Fictional — Training Use Only</span>
+  </div>
+</div>
+
+<!-- ════════════════════ TIMER ════════════════════ -->
+<div id="timer-bar">
+  <div>
+    <div class="timer-display" id="timer-display">20:00</div>
+    <div style="font-size:.7rem;color:var(--text-d);margin-top:.1rem">Exercise Timer</div>
+  </div>
+  <div class="timer-controls">
+    <button class="tc-btn" id="timer-start" onclick="startTimer()">▶ Start</button>
+    <button class="tc-btn" id="timer-pause" onclick="pauseTimer()" style="display:none">⏸ Pause</button>
+    <button class="tc-btn" onclick="resetTimer()">↺</button>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-label">Report Progress — <span id="prog-pct">0%</span></div>
+    <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+  </div>
+</div>
+
+<!-- ════════════════════ TAB NAV ════════════════════ -->
+<div id="tab-nav">
+  <div class="tab-nav-inner">
+    <button class="tab-btn active" onclick="showTab('intro')">Intro</button>
+    <button class="tab-btn" onclick="showTab('objectives')">Objectives</button>
+    <button class="tab-btn" onclick="showTab('terms')">Key Terms</button>
+    <button class="tab-btn" onclick="showTab('act1')">Act 1 — Role Analysis</button>
+    <button class="tab-btn" onclick="showTab('act2')">Act 2 — ACM Completion</button>
+    <button class="tab-btn" onclick="showTab('act3')">Act 3 — Least Privilege</button>
+    <button class="tab-btn" onclick="showTab('act4')">Act 4 — Separation of Duties</button>
+    <button class="tab-btn" onclick="showTab('act5')">Act 5 — Findings</button>
+    <button class="tab-btn" onclick="showTab('debrief')">Debrief</button>
+    <button class="tab-btn" onclick="showTab('rubric')">Rubric</button>
+  </div>
+</div>
+
+<!-- ════════════════════ MAIN CONTENT ════════════════════ -->
+<main>
+
+<!-- ──────────────────────────────────────────
+  INTRO
+────────────────────────────────────────── -->
+<div id="tab-intro" class="section-card active">
+  <div class="section-header">
+    <div class="section-icon">📋</div>
+    <div class="section-meta">
+      <h2>Introduction — Access Control and CMMC</h2>
+      <span class="pts no-pts">Overview</span>
+    </div>
+  </div>
+  <div class="intro-body">
+    <h3>Why Access Control Is a Critical CMMC Requirement</h3>
+    <p>Access control is the first and most foundational domain in NIST SP 800-171 and CMMC Level 2. It establishes <em>who</em> can access systems, data, and resources — and under what conditions. An improperly configured access environment is the single most common source of audit findings in DoD contractor assessments. The Access Control Matrix (ACM) is the primary artifact that maps personnel to systems and permissions, making it the backbone of any defensible CMMC compliance posture.</p>
+
+    <h3>Why C3PAO Assessors Review Access Control Matrices</h3>
+    <p>During a CMMC Level 2 assessment, a C3PAO assessor will request the organization's ACM as direct evidence of control implementation. Assessors look for documented proof that access has been assigned deliberately, reviewed periodically, and aligned with job responsibilities. An ACM that has never been reviewed, contains stale accounts, or grants excessive privileges is a clear indicator of organizational risk and will generate scored findings.</p>
+
+    <h3>How ACMs Support Least Privilege</h3>
+    <p>The principle of least privilege requires that every user, process, and system account operate with only the minimum permissions necessary to perform their assigned function. An ACM forces this question to be answered explicitly — for every person and every system — rather than allowing access to accumulate organically over time. NIST practice <span class="nist-tag">3.1.1</span> requires limiting access to authorized users, and <span class="nist-tag">3.1.5</span> requires employing the principle of least privilege.</p>
+
+    <h3>How Improper Access Creates Risk to CUI</h3>
+    <p>Controlled Unclassified Information (CUI) must be accessible only to personnel with a documented business need. Excessive access creates attack surface: an insider threat, compromised credential, or accidental disclosure can expose CUI to unauthorized parties. DFARS 252.204-7012 holds contractors legally responsible for protecting CUI, and a single unauthorized disclosure can result in contract termination, debarment, and criminal liability.</p>
+
+    <h3>Why Organizations Must Regularly Review Access Permissions</h3>
+    <p>Personnel roles change. Employees leave. New systems are deployed. Without a scheduled access review cycle, stale permissions accumulate silently. NIST practice <span class="nist-tag">3.1.3</span> requires controlling the flow of CUI, and <span class="nist-tag">3.1.6</span> requires using non-privileged accounts for non-privileged activities. Periodic access reviews — at minimum annually, and after any role change or termination — are expected by CMMC assessors as evidence of active access management.</p>
+
+    <div class="info-box">
+      <strong>Scenario:</strong> Federal Food Services Inc. (FFSI) manufactures MREs, emergency food kits, and military ration products for the U.S. Army. FFSI handles both Federal Contract Information (FCI) and Controlled Unclassified Information (CUI) across cloud and on-premises systems. FFSI leadership has requested a compliance team review and update the organization's Access Control Matrix prior to their upcoming CMMC Level 2 assessment. <strong>You are a member of that compliance team.</strong>
+    </div>
+
+    <h3>Relevant NIST SP 800-171 Access Control Practices</h3>
+    <ul>
+      <li><span class="nist-tag">3.1.1</span> Limit system access to authorized users and processes</li>
+      <li><span class="nist-tag">3.1.2</span> Limit access to types of transactions and functions authorized users are permitted to execute</li>
+      <li><span class="nist-tag">3.1.3</span> Control the flow of CUI in accordance with approved authorizations</li>
+      <li><span class="nist-tag">3.1.4</span> Separate duties of individuals to reduce risk of malevolent activity</li>
+      <li><span class="nist-tag">3.1.5</span> Employ the principle of least privilege</li>
+      <li><span class="nist-tag">3.1.6</span> Use non-privileged accounts for non-privileged activities</li>
+      <li><span class="nist-tag">3.1.7</span> Prevent non-privileged users from executing privileged functions</li>
+      <li><span class="nist-tag">3.1.9</span> Provide privacy and security notices on system logon</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ──────────────────────────────────────────
+  OBJECTIVES
+────────────────────────────────────────── -->
+<div id="tab-objectives" class="section-card">
+  <div class="section-header">
+    <div class="section-icon">🎯</div>
+    <div class="section-meta">
+      <h2>Learning Objectives</h2>
+      <span class="pts no-pts">6 Objectives</span>
+    </div>
+  </div>
+  <div class="objectives-list">
+    <div class="obj-item"><div class="obj-num">1</div><div>Explain the purpose of an Access Control Matrix and describe how it serves as primary CMMC assessment evidence for the Access Control domain under NIST SP 800-171.</div></div>
+    <div class="obj-item"><div class="obj-num">2</div><div>Apply the principle of least privilege to 15 FFSI personnel positions, assigning system access permissions that are commensurate with job responsibilities and data classification requirements.</div></div>
+    <div class="obj-item"><div class="obj-num">3</div><div>Identify authorized and unauthorized access by completing a partially filled Access Control Matrix and justifying every permission decision with a documented business rationale.</div></div>
+    <div class="obj-item"><div class="obj-num">4</div><div>Analyze specific access assignments to determine whether they create violations of least privilege or need-to-know, and recommend corrective actions with risk ratings.</div></div>
+    <div class="obj-item"><div class="obj-num">5</div><div>Identify separation of duties conflicts in FFSI role assignments and document findings using the standard Finding / Risk / Recommendation framework.</div></div>
+    <div class="obj-item"><div class="obj-num">6</div><div>Produce a complete set of access control review deliverables — including a completed ACM, least privilege analysis, separation of duties findings, and corrective action plan — that simulate pre-assessment compliance documentation.</div></div>
+  </div>
+</div>
+
+<!-- ──────────────────────────────────────────
+  KEY TERMS
+────────────────────────────────────────── -->
+<div id="tab-terms" class="section-card">
+  <div class="section-header">
+    <div class="section-icon">📖</div>
+    <div class="section-meta">
+      <h2>Key Terms</h2>
+      <span class="pts no-pts">Reference Glossary</span>
+    </div>
+  </div>
+  <div class="glossary-grid">
+    <div class="gloss-item"><div class="gloss-term">Access Control Matrix (ACM)</div><div class="gloss-def">A structured table that maps users or roles to systems, applications, and data assets, specifying the type of access permitted (read, modify, approve, admin, or none) for each combination.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Least Privilege</div><div class="gloss-def">The security principle requiring that users, processes, and accounts operate with only the minimum permissions necessary to perform their assigned job functions — no more.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Need-to-Know</div><div class="gloss-def">A determination that a specific individual requires access to specific information in order to perform official duties. Access to CUI requires both authorization and need-to-know.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Role-Based Access Control (RBAC)</div><div class="gloss-def">An access control model in which permissions are assigned to roles rather than individuals. Users receive access by being assigned to an appropriate role that matches their job function.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Privileged Account</div><div class="gloss-def">An account with elevated permissions beyond those of a standard user — including admin rights, root access, or the ability to configure systems, manage accounts, or access all data.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Standard User</div><div class="gloss-def">An account with typical read or modify access required for day-to-day job functions, without administrative or system-level privileges.</div></div>
+    <div class="gloss-item"><div class="gloss-term">CUI (Controlled Unclassified Information)</div><div class="gloss-def">Information the government creates or possesses that requires safeguarding per law, regulation, or policy. DoD contractors handling CUI must comply with NIST SP 800-171 and CMMC requirements.</div></div>
+    <div class="gloss-item"><div class="gloss-term">FCI (Federal Contract Information)</div><div class="gloss-def">Information provided by or generated for the government under a contract to develop or deliver a product or service. FCI requires basic safeguarding per FAR 52.204-21.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Access Authorization</div><div class="gloss-def">The formal approval granted to a user to access a system or data type, based on a documented business justification and management approval. Authorizations must be reviewed periodically.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Separation of Duties (SoD)</div><div class="gloss-def">A control principle requiring that no single individual control all phases of a critical process. SoD prevents fraud, error, and abuse by distributing responsibilities across multiple individuals.</div></div>
+    <div class="gloss-item"><div class="gloss-term">User Role</div><div class="gloss-def">A defined set of permissions and responsibilities associated with a job function. In RBAC environments, access is granted by assigning a user to one or more roles rather than by individual permission grants.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Administrative Access</div><div class="gloss-def">Elevated system access that allows a user to configure settings, manage user accounts, install software, modify security controls, or access all system data regardless of classification.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Shared Account</div><div class="gloss-def">An account used by more than one individual, which prevents individual accountability and makes audit trail attribution impossible. Shared accounts are a CMMC assessment finding.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Multifactor Authentication (MFA)</div><div class="gloss-def">An authentication method requiring two or more verification factors — something you know, something you have, and/or something you are. Required for privileged accounts and CUI system access under NIST 800-171 practice 3.5.3.</div></div>
+  </div>
+</div>
+
+<!-- ──────────────────────────────────────────
+  ACT 1 — USER ROLE ANALYSIS
+────────────────────────────────────────── -->
+<div id="tab-act1" class="section-card">
+  <div class="section-header">
+    <div class="section-icon">👤</div>
+    <div class="section-meta">
+      <h2>Activity 1 — User Role Analysis</h2>
+      <span class="pts">20 pts</span>
+    </div>
+  </div>
+  <div class="instr"><strong>Instructions:</strong> Review each FFSI personnel position below. For each role, answer the five diagnostic questions by selecting Yes, No, or Uncertain. Then provide a written justification for your decisions in the notes field. Your responses will inform the Access Control Matrix in Activity 2.</div>
+
+  <div class="alert-box">⚠ FFSI systems contain both <span class="pill cui">CUI</span> and <span class="pill fci">FCI</span>. Only personnel with a documented business need may be authorized for CUI access. Default to <strong>least privilege</strong> — when in doubt, deny and justify.</div>
+
+  <div class="tbl-wrap">
+    <table id="act1-table">
+      <thead>
+        <tr>
+          <th style="width:155px">Position</th>
+          <th>1. Which systems needed?</th>
+          <th style="width:90px">2. CUI Required?</th>
+          <th style="width:90px">3. Admin Privs?</th>
+          <th style="width:130px">4. Access Level</th>
+          <th style="width:90px">5. Remote Access?</th>
+          <th>Justification / Notes</th>
+        </tr>
+      </thead>
+      <tbody id="act1-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ──────────────────────────────────────────
+  ACT 2 — ACM COMPLETION
+────────────────────────────────────────── -->
+<div id="tab-act2" class="section-card">
+  <div class="section-header">
+    <div class="section-icon">📊</div>
+    <div class="section-meta">
+      <h2>Activity 2 — Access Control Matrix Completion</h2>
+      <span class="pts">40 pts</span>
+    </div>
+  </div>
+  <div class="instr"><strong>Instructions:</strong> Complete the Access Control Matrix for all FFSI positions. Select the appropriate access level for each system. Pre-filled gray cells reflect known role requirements from the case study. White cells require your analysis. You must justify all decisions — especially CUI access grants. Use: <strong>None · Read · Modify · Approve · Admin</strong></div>
+
+  <div class="tbl-wrap">
+    <table id="acm-table">
+      <thead>
+        <tr>
+          <th style="min-width:145px">Position</th>
+          <th>M365</th>
+          <th>ERP System</th>
+          <th>Contract Sys</th>
+          <th>HR System</th>
+          <th>QA Database</th>
+          <th>Prod Control</th>
+          <th>Warehouse Mgmt</th>
+          <th>SIEM</th>
+          <th>Active Directory</th>
+          <th>VPN</th>
+          <th>File Repository</th>
+          <th style="min-width:80px">CUI Access</th>
+        </tr>
+      </thead>
+      <tbody id="acm-body"></tbody>
+    </table>
+  </div>
+  <div class="mt2">
+    <label style="font-size:.78rem;color:var(--text-d);margin-bottom:.3rem;display:block">ACM Justification Notes (document your rationale for non-obvious decisions):</label>
+    <textarea id="acm-notes" rows="4" placeholder="Example: CEO requires Read access to all systems for oversight but should not have Admin rights to any individual system. Contracts Manager requires Approve on Contract System to sign off on contract submissions..."></textarea>
+  </div>
+</div>
+
+<!-- ──────────────────────────────────────────
+  ACT 3 — LEAST PRIVILEGE REVIEW
+────────────────────────────────────────── -->
+<div id="tab-act3" class="section-card">
+  <div class="section-header">
+    <div class="section-icon">🔍</div>
+    <div class="section-meta">
+      <h2>Activity 3 — Least Privilege Review</h2>
+      <span class="pts">20 pts</span>
+    </div>
+  </div>
+  <div class="instr"><strong>Instructions:</strong> For each access assignment below, analyze whether the permission is appropriate for the user's role. Answer the five review questions, assess the risk level, and document your recommendation. Reference specific NIST 800-171 practices where applicable.</div>
+
+  <div id="act3-body"></div>
+</div>
+
+<!-- ──────────────────────────────────────────
+  ACT 4 — SEPARATION OF DUTIES
+────────────────────────────────────────── -->
+<div id="tab-act4" class="section-card">
+  <div class="section-header">
+    <div class="section-icon">⚖</div>
+    <div class="section-meta">
+      <h2>Activity 4 — Separation of Duties Analysis</h2>
+      <span class="pts">20 pts</span>
+    </div>
+  </div>
+  <div class="instr"><strong>Instructions:</strong> Analyze each scenario below for Separation of Duties (SoD) conflicts. Document the finding, the risk it creates, and a specific corrective action recommendation. Reference NIST 800-171 practice 3.1.4 where applicable.</div>
+
+  <div id="act4-body"></div>
+</div>
+
+<!-- ──────────────────────────────────────────
+  ACT 5 — ACCESS REVIEW FINDINGS
+────────────────────────────────────────── -->
+<div id="tab-act5" class="section-card">
+  <div class="section-header">
+    <div class="section-icon">⚠️</div>
+    <div class="section-meta">
+      <h2>Activity 5 — Access Control Findings & Corrective Actions</h2>
+      <span class="pts">20 pts</span>
+    </div>
+  </div>
+  <div class="instr"><strong>Instructions:</strong> Based on your analysis in Activities 1–4, complete the formal access control findings table below. Identify the finding category, document the specific issue at FFSI, assign a risk level, and prescribe a corrective action with a named owner from the FFSI roster.</div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:120px">Finding ID</th>
+          <th style="width:140px">Category</th>
+          <th>Specific Issue at FFSI</th>
+          <th style="width:90px">Risk Level</th>
+          <th>Corrective Action</th>
+          <th style="width:140px">Owner / Timeline</th>
+        </tr>
+      </thead>
+      <tbody id="act5-body"></tbody>
+    </table>
+  </div>
+
+  <div class="mt2">
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>MFA Gap Analysis</th>
+            <th style="width:120px">MFA Currently Enabled?</th>
+            <th style="width:120px">MFA Required?</th>
+            <th>Corrective Action if Gap Exists</th>
+          </tr>
+        </thead>
+        <tbody id="mfa-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="mt2">
+    <label style="font-size:.78rem;color:var(--text-d);margin-bottom:.3rem;display:block">Executive Summary of Access Control Findings (2–3 sentences for FFSI leadership):</label>
+    <textarea id="exec-summary" rows="5" placeholder="Summarize the overall access control risk posture at FFSI, the most critical findings requiring immediate remediation, and your recommended priority actions before the CMMC assessment..."></textarea>
+  </div>
+</div>
+
+<!-- ──────────────────────────────────────────
+  DEBRIEF
+────────────────────────────────────────── -->
+<div id="tab-debrief" class="section-card">
+  <div class="section-header">
+    <div class="section-icon">🗣</div>
+    <div class="section-meta">
+      <h2>Instructor Debrief Questions</h2>
+      <span class="pts no-pts">Discussion — 5–10 min</span>
+    </div>
+  </div>
+  <p class="text-sm" style="margin-bottom:1rem">Use these questions to drive a post-exercise debrief. Participants should cite specific FFSI positions, systems, and data from their completed ACM to support their responses.</p>
+  <div class="debrief-list" id="debrief-body"></div>
+</div>
+
+<!-- ──────────────────────────────────────────
+  RUBRIC
+────────────────────────────────────────── -->
+<div id="tab-rubric" class="section-card">
+  <div class="section-header">
+    <div class="section-icon">📊</div>
+    <div class="section-meta">
+      <h2>Facilitator Scoring Rubric</h2>
+      <span class="pts no-pts">100 Points Total</span>
+    </div>
+  </div>
+  <p class="text-sm" style="margin-bottom:1rem">Enter scores per category. Total and rating update automatically. <strong>Excellent: 90–100</strong> · <strong>Proficient: 75–89</strong> · <strong>Developing: 60–74</strong> · <strong>Needs Improvement: &lt;60</strong></p>
+
+  <div class="tbl-wrap">
+    <table class="rubric-table">
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th style="width:180px">Excellent</th>
+          <th style="width:180px">Proficient</th>
+          <th style="width:180px">Developing</th>
+          <th style="width:180px">Needs Improvement</th>
+          <th style="width:70px">Max</th>
+          <th style="width:80px">Score</th>
+        </tr>
+      </thead>
+      <tbody id="rubric-body"></tbody>
+    </table>
+  </div>
+
+  <div class="mt2" style="display:flex;gap:1.5rem;flex-wrap:wrap;align-items:center">
+    <div class="sb-stat">
+      <div class="sb-val" id="rubric-total">0</div>
+      <div class="sb-label">Total Points</div>
+    </div>
+    <div class="sb-stat">
+      <div class="sb-val" id="rubric-pct">0%</div>
+      <div class="sb-label">Percentage</div>
+    </div>
+    <div id="rubric-rating-badge" class="rating-badge rating-needs">Needs Improvement</div>
+  </div>
+
+  <div class="hr mt2"></div>
+  <h3 style="font-size:.9rem;color:var(--gold);margin-bottom:.75rem">Performance Level Descriptions</h3>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.7rem">
+    <div class="finding-block">
+      <div class="finding-badge green">Excellent · 90–100</div>
+      <p class="text-sm mt1">Accurately completes the full ACM with justified decisions for all 15 positions and 12 systems. Correctly identifies all least-privilege violations and SoD conflicts. Corrective actions are specific, actionable, and reference NIST 800-171 practices. Executive summary is clear and authoritative.</p>
+    </div>
+    <div class="finding-block">
+      <div class="finding-badge blue">Proficient · 75–89</div>
+      <p class="text-sm mt1">Completes the ACM with minor errors or omissions. Identifies most least-privilege and SoD issues. Corrective actions are reasonable but may lack specific NIST references or named owners. Executive summary addresses key findings.</p>
+    </div>
+    <div class="finding-block">
+      <div class="finding-badge amber">Developing · 60–74</div>
+      <p class="text-sm mt1">Partially completes the ACM with noticeable gaps or incorrect assignments. Identifies some but not all violations. Corrective actions are vague or generic. May confuse SoD conflicts with least-privilege violations. Executive summary is incomplete.</p>
+    </div>
+    <div class="finding-block">
+      <div class="finding-badge">Needs Improvement · &lt;60</div>
+      <p class="text-sm mt1">Significant gaps in ACM completion. Fails to identify major violations. Corrective actions are missing or irrelevant to CMMC requirements. Demonstrates limited understanding of least privilege, need-to-know, or separation of duties principles.</p>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<!-- ════════════════════ SCORE BAR ════════════════════ -->
+<div id="score-bar">
+  <div class="sb-stat">
+    <div class="sb-val" id="sb-total">0</div>
+    <div class="sb-label">Total Points</div>
+  </div>
+  <div class="sb-stat">
+    <div class="sb-val" id="sb-pct">0%</div>
+    <div class="sb-label">Percentage</div>
+  </div>
+  <div id="sb-rating" class="sb-rating rating-needs">Needs Improvement</div>
+  <div style="flex:1"></div>
+  <div class="text-sm" style="color:var(--text-d)">CMMC 2.0 · NIST SP 800-171 AC Domain · FFSI Training Exercise</div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+//  DATA
+// ═══════════════════════════════════════════
+const POSITIONS = [
+  {id:'ceo',    title:'CEO',                dept:'Executive'},
+  {id:'coo',    title:'COO',                dept:'Executive'},
+  {id:'cio',    title:'CIO',                dept:'IT/Executive'},
+  {id:'compmgr',title:'Compliance Manager', dept:'Compliance'},
+  {id:'contmgr',title:'Contracts Manager',  dept:'Contracts'},
+  {id:'hrdir',  title:'HR Director',        dept:'Human Resources'},
+  {id:'prodmgr',title:'Production Manager', dept:'Operations'},
+  {id:'qamgr',  title:'QA Manager',         dept:'Quality Assurance'},
+  {id:'logmgr', title:'Logistics Manager',  dept:'Logistics'},
+  {id:'itmgr',  title:'IT Manager',         dept:'IT'},
+  {id:'sysadm', title:'System Administrator',dept:'IT'},
+  {id:'netadm', title:'Network Administrator',dept:'IT'},
+  {id:'cldadm', title:'Cloud Administrator',dept:'IT'},
+  {id:'secana', title:'Security Analyst',   dept:'IT/Security'},
+  {id:'hdt',    title:'Help Desk Technician',dept:'IT'},
+];
+
+const SYSTEMS = ['M365','ERP System','Contract System','HR System','QA Database',
+  'Prod Control','Warehouse Mgmt','SIEM','Active Directory','VPN','File Repository'];
+
+const ACCESS_OPTS = ['','None','Read','Modify','Approve','Admin'];
+const CUI_OPTS    = ['','Yes','No'];
+
+// Suggested answer key (for reference — not auto-graded)
+const ACM_KEY = {
+  ceo:     ['Read','Read','Read','None','None','None','None','None','None','Yes','Read','Yes'],
+  coo:     ['Read','Read','Read','None','None','Read','Read','None','None','Yes','Read','Yes'],
+  cio:     ['Admin','Read','Read','None','None','None','None','Read','Admin','Yes','Read','Yes'],
+  compmgr: ['Read','Read','Read','None','None','None','None','Read','None','Yes','Read','Yes'],
+  contmgr: ['Modify','Read','Approve','None','None','None','None','None','None','Yes','Modify','Yes'],
+  hrdir:   ['Modify','None','None','Admin','None','None','None','None','None','No','Read','No'],
+  prodmgr: ['Read','Modify','None','None','None','Admin','None','None','None','Yes','Read','Yes'],
+  qamgr:   ['Read','Read','None','None','Admin','Modify','None','None','None','Yes','Read','Yes'],
+  logmgr:  ['Read','Read','None','None','None','Read','Admin','None','None','Yes','Read','Yes'],
+  itmgr:   ['Admin','Read','None','None','None','None','None','Read','Admin','Yes','Read','No'],
+  sysadm:  ['Admin','None','None','None','None','None','None','Read','Admin','Yes','Modify','No'],
+  netadm:  ['Read','None','None','None','None','None','None','Read','Read','Admin','Read','No'],
+  cldadm:  ['Admin','None','None','None','None','None','None','Read','Read','Yes','Modify','No'],
+  secana:  ['Read','None','None','None','None','None','None','Admin','Read','Yes','Read','Yes'],
+  hdt:     ['Read','None','None','None','None','None','None','None','Read','No','Read','No'],
+};
+
+const LP_SCENARIOS = [
+  {
+    id:'LP-01',
+    assignment:'HR Director has Admin rights to the ERP System',
+    user:'HR Director', system:'ERP System', permission:'Admin',
+    nist:'3.1.5'
+  },
+  {
+    id:'LP-02',
+    assignment:'Production Manager has Read access to Employee Records (HR System)',
+    user:'Production Manager', system:'HR System', permission:'Read',
+    nist:'3.1.3'
+  },
+  {
+    id:'LP-03',
+    assignment:'Help Desk Technician has Modify access to CUI Contract Files (File Repository)',
+    user:'Help Desk Technician', system:'File Repository + CUI', permission:'Modify',
+    nist:'3.1.5, 3.1.6'
+  },
+  {
+    id:'LP-04',
+    assignment:'Contracts Manager has No Access to the Contract Management System',
+    user:'Contracts Manager', system:'Contract System', permission:'None',
+    nist:'3.1.1, 3.1.2'
+  },
+  {
+    id:'LP-05',
+    assignment:'Cloud Administrator has Admin rights to HR Information System',
+    user:'Cloud Administrator', system:'HR System', permission:'Admin',
+    nist:'3.1.5, 3.1.7'
+  },
+  {
+    id:'LP-06',
+    assignment:'Security Analyst has Read-Only access to SIEM Platform',
+    user:'Security Analyst', system:'SIEM Platform', permission:'Read',
+    nist:'3.1.5'
+  },
+];
+
+const SOD_SCENARIOS = [
+  {
+    id:'SOD-01',
+    scenario:'The Contracts Manager both creates contract packages AND approves them for submission to the government — no second reviewer is required.',
+    conflict:'Contract creation and contract approval held by same individual',
+    nist:'3.1.4'
+  },
+  {
+    id:'SOD-02',
+    scenario:'The System Administrator configures the SIEM platform AND reviews their own administrative actions in the SIEM audit logs.',
+    conflict:'System administration and audit log review for same systems',
+    nist:'3.1.4, 3.3.1'
+  },
+  {
+    id:'SOD-03',
+    scenario:'The IT Manager has authority to approve new user access requests AND the ability to create new accounts in Active Directory — both actions completed by a single person.',
+    conflict:'Access approval authority and account provisioning capability combined',
+    nist:'3.1.4, 3.1.5'
+  },
+  {
+    id:'SOD-04',
+    scenario:'The Cloud Administrator manages cloud storage buckets that contain CUI AND is responsible for configuring the backup encryption settings for those same buckets.',
+    conflict:'CUI data custodian and backup/encryption control combined in one role',
+    nist:'3.1.4'
+  },
+];
+
+const ACT5_FINDINGS = [
+  {id:'ACF-01', category:'Excessive Access',        placeholder:'Describe the specific excessive access issue found at FFSI (which user, which system, what permission)...'},
+  {id:'ACF-02', category:'Excessive Access',        placeholder:'Identify a second excessive access instance — focus on a different system or data type...'},
+  {id:'ACF-03', category:'Missing Access',          placeholder:'Identify a role that lacks access it requires to perform job functions effectively...'},
+  {id:'ACF-04', category:'Privileged Account Concern', placeholder:'Describe a privileged account issue — incorrect scope, missing justification, or absence of separate admin account...'},
+  {id:'ACF-05', category:'Shared Account Issue',   placeholder:'Identify any shared or generic accounts in the FFSI environment and the accountability risk they create...'},
+];
+
+const MFA_SYSTEMS = [
+  'Microsoft 365 (all users)',
+  'Active Directory / Entra ID (admin accounts)',
+  'VPN (remote access users)',
+  'Contract Management System (CUI access)',
+  'SIEM Platform (security analysts)',
+];
+
+const DEBRIEF_QS = [
+  'Which FFSI positions required authorized access to CUI? What business justification supported each CUI authorization?',
+  'Which users in your ACM review received excessive permissions relative to their job function? Which specific permission level was inappropriate?',
+  'Which access permission in the FFSI environment creates the greatest risk to CUI? Why does that specific combination pose the highest threat?',
+  'How does enforcing least privilege reduce organizational risk at FFSI? Provide a specific example where least privilege would prevent a CUI exposure scenario.',
+  'What evidence would a C3PAO assessor request to validate that the FFSI ACM entries are accurate and current? Name at least four specific artifact types.',
+  'How often should FFSI conduct formal access reviews? What events should trigger an out-of-cycle review between scheduled review periods?',
+  'What is the relationship between the ACM, the System Security Plan (SSP), and the Asset Inventory at FFSI? How do these three documents cross-reference each other?',
+];
+
+const RUBRIC_ROWS = [
+  {cat:'ACM Completion Accuracy (Act 2)', max:40,
+   exc:'All 15 positions and 12 systems completed with accurate access levels. CUI authorization correctly assigned. All decisions justified with business rationale.',
+   pro:'14–15 positions completed; minor permission errors on ≤2 systems. Most CUI assignments correct. Justifications present but may lack specificity.',
+   dev:'10–13 positions completed; multiple incorrect permission levels. CUI authorization inconsistently applied. Justifications vague or missing for several entries.',
+   ni:'Fewer than 10 positions completed or widespread incorrect assignments. CUI authorization not addressed. Justifications absent.'},
+  {cat:'Least Privilege Analysis (Act 3)', max:20,
+   exc:'All 6 scenarios correctly analyzed. Violations clearly identified; appropriate access correctly confirmed. Risk rated accurately; NIST practice cited.',
+   pro:'5 of 6 scenarios correctly analyzed. Risk ratings reasonable. NIST references present for most findings.',
+   dev:'3–4 of 6 scenarios analyzed. Some violations missed or incorrectly flagged. Risk ratings inconsistent. Limited NIST references.',
+   ni:'Fewer than 3 scenarios analyzed correctly. Multiple violations missed. No NIST references. Recommendations missing or ineffective.'},
+  {cat:'Separation of Duties Review (Act 4)', max:20,
+   exc:'All 4 SoD conflicts identified and documented. Risk described accurately. Corrective actions are specific, feasible, and reference 3.1.4.',
+   pro:'3 of 4 SoD conflicts identified. Risk descriptions adequate. Corrective actions reasonable but may lack specificity.',
+   dev:'2 of 4 SoD conflicts identified. Risk descriptions incomplete. Corrective actions generic.',
+   ni:'0–1 SoD conflicts identified. Demonstrates confusion between SoD and least privilege. Corrective actions absent or ineffective.'},
+  {cat:'Access Control Recommendations (Act 5)', max:20,
+   exc:'All 5 finding categories addressed with specific FFSI context. MFA gaps fully analyzed. Executive summary is clear, specific, and assessment-ready.',
+   pro:'4–5 finding categories addressed. MFA analysis present. Executive summary covers main issues.',
+   dev:'2–3 finding categories addressed. MFA analysis partial. Executive summary is vague or incomplete.',
+   ni:'Fewer than 2 finding categories addressed. MFA not analyzed. Executive summary absent or generic.'},
+];
+
+// ═══════════════════════════════════════════
+//  BUILD TABLES & UI
+// ═══════════════════════════════════════════
+function buildAct1(){
+  const tb = document.getElementById('act1-body');
+  POSITIONS.forEach(p => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="label-cell">${p.title}<br/><span class="text-sm" style="font-weight:400">${p.dept}</span></td>
+      <td><textarea class="act1-systems" data-id="${p.id}" rows="2" placeholder="List systems this role requires access to..." oninput="updateProgress()"></textarea></td>
+      <td><div class="yn-group">
+        <button class="yn-btn yes" onclick="ynToggle(this,'yes')">Yes</button>
+        <button class="yn-btn no"  onclick="ynToggle(this,'no')">No</button>
+      </div></td>
+      <td><div class="yn-group">
+        <button class="yn-btn yes" onclick="ynToggle(this,'yes')">Yes</button>
+        <button class="yn-btn no"  onclick="ynToggle(this,'no')">No</button>
+      </div></td>
+      <td><select class="acc-select" onchange="styleAccSelect(this);updateProgress()">
+        ${ACCESS_OPTS.map(o=>`<option>${o}</option>`).join('')}
+      </select></td>
+      <td><div class="yn-group">
+        <button class="yn-btn yes" onclick="ynToggle(this,'yes')">Yes</button>
+        <button class="yn-btn no"  onclick="ynToggle(this,'no')">No</button>
+      </div></td>
+      <td><textarea rows="2" placeholder="Justify your decisions based on job function and data requirements..." oninput="updateProgress()"></textarea></td>
+    `;
+    tb.appendChild(tr);
+  });
+}
+
+function buildACM(){
+  const tb = document.getElementById('acm-body');
+  POSITIONS.forEach(p => {
+    const tr = document.createElement('tr');
+    let cells = `<td class="label-cell">${p.title}</td>`;
+    // 11 systems + CUI column
+    for(let i=0;i<11;i++){
+      cells += `<td><select class="acc-select" onchange="styleAccSelect(this);updateProgress()">
+        ${ACCESS_OPTS.map(o=>`<option>${o}</option>`).join('')}
+      </select></td>`;
+    }
+    // CUI column
+    cells += `<td><select class="acc-select" onchange="styleAccCUI(this);updateProgress()">
+      ${CUI_OPTS.map(o=>`<option>${o}</option>`).join('')}
+    </select></td>`;
+    tr.innerHTML = cells;
+    tb.appendChild(tr);
+  });
+}
+
+function buildAct3(){
+  const div = document.getElementById('act3-body');
+  LP_SCENARIOS.forEach(sc => {
+    div.innerHTML += `
+    <div class="finding-block">
+      <div class="fb-header">
+        <span class="finding-badge">${sc.id}</span>
+        <div>
+          <div class="finding-text">${sc.assignment}</div>
+          <div class="finding-sub">User: <strong>${sc.user}</strong> · System: <strong>${sc.system}</strong> · Current Permission: <strong>${sc.permission}</strong> · Relevant NIST: <span class="nist-tag">${sc.nist}</span></div>
+        </div>
+      </div>
+      <div class="fb-fields" style="grid-template-columns:repeat(3,auto) 1fr">
+        <div>
+          <label>1. Is access appropriate?</label>
+          <div class="yn-group"><button class="yn-btn yes" onclick="ynToggle(this,'yes')">Yes</button><button class="yn-btn no" onclick="ynToggle(this,'no')">No</button></div>
+        </div>
+        <div>
+          <label>2. Violates least privilege?</label>
+          <div class="yn-group"><button class="yn-btn yes" onclick="ynToggle(this,'yes')">Yes</button><button class="yn-btn no" onclick="ynToggle(this,'no')">No</button></div>
+        </div>
+        <div>
+          <label>3. Action Required</label>
+          <select onchange="updateProgress()" style="background:var(--bg-input);border:1px solid var(--border2);color:var(--text);border-radius:5px;font-size:.78rem;padding:.3rem;margin-top:.1rem">
+            <option value="">Select...</option>
+            <option>Remove Access</option>
+            <option>Reduce Permission Level</option>
+            <option>Grant Additional Access</option>
+            <option>No Change Needed</option>
+            <option>Require Justification</option>
+          </select>
+        </div>
+        <div>
+          <label>Risk Level</label>
+          <select onchange="updateProgress()" style="background:var(--bg-input);border:1px solid var(--border2);color:var(--text);border-radius:5px;font-size:.78rem;padding:.3rem;margin-top:.1rem">
+            <option value="">Select...</option>
+            <option>High — Immediate CUI Risk</option>
+            <option>Medium — Compliance Concern</option>
+            <option>Low — Administrative Improvement</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-top:.65rem">
+        <label style="font-size:.73rem;color:var(--text-d);display:block;margin-bottom:.2rem">Recommendation & Justification (cite NIST practice):</label>
+        <textarea rows="2" placeholder="What specific action should FFSI take? Who should take it? Which NIST 800-171 practice applies? What risk does this finding create?" oninput="updateProgress()"></textarea>
+      </div>
+    </div>`;
+  });
+}
+
+function buildAct4(){
+  const div = document.getElementById('act4-body');
+  SOD_SCENARIOS.forEach(sc => {
+    div.innerHTML += `
+    <div class="finding-block">
+      <div class="fb-header">
+        <span class="finding-badge amber">${sc.id}</span>
+        <div>
+          <div class="finding-text">${sc.scenario}</div>
+          <div class="finding-sub">Potential Conflict: <em>${sc.conflict}</em> · NIST: <span class="nist-tag">${sc.nist}</span></div>
+        </div>
+      </div>
+      <div class="fb-fields">
+        <div>
+          <label>Confirmed SoD Conflict?</label>
+          <div class="yn-group" style="margin-top:.2rem">
+            <button class="yn-btn yes" onclick="ynToggle(this,'yes')">Yes</button>
+            <button class="yn-btn no" onclick="ynToggle(this,'no')">No</button>
+            <button class="yn-btn uncertain" onclick="ynToggle(this,'uncertain')">Uncertain</button>
+          </div>
+        </div>
+        <div>
+          <label>Risk Level</label>
+          <select onchange="updateProgress()" style="background:var(--bg-input);border:1px solid var(--border2);color:var(--text);border-radius:5px;font-size:.78rem;padding:.3rem;margin-top:.2rem">
+            <option value="">Select...</option>
+            <option>High</option>
+            <option>Medium</option>
+            <option>Low</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-top:.6rem;display:grid;grid-template-columns:1fr 1fr;gap:.6rem">
+        <div>
+          <label style="font-size:.73rem;color:var(--text-d);display:block;margin-bottom:.2rem">Finding (describe the SoD conflict in your own words):</label>
+          <textarea rows="2" placeholder="Document the specific conflict and why it creates compliance risk under NIST 800-171 3.1.4..." oninput="updateProgress()"></textarea>
+        </div>
+        <div>
+          <label style="font-size:.73rem;color:var(--text-d);display:block;margin-bottom:.2rem">Recommendation (specific corrective action with named owner):</label>
+          <textarea rows="2" placeholder="What control should be implemented? Who is responsible? What is the timeline?" oninput="updateProgress()"></textarea>
+        </div>
+      </div>
+    </div>`;
+  });
+}
+
+function buildAct5(){
+  const tb = document.getElementById('act5-body');
+  ACT5_FINDINGS.forEach(f => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="label-cell" style="font-family:'Courier New',monospace;font-size:.75rem">${f.id}</td>
+      <td class="pre-fill">${f.category}</td>
+      <td><textarea rows="2" placeholder="${f.placeholder}" oninput="updateProgress()"></textarea></td>
+      <td><select onchange="updateProgress()" style="background:var(--bg-input);border:1px solid var(--border2);color:var(--text);border-radius:5px;font-size:.78rem;padding:.3rem">
+        <option value="">Select...</option>
+        <option>High</option>
+        <option>Medium</option>
+        <option>Low</option>
+      </select></td>
+      <td><textarea rows="2" placeholder="Specific corrective action..." oninput="updateProgress()"></textarea></td>
+      <td><textarea rows="2" placeholder="Owner name / Timeline (e.g., 30 days)..." oninput="updateProgress()"></textarea></td>
+    `;
+    tb.appendChild(tr);
+  });
+
+  const mfa = document.getElementById('mfa-body');
+  MFA_SYSTEMS.forEach(sys => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="label-cell">${sys}</td>
+      <td><div class="yn-group"><button class="yn-btn yes" onclick="ynToggle(this,'yes')">Yes</button><button class="yn-btn no" onclick="ynToggle(this,'no')">No</button><button class="yn-btn uncertain" onclick="ynToggle(this,'uncertain')">Unknown</button></div></td>
+      <td><div class="yn-group"><button class="yn-btn yes" onclick="ynToggle(this,'yes')">Yes</button><button class="yn-btn no" onclick="ynToggle(this,'no')">No</button></div></td>
+      <td><textarea rows="1" placeholder="If MFA is not enabled but required, describe the corrective action..." oninput="updateProgress()"></textarea></td>
+    `;
+    mfa.appendChild(tr);
+  });
+}
+
+function buildDebrief(){
+  const div = document.getElementById('debrief-body');
+  DEBRIEF_QS.forEach(q => {
+    div.innerHTML += `
+    <div class="dq-item">
+      <div class="dq-num"></div>
+      <div style="flex:1">
+        <div class="dq-text">${q}</div>
+        <div class="dq-textarea"><textarea rows="2" placeholder="Participant response / discussion notes..." oninput="updateProgress()"></textarea></div>
+      </div>
+    </div>`;
+  });
+}
+
+function buildRubric(){
+  const tb = document.getElementById('rubric-body');
+  let total = 0;
+  RUBRIC_ROWS.forEach((r,i) => {
+    total += r.max;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="label-cell" style="font-size:.8rem">${r.cat}</td>
+      <td class="text-sm">${r.exc}</td>
+      <td class="text-sm">${r.pro}</td>
+      <td class="text-sm">${r.dev}</td>
+      <td class="text-sm">${r.ni}</td>
+      <td style="text-align:center;font-weight:700;color:var(--gold)">${r.max}</td>
+      <td><input type="number" class="score-input rubric-score" min="0" max="${r.max}" value="" placeholder="0" oninput="calcRubric()"/></td>
+    `;
+    tb.appendChild(tr);
+  });
+  // Total row
+  const tr = document.createElement('tr');
+  tr.className='score-total-row';
+  tr.innerHTML=`<td colspan="5" style="font-weight:800;color:var(--gold);padding:.6rem .75rem">Total</td><td style="text-align:center;font-weight:800;color:var(--gold)">100</td><td style="text-align:center;font-weight:800;color:var(--gold)" id="rubric-score-total">0/100</td>`;
+  tb.appendChild(tr);
+}
+
+// ═══════════════════════════════════════════
+//  INTERACTIONS
+// ═══════════════════════════════════════════
+function ynToggle(btn, val){
+  const group = btn.closest('.yn-group');
+  group.querySelectorAll('.yn-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  updateProgress();
+}
+
+function styleAccSelect(sel){
+  sel.className='acc-select';
+  const map={'None':'no-access','Read':'read-only','Modify':'modify','Approve':'approve','Admin':'admin'};
+  if(map[sel.value]) sel.classList.add(map[sel.value]);
+}
+
+function styleAccCUI(sel){
+  sel.className='acc-select';
+  if(sel.value==='Yes') sel.classList.add('cui-yes');
+  else if(sel.value==='No') sel.classList.add('cui-no');
+}
+
+// ═══════════════════════════════════════════
+//  TABS
+// ═══════════════════════════════════════════
+function showTab(id){
+  document.querySelectorAll('.section-card').forEach(c=>c.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  // highlight correct tab button
+  document.querySelectorAll('.tab-btn').forEach(b=>{
+    if(b.getAttribute('onclick').includes("'"+id+"'")) b.classList.add('active');
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ═══════════════════════════════════════════
+//  PROGRESS
+// ═══════════════════════════════════════════
+function updateProgress(){
+  const allInputs = document.querySelectorAll('textarea, select, input[type=number]');
+  let filled=0,total=0;
+  allInputs.forEach(el=>{
+    if(el.closest('#rubric-body')) return; // skip rubric inputs
+    total++;
+    if(el.tagName==='SELECT' && el.value && el.value!=='') filled++;
+    else if(el.tagName==='TEXTAREA' && el.value.trim().length>5) filled++;
+    else if(el.tagName==='INPUT' && el.value!=='') filled++;
+  });
+  const yn = document.querySelectorAll('.yn-btn.active');
+  const ynTotal = document.querySelectorAll('.yn-group').length;
+  const pct = Math.round(((filled + yn.length) / (total + ynTotal)) * 100);
+  document.getElementById('prog-pct').textContent = pct+'%';
+  document.getElementById('prog-fill').style.width = pct+'%';
+}
+
+// ═══════════════════════════════════════════
+//  RUBRIC CALC
+// ═══════════════════════════════════════════
+function calcRubric(){
+  let total=0, max=100;
+  document.querySelectorAll('.rubric-score').forEach(inp=>{
+    const v=parseInt(inp.value)||0;
+    total+=v;
+  });
+  total=Math.min(total,max);
+  const pct=Math.round(total/max*100);
+  document.getElementById('rubric-total').textContent=total;
+  document.getElementById('rubric-pct').textContent=pct+'%';
+  document.getElementById('rubric-score-total').textContent=total+'/100';
+  document.getElementById('sb-total').textContent=total;
+  document.getElementById('sb-pct').textContent=pct+'%';
+
+  let rating='Needs Improvement', cls='rating-needs';
+  if(pct>=90){rating='Excellent';cls='rating-excellent'}
+  else if(pct>=75){rating='Proficient';cls='rating-proficient'}
+  else if(pct>=60){rating='Developing';cls='rating-developing'}
+
+  ['rubric-rating-badge','sb-rating'].forEach(id=>{
+    const el=document.getElementById(id);
+    el.textContent=rating;
+    el.className=(id==='rubric-rating-badge'?'rating-badge ':'sb-rating ')+cls;
+  });
+}
+
+// ═══════════════════════════════════════════
+//  TIMER
+// ═══════════════════════════════════════════
+let timerSeconds=20*60, timerInterval=null, timerRunning=false;
+
+function updateTimerDisplay(){
+  const m=Math.floor(timerSeconds/60), s=timerSeconds%60;
+  const str=(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+  const el=document.getElementById('timer-display');
+  el.textContent=str;
+  el.className='timer-display';
+  if(timerSeconds<=300) el.classList.add('warn');
+  if(timerSeconds<=60)  el.classList.add('danger');
+}
+
+function startTimer(){
+  if(timerRunning) return;
+  timerRunning=true;
+  document.getElementById('timer-start').style.display='none';
+  document.getElementById('timer-pause').style.display='';
+  timerInterval=setInterval(()=>{
+    if(timerSeconds>0){timerSeconds--;updateTimerDisplay();}
+    else{clearInterval(timerInterval);timerRunning=false;}
+  },1000);
+}
+
+function pauseTimer(){
+  clearInterval(timerInterval);timerRunning=false;
+  document.getElementById('timer-start').style.display='';
+  document.getElementById('timer-pause').style.display='none';
+}
+
+function resetTimer(){
+  pauseTimer();timerSeconds=20*60;updateTimerDisplay();
+}
+
+// ═══════════════════════════════════════════
+//  EXPORT
+// ═══════════════════════════════════════════
+function exportAnswers(){
+  let out='FFSI — ACCESS CONTROL MATRIX EXERCISE\nExport: '+new Date().toLocaleString()+'\n';
+  out+='='+'='.repeat(60)+'\n\n';
+
+  // ACM
+  out+='ACTIVITY 2 — ACCESS CONTROL MATRIX\n'+'-'.repeat(50)+'\n';
+  const acmRows=document.querySelectorAll('#acm-body tr');
+  acmRows.forEach((tr,i)=>{
+    const pos=POSITIONS[i]?.title||'';
+    const sels=tr.querySelectorAll('select');
+    const vals=Array.from(sels).map(s=>s.value||'—');
+    out+=pos+': '+vals.join(' | ')+'\n';
+  });
+  out+='\nACM Notes:\n'+(document.getElementById('acm-notes').value||'(none)')+'\n\n';
+
+  // Act5 executive summary
+  out+='EXECUTIVE SUMMARY:\n'+(document.getElementById('exec-summary').value||'(none)')+'\n\n';
+
+  const blob=new Blob([out],{type:'text/plain'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='FFSI_ACM_Exercise_Answers.txt';
+  a.click();
+}
+
+// ═══════════════════════════════════════════
+//  RESET
+// ═══════════════════════════════════════════
+function confirmReset(){
+  if(confirm('Reset all exercise answers? This cannot be undone.')){
+    document.querySelectorAll('textarea').forEach(t=>t.value='');
+    document.querySelectorAll('select').forEach(s=>{s.selectedIndex=0;s.className=s.className.includes('acc-select')?'acc-select':'';});
+    document.querySelectorAll('.yn-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.rubric-score').forEach(i=>i.value='');
+    calcRubric();updateProgress();
+  }
+}
+
+// ═══════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════
+buildAct1();
+buildACM();
+buildAct3();
+buildAct4();
+buildAct5();
+buildDebrief();
+buildRubric();
+updateTimerDisplay();
+</script>
+</body>
+</html>
