@@ -1,125 +1,862 @@
-Federal Food Services Inc. (FFSI)
-CMMC Data Governance Role Assignment Exercise
-Estimated Time: 30 Minutes
-Learning Objectives
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FFSI — CMMC Data Governance Role Assignment</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
 
-By the end of this activity, participants will be able to:
+/* ── Variables ─────────────────────────────────────────── */
+:root {
+  --green:       #1e6b3c;
+  --green-mid:   #2d9154;
+  --green-light: #e8f5ed;
+  --green-pale:  #f3faf6;
+  --black:       #0f1410;
+  --gray-900:    #1c2b22;
+  --gray-700:    #3d5244;
+  --gray-500:    #6b8275;
+  --gray-300:    #c8d8ce;
+  --gray-100:    #f0f5f2;
+  --white:       #ffffff;
+  --amber:       #b45309;
+  --amber-bg:    #fef3c7;
+  --blue:        #1e4d8c;
+  --blue-bg:     #eff4ff;
+  --red:         #b91c1c;
+  --red-bg:      #fef2f2;
 
-Define the six primary data governance roles used in CMMC environments.
-Distinguish between responsibility for data ownership, protection, processing, and compliance.
-Analyze an organizational structure and determine appropriate role assignments.
-Justify cybersecurity role assignments based on job responsibilities.
-Explain how proper role assignment supports the protection of Controlled Unclassified Information (CUI).
-Key Terms
-Term	Definition
-Data Owner	Individual accountable for a set of data and who determines how it is used.
-Data Custodian	Individual responsible for maintaining and protecting data systems.
-Data Processor	Individual who uses or processes data as part of their job duties.
-Data Steward	Individual responsible for ensuring data quality, integrity, and proper handling.
-Data Controller	Individual or organization that determines why and how data is processed.
-Data Subject	Person whose information appears within organizational systems.
-CUI	Controlled Unclassified Information.
-FCI	Federal Contract Information.
-Scenario
+  --bg:          var(--white);
+  --bg-alt:      var(--gray-100);
+  --bg-card:     var(--white);
+  --text:        var(--gray-900);
+  --text-muted:  var(--gray-500);
+  --border:      var(--gray-300);
+  --accent:      var(--green);
+  --accent-mid:  var(--green-mid);
 
-Federal Food Services Inc. (FFSI) manufactures Meals Ready-to-Eat (MREs) and supplies food products to the U.S. Army.
+  --serif:  'DM Serif Display', Georgia, serif;
+  --sans:   'DM Sans', system-ui, sans-serif;
+  --mono:   'DM Mono', monospace;
+  --radius: 10px;
+  --shadow: 0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,.12);
+}
 
-The company stores and processes:
+[data-theme="dark"] {
+  --bg:         #0d1710;
+  --bg-alt:     #131f16;
+  --bg-card:    #182019;
+  --text:       #d4e8d9;
+  --text-muted: #7a9e82;
+  --border:     #2a3d2e;
+  --accent:     #3da85c;
+  --accent-mid: #4dc46e;
+  --green-light:#0f2918;
+  --green-pale: #0a1c0d;
+  --amber-bg:   #2d1f00;
+  --blue-bg:    #091528;
+  --red-bg:     #1f0808;
+}
 
-Federal contract information
-Supplier records
-Employee information
-Production specifications
-Shipping and logistics data
-Quality assurance reports
-Army delivery schedules
+/* ── Reset ──────────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:var(--sans);
+  background:var(--bg);
+  color:var(--text);
+  font-size:15px;
+  line-height:1.65;
+  transition:background .25s,color .25s;
+  min-height:100vh;
+}
 
-FFSI is preparing for a CMMC Level 2 assessment.
+/* ── Page Shell ─────────────────────────────────────────── */
+.page-wrap{max-width:900px;margin:0 auto;padding:2rem 1.5rem 4rem;}
 
-Your consulting team has been asked to review the company's personnel roster and assign appropriate data governance roles.
+/* ── Top Bar ────────────────────────────────────────────── */
+.top-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding-bottom:1.25rem;margin-bottom:1.5rem;
+  border-bottom:2px solid var(--border);gap:1rem;flex-wrap:wrap;
+}
+.top-bar-brand{display:flex;align-items:center;gap:.75rem;}
+.brand-chip{
+  background:var(--accent);color:#fff;
+  font-family:var(--mono);font-size:.75rem;font-weight:500;
+  padding:.25rem .6rem;border-radius:5px;letter-spacing:.06em;
+}
+.brand-label{font-size:.8rem;color:var(--text-muted);letter-spacing:.04em;}
+.top-bar-actions{display:flex;gap:.5rem;align-items:center;}
 
-Directions
-Step 1
+.btn{
+  display:inline-flex;align-items:center;gap:.4rem;
+  padding:.4rem .9rem;border-radius:7px;border:1px solid var(--border);
+  background:var(--bg-card);color:var(--text);
+  font-family:var(--sans);font-size:.78rem;font-weight:600;cursor:pointer;
+  transition:all .2s;white-space:nowrap;
+}
+.btn:hover{border-color:var(--accent);color:var(--accent);}
+.btn-primary{background:var(--accent);color:#fff;border-color:var(--accent);}
+.btn-primary:hover{background:var(--accent-mid);color:#fff;border-color:var(--accent-mid);}
+.btn-ghost{background:none;}
 
-Review the FFSI personnel list provided in the case study.
+/* ── Header ─────────────────────────────────────────────── */
+.header{
+  background:linear-gradient(135deg,var(--green) 0%,#145229 100%);
+  color:#fff;
+  border-radius:var(--radius);
+  padding:2rem 2.25rem 1.75rem;
+  margin-bottom:1.75rem;
+  position:relative;overflow:hidden;
+}
+.header::before{
+  content:'';position:absolute;top:-40px;right:-40px;
+  width:200px;height:200px;
+  border-radius:50%;
+  background:rgba(255,255,255,.05);
+}
+.header::after{
+  content:'';position:absolute;bottom:-60px;right:60px;
+  width:120px;height:120px;
+  border-radius:50%;
+  background:rgba(255,255,255,.04);
+}
+.header-kicker{
+  font-size:.7rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;
+  color:rgba(255,255,255,.6);margin-bottom:.5rem;
+}
+.header h1{
+  font-family:var(--serif);font-size:clamp(1.5rem,4vw,2.1rem);
+  line-height:1.15;margin-bottom:.5rem;
+}
+.header-sub{font-size:.88rem;color:rgba(255,255,255,.75);max-width:560px;}
+.header-meta{
+  display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.1rem;
+}
+.header-badge{
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);
+  font-size:.68rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  padding:.2rem .6rem;border-radius:4px;
+}
 
-Focus on the following positions:
+/* ── Progress Banner ────────────────────────────────────── */
+.progress-banner{
+  display:flex;align-items:center;gap:1rem;
+  background:var(--green-light);border:1px solid var(--accent);
+  border-radius:var(--radius);padding:.9rem 1.1rem;margin-bottom:1.75rem;
+}
+[data-theme="dark"] .progress-banner{background:var(--green-pale);}
+.progress-label{font-size:.82rem;font-weight:600;color:var(--accent);white-space:nowrap;}
+.progress-bar-wrap{flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden;}
+.progress-bar{height:100%;background:var(--accent);border-radius:4px;transition:width .4s ease;}
+.progress-count{font-size:.78rem;font-weight:700;color:var(--accent);white-space:nowrap;}
 
-CEO
-COO
-CIO
-Contracts Manager
-Compliance Manager
-Production Manager
-HR Director
-Logistics Manager
-Quality Assurance Manager
-IT Manager
-System Administrator
-Cloud Administrator
-Help Desk Manager
-Step 2
+/* ── Section ────────────────────────────────────────────── */
+.section{margin-bottom:2rem;}
+.section-title{
+  font-family:var(--serif);font-size:1.15rem;
+  color:var(--accent);margin-bottom:.9rem;
+  display:flex;align-items:center;gap:.6rem;
+}
+.section-title::after{
+  content:'';flex:1;height:1px;background:var(--border);
+}
 
-For each data governance role below, identify the employee who should be assigned responsibility.
+/* ── Key Terms Grid ──────────────────────────────────────── */
+.terms-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:.6rem;}
+.term-card{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:.85rem 1rem;
+  transition:border-color .2s,box-shadow .2s;
+}
+.term-card:hover{border-color:var(--accent);box-shadow:var(--shadow);}
+.term-name{
+  font-family:var(--mono);font-size:.72rem;font-weight:500;
+  color:var(--accent);letter-spacing:.04em;margin-bottom:.3rem;
+}
+.term-def{font-size:.8rem;color:var(--text-muted);line-height:1.5;}
 
-Roles to Assign
-Data Owner
-Data Custodian
-Data Processor
-Data Steward
-Data Controller
-Data Subject
-Step 3
+/* ── Personnel Panel ─────────────────────────────────────── */
+.personnel-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.5rem;margin-bottom:.5rem;}
+.person-chip{
+  display:flex;flex-direction:column;
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:8px;padding:.6rem .75rem;cursor:default;
+  transition:border-color .2s;
+}
+.person-chip:hover{border-color:var(--accent);}
+.person-chip-name{font-size:.8rem;font-weight:700;margin-bottom:.15rem;}
+.person-chip-title{font-size:.7rem;color:var(--text-muted);}
+.person-chip-dept{
+  font-size:.62rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--accent);margin-top:.3rem;
+}
 
-Provide a brief justification (1–2 sentences) explaining why each individual is the best choice.
+/* ── Role Worksheet ──────────────────────────────────────── */
+.role-card{
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-left:4px solid var(--accent);
+  border-radius:var(--radius);
+  padding:1.1rem 1.25rem;
+  margin-bottom:.75rem;
+  transition:all .2s;
+  position:relative;
+}
+.role-card.completed{
+  border-left-color:var(--green-mid);
+  background:var(--green-pale);
+}
+[data-theme="dark"] .role-card.completed{background:var(--green-pale);}
+.role-card-top{display:flex;align-items:flex-start;gap:1rem;flex-wrap:wrap;}
+.role-badge{
+  width:36px;height:36px;flex-shrink:0;
+  background:var(--green-light);border:2px solid var(--accent);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:1rem;
+}
+[data-theme="dark"] .role-badge{background:var(--green-pale);}
+.role-info{flex:1;min-width:0;}
+.role-name{font-weight:700;font-size:.95rem;margin-bottom:.2rem;}
+.role-definition{font-size:.8rem;color:var(--text-muted);line-height:1.5;margin-bottom:.75rem;}
 
-Student Worksheet
-Data Governance Role	Assigned Employee	Job Title	Justification
-Data Owner			
-Data Custodian			
-Data Processor			
-Data Steward			
-Data Controller			
-Data Subject			
-Discussion Questions
-Which role has ultimate accountability for protecting contract-related CUI?
-Which role is most responsible for maintaining systems that store CUI?
-Which role would likely be interviewed during a CMMC assessment?
-Can one person perform multiple roles? Why or why not?
-Which role has the greatest influence on data quality and integrity?
-Facilitator Grading Rubric
-Suggested Answers
-Role	Expected Position(s)	Points
-Data Owner	Contracts Manager, CIO, or Business Unit Manager responsible for CUI	2
-Data Custodian	System Administrator, IT Manager, or Cloud Administrator	2
-Data Processor	Production Manager, Logistics Manager, QA Manager, Contracts Staff, HR Staff	2
-Data Steward	Compliance Manager, QA Manager, or Records Manager	2
-Data Controller	CIO, CEO, COO, or Contracts Director	2
-Data Subject	Employees, suppliers, contractors, applicants, or customers whose data is stored	2
-Quick Scoring Sheet
-Criteria	Points Possible	Score
-Correct Data Owner	2	
-Correct Data Custodian	2	
-Correct Data Processor	2	
-Correct Data Steward	2	
-Correct Data Controller	2	
-Correct Data Subject	2	
-Quality of Justifications	8	
-Participation in Discussion	4	
-Total	24	
-Scoring Guide
-Score	Rating
-22–24	Excellent Understanding
-19–21	Proficient
-16–18	Developing
-Below 16	Needs Improvement
-Instructor Debrief (5 Minutes)
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.6rem;}
+@media(max-width:560px){.field-row{grid-template-columns:1fr;}}
 
-Ask participants:
+.field-group{display:flex;flex-direction:column;gap:.3rem;}
+.field-label{font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);}
+.field-select,.field-input{
+  padding:.45rem .65rem;
+  border:1px solid var(--border);border-radius:6px;
+  background:var(--bg);color:var(--text);
+  font-family:var(--sans);font-size:.82rem;
+  transition:border-color .2s;width:100%;
+}
+.field-select:focus,.field-input:focus{outline:none;border-color:var(--accent);}
+textarea.field-input{resize:vertical;min-height:62px;line-height:1.5;}
 
-Which role was easiest to assign?
-Which role created the most debate?
-How could incorrect role assignments create CMMC findings?
-What evidence would an assessor request to verify these assignments?
+.complete-check{
+  position:absolute;top:.9rem;right:1rem;
+  font-size:.7rem;font-weight:700;letter-spacing:.05em;
+  color:var(--green-mid);display:none;align-items:center;gap:.3rem;
+}
+.role-card.completed .complete-check{display:flex;}
 
-Expected takeaway: Successful CMMC implementation requires clear accountability for CUI. Organizations must be able to identify who owns data, who protects it, who uses it, who governs it, and whose information is being stored and processed. This accountability is a key component of effective cybersecurity governance and CMMC readiness.
+/* ── Discussion Questions ────────────────────────────────── */
+.q-list{display:flex;flex-direction:column;gap:.6rem;}
+.q-item{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:.85rem 1rem;
+  display:flex;gap:.75rem;align-items:flex-start;
+}
+.q-num{
+  width:24px;height:24px;flex-shrink:0;
+  background:var(--accent);color:#fff;
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:.7rem;font-weight:700;margin-top:.05rem;
+}
+.q-text{font-size:.85rem;}
+.q-response{
+  margin-top:.5rem;width:100%;
+  padding:.4rem .6rem;
+  border:1px solid var(--border);border-radius:6px;
+  background:var(--bg);color:var(--text);
+  font-family:var(--sans);font-size:.82rem;
+  resize:vertical;min-height:54px;
+  transition:border-color .2s;
+}
+.q-response:focus{outline:none;border-color:var(--accent);}
+
+/* ── Rubric ─────────────────────────────────────────────── */
+.rubric-table{width:100%;border-collapse:collapse;font-size:.82rem;}
+.rubric-table th{
+  background:var(--bg-alt);color:var(--text-muted);
+  font-size:.7rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  padding:.55rem .8rem;text-align:left;border-bottom:2px solid var(--border);
+}
+.rubric-table td{padding:.5rem .8rem;border-bottom:1px solid var(--border);vertical-align:middle;}
+.rubric-table tr:last-child td{border-bottom:none;}
+.rubric-table tr:hover td{background:var(--bg-alt);}
+.pts-badge{
+  display:inline-block;
+  background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue);
+  font-size:.65rem;font-weight:700;padding:.1rem .45rem;border-radius:4px;
+}
+.score-input{
+  width:50px;padding:.3rem .4rem;text-align:center;
+  border:1px solid var(--border);border-radius:5px;
+  background:var(--bg);color:var(--text);
+  font-family:var(--mono);font-size:.82rem;
+}
+.score-input:focus{outline:none;border-color:var(--accent);}
+.rubric-total-row td{font-weight:700;background:var(--green-light);}
+[data-theme="dark"] .rubric-total-row td{background:var(--green-pale);}
+
+/* ── Score Display ───────────────────────────────────────── */
+.score-card{
+  background:var(--bg-card);border:2px solid var(--border);
+  border-radius:var(--radius);padding:1.1rem 1.5rem;
+  display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;
+  margin-top:1rem;
+}
+.score-big{
+  font-family:var(--serif);font-size:2.5rem;color:var(--accent);line-height:1;
+}
+.score-label{font-size:.78rem;color:var(--text-muted);}
+.score-rating{
+  font-size:1rem;font-weight:700;padding:.3rem .8rem;
+  border-radius:6px;border:1px solid;
+}
+.rating-excellent{background:var(--green-light);color:var(--green);border-color:var(--green);}
+.rating-proficient{background:var(--blue-bg);color:var(--blue);border-color:var(--blue);}
+.rating-developing{background:var(--amber-bg);color:var(--amber);border-color:var(--amber);}
+.rating-needs{background:var(--red-bg);color:var(--red);border-color:var(--red);}
+[data-theme="dark"] .rating-excellent{background:var(--green-pale);}
+
+/* ── Callout ─────────────────────────────────────────────── */
+.callout{
+  border-radius:var(--radius);padding:.85rem 1rem;
+  font-size:.84rem;display:flex;gap:.65rem;align-items:flex-start;
+  margin-bottom:1rem;
+}
+.callout-tip{background:var(--green-light);border-left:4px solid var(--accent);}
+.callout-info{background:var(--blue-bg);border-left:4px solid var(--blue);}
+[data-theme="dark"] .callout-tip{background:var(--green-pale);}
+[data-theme="dark"] .callout-info{background:var(--blue-bg);}
+.callout-icon{font-size:1rem;flex-shrink:0;margin-top:.05rem;}
+
+/* ── Timer ───────────────────────────────────────────────── */
+.timer-bar{
+  display:flex;align-items:center;gap:.75rem;
+  background:var(--bg-alt);border:1px solid var(--border);
+  border-radius:var(--radius);padding:.7rem 1rem;
+  margin-bottom:1.5rem;flex-wrap:wrap;
+}
+.timer-label{font-size:.75rem;font-weight:700;color:var(--text-muted);letter-spacing:.06em;text-transform:uppercase;}
+.timer-display{
+  font-family:var(--mono);font-size:1.15rem;font-weight:500;
+  color:var(--accent);min-width:60px;
+}
+.timer-display.warning{color:var(--amber);}
+.timer-display.expired{color:var(--red);}
+.timer-actions{display:flex;gap:.4rem;margin-left:auto;}
+
+/* ── Scenario Box ────────────────────────────────────────── */
+.scenario-box{
+  background:var(--bg-alt);border:1px solid var(--border);
+  border-radius:var(--radius);padding:1.1rem 1.25rem;
+  margin-bottom:1rem;
+}
+.scenario-box p{font-size:.85rem;line-height:1.65;margin-bottom:.5rem;}
+.scenario-box p:last-child{margin-bottom:0;}
+.scenario-box ul{padding-left:1.1rem;font-size:.85rem;line-height:1.8;}
+
+/* ── Steps ───────────────────────────────────────────────── */
+.steps{display:flex;flex-direction:column;gap:.5rem;margin-bottom:1rem;}
+.step{
+  display:flex;gap:.8rem;align-items:flex-start;
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:.8rem 1rem;
+}
+.step-num{
+  width:26px;height:26px;flex-shrink:0;
+  background:var(--accent);color:#fff;
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:.72rem;font-weight:700;
+}
+.step-body{font-size:.83rem;}
+.step-title{font-weight:700;margin-bottom:.15rem;}
+.step-desc{color:var(--text-muted);line-height:1.5;}
+
+/* ── Print ───────────────────────────────────────────────── */
+@media print{
+  .top-bar-actions,.timer-bar,.btn,.progress-banner{display:none!important;}
+  .role-card{break-inside:avoid;}
+  .header{background:#1e6b3c!important;-webkit-print-color-adjust:exact;}
+}
+
+/* ── Misc ────────────────────────────────────────────────── */
+.hr{border:none;border-top:1px solid var(--border);margin:1.5rem 0;}
+.text-muted{color:var(--text-muted);}
+.mt-1{margin-top:1rem;}
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div class="top-bar-brand">
+      <div class="brand-chip">FFSI</div>
+      <div class="brand-label">CMMC 2.0 Training Workshop</div>
+    </div>
+    <div class="top-bar-actions">
+      <button class="btn btn-ghost" id="themeBtn" onclick="toggleTheme()">🌙 Dark Mode</button>
+      <button class="btn" onclick="window.print()">🖨 Print</button>
+      <button class="btn btn-primary" onclick="exportAnswers()">📤 Export Answers</button>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-kicker">Interactive Worksheet · Estimated Time: 30 Minutes</div>
+    <h1>CMMC Data Governance<br>Role Assignment Exercise</h1>
+    <div class="header-sub">Federal Food Services Inc. (FFSI) — Assign the six primary data governance roles to the correct personnel and justify each decision.</div>
+    <div class="header-meta">
+      <span class="header-badge">CMMC Level 2</span>
+      <span class="header-badge">6 Roles to Assign</span>
+      <span class="header-badge">24 Points Total</span>
+      <span class="header-badge">⚠ Fictional — Training Use Only</span>
+    </div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-banner">
+    <span class="progress-label">Worksheet Progress</span>
+    <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
+    <span class="progress-count" id="progressCount">0 / 6 roles assigned</span>
+  </div>
+
+  <!-- TIMER -->
+  <div class="timer-bar">
+    <span class="timer-label">⏱ Activity Timer</span>
+    <span class="timer-display" id="timerDisplay">30:00</span>
+    <div class="timer-actions">
+      <button class="btn" onclick="startTimer()">▶ Start</button>
+      <button class="btn" onclick="pauseTimer()">⏸ Pause</button>
+      <button class="btn" onclick="resetTimer()">↺ Reset</button>
+    </div>
+    <span style="font-size:.75rem;color:var(--text-muted);margin-left:auto;">Instructor-controlled</span>
+  </div>
+
+  <!-- LEARNING OBJECTIVES -->
+  <div class="section">
+    <div class="section-title">🎯 Learning Objectives</div>
+    <div class="callout callout-tip">
+      <span class="callout-icon">📚</span>
+      <div>By the end of this activity, participants will be able to:<br>
+      <span style="display:block;margin-top:.4rem;padding-left:.5rem;font-size:.82rem;color:var(--text-muted);">
+        1. Define the six primary data governance roles used in CMMC environments.<br>
+        2. Distinguish between responsibility for data ownership, protection, processing, and compliance.<br>
+        3. Analyze an organizational structure and determine appropriate role assignments.<br>
+        4. Justify cybersecurity role assignments based on job responsibilities.<br>
+        5. Explain how proper role assignment supports protection of CUI.
+      </span></div>
+    </div>
+  </div>
+
+  <!-- KEY TERMS -->
+  <div class="section">
+    <div class="section-title">📖 Key Terms</div>
+    <div class="terms-grid" id="termsGrid"></div>
+  </div>
+
+  <!-- SCENARIO -->
+  <div class="section">
+    <div class="section-title">🏭 Scenario</div>
+    <div class="scenario-box">
+      <p><strong>Federal Food Services Inc. (FFSI)</strong> manufactures Meals Ready-to-Eat (MREs) and supplies food products to the U.S. Army under six active federal contracts totaling over $234 million. The company is preparing for a CMMC Level 2 assessment.</p>
+      <p>FFSI stores and processes the following types of information:</p>
+      <ul>
+        <li>Federal contract information (FCI) and Army delivery schedules</li>
+        <li>Controlled Unclassified Information (CUI) — packaging specs, unit pricing, logistics node data</li>
+        <li>Supplier and subcontractor records</li>
+        <li>Employee personnel information</li>
+        <li>Production specifications and quality assurance reports</li>
+        <li>Shipping and logistics tracking data</li>
+      </ul>
+      <p style="margin-top:.5rem;">Your consulting team has been asked to review the FFSI personnel roster and assign appropriate <strong>data governance roles</strong> to ensure CUI is properly owned, protected, processed, governed, and controlled.</p>
+    </div>
+  </div>
+
+  <!-- DIRECTIONS -->
+  <div class="section">
+    <div class="section-title">📋 Directions</div>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">Review the FFSI Personnel Roster below.</div><div class="step-desc">Focus on the role, department, and level of CUI access for each individual listed.</div></div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">Complete the Role Assignment Worksheet.</div><div class="step-desc">For each of the six data governance roles, select the employee you believe is the best fit and enter their job title.</div></div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">Write a brief justification (1–2 sentences) for each assignment.</div><div class="step-desc">Explain why this individual is the most appropriate choice based on their responsibilities and access to CUI.</div></div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">Answer the Discussion Questions and complete the Scoring Rubric.</div><div class="step-desc">Be prepared to defend your answers during the class debrief.</div></div></div>
+    </div>
+  </div>
+
+  <!-- PERSONNEL ROSTER -->
+  <div class="section">
+    <div class="section-title">👥 FFSI Personnel Roster</div>
+    <div class="callout callout-info">
+      <span class="callout-icon">ℹ️</span>
+      <div style="font-size:.82rem;">Focus on these key positions when making your role assignments. Consider each person's authority, access level, and day-to-day responsibilities.</div>
+    </div>
+    <div class="personnel-grid" id="personnelGrid"></div>
+  </div>
+
+  <!-- ROLE ASSIGNMENT WORKSHEET -->
+  <div class="section">
+    <div class="section-title">📝 Role Assignment Worksheet</div>
+    <div id="roleCards"></div>
+  </div>
+
+  <!-- DISCUSSION QUESTIONS -->
+  <div class="section">
+    <div class="section-title">💬 Discussion Questions</div>
+    <div class="q-list" id="discussionList"></div>
+  </div>
+
+  <!-- GRADING RUBRIC -->
+  <div class="section">
+    <div class="section-title">📊 Scoring Rubric <span style="font-size:.75rem;font-weight:400;color:var(--text-muted);">(Instructor Use)</span></div>
+    <div class="callout callout-info">
+      <span class="callout-icon">🎓</span>
+      <div style="font-size:.82rem;">Instructors: Enter scores in the fields below. The total will calculate automatically.</div>
+    </div>
+    <table class="rubric-table">
+      <thead><tr><th>Criteria</th><th>Points Possible</th><th>Score</th></tr></thead>
+      <tbody id="rubricBody"></tbody>
+      <tfoot>
+        <tr class="rubric-total-row">
+          <td><strong>Total Score</strong></td>
+          <td><span class="pts-badge">24 pts</span></td>
+          <td><strong id="totalScore">0</strong> / 24</td>
+        </tr>
+      </tfoot>
+    </table>
+    <div class="score-card" id="scoreCard">
+      <div>
+        <div class="score-big" id="scoreBig">0</div>
+        <div class="score-label">Total Points</div>
+      </div>
+      <div id="scoreRating" class="score-rating rating-needs">Needs Improvement</div>
+      <div style="flex:1;font-size:.8rem;color:var(--text-muted);">
+        22–24 = Excellent · 19–21 = Proficient · 16–18 = Developing · Below 16 = Needs Improvement
+      </div>
+    </div>
+  </div>
+
+  <!-- DEBRIEF -->
+  <div class="section">
+    <div class="section-title">🗣 Instructor Debrief <span style="font-size:.75rem;font-weight:400;color:var(--text-muted);">(5 Minutes)</span></div>
+    <div class="scenario-box">
+      <p><strong>Ask participants:</strong></p>
+      <ul>
+        <li>Which role was easiest to assign? Which created the most debate?</li>
+        <li>How could incorrect role assignments create CMMC findings?</li>
+        <li>What evidence would an assessor request to verify these assignments?</li>
+      </ul>
+      <p style="margin-top:.75rem;"><strong>Expected Takeaway:</strong> Successful CMMC implementation requires clear accountability for CUI. Organizations must be able to identify who <em>owns</em> data, who <em>protects</em> it, who <em>uses</em> it, who <em>governs</em> it, and whose information is being stored and processed. This accountability is a key component of effective cybersecurity governance and CMMC readiness.</p>
+    </div>
+  </div>
+
+</div><!-- end page-wrap -->
+
+<script>
+/* ── DATA ────────────────────────────────────────────────── */
+const terms = [
+  { name:'Data Owner', icon:'👑', def:'Individual accountable for a set of data and who determines how it is used.' },
+  { name:'Data Custodian', icon:'🛡', def:'Individual responsible for maintaining and protecting data systems.' },
+  { name:'Data Processor', icon:'⚙️', def:'Individual who uses or processes data as part of their job duties.' },
+  { name:'Data Steward', icon:'📋', def:'Individual responsible for ensuring data quality, integrity, and proper handling.' },
+  { name:'Data Controller', icon:'🎛', def:'Individual or organization that determines why and how data is processed.' },
+  { name:'Data Subject', icon:'👤', def:'Person whose information appears within organizational systems.' },
+];
+
+const personnel = [
+  { name:'Margaret L. Calloway', title:'President & CEO', dept:'Executive' },
+  { name:'Douglas R. Vance', title:'Chief Operating Officer', dept:'Executive' },
+  { name:'Lena B. Forsythe', title:'Director of IT', dept:'IT' },
+  { name:'Calvin T. Reeves', title:'VP of Contracts & Compliance', dept:'Contracts' },
+  { name:'Sandra M. Ogunyemi', title:'Contracts Manager', dept:'Contracts' },
+  { name:'Marcus A. Dillard', title:'Information System Security Officer', dept:'Cybersecurity' },
+  { name:'Tanya R. Holbrook', title:'IT Systems Administrator', dept:'IT' },
+  { name:'Jasmine C. Waters', title:'Cloud Administrator', dept:'IT' },
+  { name:'Roberto P. Fuentes', title:'Help Desk Technician', dept:'IT' },
+  { name:'Amara E. Osei', title:'Compliance Manager', dept:'Compliance' },
+  { name:'Harold J. Pennington', title:'HR Director', dept:'HR' },
+  { name:'Nathan G. Tillotson', title:'Plant Manager — Production', dept:'Production' },
+  { name:'Ingrid K. Larsson', title:'Director of Quality Assurance', dept:'Quality Assurance' },
+  { name:'Bryant L. Vickers', title:'Logistics Director', dept:'Logistics' },
+  { name:'Sylvia N. Park', title:'Risk & Vendor Management Analyst', dept:'Compliance' },
+];
+
+const roles = [
+  {
+    id:'owner', icon:'👑', name:'Data Owner',
+    def:'Individual accountable for a set of data and who determines how it is used, access levels, and classification.',
+    hint:'Think about who has ultimate accountability for contract-related CUI at FFSI.',
+  },
+  {
+    id:'custodian', icon:'🛡', name:'Data Custodian',
+    def:'Individual responsible for the day-to-day maintenance and security of data systems — backups, access controls, system configuration.',
+    hint:'Who manages the technical systems that store CUI?',
+  },
+  {
+    id:'processor', icon:'⚙️', name:'Data Processor',
+    def:'Individual who routinely uses, enters, or processes data as a core part of their job duties.',
+    hint:'Who regularly works with CUI — contract docs, delivery schedules, production specs?',
+  },
+  {
+    id:'steward', icon:'📋', name:'Data Steward',
+    def:'Individual responsible for ensuring data quality, integrity, proper classification, and compliant handling procedures.',
+    hint:'Who is responsible for making sure CUI is handled correctly and maintains its integrity?',
+  },
+  {
+    id:'controller', icon:'🎛', name:'Data Controller',
+    def:'Individual or entity that determines the purposes and means of data processing — sets policy for why and how data is collected and used.',
+    hint:'Who sets the strategic direction for how FFSI uses and processes data across the organization?',
+  },
+  {
+    id:'subject', icon:'👤', name:'Data Subject',
+    def:'Person whose personal information appears within organizational systems — not a role assigned to a specific individual.',
+    hint:'Who are the people whose data FFSI stores — employees, suppliers, applicants?',
+  },
+];
+
+const questions = [
+  'Which role has ultimate accountability for protecting contract-related CUI at FFSI?',
+  'Which role is most responsible for maintaining the systems that store CUI?',
+  'Which role would most likely be interviewed first during a CMMC assessment?',
+  'Can one person perform multiple data governance roles? Why or why not? What are the risks?',
+  'Which role has the greatest influence on data quality and integrity at FFSI?',
+];
+
+const rubricRows = [
+  { label:'Correct Data Owner Assignment', pts:2 },
+  { label:'Correct Data Custodian Assignment', pts:2 },
+  { label:'Correct Data Processor Assignment', pts:2 },
+  { label:'Correct Data Steward Assignment', pts:2 },
+  { label:'Correct Data Controller Assignment', pts:2 },
+  { label:'Correct Data Subject Assignment', pts:2 },
+  { label:'Quality of Justifications (all 6)', pts:8 },
+  { label:'Participation in Discussion', pts:4 },
+];
+
+/* ── RENDER ──────────────────────────────────────────────── */
+function renderTerms() {
+  document.getElementById('termsGrid').innerHTML = terms.map(t => `
+    <div class="term-card">
+      <div class="term-name">${t.icon} ${t.name}</div>
+      <div class="term-def">${t.def}</div>
+    </div>`).join('');
+}
+
+function renderPersonnel() {
+  const deptColors = {
+    'Executive':'#1e6b3c','IT':'#1e4d8c','Contracts':'#7c3aed',
+    'Cybersecurity':'#b45309','Compliance':'#b91c1c','HR':'#0e7490',
+    'Production':'#4d7c0f','Quality Assurance':'#6d28d9','Logistics':'#0369a1',
+  };
+  document.getElementById('personnelGrid').innerHTML = personnel.map(p => `
+    <div class="person-chip">
+      <div class="person-chip-name">${p.name}</div>
+      <div class="person-chip-title">${p.title}</div>
+      <div class="person-chip-dept" style="color:${deptColors[p.dept]||'var(--accent)'};">${p.dept}</div>
+    </div>`).join('');
+}
+
+function renderRoles() {
+  const container = document.getElementById('roleCards');
+  container.innerHTML = roles.map(r => {
+    const savedName = localStorage.getItem(`ffsi-dg-name-${r.id}`) || '';
+    const savedTitle = localStorage.getItem(`ffsi-dg-title-${r.id}`) || '';
+    const savedJust = localStorage.getItem(`ffsi-dg-just-${r.id}`) || '';
+    const isComplete = savedName && savedJust;
+    return `
+    <div class="role-card ${isComplete?'completed':''}" id="card-${r.id}">
+      <span class="complete-check">✅ Assigned</span>
+      <div class="role-card-top">
+        <div class="role-badge">${r.icon}</div>
+        <div class="role-info">
+          <div class="role-name">${r.name}</div>
+          <div class="role-definition">${r.def}</div>
+          <div style="font-size:.75rem;color:var(--accent);margin-bottom:.75rem;font-style:italic;">💡 ${r.hint}</div>
+
+          <div class="field-row">
+            <div class="field-group">
+              <label class="field-label">Assigned Employee</label>
+              <select class="field-select" onchange="saveField('${r.id}','name',this.value)">
+                <option value="">— Select employee —</option>
+                ${personnel.map(p=>`<option value="${p.name}" ${savedName===p.name?'selected':''}>${p.name}</option>`).join('')}
+                <option value="Multiple employees" ${savedName==='Multiple employees'?'selected':''}>Multiple employees</option>
+                <option value="All FFSI employees" ${savedName==='All FFSI employees'?'selected':''}>All FFSI employees</option>
+                <option value="All FFSI suppliers/contractors" ${savedName==='All FFSI suppliers/contractors'?'selected':''}>All FFSI suppliers/contractors</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Job Title</label>
+              <input type="text" class="field-input" placeholder="Enter job title..." value="${savedTitle}"
+                oninput="saveField('${r.id}','title',this.value)"/>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Justification (1–2 sentences)</label>
+            <textarea class="field-input" placeholder="Explain why this person is the best choice for this role..."
+              oninput="saveField('${r.id}','just',this.value)">${savedJust}</textarea>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderDiscussion() {
+  document.getElementById('discussionList').innerHTML = questions.map((q,i) => {
+    const saved = localStorage.getItem(`ffsi-dg-q-${i}`) || '';
+    return `
+    <div class="q-item">
+      <div class="q-num">${i+1}</div>
+      <div style="flex:1;">
+        <div class="q-text">${q}</div>
+        <textarea class="q-response" placeholder="Type your response here..."
+          oninput="localStorage.setItem('ffsi-dg-q-${i}',this.value)">${saved}</textarea>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderRubric() {
+  document.getElementById('rubricBody').innerHTML = rubricRows.map((row,i) => {
+    const saved = localStorage.getItem(`ffsi-rubric-${i}`) || '';
+    return `
+    <tr>
+      <td>${row.label}</td>
+      <td><span class="pts-badge">${row.pts} pts</span></td>
+      <td><input type="number" class="score-input" min="0" max="${row.pts}" value="${saved}"
+        placeholder="0" oninput="saveScore(${i},this.value,${row.pts})"/></td>
+    </tr>`;
+  }).join('');
+  updateTotalScore();
+}
+
+/* ── STATE ───────────────────────────────────────────────── */
+function saveField(roleId, field, value) {
+  localStorage.setItem(`ffsi-dg-${field}-${roleId}`, value);
+  updateCard(roleId);
+  updateProgress();
+}
+
+function updateCard(roleId) {
+  const card = document.getElementById(`card-${roleId}`);
+  const name = localStorage.getItem(`ffsi-dg-name-${roleId}`) || '';
+  const just = localStorage.getItem(`ffsi-dg-just-${roleId}`) || '';
+  card.classList.toggle('completed', !!(name && just.length > 10));
+}
+
+function updateProgress() {
+  const done = roles.filter(r => {
+    const n = localStorage.getItem(`ffsi-dg-name-${r.id}`) || '';
+    const j = localStorage.getItem(`ffsi-dg-just-${r.id}`) || '';
+    return n && j.length > 10;
+  }).length;
+  const pct = (done / roles.length) * 100;
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressCount').textContent = `${done} / ${roles.length} roles assigned`;
+}
+
+function saveScore(i, val, max) {
+  const clamped = Math.min(Math.max(parseInt(val)||0, 0), max);
+  localStorage.setItem(`ffsi-rubric-${i}`, clamped);
+  updateTotalScore();
+}
+
+function updateTotalScore() {
+  const total = rubricRows.reduce((sum,_,i) => {
+    return sum + (parseInt(localStorage.getItem(`ffsi-rubric-${i}`))||0);
+  }, 0);
+  document.getElementById('totalScore').textContent = total;
+  document.getElementById('scoreBig').textContent = total;
+  const ratingEl = document.getElementById('scoreRating');
+  if (total >= 22) { ratingEl.textContent='Excellent Understanding'; ratingEl.className='score-rating rating-excellent'; }
+  else if (total >= 19) { ratingEl.textContent='Proficient'; ratingEl.className='score-rating rating-proficient'; }
+  else if (total >= 16) { ratingEl.textContent='Developing'; ratingEl.className='score-rating rating-developing'; }
+  else { ratingEl.textContent='Needs Improvement'; ratingEl.className='score-rating rating-needs'; }
+}
+
+/* ── THEME ───────────────────────────────────────────────── */
+function toggleTheme() {
+  const html = document.documentElement;
+  const btn = document.getElementById('themeBtn');
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  btn.textContent = isDark ? '🌙 Dark Mode' : '☀️ Light Mode';
+  localStorage.setItem('ffsi-dg-theme', isDark ? 'light' : 'dark');
+}
+
+/* ── TIMER ───────────────────────────────────────────────── */
+let timerSeconds = 30 * 60;
+let timerInterval = null;
+let timerRunning = false;
+
+function startTimer() {
+  if (timerRunning) return;
+  timerRunning = true;
+  timerInterval = setInterval(() => {
+    timerSeconds = Math.max(0, timerSeconds - 1);
+    renderTimer();
+    if (timerSeconds === 0) { clearInterval(timerInterval); timerRunning = false; }
+  }, 1000);
+}
+function pauseTimer() {
+  clearInterval(timerInterval); timerRunning = false;
+}
+function resetTimer() {
+  clearInterval(timerInterval); timerRunning = false;
+  timerSeconds = 30 * 60; renderTimer();
+}
+function renderTimer() {
+  const m = Math.floor(timerSeconds / 60);
+  const s = timerSeconds % 60;
+  const el = document.getElementById('timerDisplay');
+  el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  el.className = 'timer-display' + (timerSeconds === 0 ? ' expired' : timerSeconds < 300 ? ' warning' : '');
+}
+
+/* ── EXPORT ──────────────────────────────────────────────── */
+function exportAnswers() {
+  let txt = 'FFSI — CMMC DATA GOVERNANCE ROLE ASSIGNMENT\n';
+  txt += '=' .repeat(50) + '\n\n';
+  txt += 'ROLE ASSIGNMENTS\n' + '-'.repeat(40) + '\n';
+  roles.forEach(r => {
+    const name = localStorage.getItem(`ffsi-dg-name-${r.id}`) || '[Not assigned]';
+    const title = localStorage.getItem(`ffsi-dg-title-${r.id}`) || '[Not entered]';
+    const just = localStorage.getItem(`ffsi-dg-just-${r.id}`) || '[No justification]';
+    txt += `\n${r.name}\n  Employee: ${name}\n  Title: ${title}\n  Justification: ${just}\n`;
+  });
+  txt += '\nDISCUSSION QUESTIONS\n' + '-'.repeat(40) + '\n';
+  questions.forEach((q,i) => {
+    const resp = localStorage.getItem(`ffsi-dg-q-${i}`) || '[No response]';
+    txt += `\nQ${i+1}: ${q}\nResponse: ${resp}\n`;
+  });
+  txt += '\nSCORING RUBRIC\n' + '-'.repeat(40) + '\n';
+  rubricRows.forEach((row,i) => {
+    const score = localStorage.getItem(`ffsi-rubric-${i}`) || '0';
+    txt += `${row.label}: ${score}/${row.pts}\n`;
+  });
+  const total = rubricRows.reduce((s,_,i)=>s+(parseInt(localStorage.getItem(`ffsi-rubric-${i}`))||0),0);
+  txt += `\nTOTAL: ${total}/24\n`;
+  const blob = new Blob([txt], {type:'text/plain'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'FFSI-DataGovernance-Worksheet.txt';
+  a.click();
+}
+
+/* ── INIT ────────────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', () => {
+  const savedTheme = localStorage.getItem('ffsi-dg-theme') || 'light';
+  document.documentElement.setAttribute('data-theme', savedTheme);
+  document.getElementById('themeBtn').textContent = savedTheme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
+
+  renderTerms();
+  renderPersonnel();
+  renderRoles();
+  renderDiscussion();
+  renderRubric();
+  updateProgress();
+  renderTimer();
+});
+</script>
+</body>
+</html>
