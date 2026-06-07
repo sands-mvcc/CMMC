@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FFSI — Configuration Management Plan Exercise</title>
+<style>
+/* ═══════════════════════════════════════════
+   THEME VARIABLES — LIGHT DEFAULT
+═══════════════════════════════════════════ */
+:root {
+  --bg:          #f0f3f8;
+  --bg-card:     #ffffff;
+  --bg-banner:   #0d1f3c;
+  --bg-nav:      #0a1628;
+  --bg-slate:    #edf1f8;
+  --bg-slate2:   #e2e8f4;
+  --bg-inp:      #f8f9fc;
+  --bg-inp-bd:   #c0cce0;
+  --text:        #1a2340;
+  --text-m:      #4a5878;
+  --text-d:      #8090b0;
+  --text-inv:    #e2e8f4;
+  --border:      #c8d4e8;
+  --border2:     #aabcd8;
+  --shadow-card: 0 1px 8px rgba(0,0,40,.08);
+  --shadow:      0 4px 20px rgba(0,0,40,.10);
+  --ox:          #8b1a1a;
+  --ox2:         #a52020;
+  --gold:        #7a5e14;
+  --gold2:       #a07a18;
+  --gold-h:      #c8a84b;
+  --cyan:        #1a6080;
+  --teal:        #0f6b60;
+  --green:       #166534;
+  --red:         #991b1b;
+  --amber:       #92400e;
+  --blue:        #1e40af;
+  --purple:      #6b21a8;
+  --nist-bg:#f0f4ff;--nist-bd:#93c5fd;--nist-tx:#1e40af;
+  --pill-cui-bg:#fef2f2;--pill-cui-bd:#fca5a5;--pill-cui-tx:#991b1b;
+  --pill-fci-bg:#eff6ff;--pill-fci-bd:#93c5fd;--pill-fci-tx:#1e40af;
+  --pill-sys-bg:#f0fdf4;--pill-sys-bd:#86efac;--pill-sys-tx:#166534;
+  --sev-crit-bg:#fef2f2;--sev-crit-bd:#fca5a5;--sev-crit-tx:#991b1b;
+  --sev-high-bg:#fff7ed;--sev-high-bd:#fdba74;--sev-high-tx:#92400e;
+  --sev-med-bg:#fefce8; --sev-med-bd:#fde047; --sev-med-tx:#713f12;
+  --sev-low-bg:#f0fdf4; --sev-low-bd:#86efac; --sev-low-tx:#166534;
+  --sev-info-bg:#eff6ff;--sev-info-bd:#93c5fd;--sev-info-tx:#1e40af;
+  --rb-exc-bg:#f0fdf4;--rb-exc-bd:#86efac;--rb-exc-tx:#166534;
+  --rb-pro-bg:#eff6ff;--rb-pro-bd:#93c5fd;--rb-pro-tx:#1e40af;
+  --rb-dev-bg:#fefce8;--rb-dev-bd:#fde047;--rb-dev-tx:#713f12;
+  --rb-ni-bg: #fef2f2;--rb-ni-bd: #fca5a5;--rb-ni-tx: #991b1b;
+  --status-appr-bg:#f0fdf4;--status-appr-bd:#86efac;--status-appr-tx:#166534;
+  --status-deny-bg:#fef2f2;--status-deny-bd:#fca5a5;--status-deny-tx:#991b1b;
+  --status-pend-bg:#fefce8;--status-pend-bd:#fde047;--status-pend-tx:#713f12;
+}
+[data-theme="dark"] {
+  --bg:          #0a0f1e;
+  --bg-card:     #111827;
+  --bg-banner:   #060c18;
+  --bg-nav:      #0a0f1e;
+  --bg-slate:    #1e2d45;
+  --bg-slate2:   #253550;
+  --bg-inp:      #0d1830;
+  --bg-inp-bd:   #2a4070;
+  --text:        #e2e8f4;
+  --text-m:      #94a8c4;
+  --text-d:      #607090;
+  --text-inv:    #e2e8f4;
+  --border:      #1e3058;
+  --border2:     #2a4070;
+  --shadow-card: 0 2px 12px rgba(0,0,0,.4);
+  --shadow:      0 4px 24px rgba(0,0,0,.5);
+  --gold:        #c8a84b;
+  --gold2:       #e0c060;
+  --gold-h:      #c8a84b;
+  --cyan:        #4fc3c3;
+  --teal:        #22a090;
+  --green:       #22c55e;
+  --red:         #ef4444;
+  --amber:       #f59e0b;
+  --blue:        #3b82f6;
+  --purple:      #a855f7;
+  --nist-bg:#0d1a30;--nist-bd:#1a3a6a;--nist-tx:#7aacff;
+  --pill-cui-bg:#2a0d0d;--pill-cui-bd:#6a1a1a;--pill-cui-tx:#f99;
+  --pill-fci-bg:#0d1a2a;--pill-fci-bd:#1a4a6a;--pill-fci-tx:#6ac;
+  --pill-sys-bg:#0a1a0d;--pill-sys-bd:#1a4a1a;--pill-sys-tx:#6c6;
+  --sev-crit-bg:#2a0505;--sev-crit-bd:#cc2222;--sev-crit-tx:#ff8888;
+  --sev-high-bg:#2a1005;--sev-high-bd:#cc5500;--sev-high-tx:#ff9944;
+  --sev-med-bg:#1a150a; --sev-med-bd:#c8a84b; --sev-med-tx:#e0c060;
+  --sev-low-bg:#0a1a0d; --sev-low-bd:#22c55e; --sev-low-tx:#4ade80;
+  --sev-info-bg:#0a1020;--sev-info-bd:#3b82f6;--sev-info-tx:#7aacff;
+  --rb-exc-bg:#0d2a0d;--rb-exc-bd:#22c55e;--rb-exc-tx:#4ade80;
+  --rb-pro-bg:#0d1a2a;--rb-pro-bd:#3b82f6;--rb-pro-tx:#7aacff;
+  --rb-dev-bg:#1a150a;--rb-dev-bd:#f59e0b;--rb-dev-tx:#fcd34d;
+  --rb-ni-bg: #2a0d0d;--rb-ni-bd: #ef4444;--rb-ni-tx: #fca5a5;
+  --status-appr-bg:#0a1a0d;--status-appr-bd:#22c55e;--status-appr-tx:#4ade80;
+  --status-deny-bg:#2a0d0d;--status-deny-bd:#ef4444;--status-deny-tx:#fca5a5;
+  --status-pend-bg:#1a150a;--status-pend-bd:#f59e0b;--status-pend-tx:#fcd34d;
+}
+
+/* ── RESET / BASE ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Segoe UI',system-ui,sans-serif;
+  background:var(--bg);color:var(--text);
+  font-size:15px;line-height:1.6;
+  transition:background .25s,color .25s;
+}
+
+/* ── TOPBAR ── */
+#topbar{
+  background:var(--bg-banner);border-bottom:1px solid rgba(255,255,255,.07);
+  padding:.45rem 1.25rem;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;
+  position:sticky;top:0;z-index:200;
+}
+.topbar-left{display:flex;align-items:center;gap:.75rem}
+.domain-badge{
+  background:var(--ox);color:#fff;font-weight:800;font-size:1rem;
+  width:2.4rem;height:2.4rem;border-radius:6px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.topbar-title{font-size:.9rem;font-weight:600;color:#e2e8f4;line-height:1.3}
+.topbar-title small{display:block;font-size:.73rem;color:#94a8c4;font-weight:400}
+.topbar-right{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+.tb-btn{
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);
+  color:#ccd8f0;border-radius:6px;padding:.28rem .75rem;font-size:.78rem;cursor:pointer;
+  transition:background .15s,color .15s;white-space:nowrap;
+}
+.tb-btn:hover{background:rgba(255,255,255,.2);color:#fff}
+.tb-btn.danger{border-color:rgba(200,80,80,.4);color:#f99}
+.tb-btn.danger:hover{background:rgba(120,20,20,.4)}
+#theme-toggle{
+  background:rgba(200,168,75,.15);border:1px solid rgba(200,168,75,.4);
+  color:#c8a84b;border-radius:6px;padding:.28rem .8rem;font-size:.78rem;
+  cursor:pointer;transition:background .15s;white-space:nowrap;
+  display:flex;align-items:center;gap:.35rem;font-weight:600;
+}
+#theme-toggle:hover{background:rgba(200,168,75,.28);color:#e0c060}
+
+/* ── HERO ── */
+#hero{
+  background:linear-gradient(135deg,#0a1628 0%,#0f2040 50%,#0d1e3a 100%);
+  border-bottom:2px solid var(--ox);
+  padding:2.5rem 1.5rem 2rem;text-align:center;position:relative;overflow:hidden;
+}
+#hero::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse at 20% 50%,rgba(139,26,26,.12) 0%,transparent 55%),
+    radial-gradient(ellipse at 80% 30%,rgba(26,96,128,.10) 0%,transparent 50%);
+}
+#hero::after{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:linear-gradient(rgba(255,255,255,.015) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.015) 1px,transparent 1px);
+  background-size:50px 50px;
+}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:.5rem;
+  font-size:.75rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:#c8a84b;margin-bottom:.75rem;
+}
+#hero h1{font-size:clamp(1.5rem,4vw,2.4rem);font-weight:800;color:#fff;letter-spacing:-.02em;margin-bottom:.5rem;line-height:1.2}
+#hero h1 em{color:#c8a84b;font-style:normal}
+#hero .hero-sub{font-size:.9rem;color:#94a8c4;max-width:620px;margin:0 auto 1.4rem}
+.hero-chips{display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem}
+.chip{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:999px;padding:.28rem .85rem;font-size:.75rem;font-weight:600;color:#94a8c4}
+.chip.warn{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.3);color:#fbbf24}
+.chip.alert{background:rgba(139,26,26,.2);border-color:rgba(200,80,80,.4);color:#fca5a5}
+
+/* ── TIMER ── */
+#timer-bar{
+  background:var(--bg-banner);border-bottom:1px solid rgba(255,255,255,.06);
+  padding:.5rem 1.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;
+}
+.timer-display{font-family:'Courier New',monospace;font-size:1.4rem;font-weight:700;color:#4fc3c3;letter-spacing:.08em}
+.timer-display.warn{color:#f59e0b}
+.timer-display.danger{color:#ef4444;animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.45}}
+.tc-btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:#e2e8f4;border-radius:5px;padding:.22rem .7rem;font-size:.82rem;cursor:pointer}
+.tc-btn:hover{background:rgba(255,255,255,.2)}
+.progress-wrap{flex:1;min-width:180px;max-width:360px}
+.progress-label{font-size:.73rem;color:#94a8c4;margin-bottom:.3rem}
+.progress-bar{background:rgba(255,255,255,.08);border-radius:999px;height:8px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#8b1a1a,#c8a84b);border-radius:999px;transition:width .4s}
+
+/* ── TAB NAV ── */
+#tab-nav{
+  background:var(--bg-nav);border-bottom:1px solid var(--border);
+  padding:0 1.25rem;overflow-x:auto;white-space:nowrap;
+  position:sticky;top:52px;z-index:150;
+}
+.tab-nav-inner{display:inline-flex;min-width:100%}
+.tab-btn{
+  background:none;border:none;border-bottom:3px solid transparent;
+  color:var(--text-d);font-size:.78rem;font-weight:600;
+  padding:.7rem .9rem;cursor:pointer;transition:color .15s,border-color .15s;white-space:nowrap;
+}
+.tab-btn:hover{color:var(--text-m)}
+.tab-btn.active{color:var(--gold-h);border-bottom-color:var(--gold-h)}
+
+/* ── MAIN ── */
+main{max-width:1120px;margin:0 auto;padding:1.75rem 1.25rem 5rem}
+
+/* ── SECTION CARDS ── */
+.section-card{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:10px;padding:1.5rem 1.6rem;margin-bottom:1.5rem;
+  box-shadow:var(--shadow-card);display:none;transition:background .25s,border-color .25s;
+}
+.section-card.active{display:block}
+.sec-header{display:flex;align-items:flex-start;gap:1rem;margin-bottom:1.1rem}
+.sec-icon{
+  font-size:1.8rem;flex-shrink:0;width:3rem;height:3rem;
+  background:var(--bg-slate);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;transition:background .25s;
+}
+.sec-meta h2{font-size:1.2rem;font-weight:800;color:var(--text);margin-bottom:.2rem}
+.pts{display:inline-block;background:var(--ox);color:#fff;font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.12rem .55rem;border-radius:4px}
+.pts.no-pts{background:var(--bg-slate);color:var(--text-m)}
+.instr{
+  background:var(--bg-slate);border-left:3px solid var(--gold-h);
+  border-radius:0 6px 6px 0;padding:.7rem 1rem;font-size:.85rem;color:var(--text-m);margin-bottom:1.25rem;
+  transition:background .25s;
+}
+.instr strong{color:var(--gold-h)}
+
+/* ── INTRO ── */
+.intro-body{font-size:.88rem;color:var(--text-m);line-height:1.7}
+.intro-body p{margin-bottom:.85rem}
+.intro-body h3{color:var(--gold-h);font-size:.95rem;font-weight:700;margin:1.1rem 0 .45rem}
+.intro-body ul{padding-left:1.4rem;margin-bottom:.85rem}
+.intro-body ul li{margin-bottom:.3rem}
+.nist-tag{display:inline-block;background:var(--nist-bg);border:1px solid var(--nist-bd);border-radius:4px;padding:.08rem .45rem;font-size:.75rem;font-weight:700;color:var(--nist-tx);font-family:'Courier New',monospace;margin-right:.25rem;transition:background .25s,color .25s}
+
+/* ── OBJECTIVES ── */
+.obj-list{display:flex;flex-direction:column;gap:.7rem}
+.obj-item{display:flex;gap:.9rem;align-items:flex-start;background:var(--bg-slate);border-radius:7px;padding:.75rem 1rem;font-size:.86rem;color:var(--text-m);transition:background .25s}
+.obj-num{background:var(--ox);color:#fff;font-weight:800;font-size:.8rem;min-width:1.6rem;height:1.6rem;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+/* ── GLOSSARY ── */
+.gloss-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:.75rem}
+.gloss-item{background:var(--bg-slate);border:1px solid var(--border);border-radius:7px;padding:.75rem .9rem;transition:background .25s,border-color .25s}
+.gloss-term{font-weight:700;color:var(--cyan);font-size:.85rem;margin-bottom:.3rem}
+.gloss-def{font-size:.8rem;color:var(--text-m);line-height:1.5}
+
+/* ── TABLES ── */
+.tbl-wrap{overflow-x:auto;margin:.75rem 0}
+table{width:100%;border-collapse:collapse;font-size:.82rem}
+thead tr{background:var(--bg-slate2);transition:background .25s}
+thead th{padding:.6rem .75rem;text-align:left;font-weight:700;color:var(--gold-h);font-size:.75rem;letter-spacing:.05em;text-transform:uppercase;border-bottom:2px solid var(--ox);white-space:nowrap}
+tbody tr{border-bottom:1px solid var(--border)}
+tbody tr:nth-child(even){background:var(--bg-slate)}
+tbody tr:hover{background:var(--bg-slate2)}
+tbody td{padding:.55rem .75rem;color:var(--text);vertical-align:top;transition:background .25s}
+td.pre{color:var(--text-m);font-style:italic;font-size:.79rem}
+td.bold{font-weight:700;white-space:nowrap}
+td.mono{font-family:'Courier New',monospace;font-size:.78rem;color:var(--cyan)}
+
+/* ── FORM CONTROLS ── */
+select,textarea,input[type=text],input[type=number]{
+  background:var(--bg-inp);border:1px solid var(--bg-inp-bd);color:var(--text);
+  border-radius:5px;font-size:.82rem;font-family:inherit;
+  padding:.35rem .55rem;width:100%;transition:border-color .15s,background .25s,color .25s;
+}
+select:focus,textarea:focus,input:focus{outline:none;border-color:var(--cyan)}
+textarea{resize:vertical;min-height:48px;line-height:1.5}
+
+/* ── TOGGLES ── */
+.yn-group{display:flex;gap:.4rem;flex-wrap:wrap;align-items:center}
+.yn-btn{background:var(--bg-slate);border:1px solid var(--border2);color:var(--text-m);border-radius:4px;padding:.2rem .6rem;font-size:.75rem;font-weight:600;cursor:pointer;transition:all .12s;white-space:nowrap}
+.yn-btn.y.active{background:var(--sev-low-bg);border-color:var(--sev-low-bd);color:var(--sev-low-tx)}
+.yn-btn.n.active{background:var(--sev-crit-bg);border-color:var(--sev-crit-bd);color:var(--sev-crit-tx)}
+.yn-btn.u.active{background:var(--sev-med-bg);border-color:var(--sev-med-bd);color:var(--sev-med-tx)}
+.yn-btn.b.active{background:var(--sev-info-bg);border-color:var(--sev-info-bd);color:var(--sev-info-tx)}
+
+.sev-group{display:flex;gap:.35rem;flex-wrap:wrap}
+.sev-btn{background:var(--bg-slate);border:1px solid var(--border);color:var(--text-m);border-radius:5px;padding:.2rem .6rem;font-size:.74rem;font-weight:700;cursor:pointer;transition:all .12s;white-space:nowrap}
+.sev-btn.crit.active{background:var(--sev-crit-bg);border-color:var(--sev-crit-bd);color:var(--sev-crit-tx)}
+.sev-btn.high.active{background:var(--sev-high-bg);border-color:var(--sev-high-bd);color:var(--sev-high-tx)}
+.sev-btn.med.active {background:var(--sev-med-bg); border-color:var(--sev-med-bd); color:var(--sev-med-tx)}
+.sev-btn.low.active {background:var(--sev-low-bg); border-color:var(--sev-low-bd); color:var(--sev-low-tx)}
+.sev-btn.info.active{background:var(--sev-info-bg);border-color:var(--sev-info-bd);color:var(--sev-info-tx)}
+
+.dec-group{display:flex;gap:.35rem;flex-wrap:wrap}
+.dec-btn{background:var(--bg-slate);border:1px solid var(--border);color:var(--text-m);border-radius:5px;padding:.2rem .65rem;font-size:.75rem;font-weight:700;cursor:pointer;transition:all .12s;white-space:nowrap}
+.dec-btn.appr.active{background:var(--status-appr-bg);border-color:var(--status-appr-bd);color:var(--status-appr-tx)}
+.dec-btn.deny.active{background:var(--status-deny-bg);border-color:var(--status-deny-bd);color:var(--status-deny-tx)}
+.dec-btn.pend.active{background:var(--status-pend-bg);border-color:var(--status-pend-bd);color:var(--status-pend-tx)}
+
+/* ── ASSET CARDS ── */
+.asset-card{
+  background:var(--bg-slate);border:1px solid var(--border);border-radius:8px;
+  padding:.9rem 1rem;margin-bottom:.8rem;border-left:4px solid var(--border2);
+  transition:background .25s,border-color .25s;
+}
+.asset-card.cui-yes{border-left-color:var(--red)}
+.asset-card.cui-poss{border-left-color:var(--amber)}
+.asset-card.cui-no{border-left-color:var(--green)}
+.asset-header{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:.6rem}
+.asset-id{
+  background:var(--bg-banner);color:#c8a84b;font-weight:800;font-size:.7rem;
+  padding:.15rem .55rem;border-radius:4px;white-space:nowrap;flex-shrink:0;
+  font-family:'Courier New',monospace;border:1px solid rgba(200,168,75,.3);
+}
+.asset-name{font-size:.9rem;font-weight:700;color:var(--text);margin-bottom:.1rem}
+.asset-detail{font-size:.78rem;color:var(--text-m);line-height:1.45}
+.asset-fields{display:grid;grid-template-columns:repeat(5,1fr);gap:.45rem;margin-top:.6rem}
+@media(max-width:700px){.asset-fields{grid-template-columns:repeat(2,1fr)}}
+.af-col label{font-size:.67rem;color:var(--text-d);display:block;margin-bottom:.15rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+
+/* ── CR CARDS ── */
+.cr-card{background:var(--bg-slate);border:1px solid var(--border);border-radius:8px;padding:1rem 1.1rem;margin-bottom:.85rem;transition:background .25s,border-color .25s}
+.cr-header{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:.65rem}
+.cr-badge{background:var(--ox);color:#fff;font-size:.7rem;font-weight:700;padding:.15rem .55rem;border-radius:4px;white-space:nowrap;flex-shrink:0;font-family:'Courier New',monospace}
+.cr-badge.amber{background:var(--amber)}
+.cr-badge.blue{background:var(--blue)}
+.cr-badge.teal{background:var(--teal)}
+.cr-badge.purple{background:var(--purple)}
+.cr-title{font-size:.9rem;font-weight:700;color:var(--text);margin-bottom:.15rem}
+.cr-meta{font-size:.78rem;color:var(--text-m);line-height:1.5}
+.cr-fields{display:grid;grid-template-columns:1fr 1fr;gap:.55rem}
+@media(max-width:580px){.cr-fields{grid-template-columns:1fr}}
+.cr-fields label{font-size:.72rem;color:var(--text-d);display:block;margin-bottom:.18rem;font-weight:600}
+
+/* ── BASELINE TABLE ── */
+.baseline-status{display:inline-block;border-radius:4px;padding:.1rem .5rem;font-size:.73rem;font-weight:700}
+.bs-ok{background:var(--sev-low-bg);border:1px solid var(--sev-low-bd);color:var(--sev-low-tx)}
+.bs-gap{background:var(--sev-crit-bg);border:1px solid var(--sev-crit-bd);color:var(--sev-crit-tx)}
+.bs-warn{background:var(--sev-med-bg);border:1px solid var(--sev-med-bd);color:var(--sev-med-tx)}
+
+/* ── FINDING BLOCKS ── */
+.finding-block{background:var(--bg-slate);border:1px solid var(--border);border-radius:8px;padding:1rem 1.1rem;margin-bottom:.8rem;transition:background .25s,border-color .25s}
+.fb-header{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:.65rem}
+.fb-badge{background:var(--ox);color:#fff;font-size:.7rem;font-weight:700;padding:.15rem .55rem;border-radius:4px;white-space:nowrap;flex-shrink:0;font-family:'Courier New',monospace}
+.fb-badge.amber{background:var(--amber)}
+.fb-badge.blue{background:var(--blue)}
+.fb-badge.teal{background:var(--teal)}
+.fb-badge.purple{background:var(--purple)}
+.fb-badge.green{background:var(--teal)}
+.fb-title{font-size:.88rem;font-weight:700;color:var(--text);margin-bottom:.12rem}
+.fb-sub{font-size:.78rem;color:var(--text-m);line-height:1.5}
+.fb-2col{display:grid;grid-template-columns:1fr 1fr;gap:.55rem}
+@media(max-width:580px){.fb-2col{grid-template-columns:1fr}}
+.fb-label{font-size:.72rem;color:var(--text-d);display:block;margin-bottom:.18rem;font-weight:600}
+
+/* ── INFO / ALERT BOXES ── */
+.info-box{background:var(--sev-info-bg);border:1px solid var(--sev-info-bd);border-radius:6px;padding:.7rem 1rem;font-size:.83rem;color:var(--blue);margin:.75rem 0}
+[data-theme="dark"] .info-box{color:var(--sev-info-tx)}
+.alert-box{background:var(--sev-crit-bg);border:1px solid var(--sev-crit-bd);border-radius:6px;padding:.7rem 1rem;font-size:.83rem;color:var(--red);margin:.75rem 0}
+[data-theme="dark"] .alert-box{color:var(--sev-crit-tx)}
+.amber-box{background:var(--sev-high-bg);border:1px solid var(--sev-high-bd);border-radius:6px;padding:.7rem 1rem;font-size:.83rem;color:var(--amber);margin:.75rem 0}
+[data-theme="dark"] .amber-box{color:var(--sev-high-tx)}
+
+/* ── PILLS ── */
+.pill{display:inline-block;border-radius:4px;padding:.08rem .42rem;font-size:.72rem;font-weight:600;margin:.1rem}
+.pill.cui{background:var(--pill-cui-bg);border:1px solid var(--pill-cui-bd);color:var(--pill-cui-tx)}
+.pill.fci{background:var(--pill-fci-bg);border:1px solid var(--pill-fci-bd);color:var(--pill-fci-tx)}
+.pill.sys{background:var(--pill-sys-bg);border:1px solid var(--pill-sys-bd);color:var(--pill-sys-tx)}
+
+/* ── RUBRIC / DEBRIEF ── */
+.score-input{background:var(--bg-inp);border:1px solid var(--bg-inp-bd);color:var(--text);border-radius:5px;font-size:.9rem;font-weight:700;width:70px;text-align:center;padding:.3rem}
+.score-total-row{background:var(--bg-slate2)!important}
+.score-total-row td{font-weight:800;color:var(--gold-h)!important;font-size:.9rem}
+.rating-badge{display:inline-block;padding:.2rem .7rem;border-radius:5px;font-size:.8rem;font-weight:700;letter-spacing:.04em}
+.rating-excellent{background:var(--rb-exc-bg);border:1px solid var(--rb-exc-bd);color:var(--rb-exc-tx)}
+.rating-proficient{background:var(--rb-pro-bg);border:1px solid var(--rb-pro-bd);color:var(--rb-pro-tx)}
+.rating-developing{background:var(--rb-dev-bg);border:1px solid var(--rb-dev-bd);color:var(--rb-dev-tx)}
+.rating-needs{background:var(--rb-ni-bg);border:1px solid var(--rb-ni-bd);color:var(--rb-ni-tx)}
+.debrief-list{display:flex;flex-direction:column;gap:.7rem}
+.dq-item{background:var(--bg-slate);border-radius:7px;padding:.75rem 1rem;display:flex;gap:.85rem;align-items:flex-start;transition:background .25s}
+.dq-num{background:var(--teal);color:#fff;font-weight:800;font-size:.78rem;min-width:1.6rem;height:1.6rem;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.dq-text{color:var(--text-m);font-size:.86rem;line-height:1.55;flex:1}
+
+/* ── SCORE BAR ── */
+#score-bar{position:fixed;bottom:0;left:0;right:0;background:var(--bg-banner);border-top:1px solid rgba(255,255,255,.07);padding:.5rem 1.25rem;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;z-index:100}
+.sb-stat{display:flex;flex-direction:column;align-items:center}
+.sb-val{font-size:1.1rem;font-weight:800;color:#c8a84b}
+.sb-label{font-size:.68rem;color:#607090;text-transform:uppercase;letter-spacing:.06em}
+.sb-rating{font-size:.85rem;font-weight:700;padding:.2rem .7rem;border-radius:5px}
+
+/* ── UTILITIES ── */
+.mt1{margin-top:.75rem}.mt2{margin-top:1.25rem}
+.text-sm{font-size:.8rem;color:var(--text-m)}
+.text-gold{color:var(--gold-h)}.hr{border:none;border-top:1px solid var(--border);margin:1.25rem 0}
+.sec-h3{font-size:.95rem;color:var(--gold-h);font-weight:700;margin:1rem 0 .6rem}
+@media print{
+  #topbar,#timer-bar,#tab-nav,#score-bar{display:none!important}
+  .section-card{display:block!important;break-inside:avoid;box-shadow:none}
+  body{background:#fff!important;color:#000!important}
+}
+</style>
+</head>
+<body>
+
+<!-- ════ TOPBAR ════ -->
+<div id="topbar">
+  <div class="topbar-left">
+    <div class="domain-badge">CM</div>
+    <div class="topbar-title">
+      FFSI — Configuration Management Plan Exercise
+      <small>CMMC 2.0 Workshop · NIST SP 800-171 CM Domain · 20 Minutes</small>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <button id="theme-toggle" onclick="toggleTheme()">🌙 Dark Mode</button>
+    <button class="tb-btn" onclick="window.print()">🖨 Print</button>
+    <button class="tb-btn" onclick="exportAnswers()">📤 Export</button>
+    <button class="tb-btn danger" onclick="confirmReset()">↺ Reset</button>
+  </div>
+</div>
+
+<!-- ════ HERO ════ -->
+<div id="hero">
+  <div class="hero-eyebrow">⚙ CMMC 2.0 · Configuration Management Domain</div>
+  <h1>FFSI Configuration Management<br/><em>Plan Review Exercise</em></h1>
+  <p class="hero-sub">Identify configuration items, review baselines, evaluate change requests, and complete a Configuration Management Plan — applying NIST CM requirements to protect CUI and support CMMC Level 2 assessment readiness.</p>
+  <div class="hero-chips">
+    <span class="chip">NIST 800-171 CM Domain</span>
+    <span class="chip">100 Points</span>
+    <span class="chip">5 Activities</span>
+    <span class="chip">⏱ 20 Minutes</span>
+    <span class="chip alert">⚙ 10 Assets · 6 Change Requests</span>
+    <span class="chip warn">⚠ Fictional — Training Use Only</span>
+  </div>
+</div>
+
+<!-- ════ TIMER ════ -->
+<div id="timer-bar">
+  <div>
+    <div class="timer-display" id="timer-display">20:00</div>
+    <div style="font-size:.7rem;color:#607090;margin-top:.1rem">Exercise Timer</div>
+  </div>
+  <div style="display:flex;gap:.4rem;align-items:center">
+    <button class="tc-btn" id="timer-start" onclick="startTimer()">▶ Start</button>
+    <button class="tc-btn" id="timer-pause" onclick="pauseTimer()" style="display:none">⏸ Pause</button>
+    <button class="tc-btn" onclick="resetTimer()">↺</button>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-label">Exercise Progress — <span id="prog-pct">0%</span></div>
+    <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+  </div>
+</div>
+
+<!-- ════ TAB NAV ════ -->
+<div id="tab-nav">
+  <div class="tab-nav-inner">
+    <button class="tab-btn active" onclick="showTab('intro')">Intro</button>
+    <button class="tab-btn" onclick="showTab('objectives')">Objectives</button>
+    <button class="tab-btn" onclick="showTab('terms')">Key Terms</button>
+    <button class="tab-btn" onclick="showTab('act1')">Act 1 — CI Identification</button>
+    <button class="tab-btn" onclick="showTab('act2')">Act 2 — Baseline Review</button>
+    <button class="tab-btn" onclick="showTab('act3')">Act 3 — Change Requests</button>
+    <button class="tab-btn" onclick="showTab('act4')">Act 4 — CCB Review</button>
+    <button class="tab-btn" onclick="showTab('act5')">Act 5 — CM Findings</button>
+    <button class="tab-btn" onclick="showTab('debrief')">Debrief</button>
+    <button class="tab-btn" onclick="showTab('rubric')">Rubric</button>
+  </div>
+</div>
+
+<!-- ════ MAIN ════ -->
+<main>
+
+<!-- ── INTRO ── -->
+<div id="tab-intro" class="section-card active">
+  <div class="sec-header">
+    <div class="sec-icon">📋</div>
+    <div class="sec-meta">
+      <h2>Introduction — Configuration Management &amp; CMMC</h2>
+      <span class="pts no-pts">Overview</span>
+    </div>
+  </div>
+  <div class="intro-body">
+    <h3>Why Configuration Management Is Critical to Cybersecurity</h3>
+    <p>Every unauthorized or undocumented change to a system's configuration is a potential vulnerability. Attackers exploit misconfigured firewalls, outdated firmware, and default credentials far more often than they exploit novel zero-day exploits. Configuration management is the discipline that ensures every system in the FFSI environment is in a known, approved, and documented state at all times — making unauthorized changes detectable and recoverable.</p>
+    <h3>Why Assessors Review Configuration Management Documentation</h3>
+    <p>During a CMMC Level 2 assessment, a C3PAO assessor will request the Configuration Management Plan and supporting artifacts: baseline configuration records, change request logs, CCB meeting minutes, and configuration audit results. NIST practice <span class="nist-tag">3.4.1</span> requires organizations to establish and maintain baseline configurations of organizational systems. Practice <span class="nist-tag">3.4.2</span> requires establishing and enforcing security configuration settings. Without documented baselines, assessors cannot verify that the current system state matches what was approved.</p>
+    <h3>How Unauthorized Changes Create Security Risk</h3>
+    <p>Configuration drift — the gradual divergence of a system's actual configuration from its approved baseline — is one of the most common sources of security gaps in DoD contractor environments. An administrator who modifies a firewall rule without approval, installs unauthorized software, or changes an authentication setting outside of the change control process creates an undocumented attack surface. NIST practice <span class="nist-tag">3.4.3</span> requires tracking, reviewing, approving, and logging all changes to organizational systems.</p>
+    <h3>Why Baseline Configurations Must Be Documented</h3>
+    <p>A baseline configuration is the "known good" state of a system — the agreed-upon set of settings, software versions, enabled services, and security parameters that have been reviewed and approved. Without a documented baseline, there is no reference point for detecting drift, investigating incidents, or recovering from a breach. CUI cannot be effectively protected on a system whose configuration is unknown. CMMC assessors treat the absence of documented baselines as a significant finding — it undermines the entire security architecture.</p>
+    <h3>How Configuration Management Supports CUI Protection</h3>
+    <p>CUI flows through FFSI systems — from the Contract Management System to file servers to cloud platforms. Configuration management ensures that every system touching CUI has the correct security settings enforced: encryption at rest, MFA requirements, audit logging enabled, unnecessary services disabled, and firmware patched. Without change control, a single misconfiguration can expose CUI without anyone knowing it occurred.</p>
+    <div class="info-box">
+      <strong>Scenario:</strong> FFSI's CIO has tasked the compliance team with reviewing the organization's Configuration Management Plan prior to the CMMC Level 2 assessment. The team has access to the asset inventory, current configuration data, pending change requests, and historical change logs. Your job is to identify configuration items, review baselines, evaluate change requests, and document findings.
+    </div>
+    <h3>Relevant NIST SP 800-171 CM Practices</h3>
+    <ul>
+      <li><span class="nist-tag">3.4.1</span> Establish and maintain baseline configurations and inventories of organizational systems (including hardware, software, firmware, and documentation)</li>
+      <li><span class="nist-tag">3.4.2</span> Establish and enforce security configuration settings for information technology products employed in organizational systems</li>
+      <li><span class="nist-tag">3.4.3</span> Track, review, approve/disapprove, and log changes to organizational systems</li>
+      <li><span class="nist-tag">3.4.4</span> Analyze the security impact of changes prior to implementation</li>
+      <li><span class="nist-tag">3.4.5</span> Define, document, approve, and enforce physical and logical access restrictions associated with changes to organizational systems</li>
+      <li><span class="nist-tag">3.4.6</span> Employ the principle of least functionality by configuring organizational systems to provide only essential capabilities</li>
+      <li><span class="nist-tag">3.4.7</span> Restrict, disable, or prevent the use of nonessential programs, functions, ports, protocols, and services</li>
+      <li><span class="nist-tag">3.4.8</span> Apply deny-by-default (blacklisting) approach to prevent use of unauthorized software</li>
+      <li><span class="nist-tag">3.4.9</span> Control and monitor user-installed software</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ── OBJECTIVES ── -->
+<div id="tab-objectives" class="section-card">
+  <div class="sec-header">
+    <div class="sec-icon">🎯</div>
+    <div class="sec-meta">
+      <h2>Learning Objectives</h2>
+      <span class="pts no-pts">6 Objectives</span>
+    </div>
+  </div>
+  <div class="obj-list">
+    <div class="obj-item"><div class="obj-num">1</div><div>Explain how NIST SP 800-171 Configuration Management (CM) domain requirements translate into specific CMP artifacts that C3PAO assessors examine during a CMMC Level 2 assessment.</div></div>
+    <div class="obj-item"><div class="obj-num">2</div><div>Identify configuration items from the FFSI asset environment, determine which assets require inclusion in the CMP, and assign appropriate ownership and baseline documentation requirements for each.</div></div>
+    <div class="obj-item"><div class="obj-num">3</div><div>Review sample FFSI baseline configuration data to identify missing information, security concerns, documentation gaps, and deviations from standard security settings.</div></div>
+    <div class="obj-item"><div class="obj-num">4</div><div>Evaluate six proposed FFSI change requests by analyzing risk level, approval requirements, CUI impact, affected systems, and pre-implementation testing requirements.</div></div>
+    <div class="obj-item"><div class="obj-num">5</div><div>Apply Change Control Board decision-making to approve, deny, or defer proposed changes — justifying each decision with risk analysis and NIST practice references.</div></div>
+    <div class="obj-item"><div class="obj-num">6</div><div>Document FFSI configuration management findings in a structured format suitable for inclusion in the POA&amp;M and presentation to C3PAO assessors as evidence of active configuration control.</div></div>
+  </div>
+</div>
+
+<!-- ── KEY TERMS ── -->
+<div id="tab-terms" class="section-card">
+  <div class="sec-header">
+    <div class="sec-icon">📖</div>
+    <div class="sec-meta">
+      <h2>Key Terms</h2>
+      <span class="pts no-pts">Reference Glossary</span>
+    </div>
+  </div>
+  <div class="gloss-grid">
+    <div class="gloss-item"><div class="gloss-term">Configuration Management Plan (CMP)</div><div class="gloss-def">A formal document describing how an organization identifies, controls, tracks, and audits changes to system configurations — covering baseline establishment, change control procedures, CCB authority, and configuration audit processes.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Configuration Item (CI)</div><div class="gloss-def">Any hardware, software, firmware, or documentation that is subject to configuration management control. CIs must be individually identified, baselined, and tracked. Systems that process, store, or transmit CUI are always CIs.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Baseline Configuration</div><div class="gloss-def">The approved, documented, and version-controlled "known good" state of a configuration item — including OS version, patch level, enabled services, security settings, and software inventory. Baselines are the reference point for detecting drift.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Change Request</div><div class="gloss-def">A formal proposal to modify a configuration item — documenting the requested change, justification, affected systems, risk assessment, rollback plan, and testing requirements. All changes to CUI systems must be formally requested and approved.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Change Control Board (CCB)</div><div class="gloss-def">A governing body — typically including the CIO, IT Manager, Security Analyst, and Compliance Manager — authorized to review, approve, deny, or defer proposed changes to configuration items. CCB decisions must be documented.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Standard Configuration</div><div class="gloss-def">An organization-wide approved configuration template — such as a hardened Windows Server image or a standard firewall ruleset — applied consistently across equivalent systems. Standard configurations reduce drift and simplify auditing.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Unauthorized Change</div><div class="gloss-def">Any modification to a configuration item made without following the defined change control process — including changes made without a change request, without CCB approval, or outside of approved maintenance windows.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Configuration Drift</div><div class="gloss-def">The gradual divergence of a system's actual configuration from its approved baseline — caused by unauthorized changes, patch inconsistencies, or undocumented maintenance. Drift creates undetected vulnerabilities and fails CMMC audit requirements.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Version Control</div><div class="gloss-def">The systematic tracking of changes to configuration documents and software — recording what changed, who changed it, when, and why. Version control enables rollback, audit trail reconstruction, and baseline integrity verification.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Asset Inventory</div><div class="gloss-def">A comprehensive, current record of all organizational assets — hardware, software, and data — including their location, owner, classification, and configuration status. The asset inventory is the source of truth for CMP scoping.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Security Baseline</div><div class="gloss-def">A minimum set of security configuration requirements applied to a category of systems — based on standards such as CIS Benchmarks, DISA STIGs, or NIST guidelines — that all systems of that type must meet before deployment.</div></div>
+    <div class="gloss-item"><div class="gloss-term">CUI</div><div class="gloss-def">Controlled Unclassified Information — government-created or -possessed information requiring protection per NIST SP 800-171. Any system that processes, stores, transmits, or protects CUI must be included in the CMP and subject to the highest level of configuration control.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Change Approval</div><div class="gloss-def">Formal CCB authorization for a proposed change — documented with the approver's name, date, conditions, and any required testing or rollback procedures. Unapproved changes to CUI systems are CMMC findings regardless of their technical merit.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Emergency Change</div><div class="gloss-def">A change implemented outside of the normal change control process due to an active security threat or critical system failure. Emergency changes still require post-implementation documentation, retroactive CCB review, and baseline update.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Configuration Audit</div><div class="gloss-def">A periodic review comparing actual system configurations against approved baselines to identify drift, unauthorized changes, or documentation gaps. Configuration audits are evidence that the CMP is actively enforced — assessors request audit records.</div></div>
+  </div>
+</div>
+
+<!-- ── ACT 1 — CI IDENTIFICATION ── -->
+<div id="tab-act1" class="section-card">
+  <div class="sec-header">
+    <div class="sec-icon">🖥</div>
+    <div class="sec-meta">
+      <h2>Activity 1 — Configuration Item Identification</h2>
+      <span class="pts">25 pts</span>
+    </div>
+  </div>
+  <div class="instr"><strong>Instructions:</strong> Review each FFSI asset below. Answer the five CI determination questions using the toggle buttons, assign an owner from the FFSI roster, and document what baseline information must be captured. Assets touching CUI receive elevated scrutiny. Use the color-coded left border as a CUI indicator (pre-set for context).</div>
+  <div class="amber-box">👥 <strong>FFSI Personnel Roster:</strong> CIO · IT Manager · System Administrator · Network Administrator · Cloud Administrator · Security Analyst · Compliance Manager · Help Desk Manager</div>
+  <div id="act1-body"></div>
+</div>
+
+<!-- ── ACT 2 — BASELINE REVIEW ── -->
+<div id="tab-act2" class="section-card">
+  <div class="sec-header">
+    <div class="sec-icon">📊</div>
+    <div class="sec-meta">
+      <h2>Activity 2 — Baseline Configuration Review</h2>
+      <span class="pts">25 pts</span>
+    </div>
+  </div>
+  <div class="instr"><strong>Instructions:</strong> Review the FFSI baseline configuration table below. Pre-filled cells show current documented values. For each row, identify whether the baseline information is complete, has a security concern, or represents a documentation gap. Enter your findings in the analysis column and complete the status column. Pay close attention to patch levels, MFA settings, and logging configurations.</div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th style="width:140px">Asset</th><th>OS / Firmware</th><th>Patch Level</th><th>MFA Enabled?</th><th>Logging Config</th><th>Open Services</th><th>Baseline Status</th><th>Your Analysis / Gap Identified</th></tr></thead>
+      <tbody id="baseline-body"></tbody>
+    </table>
+  </div>
+
+  <div class="mt2">
+    <div class="fb-2col">
+      <div>
+        <label class="fb-label">Top 3 Most Significant Baseline Gaps Identified:</label>
+        <textarea rows="4" placeholder="1. Domain Controller running Windows Server 2016 — EOL August 2027 but patch level is 4 months behind. Immediate patch required given CUI scope...&#10;2. &#10;3. " oninput="updateProgress()"></textarea>
+      </div>
+      <div>
+        <label class="fb-label">Baseline Documentation Recommendations:</label>
+        <textarea rows="4" placeholder="What additional baseline information should FFSI document for each asset? What standard (CIS Benchmark, DISA STIG) should be the reference for each system type?" oninput="updateProgress()"></textarea>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── ACT 3 — CHANGE REQUESTS ── -->
+<div id="tab-act3" class="section-card">
+  <div class="sec-header">
+    <div class="sec-icon">📝</div>
+    <div class="sec-meta">
+      <h2>Activity 3 — Change Request Analysis</h2>
+      <span class="pts">25 pts</span>
+    </div>
+  </div>
+  <div class="instr"><strong>Instructions:</strong> Review the six FFSI change requests below. For each, answer the five analysis questions and provide written justification. Your analysis feeds directly into the Change Control Board worksheet in Activity 4.</div>
+  <div id="act3-body"></div>
+</div>
+
+<!-- ── ACT 4 — CCB REVIEW ── -->
+<div id="tab-act4" class="section-card">
+  <div class="sec-header">
+    <div class="sec-icon">⚖</div>
+    <div class="sec-meta">
+      <h2>Activity 4 — Change Control Board Review</h2>
+      <span class="pts">no-pts</span>
+    </div>
+  </div>
+  <div class="instr"><strong>Instructions:</strong> Acting as the FFSI Change Control Board, complete the CCB worksheet for all six change requests. Assign a risk level, determine approval requirements, specify testing requirements, and render a final decision (Approved / Denied / Deferred). Justify all denials and deferrals in the notes column.</div>
+
+  <div class="info-box">📋 <strong>FFSI CCB Members:</strong> CIO (Chair) · IT Manager · Security Analyst · Compliance Manager · System Administrator (as technical advisor for applicable CRs)</div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:70px">CR ID</th>
+          <th>Change Description</th>
+          <th style="width:105px">Risk Level</th>
+          <th style="width:110px">Approval Required From</th>
+          <th style="width:115px">Pre-Impl Testing</th>
+          <th style="width:115px">CCB Decision</th>
+          <th>Conditions / Notes</th>
+        </tr>
+      </thead>
+      <tbody id="ccb-body"></tbody>
+    </table>
+  </div>
+
+  <div class="mt2">
+    <div class="fb-2col">
+      <div>
+        <label class="fb-label">CCB Meeting Notes (summary of deliberations, votes, conditions):</label>
+        <textarea rows="4" placeholder="Date of CCB Review: ___&#10;Members Present: ___&#10;Changes Approved: ___&#10;Changes Denied: ___&#10;Changes Deferred: ___&#10;Key discussion points..." oninput="updateProgress()"></textarea>
+      </div>
+      <div>
+        <label class="fb-label">Emergency Change Procedures — When would FFSI bypass the standard CCB process? What post-implementation steps are required?</label>
+        <textarea rows="4" placeholder="Emergency change triggers: active exploitation of vulnerability, critical system failure, imminent threat to CUI...&#10;Required post-implementation steps: retroactive CR documentation, CCB emergency session within 24hrs, baseline update..." oninput="updateProgress()"></textarea>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── ACT 5 — CM FINDINGS ── -->
+<div id="tab-act5" class="section-card">
+  <div class="sec-header">
+    <div class="sec-icon">⚠️</div>
+    <div class="sec-meta">
+      <h2>Activity 5 — Configuration Management Findings</h2>
+      <span class="pts">25 pts</span>
+    </div>
+  </div>
+  <div class="instr"><strong>Instructions:</strong> Review the five FFSI configuration management deficiency scenarios below. For each, confirm the finding, assess the compliance risk, document a specific corrective action, assign a priority level, and identify a named owner. Findings not immediately correctable must be added to the FFSI POA&amp;M.</div>
+  <div id="act5-body"></div>
+
+  <div class="mt2">
+    <label class="fb-label">Overall CMP Assessment — Is FFSI's current Configuration Management posture sufficient for a CMMC Level 2 assessment? What are the top three gaps that must be remediated before the assessment?</label>
+    <textarea rows="4" placeholder="Overall assessment: FFSI's CMP is [describe current maturity level]. Critical gaps include: (1) ... (2) ... (3) ... These gaps present [describe risk to CUI and CMMC assessment outcome]..." oninput="updateProgress()"></textarea>
+  </div>
+</div>
+
+<!-- ── DEBRIEF ── -->
+<div id="tab-debrief" class="section-card">
+  <div class="sec-header">
+    <div class="sec-icon">🗣</div>
+    <div class="sec-meta">
+      <h2>Instructor Debrief Questions</h2>
+      <span class="pts no-pts">Discussion — 5–10 min</span>
+    </div>
+  </div>
+  <p class="text-sm" style="margin-bottom:1rem">Use these questions to drive a post-exercise discussion. Participants should cite specific FFSI assets, change requests, and findings to support their responses.</p>
+  <div class="debrief-list" id="debrief-body"></div>
+</div>
+
+<!-- ── RUBRIC ── -->
+<div id="tab-rubric" class="section-card">
+  <div class="sec-header">
+    <div class="sec-icon">📊</div>
+    <div class="sec-meta">
+      <h2>Facilitator Scoring Rubric</h2>
+      <span class="pts no-pts">100 Points Total</span>
+    </div>
+  </div>
+  <p class="text-sm" style="margin-bottom:1rem"><strong>Excellent: 90–100 · Proficient: 75–89 · Developing: 60–74 · Needs Improvement: &lt;60</strong></p>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Category</th><th>Excellent</th><th>Proficient</th><th>Developing</th><th>Needs Improvement</th><th>Max</th><th>Score</th></tr></thead>
+      <tbody id="rubric-body"></tbody>
+    </table>
+  </div>
+  <div class="mt2" style="display:flex;gap:1.5rem;flex-wrap:wrap;align-items:center">
+    <div class="sb-stat"><div class="sb-val" id="rubric-total">0</div><div class="sb-label">Total Points</div></div>
+    <div class="sb-stat"><div class="sb-val" id="rubric-pct">0%</div><div class="sb-label">Percentage</div></div>
+    <div id="rubric-rating-badge" class="rating-badge rating-needs">Needs Improvement</div>
+  </div>
+  <div class="hr mt2"></div>
+  <h3 class="sec-h3">Performance Level Descriptions</h3>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.7rem">
+    <div class="finding-block"><div class="fb-badge green">Excellent · 90–100</div><p class="text-sm mt1">All 10 CIs correctly identified and assessed. Baseline gaps comprehensively identified with specific FFSI context. All 6 change requests fully analyzed with justified approvals/denials referencing NIST practices. All 5 findings documented with specific, actionable corrective actions and named owners.</p></div>
+    <div class="finding-block"><div class="fb-badge blue">Proficient · 75–89</div><p class="text-sm mt1">8–9 CIs correctly assessed. Most baseline gaps identified. 5–6 change requests analyzed with adequate justification. 4–5 findings documented with reasonable corrective actions. Minor omissions in NIST references or ownership assignments.</p></div>
+    <div class="finding-block"><div class="fb-badge amber">Developing · 60–74</div><p class="text-sm mt1">6–7 CIs assessed; some CUI determinations incorrect. Baseline analysis identifies obvious gaps but misses nuanced concerns. 3–4 change requests analyzed; CCB decisions lack full justification. 3 findings documented but corrective actions are generic.</p></div>
+    <div class="finding-block"><div class="fb-badge">Needs Improvement · &lt;60</div><p class="text-sm mt1">Fewer than 6 CIs correctly assessed. Baseline review incomplete. Fewer than 3 change requests analyzed. CCB decisions not justified. Findings not documented or disconnected from FFSI scenario. Limited demonstration of CM domain knowledge.</p></div>
+  </div>
+</div>
+
+</main>
+
+<!-- ════ SCORE BAR ════ -->
+<div id="score-bar">
+  <div class="sb-stat"><div class="sb-val" id="sb-total">0</div><div class="sb-label">Total Points</div></div>
+  <div class="sb-stat"><div class="sb-val" id="sb-pct">0%</div><div class="sb-label">Percentage</div></div>
+  <div id="sb-rating" class="sb-rating rating-needs">Needs Improvement</div>
+  <div style="flex:1"></div>
+  <div style="font-size:.78rem;color:#607090">CMMC 2.0 · NIST SP 800-171 CM Domain · FFSI Training Exercise</div>
+</div>
+
+<script>
+// ═══════════════════════════════════
+//  THEME
+// ═══════════════════════════════════
+(function(){
+  const saved = localStorage.getItem('ffsi-cmp-theme') || 'light';
+  document.documentElement.setAttribute('data-theme', saved);
+  updateThemeBtn(saved);
+})();
+function toggleTheme(){
+  const cur = document.documentElement.getAttribute('data-theme');
+  const next = cur==='light'?'dark':'light';
+  document.documentElement.setAttribute('data-theme',next);
+  localStorage.setItem('ffsi-cmp-theme',next);
+  updateThemeBtn(next);
+}
+function updateThemeBtn(t){
+  const b=document.getElementById('theme-toggle');
+  if(b) b.textContent = t==='light'?'🌙 Dark Mode':'☀️ Light Mode';
+}
+
+// ═══════════════════════════════════
+//  DATA
+// ═══════════════════════════════════
+const PERSONNEL = ['CIO','IT Manager','System Administrator','Network Administrator','Cloud Administrator','Security Analyst','Compliance Manager','Help Desk Manager'];
+
+const ASSETS = [
+  {id:'CI-001',cls:'cui-yes',name:'Domain Controller (DC-01)',
+   detail:'Primary Active Directory domain controller. Hosts LDAP/Kerberos auth for all FFSI workstations and servers. Processes authentication for CUI system access.',
+   owner:'System Administrator',os:'Windows Server 2019',firmware:'N/A',patch:'KB5031364 (Oct 2023)',mfa:'N/A — service account',logging:'Windows Event Log → SIEM'},
+  {id:'CI-002',cls:'cui-yes',name:'Perimeter Firewall (FW-EDGE-01)',
+   detail:'Palo Alto PA-3250 perimeter firewall. Controls all inbound/outbound traffic for FFSI HQ. Enforces rules protecting CUI system segments.',
+   owner:'Network Administrator',os:'PAN-OS 10.2.4',firmware:'N/A',patch:'Latest (Oct 14, 2025)',mfa:'Admin access: Yes',logging:'Panorama + SIEM'},
+  {id:'CI-003',cls:'cui-yes',name:'Contract Management System Server (CMS-01)',
+   detail:'On-prem application server hosting the Contract Management System. Contains CUI contract data, delivery schedules, Army end-use statements.',
+   owner:'IT Manager',os:'Windows Server 2016',firmware:'N/A',patch:'KB5029312 (Jun 2025)',mfa:'Application MFA: Partial',logging:'App logs — NOT forwarded to SIEM'},
+  {id:'CI-004',cls:'cui-yes',name:'VPN Gateway (VPN-GW-01)',
+   detail:'Cisco ASA 5506-X providing remote access VPN. All remote workers authenticate here before accessing CUI systems. High CUI exposure.',
+   owner:'Network Administrator',os:'Cisco ASA OS 9.18',firmware:'9.18.3',patch:'3 versions behind (latest: 9.18.6)',mfa:'MFA: NOT ENABLED',logging:'Syslog → SIEM'},
+  {id:'CI-005',cls:'cui-yes',name:'SIEM Platform (SIEM-01)',
+   detail:'Splunk Enterprise 9.1 on-prem deployment. Ingests security events from all FFSI systems. Admin access allows log modification — high integrity risk.',
+   owner:'Security Analyst',os:'Linux RHEL 8.8',firmware:'N/A',patch:'RHEL patches: Current',mfa:'Admin: Yes',logging:'Self-monitoring only'},
+  {id:'CI-006',cls:'cui-yes',name:'File Server — CUI Repository (FS-CUI-01)',
+   detail:'Windows Server file server hosting the CUI-designated shared drive. Stores production specifications, QA reports, and contract documentation.',
+   owner:'System Administrator',os:'Windows Server 2022',firmware:'N/A',patch:'October 2025 patches applied',mfa:'Access via AD — MFA enforced',logging:'File access audit: Enabled → SIEM'},
+  {id:'CI-007',cls:'cui-no',name:'ERP System Server (ERP-01)',
+   detail:'Microsoft Dynamics 365 on-prem application server. Handles procurement, inventory, and financial data. Contains FCI but not CUI per current data classification.',
+   owner:'IT Manager',os:'Windows Server 2019',firmware:'N/A',patch:'KB5031364 (Oct 2025)',mfa:'ERP login MFA: Enabled',logging:'ERP audit log — not SIEM-connected'},
+  {id:'CI-008',cls:'cui-poss',name:'Wireless Controller (WLAN-CTRL-01)',
+   detail:'Cisco Catalyst 9800 wireless controller managing 47 APs across FFSI HQ and Facility B. Wireless network provides access to internal systems. CUI access via WiFi possible.',
+   owner:'Network Administrator',os:'IOS-XE 17.9.3',firmware:'17.9.3',patch:'Not current (17.12.1 available)',mfa:'Admin: Yes; WLAN users: No'},
+  {id:'CI-009',cls:'cui-no',name:'EDR Platform (EDR-CLOUD-01)',
+   detail:'CrowdStrike Falcon cloud-managed EDR deployed on all FFSI endpoints. Managed via cloud console. Protects CUI endpoints but stores no CUI directly.',
+   owner:'Security Analyst',os:'Cloud-managed (SaaS)',firmware:'N/A',patch:'Auto-updated by vendor',mfa:'Console MFA: Yes',logging:'CrowdStrike cloud + SIEM integration'},
+  {id:'CI-010',cls:'cui-yes',name:'Backup Infrastructure (BACKUP-01)',
+   detail:'Veeam Backup &amp; Replication 12 server with on-prem and Azure Blob Storage target. Backs up all FFSI servers including CUI systems. Backups contain CUI data.',
+   owner:'Cloud Administrator',os:'Windows Server 2022',firmware:'N/A',patch:'Veeam v12.1 (current)',mfa:'Console MFA: NOT ENABLED',logging:'Veeam logs — not forwarded to SIEM'},
+];
+
+const BASELINE_ROWS = [
+  {asset:'DC-01 (Domain Controller)',os:'Windows Server 2019 · Build 17763',patch:'KB5029247 — 4 months behind (CVE-2025-33073 unpatched)',mfa:'N/A (service accounts only)',logging:'Windows Security Event Log forwarded to SIEM — retention 90 days',services:'DNS, LDAP, Kerberos, RPC',status:'warn'},
+  {asset:'FW-EDGE-01 (Firewall)',os:'PAN-OS 10.2.4',patch:'Current (Oct 14, 2025)',mfa:'Admin console MFA: Enabled (TOTP)',logging:'Traffic logs to Panorama + SIEM · 180-day retention',services:'Permitted per zone policy only',status:'ok'},
+  {asset:'CMS-01 (Contract Mgmt)',os:'Windows Server 2016 — EOL Jan 2027',patch:'KB5029312 — June 2025 (4 months behind)',mfa:'Application-level MFA: PARTIAL — remote users only',logging:'Application logs NOT forwarded to SIEM — LOCAL ONLY',services:'IIS, SQL Server, RDP (open)',status:'gap'},
+  {asset:'VPN-GW-01 (VPN Gateway)',os:'Cisco ASA 9.18.3',patch:'9.18.6 available — 3 versions behind (3 CVEs)',mfa:'MFA: NOT CONFIGURED',logging:'Syslog to SIEM · retention unknown',services:'IKEv2, AnyConnect, HTTPS',status:'gap'},
+  {asset:'FS-CUI-01 (CUI File Server)',os:'Windows Server 2022 · Build 20348',patch:'October 2025 cumulative patches applied',mfa:'Access controlled via AD MFA policy',logging:'File access auditing enabled · SIEM-connected · 1-year retention',services:'SMB (445), DFS',status:'ok'},
+  {asset:'ERP-01 (ERP Server)',os:'Windows Server 2019',patch:'Current (October 2025)',mfa:'Dynamics 365 MFA: Enabled',logging:'ERP application log — NOT integrated with SIEM',services:'IIS, SQL, RPC',status:'warn'},
+  {asset:'WLAN-CTRL-01',os:'Cisco IOS-XE 17.9.3',patch:'17.12.1 available — 3 major versions behind',mfa:'Admin MFA: Yes · WLAN users: None',logging:'NOT DOCUMENTED — logging status unknown',services:'CAPWAP, HTTPS admin',status:'gap'},
+  {asset:'BACKUP-01 (Veeam Server)',os:'Windows Server 2022 · Veeam v12.1',patch:'Current',mfa:'Veeam console MFA: NOT ENABLED',logging:'Veeam logs not forwarded to SIEM',services:'Veeam Service, SQL Express',status:'warn'},
+];
+
+const CRS = [
+  {id:'CR-2025-041',cls:'cr-badge',
+   title:'Perimeter Firewall Rule Modification',
+   detail:'Network Administrator requests addition of outbound firewall rule allowing HTTPS traffic from ERP server (10.10.5.20) to vendor cloud API endpoint (203.0.113.45) for automated procurement data sync.',
+   requestor:'Network Administrator (J. Torres)',date:'Oct 28, 2025',
+   cui:'ERP server accesses FCI data. Rule opens new outbound path. No direct CUI system involved.',
+   systems:'Firewall (FW-EDGE-01), ERP Server (ERP-01)',nist:'3.4.3, 3.4.4, 3.4.7'},
+  {id:'CR-2025-042',cls:'cr-badge amber',
+   title:'VPN Gateway Firmware Upgrade — Emergency',
+   detail:'Security Analyst requests immediate upgrade of Cisco ASA from 9.18.3 to 9.18.6 to patch CVE-2025-20229 (CVSS 9.1 — unauthenticated remote code execution). Active exploitation in the wild confirmed.',
+   requestor:'Security Analyst (R. Chen)',date:'Oct 29, 2025',
+   cui:'VPN Gateway is the access control point for all remote users accessing CUI systems. Active CVE creates immediate risk.',
+   systems:'VPN Gateway (VPN-GW-01)',nist:'3.4.3, 3.4.4, 3.14.1'},
+  {id:'CR-2025-043',cls:'cr-badge blue',
+   title:'Microsoft 365 Conditional Access Policy Change',
+   detail:'Cloud Administrator requests modification of M365 Conditional Access to require MFA only for sign-ins from non-corporate IPs — removing MFA requirement for on-premises IP ranges to reduce user friction.',
+   requestor:'Cloud Administrator (T. Nguyen)',date:'Oct 30, 2025',
+   cui:'M365 hosts CUI-adjacent email and SharePoint data. Removing MFA for on-prem logins weakens authentication on the internal network.',
+   systems:'Microsoft 365 Tenant, Entra ID / Active Directory',nist:'3.4.2, 3.5.3, 3.4.3'},
+  {id:'CR-2025-044',cls:'cr-badge teal',
+   title:'ERP System Software Upgrade — v14.2 to v15.0',
+   detail:'IT Manager requests major ERP version upgrade during Thanksgiving weekend maintenance window (Nov 27–30). Upgrade includes database schema changes, new API endpoints, and updated role configurations.',
+   requestor:'IT Manager (D. Patel)',date:'Oct 31, 2025',
+   cui:'ERP contains FCI. Database schema changes may affect data flows to Contract Management System (CUI).',
+   systems:'ERP Server (ERP-01), Contract Mgmt System (CMS-01), Backup Infrastructure',nist:'3.4.3, 3.4.4, 3.4.5'},
+  {id:'CR-2025-045',cls:'cr-badge purple',
+   title:'Wireless Network Redesign — SSID Segmentation',
+   detail:'Network Administrator requests creation of three separate SSIDs: (1) Corporate (AD-authenticated, VLAN 10), (2) Production Floor (WPA3-PSK, VLAN 20), (3) Guest (isolated, VLAN 99). Current single SSID provides no network segmentation.',
+   requestor:'Network Administrator (J. Torres)',date:'Nov 3, 2025',
+   cui:'Corporate SSID will provide access to internal network including CUI systems. Proper segmentation is a security improvement. Guest SSID must be fully isolated.',
+   systems:'Wireless Controller (WLAN-CTRL-01), Firewall (FW-EDGE-01), Active Directory',nist:'3.4.2, 3.13.1, 3.13.3'},
+  {id:'CR-2025-046',cls:'cr-badge',
+   title:'System Administrator Created Unauthorized Admin Account',
+   detail:'During a configuration audit, the Security Analyst discovers that a new local administrator account "svc-admin-temp" was created on the Contract Management System server (CMS-01) on October 22 with no change request, no CCB approval, and no documentation. The account has not been used since creation.',
+   requestor:'System Administrator (K. Adams) — Unauthorized',date:'Oct 22, 2025 (retroactive)',
+   cui:'CMS-01 contains CUI. An undocumented admin account on a CUI server is a significant access control and configuration management finding.',
+   systems:'Contract Mgmt System (CMS-01), Active Directory',nist:'3.4.3, 3.4.5, 3.1.5'},
+];
+
+const CM_FINDINGS = [
+  {id:'CMF-001',cls:'cr-badge',
+   title:'VPN Gateway Baseline Not Documented — MFA Not Configured',
+   detail:'The VPN Gateway (VPN-GW-01) has no formal baseline configuration documented in the CMP. Additionally, MFA is not enabled for VPN authentication despite being the access control gateway for all remote users accessing CUI systems. Three CVEs are unpatched.',
+   nist:'3.4.1, 3.4.2, 3.5.3'},
+  {id:'CMF-002',cls:'cr-badge amber',
+   title:'Contract Management System — Application Logs Not SIEM-Integrated',
+   detail:'CMS-01 application logs are stored locally only and are not forwarded to the SIEM platform. This means CUI access activity on the Contract Management System — including the recent phishing incident — is not being monitored centrally. Log retention period is unknown.',
+   nist:'3.3.1, 3.3.5, 3.4.1'},
+  {id:'CMF-003',cls:'cr-badge blue',
+   title:'System Administrator Made Unauthorized Configuration Change (CUI System)',
+   detail:'Account "svc-admin-temp" was created on CMS-01 (a CUI system) without a change request, without CCB approval, and without documentation. This represents an unauthorized configuration change on a CUI system and a violation of least privilege principles.',
+   nist:'3.4.3, 3.4.5, 3.1.5'},
+  {id:'CMF-004',cls:'cr-badge teal',
+   title:'Wireless Controller Firmware 3 Versions Behind — Logging Status Undocumented',
+   detail:'WLAN-CTRL-01 is running IOS-XE 17.9.3 while version 17.12.1 is current — three major versions behind. Additionally, the logging configuration for the wireless controller is completely undocumented. It is unknown whether wireless authentication events are being captured.',
+   nist:'3.4.1, 3.4.2, 3.3.1'},
+  {id:'CMF-005',cls:'cr-badge purple',
+   title:'Backup Infrastructure Console MFA Not Enabled — Logs Not Forwarded to SIEM',
+   detail:'The Veeam Backup console, which provides access to backups of all FFSI servers including CUI systems, does not have MFA enabled. Additionally, Veeam operational logs are not forwarded to the SIEM. An attacker with access to the backup console could access or delete CUI data in backups.',
+   nist:'3.4.1, 3.4.2, 3.5.3, 3.3.1'},
+];
+
+const DEBRIEF_QS = [
+  'Of the 10 FFSI configuration items, which two required the most rigorous configuration control and why? What combination of factors — CUI scope, administrative access exposure, and external attack surface — elevated their priority?',
+  'CR-2025-046 involved an unauthorized admin account created on a CUI server. What does this reveal about FFSI\'s change control culture, and what preventive controls (technical and administrative) would have detected or prevented this?',
+  'CR-2025-042 (VPN firmware with active CVSS 9.1 exploit) and CR-2025-043 (reducing MFA requirements) represent opposite risk profiles. Walk through how the CCB should treat these differently in terms of urgency, approval authority, and testing requirements.',
+  'What specific artifacts would a C3PAO assessor request to verify that FFSI\'s Configuration Management Plan is operational — not just documented? Name at least six distinct evidence types.',
+  'How do configuration management findings translate into POA&M items? What information must a POA&M entry contain for a CMP finding to satisfy assessor scrutiny?',
+  'What types of changes should ALWAYS require CCB approval at FFSI regardless of perceived risk level? What criteria determine whether a change can be implemented under emergency procedures?',
+  'Explain the relationship between the FFSI CMP, System Security Plan (SSP), Asset Inventory, Access Control Matrix, and Maintenance Reports. If a change is approved and implemented, which of these documents must be updated and in what order?',
+];
+
+const RUBRIC_ROWS = [
+  {cat:'Configuration Item Identification (Act 1)', max:25,
+   exc:'All 10 CIs correctly assessed. CUI determinations accurate for all assets. Ownership assignments appropriate. Baseline documentation requirements comprehensive and FFSI-specific. CI/CMP inclusion decisions justified.',
+   pro:'8–9 CIs correctly assessed. Minor CUI determination errors on 1–2 assets. Ownership appropriate. Baseline requirements present but may lack depth for 2–3 assets.',
+   dev:'6–7 CIs assessed; some CUI determinations incorrect. Ownership assigned but not always appropriate. Baseline requirements vague or incomplete for several assets.',
+   ni:'Fewer than 6 CIs correctly assessed. Multiple CUI determination errors. Ownership not assigned or incorrect. Baseline requirements absent or generic.'},
+  {cat:'Baseline Analysis (Act 2)', max:25,
+   exc:'All 8 baseline rows analyzed with specific security concerns. Top gaps correctly prioritized (VPN MFA, CMS-01 logging, DC patch). Recommendations reference CIS/STIG standards and specific FFSI risk context.',
+   pro:'6–7 rows analyzed with adequate specificity. Main gaps identified. Recommendations reasonable but may lack standard references.',
+   dev:'4–5 rows analyzed. Obvious gaps (VPN MFA) identified but nuanced concerns missed. Recommendations generic.',
+   ni:'Fewer than 4 rows analyzed. Major gaps missed. No recommendations or recommendations disconnected from findings.'},
+  {cat:'Change Request Evaluation (Act 3 + Act 4)', max:25,
+   exc:'All 6 CRs fully analyzed with justified approval/denial. Emergency CR correctly expedited. Unauthorized CR (CR-046) identified as finding. CCB decisions include conditions, testing requirements, and NIST references.',
+   pro:'5–6 CRs analyzed. Most CCB decisions correct. Minor gaps in conditions or testing requirements for 1–2 CRs.',
+   dev:'3–4 CRs analyzed. Some incorrect CCB decisions. Unauthorized CR may not be flagged. Testing requirements incomplete.',
+   ni:'Fewer than 3 CRs analyzed. Incorrect CCB decisions. Unauthorized CR not identified. No testing requirements specified.'},
+  {cat:'Findings and Corrective Actions (Act 5)', max:25,
+   exc:'All 5 findings documented with FFSI-specific context. Risk levels accurate. Corrective actions specific, feasible, and assigned to named owners with timelines. NIST practices cited. Overall CMP assessment is clear and assessment-ready.',
+   pro:'4–5 findings documented. Risk levels mostly accurate. Corrective actions reasonable. Ownership partially assigned. Overall assessment addresses main gaps.',
+   dev:'3 findings documented. Risk levels inconsistent. Corrective actions generic. No ownership. Overall assessment vague.',
+   ni:'Fewer than 3 findings documented. Disconnected from FFSI scenario. No corrective actions. Overall assessment absent.'},
+];
+
+// ═══════════════════════════════════
+//  BUILD FUNCTIONS
+// ═══════════════════════════════════
+function makeOwnerSelect(){
+  return `<select onchange="updateProgress()" style="font-size:.78rem;min-width:120px">
+    <option value="">— Select —</option>
+    ${PERSONNEL.map(p=>`<option>${p}</option>`).join('')}
+  </select>`;
+}
+
+function buildAct1(){
+  const div = document.getElementById('act1-body');
+  ASSETS.forEach(a => {
+    const cuiLabel = a.cls==='cui-yes'?'<span class="pill cui">CUI</span>':
+                     a.cls==='cui-poss'?'<span class="pill" style="background:var(--sev-med-bg);border:1px solid var(--sev-med-bd);color:var(--sev-med-tx)">CUI Possible</span>':
+                     '<span class="pill fci">Non-CUI / FCI</span>';
+    div.innerHTML += `
+    <div class="asset-card ${a.cls}">
+      <div class="asset-header">
+        <span class="asset-id">${a.id}</span>
+        <div style="flex:1">
+          <div class="asset-name">${a.name} &nbsp;${cuiLabel}</div>
+          <div class="asset-detail">${a.detail}</div>
+          <div class="asset-detail" style="margin-top:.25rem;font-family:'Courier New',monospace;font-size:.74rem;color:var(--cyan)">
+            OS: ${a.os} &nbsp;·&nbsp; Owner (pre-set): ${a.owner} &nbsp;·&nbsp; MFA: ${a.mfa}
+          </div>
+        </div>
+      </div>
+      <div class="asset-fields">
+        <div class="af-col">
+          <label>1. Is a CI?</label>
+          <div class="yn-group"><button class="yn-btn y" onclick="ynT(this,'y')">Yes</button><button class="yn-btn n" onclick="ynT(this,'n')">No</button></div>
+        </div>
+        <div class="af-col">
+          <label>2. Include in CMP?</label>
+          <div class="yn-group"><button class="yn-btn y" onclick="ynT(this,'y')">Yes</button><button class="yn-btn n" onclick="ynT(this,'n')">No</button></div>
+        </div>
+        <div class="af-col">
+          <label>3. Processes CUI?</label>
+          <div class="yn-group"><button class="yn-btn y" onclick="ynT(this,'y')">Yes</button><button class="yn-btn u" onclick="ynT(this,'u')">Poss.</button><button class="yn-btn n" onclick="ynT(this,'n')">No</button></div>
+        </div>
+        <div class="af-col">
+          <label>4. Config Owner</label>
+          ${makeOwnerSelect()}
+        </div>
+        <div class="af-col">
+          <label>5. Baseline Needed?</label>
+          <div class="yn-group"><button class="yn-btn y" onclick="ynT(this,'y')">Full</button><button class="yn-btn u" onclick="ynT(this,'u')">Partial</button><button class="yn-btn n" onclick="ynT(this,'n')">None</button></div>
+        </div>
+      </div>
+      <div style="margin-top:.55rem">
+        <label style="font-size:.7rem;color:var(--text-d);display:block;margin-bottom:.15rem;font-weight:600">What baseline information must be documented for this CI? Note any immediate security concerns.</label>
+        <textarea rows="2" placeholder="Document required baseline fields: OS version, patch level, open ports/services, security settings, MFA config, logging destination, firmware version, authorized software list..." oninput="updateProgress()"></textarea>
+      </div>
+    </div>`;
+  });
+}
+
+function buildBaseline(){
+  const tb = document.getElementById('baseline-body');
+  const statusMap = {ok:'<span class="baseline-status bs-ok">✅ Documented</span>',
+                     gap:'<span class="baseline-status bs-gap">❌ Gap</span>',
+                     warn:'<span class="baseline-status bs-warn">⚠ Concern</span>'};
+  BASELINE_ROWS.forEach(r => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="bold" style="font-size:.78rem">${r.asset}</td>
+      <td class="pre">${r.os}</td>
+      <td class="pre">${r.patch}</td>
+      <td class="pre">${r.mfa}</td>
+      <td class="pre">${r.logging}</td>
+      <td class="pre">${r.services||'—'}</td>
+      <td>${statusMap[r.status]}</td>
+      <td><textarea rows="2" placeholder="Identify missing baseline info, security concern, or documentation gap for this asset..." oninput="updateProgress()"></textarea></td>
+    `;
+    tb.appendChild(tr);
+  });
+}
+
+function buildAct3(){
+  const div = document.getElementById('act3-body');
+  const approverOpts = ['— Select —','CIO Only','IT Manager + CIO','CCB Full Vote','Security Analyst + IT Manager','Emergency — Post-Implementation CCB Review','Security Analyst + Compliance Manager'];
+  const testOpts = ['— Select —','Lab / Dev environment test','UAT with stakeholders','Security testing (vulnerability scan)','Rollback plan required','Regression test + rollback','No formal testing required','Parallel run before cutover'];
+  CRS.forEach(cr => {
+    div.innerHTML += `
+    <div class="cr-card">
+      <div class="cr-header">
+        <span class="cr-badge ${cr.cls.replace('cr-badge','').trim()||''}" style="min-width:90px">${cr.id}</span>
+        <div style="flex:1">
+          <div class="cr-title">${cr.title}</div>
+          <div class="cr-meta">${cr.detail}</div>
+          <div class="cr-meta" style="margin-top:.3rem">
+            <strong>Requestor:</strong> ${cr.requestor} &nbsp;·&nbsp; <strong>Date:</strong> ${cr.date}<br/>
+            <strong>Systems:</strong> ${cr.systems}<br/>
+            <strong>CUI Impact:</strong> ${cr.cui}<br/>
+            <span class="nist-tag" style="margin-top:.2rem;display:inline-block">${cr.nist}</span>
+          </div>
+        </div>
+      </div>
+      <div class="cr-fields">
+        <div>
+          <label>1. Formal Approval Required?</label>
+          <div class="yn-group" style="margin-bottom:.4rem">
+            <button class="yn-btn y" onclick="ynT(this,'y')">Yes — CCB</button>
+            <button class="yn-btn u" onclick="ynT(this,'u')">Yes — Manager</button>
+            <button class="yn-btn n" onclick="ynT(this,'n')">No — Standard Change</button>
+          </div>
+        </div>
+        <div>
+          <label>2. Approver(s):</label>
+          <select onchange="updateProgress()" style="font-size:.78rem">
+            ${approverOpts.map(o=>`<option>${o}</option>`).join('')}
+          </select>
+        </div>
+        <div>
+          <label>3. CUI Affected?</label>
+          <div class="yn-group">
+            <button class="yn-btn y" onclick="ynT(this,'y')">Yes — Direct</button>
+            <button class="yn-btn u" onclick="ynT(this,'u')">Possible</button>
+            <button class="yn-btn n" onclick="ynT(this,'n')">No</button>
+          </div>
+        </div>
+        <div>
+          <label>4. Pre-Implementation Testing:</label>
+          <select onchange="updateProgress()" style="font-size:.78rem">
+            ${testOpts.map(o=>`<option>${o}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+      <div style="margin-top:.6rem">
+        <label style="font-size:.7rem;color:var(--text-d);display:block;margin-bottom:.15rem;font-weight:600">5. Risk Analysis &amp; Justification (cite NIST practice; note any rollback requirements):</label>
+        <textarea rows="2" placeholder="Describe the risk this change introduces or mitigates. What is the CUI impact? What NIST practice governs this change type? Is a rollback plan required?" oninput="updateProgress()"></textarea>
+      </div>
+    </div>`;
+  });
+}
+
+function buildCCB(){
+  const tb = document.getElementById('ccb-body');
+  CRS.forEach(cr => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="mono">${cr.id}</td>
+      <td style="font-size:.79rem;font-weight:600;color:var(--text)">${cr.title}</td>
+      <td>
+        <div class="sev-group" style="flex-direction:column;gap:.25rem">
+          <button class="sev-btn crit" onclick="sevT(this)">🔴 Critical</button>
+          <button class="sev-btn high" onclick="sevT(this)">🟠 High</button>
+          <button class="sev-btn med"  onclick="sevT(this)">🟡 Medium</button>
+          <button class="sev-btn low"  onclick="sevT(this)">🟢 Low</button>
+        </div>
+      </td>
+      <td><textarea rows="3" placeholder="Who must approve? (CIO, CCB vote, Security Analyst, etc.)" oninput="updateProgress()"></textarea></td>
+      <td><textarea rows="3" placeholder="Required testing before go-live..." oninput="updateProgress()"></textarea></td>
+      <td>
+        <div class="dec-group" style="flex-direction:column;gap:.25rem">
+          <button class="dec-btn appr" onclick="decT(this)">✅ Approved</button>
+          <button class="dec-btn deny" onclick="decT(this)">❌ Denied</button>
+          <button class="dec-btn pend" onclick="decT(this)">⏸ Deferred</button>
+        </div>
+      </td>
+      <td><textarea rows="3" placeholder="Conditions attached to approval, reason for denial/deferral, required follow-up..." oninput="updateProgress()"></textarea></td>
+    `;
+    tb.appendChild(tr);
+  });
+}
+
+function buildAct5(){
+  const div = document.getElementById('act5-body');
+  const priorities = ['— Select —','Critical — Immediate (24 hrs)','High — 7 Days','Medium — 30 Days','Low — 90 Days'];
+  CM_FINDINGS.forEach(f => {
+    div.innerHTML += `
+    <div class="finding-block">
+      <div class="fb-header">
+        <span class="fb-badge ${f.cls.replace('cr-badge','fb-badge').replace('fb-badge ','').trim()||''}">${f.id}</span>
+        <div style="flex:1">
+          <div class="fb-title">${f.title}</div>
+          <div class="fb-sub">${f.detail}</div>
+          <div style="margin-top:.2rem"><span class="nist-tag">${f.nist}</span></div>
+        </div>
+      </div>
+      <div class="cr-fields">
+        <div>
+          <label class="fb-label">Risk Level:</label>
+          <div class="sev-group">
+            <button class="sev-btn crit" onclick="sevT(this)">🔴 Critical</button>
+            <button class="sev-btn high" onclick="sevT(this)">🟠 High</button>
+            <button class="sev-btn med"  onclick="sevT(this)">🟡 Medium</button>
+            <button class="sev-btn low"  onclick="sevT(this)">🟢 Low</button>
+          </div>
+        </div>
+        <div>
+          <label class="fb-label">Priority &amp; Owner:</label>
+          <div style="display:flex;gap:.4rem;flex-wrap:wrap;align-items:center">
+            <select onchange="updateProgress()" style="font-size:.78rem;flex:1">
+              ${priorities.map(p=>`<option>${p}</option>`).join('')}
+            </select>
+            <select onchange="updateProgress()" style="font-size:.78rem;flex:1">
+              <option value="">— Owner —</option>
+              ${PERSONNEL.map(p=>`<option>${p}</option>`).join('')}
+            </select>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:.6rem">
+        <label class="fb-label">Specific Corrective Action (include measurable outcome and FFSI-specific steps):</label>
+        <textarea rows="2" placeholder="What specific action must FFSI take to remediate this finding? Who is responsible? What evidence will confirm completion? Does this need to be added to the POA&M?" oninput="updateProgress()"></textarea>
+      </div>
+    </div>`;
+  });
+}
+
+function buildDebrief(){
+  const div = document.getElementById('debrief-body');
+  DEBRIEF_QS.forEach((q,i) => {
+    div.innerHTML += `
+    <div class="dq-item">
+      <div class="dq-num">${i+1}</div>
+      <div class="dq-text">
+        ${q}
+        <div style="margin-top:.45rem"><textarea rows="2" placeholder="Discussion notes / participant responses..." oninput="updateProgress()"></textarea></div>
+      </div>
+    </div>`;
+  });
+}
+
+function buildRubric(){
+  const tb = document.getElementById('rubric-body');
+  RUBRIC_ROWS.forEach(r => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="bold" style="font-size:.8rem">${r.cat}</td>
+      <td class="text-sm">${r.exc}</td>
+      <td class="text-sm">${r.pro}</td>
+      <td class="text-sm">${r.dev}</td>
+      <td class="text-sm">${r.ni}</td>
+      <td style="text-align:center;font-weight:700;color:var(--gold-h)">${r.max}</td>
+      <td><input type="number" class="score-input rubric-score" min="0" max="${r.max}" placeholder="0" oninput="calcRubric()"/></td>
+    `;
+    tb.appendChild(tr);
+  });
+  const tot = document.createElement('tr');
+  tot.className='score-total-row';
+  tot.innerHTML=`<td colspan="5" style="font-weight:800;padding:.6rem .75rem">Total</td><td style="text-align:center">100</td><td style="text-align:center" id="rubric-score-total">0/100</td>`;
+  tb.appendChild(tot);
+}
+
+// ═══════════════════════════════════
+//  INTERACTIONS
+// ═══════════════════════════════════
+function ynT(btn, type){
+  btn.closest('.yn-group').querySelectorAll('.yn-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  updateProgress();
+}
+function sevT(btn){
+  btn.closest('.sev-group').querySelectorAll('.sev-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  updateProgress();
+}
+function decT(btn){
+  btn.closest('.dec-group').querySelectorAll('.dec-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  updateProgress();
+}
+
+// ═══════════════════════════════════
+//  TABS
+// ═══════════════════════════════════
+function showTab(id){
+  document.querySelectorAll('.section-card').forEach(c=>c.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  const card=document.getElementById('tab-'+id);
+  if(card) card.classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(b=>{
+    if(b.getAttribute('onclick')&&b.getAttribute('onclick').includes("'"+id+"'")) b.classList.add('active');
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ═══════════════════════════════════
+//  PROGRESS
+// ═══════════════════════════════════
+function updateProgress(){
+  let f=0,t=0;
+  document.querySelectorAll('textarea,select,input[type=text],input[type=number]').forEach(el=>{
+    if(el.closest('#rubric-body')) return;
+    t++;
+    if(el.tagName==='SELECT'&&el.value&&el.value!=='— Select —'&&!el.value.startsWith('—')) f++;
+    else if(el.tagName==='TEXTAREA'&&el.value.trim().length>6) f++;
+    else if(el.tagName==='INPUT'&&el.value.trim()) f++;
+  });
+  const active=document.querySelectorAll('.yn-btn.active,.sev-btn.active,.dec-btn.active').length;
+  const bTotal=document.querySelectorAll('.yn-group').length+document.querySelectorAll('.sev-group').length+document.querySelectorAll('.dec-group').length;
+  const pct=Math.min(100,Math.round(((f+active)/(t+bTotal))*100));
+  document.getElementById('prog-pct').textContent=pct+'%';
+  document.getElementById('prog-fill').style.width=pct+'%';
+}
+
+// ═══════════════════════════════════
+//  RUBRIC
+// ═══════════════════════════════════
+function calcRubric(){
+  let total=0;
+  document.querySelectorAll('.rubric-score').forEach(i=>total+=parseInt(i.value)||0);
+  total=Math.min(100,total);
+  const pct=Math.round(total/100*100);
+  document.getElementById('rubric-total').textContent=total;
+  document.getElementById('rubric-pct').textContent=pct+'%';
+  document.getElementById('rubric-score-total').textContent=total+'/100';
+  document.getElementById('sb-total').textContent=total;
+  document.getElementById('sb-pct').textContent=pct+'%';
+  let rating='Needs Improvement',cls='rating-needs';
+  if(pct>=90){rating='Excellent';cls='rating-excellent'}
+  else if(pct>=75){rating='Proficient';cls='rating-proficient'}
+  else if(pct>=60){rating='Developing';cls='rating-developing'}
+  ['rubric-rating-badge','sb-rating'].forEach(id=>{
+    const el=document.getElementById(id);
+    el.textContent=rating;
+    el.className=(id==='rubric-rating-badge'?'rating-badge ':'sb-rating ')+cls;
+  });
+}
+
+// ═══════════════════════════════════
+//  TIMER
+// ═══════════════════════════════════
+let timerSecs=1200,timerInt=null,timerOn=false;
+function updateTimerDisplay(){
+  const m=Math.floor(timerSecs/60),s=timerSecs%60;
+  const el=document.getElementById('timer-display');
+  el.textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+  el.className='timer-display';
+  if(timerSecs<=300) el.classList.add('warn');
+  if(timerSecs<=60)  el.classList.add('danger');
+}
+function startTimer(){
+  if(timerOn) return;
+  timerOn=true;
+  document.getElementById('timer-start').style.display='none';
+  document.getElementById('timer-pause').style.display='';
+  timerInt=setInterval(()=>{
+    if(timerSecs>0){timerSecs--;updateTimerDisplay();}
+    else{clearInterval(timerInt);timerOn=false;}
+  },1000);
+}
+function pauseTimer(){clearInterval(timerInt);timerOn=false;document.getElementById('timer-start').style.display='';document.getElementById('timer-pause').style.display='none'}
+function resetTimer(){pauseTimer();timerSecs=1200;updateTimerDisplay()}
+
+// ═══════════════════════════════════
+//  EXPORT
+// ═══════════════════════════════════
+function exportAnswers(){
+  let out='FFSI — CONFIGURATION MANAGEMENT PLAN EXERCISE\nExport: '+new Date().toLocaleString()+'\n'+'='.repeat(60)+'\n\n';
+  out+='CHANGE CONTROL BOARD DECISIONS:\n'+'-'.repeat(40)+'\n';
+  document.querySelectorAll('#tab-act4 textarea').forEach((el,i)=>{if(el.value.trim()) out+='CCB Note '+(i+1)+': '+el.value.trim()+'\n';});
+  out+='\nCM FINDINGS:\n'+'-'.repeat(40)+'\n';
+  document.querySelectorAll('#tab-act5 textarea').forEach((el,i)=>{if(el.value.trim()) out+='Finding Note '+(i+1)+': '+el.value.trim()+'\n';});
+  const blob=new Blob([out],{type:'text/plain'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='FFSI_CMP_Exercise_Answers.txt';
+  a.click();
+}
+function confirmReset(){
+  if(confirm('Reset all exercise answers? This cannot be undone.')){
+    document.querySelectorAll('textarea').forEach(t=>t.value='');
+    document.querySelectorAll('select').forEach(s=>s.selectedIndex=0);
+    document.querySelectorAll('input[type=text],input[type=number]').forEach(i=>i.value='');
+    document.querySelectorAll('.yn-btn,.sev-btn,.dec-btn').forEach(b=>b.classList.remove('active'));
+    calcRubric();updateProgress();
+  }
+}
+
+// ═══════════════════════════════════
+//  INIT
+// ═══════════════════════════════════
+buildAct1();
+buildBaseline();
+buildAct3();
+buildCCB();
+buildAct5();
+buildDebrief();
+buildRubric();
+updateTimerDisplay();
+</script>
+</body>
+</html>
