@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FFSI — Audit Log & Monitoring Report Exercise</title>
+<style>
+/* ═══════════════════════════════════════════
+   THEME SYSTEM — LIGHT DEFAULT, DARK OPTIONAL
+═══════════════════════════════════════════ */
+:root {
+  /* LIGHT THEME */
+  --bg:           #f0f2f7;
+  --bg-card:      #ffffff;
+  --bg-banner:    #0d1f3c;
+  --bg-nav:       #0a1628;
+  --bg-tab:       #1a2e50;
+  --bg-inp:       #f8f9fc;
+  --bg-inp-bd:    #c8d0e0;
+  --bg-slate:     #edf1f8;
+  --bg-slate2:    #e2e8f4;
+  --text:         #1a2340;
+  --text-m:       #4a5878;
+  --text-d:       #8090b0;
+  --text-inv:     #e2e8f4;
+  --text-inv-m:   #94a8c4;
+  --border:       #c8d4e8;
+  --border2:      #b0c0dc;
+  --shadow:       0 2px 16px rgba(0,0,40,.10);
+  --shadow-card:  0 1px 8px rgba(0,0,40,.07);
+  /* brand accents stay consistent across themes */
+  --ox:           #8b1a1a;
+  --ox2:          #a52020;
+  --gold:         #8a6a1a;
+  --gold2:        #b08a20;
+  --gold-inv:     #c8a84b;
+  --cyan:         #1a6a8a;
+  --cyan2:        #2288aa;
+  --teal:         #0f6b60;
+  --green:        #166534;
+  --red:          #991b1b;
+  --amber:        #92400e;
+  --blue:         #1e40af;
+  --purple:       #6b21a8;
+  /* pill colors */
+  --pill-cui-bg:  #fef2f2; --pill-cui-bd: #fca5a5; --pill-cui-tx: #991b1b;
+  --pill-fci-bg:  #eff6ff; --pill-fci-bd: #93c5fd; --pill-fci-tx: #1e40af;
+  --pill-sys-bg:  #f0fdf4; --pill-sys-bd: #86efac; --pill-sys-tx: #166534;
+  /* severity */
+  --sev-crit-bg:  #fef2f2; --sev-crit-bd: #fca5a5; --sev-crit-tx: #991b1b;
+  --sev-high-bg:  #fff7ed; --sev-high-bd: #fdba74; --sev-high-tx: #92400e;
+  --sev-med-bg:   #fefce8; --sev-med-bd:  #fde047; --sev-med-tx:  #713f12;
+  --sev-low-bg:   #f0fdf4; --sev-low-bd:  #86efac; --sev-low-tx:  #166534;
+  --sev-info-bg:  #eff6ff; --sev-info-bd: #93c5fd; --sev-info-tx: #1e40af;
+  /* nist tag */
+  --nist-bg: #f0f4ff; --nist-bd: #93c5fd; --nist-tx: #1e40af;
+  /* rubric */
+  --rb-exc-bg:#f0fdf4;--rb-exc-bd:#86efac;--rb-exc-tx:#166534;
+  --rb-pro-bg:#eff6ff;--rb-pro-bd:#93c5fd;--rb-pro-tx:#1e40af;
+  --rb-dev-bg:#fefce8;--rb-dev-bd:#fde047;--rb-dev-tx:#713f12;
+  --rb-ni-bg: #fef2f2;--rb-ni-bd: #fca5a5;--rb-ni-tx: #991b1b;
+}
+[data-theme="dark"] {
+  --bg:           #0a0f1e;
+  --bg-card:      #111827;
+  --bg-banner:    #060c18;
+  --bg-nav:       #0a0f1e;
+  --bg-tab:       #0a0f1e;
+  --bg-inp:       #0d1830;
+  --bg-inp-bd:    #2a4070;
+  --bg-slate:     #1e2d45;
+  --bg-slate2:    #253550;
+  --text:         #e2e8f4;
+  --text-m:       #94a8c4;
+  --text-d:       #607090;
+  --text-inv:     #e2e8f4;
+  --text-inv-m:   #94a8c4;
+  --border:       #1e3058;
+  --border2:      #2a4070;
+  --shadow:       0 4px 24px rgba(0,0,0,.5);
+  --shadow-card:  0 2px 12px rgba(0,0,0,.4);
+  --gold:         #c8a84b;
+  --gold2:        #e0c060;
+  --gold-inv:     #c8a84b;
+  --cyan:         #4fc3c3;
+  --cyan2:        #6ed8d8;
+  --teal:         #22a090;
+  --green:        #22c55e;
+  --red:          #ef4444;
+  --amber:        #f59e0b;
+  --blue:         #3b82f6;
+  --purple:       #a855f7;
+  --pill-cui-bg:#2a0d0d;--pill-cui-bd:#6a1a1a;--pill-cui-tx:#f99;
+  --pill-fci-bg:#0d1a2a;--pill-fci-bd:#1a4a6a;--pill-fci-tx:#6ac;
+  --pill-sys-bg:#0a1a0d;--pill-sys-bd:#1a4a1a;--pill-sys-tx:#6c6;
+  --sev-crit-bg:#2a0505;--sev-crit-bd:#cc2222;--sev-crit-tx:#ff8888;
+  --sev-high-bg:#2a1005;--sev-high-bd:#cc5500;--sev-high-tx:#ff9944;
+  --sev-med-bg:#1a150a; --sev-med-bd:#c8a84b; --sev-med-tx:#e0c060;
+  --sev-low-bg:#0a1a0d; --sev-low-bd:#22c55e; --sev-low-tx:#4ade80;
+  --sev-info-bg:#0a1020;--sev-info-bd:#3b82f6;--sev-info-tx:#7aacff;
+  --nist-bg:#0d1a30;--nist-bd:#1a3a6a;--nist-tx:#7aacff;
+  --rb-exc-bg:#0d2a0d;--rb-exc-bd:#22c55e;--rb-exc-tx:#4ade80;
+  --rb-pro-bg:#0d1a2a;--rb-pro-bd:#3b82f6;--rb-pro-tx:#7aacff;
+  --rb-dev-bg:#1a150a;--rb-dev-bd:#f59e0b;--rb-dev-tx:#fcd34d;
+  --rb-ni-bg: #2a0d0d;--rb-ni-bd: #ef4444;--rb-ni-tx: #fca5a5;
+}
+
+/* ═══ RESET / BASE ═══ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Segoe UI',system-ui,sans-serif;
+  background:var(--bg);color:var(--text);
+  font-size:15px;line-height:1.6;
+  transition:background .25s,color .25s;
+}
+a{color:var(--cyan)}
+
+/* ═══ TOPBAR ═══ */
+#topbar{
+  background:var(--bg-banner);border-bottom:1px solid rgba(255,255,255,.07);
+  padding:.45rem 1.25rem;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;
+  position:sticky;top:0;z-index:200;
+}
+.topbar-left{display:flex;align-items:center;gap:.75rem}
+.domain-badge{
+  background:var(--ox);color:#fff;font-weight:800;font-size:1rem;
+  width:2.4rem;height:2.4rem;border-radius:6px;
+  display:flex;align-items:center;justify-content:center;letter-spacing:.05em;flex-shrink:0;
+}
+.topbar-title{font-size:.9rem;font-weight:600;color:#e2e8f4;line-height:1.3}
+.topbar-title small{display:block;font-size:.73rem;color:#94a8c4;font-weight:400}
+.topbar-right{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+.tb-btn{
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);
+  color:#ccd8f0;border-radius:6px;padding:.28rem .75rem;font-size:.78rem;cursor:pointer;
+  transition:background .15s,color .15s;white-space:nowrap;
+}
+.tb-btn:hover{background:rgba(255,255,255,.2);color:#fff}
+.tb-btn.danger{border-color:rgba(200,80,80,.4);color:#f99}
+.tb-btn.danger:hover{background:rgba(120,20,20,.4);color:#fbb}
+/* THEME TOGGLE — distinct styling */
+#theme-toggle{
+  background:rgba(200,168,75,.15);border:1px solid rgba(200,168,75,.4);
+  color:#c8a84b;border-radius:6px;padding:.28rem .8rem;font-size:.78rem;
+  cursor:pointer;transition:background .15s,color .15s;white-space:nowrap;
+  display:flex;align-items:center;gap:.35rem;font-weight:600;
+}
+#theme-toggle:hover{background:rgba(200,168,75,.28);color:#e0c060}
+
+/* ═══ HERO ═══ */
+#hero{
+  background:linear-gradient(135deg,var(--bg-banner) 0%,#0a1e3c 50%,#0d1628 100%);
+  border-bottom:2px solid var(--ox);
+  padding:2.5rem 1.5rem 2rem;text-align:center;position:relative;overflow:hidden;
+}
+#hero::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 30% 60%,rgba(139,26,26,.12) 0%,transparent 55%),
+             radial-gradient(ellipse at 75% 30%,rgba(79,195,195,.06) 0%,transparent 50%);
+  pointer-events:none;
+}
+/* grid texture */
+#hero::after{
+  content:'';position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);
+  background-size:40px 40px;pointer-events:none;
+}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:.5rem;
+  font-size:.75rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:#c8a84b;margin-bottom:.75rem;
+}
+#hero h1{
+  font-size:clamp(1.5rem,4vw,2.4rem);font-weight:800;color:#fff;
+  letter-spacing:-.02em;margin-bottom:.5rem;line-height:1.2;
+}
+#hero h1 em{color:#c8a84b;font-style:normal}
+#hero .hero-sub{font-size:.9rem;color:#94a8c4;max-width:600px;margin:0 auto 1.4rem}
+.hero-chips{display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem}
+.chip{
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+  border-radius:999px;padding:.28rem .85rem;font-size:.75rem;font-weight:600;color:#94a8c4;
+}
+.chip.warn{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.3);color:#fbbf24}
+.chip.alert{background:rgba(139,26,26,.2);border-color:rgba(200,80,80,.4);color:#fca5a5}
+
+/* ═══ TIMER BAR ═══ */
+#timer-bar{
+  background:var(--bg-banner);border-bottom:1px solid rgba(255,255,255,.06);
+  padding:.5rem 1.25rem;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;
+}
+.timer-display{
+  font-family:'Courier New',monospace;font-size:1.4rem;font-weight:700;
+  color:#4fc3c3;letter-spacing:.08em;
+}
+.timer-display.warn{color:#f59e0b}
+.timer-display.danger{color:#ef4444;animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.5}}
+.tc-btn{
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);
+  color:#e2e8f4;border-radius:5px;padding:.22rem .7rem;font-size:.82rem;cursor:pointer;
+}
+.tc-btn:hover{background:rgba(255,255,255,.2)}
+.progress-wrap{flex:1;min-width:180px;max-width:360px}
+.progress-label{font-size:.73rem;color:#94a8c4;margin-bottom:.3rem}
+.progress-bar{background:rgba(255,255,255,.08);border-radius:999px;height:8px;overflow:hidden}
+.progress-fill{
+  height:100%;
+  background:linear-gradient(90deg,var(--ox),#c8a84b);
+  border-radius:999px;transition:width .4s;
+}
+
+/* ═══ TAB NAV ═══ */
+#tab-nav{
+  background:var(--bg-nav);border-bottom:1px solid var(--border);
+  padding:0 1.25rem;overflow-x:auto;white-space:nowrap;
+  position:sticky;top:52px;z-index:150;
+}
+.tab-nav-inner{display:inline-flex;gap:0;min-width:100%}
+.tab-btn{
+  background:none;border:none;border-bottom:3px solid transparent;
+  color:var(--text-d);font-size:.78rem;font-weight:600;
+  padding:.7rem .9rem;cursor:pointer;transition:color .15s,border-color .15s;
+  white-space:nowrap;letter-spacing:.02em;
+}
+.tab-btn:hover{color:var(--text-m)}
+.tab-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
+[data-theme="dark"] .tab-btn{color:#607090}
+[data-theme="dark"] .tab-btn:hover{color:#94a8c4}
+[data-theme="dark"] .tab-btn.active{color:#c8a84b;border-bottom-color:#c8a84b}
+
+/* ═══ MAIN ═══ */
+main{max-width:1120px;margin:0 auto;padding:1.75rem 1.25rem 5rem}
+
+/* ═══ SECTION CARDS ═══ */
+.section-card{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:10px;padding:1.5rem 1.6rem;margin-bottom:1.5rem;
+  box-shadow:var(--shadow-card);display:none;
+  transition:background .25s,border-color .25s;
+}
+.section-card.active{display:block}
+.section-header{display:flex;align-items:flex-start;gap:1rem;margin-bottom:1.1rem}
+.section-icon{
+  font-size:1.8rem;flex-shrink:0;width:3rem;height:3rem;
+  background:var(--bg-slate);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .25s;
+}
+.section-meta h2{font-size:1.2rem;font-weight:800;color:var(--text);margin-bottom:.2rem}
+.pts{
+  display:inline-block;background:var(--ox);color:#fff;
+  font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  padding:.12rem .55rem;border-radius:4px;
+}
+.pts.no-pts{background:var(--bg-slate);color:var(--text-m)}
+.instr{
+  background:var(--bg-slate);border-left:3px solid var(--gold);
+  border-radius:0 6px 6px 0;padding:.7rem 1rem;
+  font-size:.85rem;color:var(--text-m);margin-bottom:1.25rem;
+  transition:background .25s;
+}
+.instr strong{color:var(--gold)}
+
+/* ═══ INTRO CONTENT ═══ */
+.intro-body{font-size:.88rem;color:var(--text-m);line-height:1.7}
+.intro-body p{margin-bottom:.85rem}
+.intro-body h3{color:var(--gold);font-size:.95rem;margin:1.1rem 0 .45rem}
+.intro-body ul{padding-left:1.4rem;margin-bottom:.85rem}
+.intro-body ul li{margin-bottom:.3rem}
+.nist-tag{
+  display:inline-block;background:var(--nist-bg);border:1px solid var(--nist-bd);
+  border-radius:4px;padding:.08rem .45rem;font-size:.75rem;font-weight:700;
+  color:var(--nist-tx);font-family:'Courier New',monospace;margin-right:.25rem;
+  transition:background .25s,color .25s;
+}
+
+/* ═══ OBJECTIVES ═══ */
+.objectives-list{counter-reset:obj;display:flex;flex-direction:column;gap:.7rem}
+.obj-item{
+  display:flex;gap:.9rem;align-items:flex-start;
+  background:var(--bg-slate);border-radius:7px;padding:.75rem 1rem;
+  font-size:.86rem;color:var(--text-m);transition:background .25s;
+}
+.obj-num{
+  background:var(--ox);color:#fff;font-weight:800;font-size:.8rem;
+  min-width:1.6rem;height:1.6rem;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+
+/* ═══ GLOSSARY ═══ */
+.glossary-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.75rem}
+.gloss-item{
+  background:var(--bg-slate);border:1px solid var(--border);
+  border-radius:7px;padding:.75rem .9rem;transition:background .25s,border-color .25s;
+}
+.gloss-term{font-weight:700;color:var(--cyan);font-size:.85rem;margin-bottom:.3rem}
+.gloss-def{font-size:.8rem;color:var(--text-m);line-height:1.5}
+
+/* ═══ TABLES ═══ */
+.tbl-wrap{overflow-x:auto;margin:1rem 0}
+table{width:100%;border-collapse:collapse;font-size:.82rem}
+thead tr{background:var(--bg-slate2);transition:background .25s}
+thead th{
+  padding:.6rem .75rem;text-align:left;font-weight:700;
+  color:var(--gold);font-size:.75rem;letter-spacing:.05em;text-transform:uppercase;
+  border-bottom:2px solid var(--ox);white-space:nowrap;
+}
+tbody tr{border-bottom:1px solid var(--border)}
+tbody tr:nth-child(even){background:var(--bg-slate)}
+tbody tr:hover{background:var(--bg-slate2)}
+tbody td{padding:.55rem .75rem;color:var(--text);vertical-align:top;transition:background .25s}
+td.pre-fill{color:var(--text-m);font-style:italic;font-size:.79rem}
+td.label-cell{font-weight:600;color:var(--text);white-space:nowrap}
+td.mono{font-family:'Courier New',monospace;font-size:.78rem;color:var(--cyan)}
+
+/* ═══ FORM CONTROLS ═══ */
+select,textarea,input[type=text],input[type=number]{
+  background:var(--bg-inp);border:1px solid var(--bg-inp-bd);color:var(--text);
+  border-radius:5px;font-size:.82rem;font-family:inherit;
+  padding:.35rem .55rem;width:100%;transition:border-color .15s,background .25s,color .25s;
+}
+select:focus,textarea:focus,input:focus{outline:none;border-color:var(--cyan)}
+textarea{resize:vertical;min-height:50px;line-height:1.5}
+
+/* ═══ YES/NO TOGGLES ═══ */
+.yn-group{display:flex;gap:.4rem;flex-wrap:wrap;align-items:center}
+.yn-btn{
+  background:var(--bg-slate);border:1px solid var(--border2);
+  color:var(--text-m);border-radius:4px;padding:.2rem .6rem;
+  font-size:.75rem;font-weight:600;cursor:pointer;transition:all .12s;white-space:nowrap;
+}
+.yn-btn.yes.active{background:var(--sev-low-bg);border-color:var(--sev-low-bd);color:var(--sev-low-tx)}
+.yn-btn.no.active{background:var(--sev-crit-bg);border-color:var(--sev-crit-bd);color:var(--sev-crit-tx)}
+.yn-btn.unc.active{background:var(--sev-med-bg);border-color:var(--sev-med-bd);color:var(--sev-med-tx)}
+.yn-btn.med.active{background:var(--sev-info-bg);border-color:var(--sev-info-bd);color:var(--sev-info-tx)}
+
+/* ═══ SEVERITY BUTTONS ═══ */
+.sev-group{display:flex;gap:.4rem;flex-wrap:wrap}
+.sev-btn{
+  background:var(--bg-slate);border:1px solid var(--border);
+  color:var(--text-m);border-radius:5px;padding:.22rem .65rem;
+  font-size:.75rem;font-weight:700;cursor:pointer;transition:all .12s;white-space:nowrap;
+}
+.sev-btn.crit.active{background:var(--sev-crit-bg);border-color:var(--sev-crit-bd);color:var(--sev-crit-tx)}
+.sev-btn.high.active{background:var(--sev-high-bg);border-color:var(--sev-high-bd);color:var(--sev-high-tx)}
+.sev-btn.med.active{background:var(--sev-med-bg);border-color:var(--sev-med-bd);color:var(--sev-med-tx)}
+.sev-btn.low.active{background:var(--sev-low-bg);border-color:var(--sev-low-bd);color:var(--sev-low-tx)}
+.sev-btn.info.active{background:var(--sev-info-bg);border-color:var(--sev-info-bd);color:var(--sev-info-tx)}
+
+/* ═══ LOG ENTRY CARD ═══ */
+.log-card{
+  background:var(--bg-slate);border:1px solid var(--border);
+  border-radius:8px;padding:1rem 1.1rem;margin-bottom:.85rem;
+  border-left:4px solid var(--border);transition:background .25s,border-color .25s;
+}
+.log-card.critical{border-left-color:var(--red)}
+.log-card.high{border-left-color:#f97316}
+.log-card.medium{border-left-color:#eab308}
+.log-card.low{border-left-color:var(--green)}
+.log-card.info{border-left-color:var(--blue)}
+.log-header{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:.7rem}
+.log-id{
+  background:var(--bg-banner);color:#c8a84b;font-weight:800;font-size:.7rem;
+  padding:.15rem .55rem;border-radius:4px;white-space:nowrap;flex-shrink:0;
+  font-family:'Courier New',monospace;border:1px solid rgba(200,168,75,.3);
+}
+.log-meta{flex:1}
+.log-timestamp{font-family:'Courier New',monospace;font-size:.75rem;color:var(--cyan);margin-bottom:.15rem}
+.log-desc{font-size:.88rem;color:var(--text);font-weight:600;margin-bottom:.2rem}
+.log-detail{font-size:.78rem;color:var(--text-m);line-height:1.5}
+.log-fields{
+  display:grid;grid-template-columns:repeat(5,1fr);gap:.5rem;
+  margin-top:.65rem;
+}
+@media(max-width:700px){.log-fields{grid-template-columns:repeat(2,1fr)}}
+.log-fields .lf-col label{font-size:.68rem;color:var(--text-d);display:block;margin-bottom:.18rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+
+/* ═══ FINDING BLOCKS ═══ */
+.finding-block{
+  background:var(--bg-slate);border:1px solid var(--border);
+  border-radius:8px;padding:1rem 1.1rem;margin-bottom:.85rem;
+  transition:background .25s,border-color .25s;
+}
+.fb-header{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:.7rem}
+.finding-badge{
+  background:var(--ox);color:#fff;font-size:.7rem;font-weight:700;
+  padding:.15rem .55rem;border-radius:4px;white-space:nowrap;flex-shrink:0;
+  font-family:'Courier New',monospace;
+}
+.finding-badge.amber{background:var(--amber)}
+.finding-badge.blue{background:var(--blue)}
+.finding-badge.teal{background:var(--teal)}
+.finding-badge.purple{background:var(--purple)}
+.finding-badge.green{background:var(--green)}
+.finding-text{font-size:.88rem;color:var(--text);font-weight:600}
+.finding-sub{font-size:.78rem;color:var(--text-m);margin-top:.15rem;line-height:1.5}
+.fb-2col{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+@media(max-width:600px){.fb-2col{grid-template-columns:1fr}}
+.fb-label{font-size:.73rem;color:var(--text-d);display:block;margin-bottom:.2rem;font-weight:600}
+
+/* ═══ PILLS ═══ */
+.pill{
+  display:inline-block;border-radius:4px;padding:.08rem .45rem;
+  font-size:.72rem;font-weight:600;margin:.1rem;
+}
+.pill.cui{background:var(--pill-cui-bg);border:1px solid var(--pill-cui-bd);color:var(--pill-cui-tx)}
+.pill.fci{background:var(--pill-fci-bg);border:1px solid var(--pill-fci-bd);color:var(--pill-fci-tx)}
+.pill.sys{background:var(--pill-sys-bg);border:1px solid var(--pill-sys-bd);color:var(--pill-sys-tx)}
+
+/* ═══ INFO / ALERT BOXES ═══ */
+.info-box{
+  background:var(--sev-info-bg);border:1px solid var(--sev-info-bd);
+  border-radius:6px;padding:.7rem 1rem;font-size:.83rem;color:var(--blue);margin:.75rem 0;
+}
+[data-theme="dark"] .info-box{color:var(--sev-info-tx)}
+.alert-box{
+  background:var(--sev-crit-bg);border:1px solid var(--sev-crit-bd);
+  border-radius:6px;padding:.7rem 1rem;font-size:.83rem;color:var(--red);margin:.75rem 0;
+}
+[data-theme="dark"] .alert-box{color:var(--sev-crit-tx)}
+.amber-box{
+  background:var(--sev-high-bg);border:1px solid var(--sev-high-bd);
+  border-radius:6px;padding:.7rem 1rem;font-size:.83rem;color:var(--amber);margin:.75rem 0;
+}
+[data-theme="dark"] .amber-box{color:var(--sev-high-tx)}
+
+/* ═══ RUBRIC ═══ */
+.score-input{
+  background:var(--bg-inp);border:1px solid var(--bg-inp-bd);color:var(--text);
+  border-radius:5px;font-size:.9rem;font-weight:700;width:70px;text-align:center;padding:.3rem;
+}
+.score-total-row{background:var(--bg-slate2)!important}
+.score-total-row td{font-weight:800;color:var(--gold)!important;font-size:.9rem}
+.rating-badge{display:inline-block;padding:.2rem .7rem;border-radius:5px;font-size:.8rem;font-weight:700;letter-spacing:.04em}
+.rating-excellent{background:var(--rb-exc-bg);border:1px solid var(--rb-exc-bd);color:var(--rb-exc-tx)}
+.rating-proficient{background:var(--rb-pro-bg);border:1px solid var(--rb-pro-bd);color:var(--rb-pro-tx)}
+.rating-developing{background:var(--rb-dev-bg);border:1px solid var(--rb-dev-bd);color:var(--rb-dev-tx)}
+.rating-needs{background:var(--rb-ni-bg);border:1px solid var(--rb-ni-bd);color:var(--rb-ni-tx)}
+
+/* ═══ DEBRIEF ═══ */
+.debrief-list{display:flex;flex-direction:column;gap:.7rem}
+.dq-item{
+  background:var(--bg-slate);border-radius:7px;padding:.75rem 1rem;
+  display:flex;gap:.85rem;align-items:flex-start;transition:background .25s;
+}
+.dq-num{
+  background:var(--teal);color:#fff;font-weight:800;font-size:.78rem;
+  min-width:1.6rem;height:1.6rem;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.dq-text{color:var(--text-m);line-height:1.55;font-size:.86rem}
+
+/* ═══ SCORE BAR ═══ */
+#score-bar{
+  position:fixed;bottom:0;left:0;right:0;
+  background:var(--bg-banner);border-top:1px solid rgba(255,255,255,.07);
+  padding:.5rem 1.25rem;
+  display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;z-index:100;
+}
+.sb-stat{display:flex;flex-direction:column;align-items:center}
+.sb-val{font-size:1.1rem;font-weight:800;color:#c8a84b}
+.sb-label{font-size:.68rem;color:#607090;text-transform:uppercase;letter-spacing:.06em}
+.sb-rating{font-size:.85rem;font-weight:700;padding:.2rem .7rem;border-radius:5px}
+
+/* ═══ MONITORING STATUS BADGES ═══ */
+.mon-badge{display:inline-block;border-radius:4px;padding:.12rem .55rem;font-size:.73rem;font-weight:700}
+.mon-active{background:var(--sev-low-bg);border:1px solid var(--sev-low-bd);color:var(--sev-low-tx)}
+.mon-partial{background:var(--sev-med-bg);border:1px solid var(--sev-med-bd);color:var(--sev-med-tx)}
+.mon-gap{background:var(--sev-crit-bg);border:1px solid var(--sev-crit-bd);color:var(--sev-crit-tx)}
+
+/* ═══ UTILITIES ═══ */
+.mt1{margin-top:.75rem}.mt2{margin-top:1.25rem}
+.text-sm{font-size:.8rem;color:var(--text-m)}
+.text-gold{color:var(--gold)}.text-cyan{color:var(--cyan)}
+.hr{border:none;border-top:1px solid var(--border);margin:1.25rem 0}
+.section-h3{font-size:.95rem;color:var(--gold);font-weight:700;margin:1.1rem 0 .65rem}
+
+/* ═══ PRINT ═══ */
+@media print{
+  #topbar,#timer-bar,#tab-nav,#score-bar{display:none!important}
+  .section-card{display:block!important;break-inside:avoid;box-shadow:none}
+  body{background:#fff!important;color:#000!important}
+  select,textarea,input{border:1px solid #999}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════ TOPBAR ══════════ -->
+<div id="topbar">
+  <div class="topbar-left">
+    <div class="domain-badge">AU</div>
+    <div class="topbar-title">
+      FFSI — Audit Log &amp; Monitoring Report Exercise
+      <small>CMMC 2.0 Workshop · NIST SP 800-171 Domains AU &amp; SI · 20 Minutes</small>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <button id="theme-toggle" onclick="toggleTheme()">☀️ Light Mode</button>
+    <button class="tb-btn" onclick="window.print()">🖨 Print</button>
+    <button class="tb-btn" onclick="exportAnswers()">📤 Export</button>
+    <button class="tb-btn danger" onclick="confirmReset()">↺ Reset</button>
+  </div>
+</div>
+
+<!-- ══════════ HERO ══════════ -->
+<div id="hero">
+  <div class="hero-eyebrow">🔍 CMMC 2.0 · Audit &amp; Accountability + System Integrity Domains</div>
+  <h1>FFSI Security Log &amp; Monitoring<br/><em>Audit Review Exercise</em></h1>
+  <p class="hero-sub">Review FFSI security logs, classify events, evaluate monitoring effectiveness, and complete an Audit Log &amp; Monitoring Report — applying NIST AU and SI requirements to protect CUI and support CMMC assessment readiness.</p>
+  <div class="hero-chips">
+    <span class="chip">NIST 800-171 AU &amp; SI Domains</span>
+    <span class="chip">100 Points</span>
+    <span class="chip">5 Activities</span>
+    <span class="chip">⏱ 20 Minutes</span>
+    <span class="chip alert">🔴 10 Live Log Entries</span>
+    <span class="chip warn">⚠ Fictional — Training Use Only</span>
+  </div>
+</div>
+
+<!-- ══════════ TIMER ══════════ -->
+<div id="timer-bar">
+  <div>
+    <div class="timer-display" id="timer-display">20:00</div>
+    <div style="font-size:.7rem;color:#607090;margin-top:.1rem">Exercise Timer</div>
+  </div>
+  <div style="display:flex;gap:.4rem;align-items:center">
+    <button class="tc-btn" id="timer-start" onclick="startTimer()">▶ Start</button>
+    <button class="tc-btn" id="timer-pause" onclick="pauseTimer()" style="display:none">⏸ Pause</button>
+    <button class="tc-btn" onclick="resetTimer()">↺</button>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-label">Exercise Progress — <span id="prog-pct">0%</span></div>
+    <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+  </div>
+</div>
+
+<!-- ══════════ TAB NAV ══════════ -->
+<div id="tab-nav">
+  <div class="tab-nav-inner">
+    <button class="tab-btn active" onclick="showTab('intro')">Intro</button>
+    <button class="tab-btn" onclick="showTab('objectives')">Objectives</button>
+    <button class="tab-btn" onclick="showTab('terms')">Key Terms</button>
+    <button class="tab-btn" onclick="showTab('act1')">Act 1 — Log Review</button>
+    <button class="tab-btn" onclick="showTab('act2')">Act 2 — ALMR Completion</button>
+    <button class="tab-btn" onclick="showTab('act3')">Act 3 — Monitoring Effectiveness</button>
+    <button class="tab-btn" onclick="showTab('act4')">Act 4 — Event Analysis</button>
+    <button class="tab-btn" onclick="showTab('act5')">Act 5 — Findings</button>
+    <button class="tab-btn" onclick="showTab('debrief')">Debrief</button>
+    <button class="tab-btn" onclick="showTab('rubric')">Rubric</button>
+  </div>
+</div>
+
+<!-- ══════════ MAIN ══════════ -->
+<main>
+
+<!-- ─────── INTRO ─────── -->
+<div id="tab-intro" class="section-card active">
+  <div class="section-header">
+    <div class="section-icon">📋</div>
+    <div class="section-meta">
+      <h2>Introduction — Audit Logging &amp; Monitoring Under CMMC</h2>
+      <span class="pts no-pts">Overview</span>
+    </div>
+  </div>
+  <div class="intro-body">
+    <h3>Why Audit Logs Are Critical During a CMMC Assessment</h3>
+    <p>Audit logs are the evidentiary backbone of a CMMC Level 2 assessment. A C3PAO assessor cannot verify that security controls are operating as described in the System Security Plan without examining logs that demonstrate those controls are active, alerting, and being reviewed. Every claim in the SSP — from "we monitor privileged account activity" to "we detect unauthorized access attempts" — must be substantiated with log data. Organizations that lack logging, retain logs insufficiently, or fail to review them actively will generate findings in multiple CMMC domains simultaneously.</p>
+
+    <h3>Why Organizations Must Actively Review Logs</h3>
+    <p>Generating logs is necessary but insufficient. NIST practice <span class="nist-tag">3.3.1</span> requires creating and retaining audit logs to enable the monitoring, analysis, investigation, and reporting of unlawful or unauthorized system activity. Practice <span class="nist-tag">3.3.2</span> requires that designated personnel review and update logged events. A SIEM that generates alerts nobody reads is not evidence of monitoring — it is evidence of a monitoring failure. Assessors will ask who reviews logs, how often, and what they do with findings.</p>
+
+    <h3>Why Assessors Request Audit Evidence</h3>
+    <p>During assessment, C3PAO assessors use audit records to validate three things: (1) that the described controls are technically active, (2) that the organization detects anomalies when they occur, and (3) that detected anomalies are acted upon. They will request SIEM screenshots, log exports, alert-response tickets, and the Audit Log &amp; Monitoring Report itself. Gaps in any of these create scored deficiencies — even if the underlying controls are functioning correctly.</p>
+
+    <h3>How Monitoring Supports Incident Detection</h3>
+    <p>Monitoring and incident response are interdependent. Without monitoring, incidents go undetected until damage is catastrophic. The FFSI phishing incident (IR Exercise) was detected by SIEM monitoring — without that alert at 10:23 AM, the attacker might have operated undetected for days. NIST practice <span class="nist-tag">3.14.6</span> (SI domain) requires monitoring organizational systems to detect attacks and indicators of potential attacks. Monitoring is what converts the IRP from a theoretical document into an operational capability.</p>
+
+    <h3>Why Log Review Activities Must Be Documented</h3>
+    <p>The act of reviewing logs must itself be logged. An assessor asking "do you review your logs?" is satisfied by neither a verbal "yes" nor a single screenshot. They expect to see a recurring, documented Audit Log &amp; Monitoring Report — a structured record showing what was reviewed, by whom, when, what was found, and what was done about it. That document is what you are completing in this exercise.</p>
+
+    <div class="info-box">
+      <strong>Scenario:</strong> FFSI's Compliance Manager has tasked the Security Analyst with completing the monthly Audit Log &amp; Monitoring Report covering the period of <strong>October 1–31, 2025</strong>. The SIEM has flagged 10 events for analyst review this month. Your job is to triage these events, classify their severity, determine whether escalation is required, and complete the ALMR.
+    </div>
+
+    <h3>Relevant NIST SP 800-171 Practices</h3>
+    <ul>
+      <li><span class="nist-tag">3.3.1</span> Create and retain system audit logs to enable monitoring, analysis, investigation, and reporting of unlawful or unauthorized activity</li>
+      <li><span class="nist-tag">3.3.2</span> Ensure the actions of individual system users can be uniquely traced to those users so they can be held accountable</li>
+      <li><span class="nist-tag">3.3.5</span> Correlate audit record review, analysis, and reporting processes for investigation and response to indications of unlawful, unauthorized, suspicious, or unusual activity</li>
+      <li><span class="nist-tag">3.3.6</span> Provide audit record reduction and report generation to support on-demand analysis and reporting</li>
+      <li><span class="nist-tag">3.14.6</span> Monitor organizational systems, including inbound and outbound communications traffic, to detect attacks and indicators of potential attacks</li>
+      <li><span class="nist-tag">3.14.7</span> Identify unauthorized use of organizational systems</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ─────── OBJECTIVES ─────── -->
+<div id="tab-objectives" class="section-card">
+  <div class="section-header">
+    <div class="section-icon">🎯</div>
+    <div class="section-meta">
+      <h2>Learning Objectives</h2>
+      <span class="pts no-pts">6 Objectives</span>
+    </div>
+  </div>
+  <div class="objectives-list">
+    <div class="obj-item"><div class="obj-num">1</div><div>Explain how audit logging and monitoring requirements under NIST SP 800-171 (AU and SI domains) function as primary evidence sources during a CMMC Level 2 C3PAO assessment.</div></div>
+    <div class="obj-item"><div class="obj-num">2</div><div>Review 10 realistic FFSI security log entries and classify each as normal activity, suspicious activity, or confirmed security event — determining whether investigation or escalation is required and whether CUI is potentially affected.</div></div>
+    <div class="obj-item"><div class="obj-num">3</div><div>Complete a formal Audit Log &amp; Monitoring Report (ALMR) for FFSI's October 2025 review period, documenting event severity, analyst decisions, escalation status, and disposition for each log entry.</div></div>
+    <div class="obj-item"><div class="obj-num">4</div><div>Evaluate FFSI's monitoring infrastructure for effectiveness — identifying gaps in log coverage, retention policy compliance, privileged account monitoring, and alert review processes.</div></div>
+    <div class="obj-item"><div class="obj-num">5</div><div>Classify four scenario-based security events by risk level (Informational through Potential Incident) and justify each classification with specific CUI impact analysis and NIST practice references.</div></div>
+    <div class="obj-item"><div class="obj-num">6</div><div>Document FFSI audit findings and corrective actions in a structured format suitable for inclusion in the POA&amp;M and for presentation to a C3PAO assessor as compliance evidence.</div></div>
+  </div>
+</div>
+
+<!-- ─────── KEY TERMS ─────── -->
+<div id="tab-terms" class="section-card">
+  <div class="section-header">
+    <div class="section-icon">📖</div>
+    <div class="section-meta">
+      <h2>Key Terms</h2>
+      <span class="pts no-pts">Reference Glossary</span>
+    </div>
+  </div>
+  <div class="glossary-grid">
+    <div class="gloss-item"><div class="gloss-term">Audit Log</div><div class="gloss-def">A chronological, tamper-evident record of system events — including user logins, access attempts, configuration changes, file operations, and privileged actions — generated automatically by systems and applications. Required by NIST 800-171 practice 3.3.1.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Security Event</div><div class="gloss-def">Any observable occurrence in a network or system that may have security implications — ranging from routine authentication attempts to suspicious access patterns. Events are analyzed to determine whether they represent incidents.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Security Incident</div><div class="gloss-def">A confirmed event that violates or imminently threatens to violate security policies, acceptable use policies, or standard security practices — requiring an active response per the Incident Response Plan.</div></div>
+    <div class="gloss-item"><div class="gloss-term">SIEM</div><div class="gloss-def">Security Information and Event Management — a platform that aggregates log data from multiple sources, correlates events across systems, generates alerts based on defined rules, and provides centralized audit record storage and search capability.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Log Correlation</div><div class="gloss-def">The process of combining and analyzing log records from multiple systems or time periods to detect patterns that no single source could reveal — such as a failed login followed by a successful login from a different IP to a CUI system.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Event Monitoring</div><div class="gloss-def">The continuous or periodic review of log data and security alerts to identify anomalies, policy violations, and indicators of attack. Monitoring must be active and documented — passive log storage without review does not satisfy CMMC requirements.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Alert</div><div class="gloss-def">An automated notification generated by a SIEM, EDR, or monitoring tool when observed activity matches a defined suspicious or malicious pattern. Alerts require analyst review and documented disposition — unreviewed alerts are a CMMC finding.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Audit Review</div><div class="gloss-def">The structured, recurring examination of audit logs and SIEM alerts by designated personnel to identify security anomalies and verify control effectiveness. The Audit Log &amp; Monitoring Report documents this review activity.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Audit Trail</div><div class="gloss-def">A complete, unbroken sequence of log records that establishes accountability for a sequence of actions — enabling forensic reconstruction of what happened, when, by whom, and on which system. Required to support incident investigation under 3.3.5.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Privileged Account</div><div class="gloss-def">An account with elevated system rights — administrative, root, or service accounts — whose activities present heightened risk. Privileged account actions must be logged, individually attributed, and reviewed more frequently than standard user activity.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Failed Login Attempt</div><div class="gloss-def">An authentication failure recorded in system logs. Isolated failures are normal; patterns of repeated failures, failures followed by success, or failures against multiple accounts in rapid sequence are indicators of brute-force or credential-stuffing attacks.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Security Monitoring</div><div class="gloss-def">The organizational capability to continuously observe system activity, network traffic, and user behavior for anomalies. Monitoring encompasses tooling (SIEM, EDR, firewall logs), people (analysts), and process (alert triage, escalation, documentation).</div></div>
+    <div class="gloss-item"><div class="gloss-term">Retention Period</div><div class="gloss-def">The defined minimum duration for which audit logs must be preserved. NIST 800-171 requires sufficient retention to support incident investigation; DFARS guidance suggests a minimum of 90 days online retention plus 3 years archival for CUI system logs.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Log Integrity</div><div class="gloss-def">The assurance that audit logs have not been altered, deleted, or tampered with since creation. Log integrity is protected through write-once storage, cryptographic hashing, and separation of duties between system administrators and log custodians.</div></div>
+    <div class="gloss-item"><div class="gloss-term">CUI</div><div class="gloss-def">Controlled Unclassified Information — government-created or -possessed information requiring protection per NIST SP 800-171. Any security event affecting systems containing CUI receives elevated priority and may trigger DFARS reporting obligations.</div></div>
+  </div>
+</div>
+
+<!-- ─────── ACT 1 — LOG REVIEW ─────── -->
+<div id="tab-act1" class="section-card">
+  <div class="section-header">
+    <div class="section-icon">🔎</div>
+    <div class="section-meta">
+      <h2>Activity 1 — Log Review &amp; Event Identification</h2>
+      <span class="pts">30 pts</span>
+    </div>
+  </div>
+  <div class="instr"><strong>Instructions:</strong> Review the 10 SIEM-flagged log entries from FFSI's October 2025 monitoring period. For each entry, answer the five classification questions using the toggle buttons, assign a severity level, and provide written analysis in the notes field. Your classifications will feed directly into the ALMR in Activity 2.</div>
+
+  <div class="amber-box">📊 <strong>FFSI Monitoring Context:</strong> All 10 entries were flagged by SIEM correlation rules. Systems marked <span class="pill cui">CUI</span> contain Controlled Unclassified Information. Entries are listed in detection order. Pay attention to patterns across entries — some events are related.</div>
+
+  <div id="log-entries-body"></div>
+</div>
+
+<!-- ─────── ACT 2 — ALMR COMPLETION ─────── -->
+<div id="tab-act2" class="section-card">
+  <div class="section-header">
+    <div class="section-icon">📄</div>
+    <div class="section-meta">
+      <h2>Activity 2 — Audit Log &amp; Monitoring Report Completion</h2>
+      <span class="pts">30 pts</span>
+    </div>
+  </div>
+  <div class="instr"><strong>Instructions:</strong> Complete the Audit Log &amp; Monitoring Report for FFSI's October 2025 review period. Pre-filled gray fields are drawn from the log entries. Complete all white input fields. Every event from Activity 1 must appear in this report. Incomplete ALMR entries are scored as documentation failures.</div>
+
+  <div class="info-box">📋 <strong>Report Period:</strong> October 1–31, 2025 &nbsp;|&nbsp; <strong>Reviewer:</strong> FFSI Security Analyst &nbsp;|&nbsp; <strong>Systems in Scope:</strong> All CUI-touching systems per Asset Inventory &nbsp;|&nbsp; <strong>NIST Practices:</strong> <span class="nist-tag">3.3.1</span> <span class="nist-tag">3.3.2</span> <span class="nist-tag">3.3.5</span></div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:60px">Event ID</th>
+          <th style="width:110px">Date / Time</th>
+          <th style="width:160px">System</th>
+          <th>Event Description</th>
+          <th style="width:95px">Severity</th>
+          <th>Analyst Review Notes</th>
+          <th style="width:100px">Escalation?</th>
+          <th style="width:90px">Status</th>
+        </tr>
+      </thead>
+      <tbody id="almr-body"></tbody>
+    </table>
+  </div>
+
+  <div class="mt2">
+    <div class="fb-2col">
+      <div>
+        <label class="fb-label">Monthly Review Summary (overall FFSI security posture this period):</label>
+        <textarea rows="4" placeholder="Summarize the security posture for October 2025. Note the total number of events reviewed, how many required escalation, which systems generated the most alerts, and the overall risk assessment for the period..." oninput="updateProgress()"></textarea>
+      </div>
+      <div>
+        <label class="fb-label">Open Action Items Carried Forward to Next Review Period:</label>
+        <textarea rows="4" placeholder="List any unresolved findings, pending investigations, or corrective actions from this review that must be tracked into November 2025..." oninput="updateProgress()"></textarea>
+      </div>
+    </div>
+    <div style="margin-top:.65rem;display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem">
+      <div>
+        <label class="fb-label">Reviewed and Approved By:</label>
+        <select onchange="updateProgress()">
+          <option value="">— Select approver —</option>
+          <option>CIO</option>
+          <option>IT Manager</option>
+          <option>Compliance Manager</option>
+          <option>Security Analyst</option>
+        </select>
+      </div>
+      <div>
+        <label class="fb-label">Review Date:</label>
+        <input type="text" placeholder="e.g. November 4, 2025" oninput="updateProgress()"/>
+      </div>
+      <div>
+        <label class="fb-label">Next Scheduled Review:</label>
+        <input type="text" placeholder="e.g. December 2, 2025" oninput="updateProgress()"/>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────── ACT 3 — MONITORING EFFECTIVENESS ─────── -->
+<div id="tab-act3" class="section-card">
+  <div class="section-header">
+    <div class="section-icon">📡</div>
+    <div class="section-meta">
+      <h2>Activity 3 — Monitoring Effectiveness Review</h2>
+      <span class="pts">20 pts</span>
+    </div>
+  </div>
+  <div class="instr"><strong>Instructions:</strong> Evaluate FFSI's monitoring infrastructure against CMMC Level 2 expectations. For each monitoring control, determine the current status, identify any gaps, and assess the compliance risk. A C3PAO assessor will ask to see this analysis during the audit.</div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Monitoring Control</th>
+          <th style="width:130px">NIST Practice</th>
+          <th style="width:120px">Current Status</th>
+          <th>Gap / Concern Identified</th>
+          <th style="width:90px">Risk Level</th>
+        </tr>
+      </thead>
+      <tbody id="mon-eff-body"></tbody>
+    </table>
+  </div>
+
+  <div class="mt2">
+    <div class="finding-block">
+      <div class="fb-header"><span class="finding-badge blue">Q5</span><div><div class="finding-text">Are monitoring responsibilities formally assigned to named FFSI personnel?</div><div class="finding-sub">C3PAO assessors will ask "who is responsible for reviewing logs?" and expect a documented answer with evidence of actual reviews.</div></div></div>
+      <div class="fb-2col">
+        <div>
+          <label class="fb-label">Current assignment status:</label>
+          <div class="yn-group" style="margin-bottom:.5rem">
+            <button class="yn-btn yes" onclick="ynToggle(this,'yes')">Formally Assigned</button>
+            <button class="yn-btn unc" onclick="ynToggle(this,'unc')">Informally Assigned</button>
+            <button class="yn-btn no" onclick="ynToggle(this,'no')">Not Assigned</button>
+          </div>
+          <textarea rows="2" placeholder="Who at FFSI is responsible for log review? Is this documented in the SSP or a job description?" oninput="updateProgress()"></textarea>
+        </div>
+        <div>
+          <label class="fb-label">What evidence would a C3PAO request to confirm monitoring responsibilities?</label>
+          <textarea rows="3" placeholder="Completed ALMR reports, SIEM alert-response tickets, SSP Section 3.3 narrative, role assignment documentation, training records..." oninput="updateProgress()"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────── ACT 4 — EVENT ANALYSIS ─────── -->
+<div id="tab-act4" class="section-card">
+  <div class="section-header">
+    <div class="section-icon">🧠</div>
+    <div class="section-meta">
+      <h2>Activity 4 — Security Event Analysis</h2>
+      <span class="pts">no-pts</span>
+    </div>
+  </div>
+  <div class="instr"><strong>Instructions:</strong> Four additional security scenarios have been elevated for deeper analysis. For each, assign a risk classification using the five-level scale, analyze the CUI impact, and document your recommended response. Reference specific NIST 800-171 practices where applicable.</div>
+
+  <p class="text-sm" style="margin-bottom:.75rem"><strong>Classification Scale:</strong> <span style="color:var(--sev-info-tx)">ℹ Informational</span> → <span style="color:var(--sev-low-tx)">🟢 Low Risk</span> → <span style="color:var(--sev-med-tx)">🟡 Medium Risk</span> → <span style="color:var(--sev-high-tx)">🟠 High Risk</span> → <span style="color:var(--sev-crit-tx)">🔴 Potential Incident</span></p>
+
+  <div id="event-analysis-body"></div>
+</div>
+
+<!-- ─────── ACT 5 — FINDINGS ─────── -->
+<div id="tab-act5" class="section-card">
+  <div class="section-header">
+    <div class="section-icon">⚠️</div>
+    <div class="section-meta">
+      <h2>Activity 5 — Audit Findings &amp; Corrective Actions</h2>
+      <span class="pts">20 pts</span>
+    </div>
+  </div>
+  <div class="instr"><strong>Instructions:</strong> Based on your analysis in Activities 1–4, complete the formal audit findings table. Document the specific finding, its compliance risk, the corrective action, and the priority. Findings must be added to the FFSI POA&amp;M if not immediately resolvable. Pre-populated finding categories reflect common CMMC audit deficiencies.</div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:85px">Finding ID</th>
+          <th style="width:130px">Category</th>
+          <th>Specific Finding at FFSI</th>
+          <th style="width:110px">Compliance Risk</th>
+          <th>Corrective Action</th>
+          <th style="width:90px">Priority</th>
+          <th style="width:100px">Owner</th>
+        </tr>
+      </thead>
+      <tbody id="findings-body"></tbody>
+    </table>
+  </div>
+
+  <div class="mt2">
+    <label class="fb-label">Corrective Action Summary for FFSI Leadership:</label>
+    <textarea rows="4" placeholder="Summarize the most critical audit and monitoring deficiencies identified this review period, their collective impact on CMMC readiness, and the top three corrective actions that should be prioritized before the assessment..." oninput="updateProgress()"></textarea>
+  </div>
+</div>
+
+<!-- ─────── DEBRIEF ─────── -->
+<div id="tab-debrief" class="section-card">
+  <div class="section-header">
+    <div class="section-icon">🗣</div>
+    <div class="section-meta">
+      <h2>Instructor Debrief Questions</h2>
+      <span class="pts no-pts">Discussion — 5–10 min</span>
+    </div>
+  </div>
+  <p class="text-sm" style="margin-bottom:1rem">Use these questions to drive a post-exercise discussion. Participants should cite specific FFSI log entries, systems, and findings to support their responses.</p>
+  <div class="debrief-list" id="debrief-body"></div>
+</div>
+
+<!-- ─────── RUBRIC ─────── -->
+<div id="tab-rubric" class="section-card">
+  <div class="section-header">
+    <div class="section-icon">📊</div>
+    <div class="section-meta">
+      <h2>Facilitator Scoring Rubric</h2>
+      <span class="pts no-pts">100 Points Total</span>
+    </div>
+  </div>
+  <p class="text-sm" style="margin-bottom:1rem">Enter scores per category. Total and rating update automatically. <strong>Excellent: 90–100 · Proficient: 75–89 · Developing: 60–74 · Needs Improvement: &lt;60</strong></p>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Category</th><th>Excellent</th><th>Proficient</th><th>Developing</th><th>Needs Improvement</th><th>Max</th><th>Score</th></tr></thead>
+      <tbody id="rubric-body"></tbody>
+    </table>
+  </div>
+  <div class="mt2" style="display:flex;gap:1.5rem;flex-wrap:wrap;align-items:center">
+    <div class="sb-stat"><div class="sb-val" id="rubric-total">0</div><div class="sb-label">Total Points</div></div>
+    <div class="sb-stat"><div class="sb-val" id="rubric-pct">0%</div><div class="sb-label">Percentage</div></div>
+    <div id="rubric-rating-badge" class="rating-badge rating-needs">Needs Improvement</div>
+  </div>
+  <div class="hr mt2"></div>
+  <h3 class="section-h3">Performance Level Descriptions</h3>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.7rem">
+    <div class="finding-block"><div class="finding-badge green">Excellent · 90–100</div><p class="text-sm mt1">All 10 log entries correctly classified with scenario-specific justification. ALMR fully completed with all required fields. Monitoring gaps correctly identified with accurate risk ratings. Event analysis correctly classifies all 4 scenarios with CUI impact and NIST citations. Findings are FFSI-specific with actionable corrective actions and named owners.</p></div>
+    <div class="finding-block"><div class="finding-badge blue">Proficient · 75–89</div><p class="text-sm mt1">8–9 of 10 log entries correctly classified. ALMR mostly complete with minor omissions. Most monitoring gaps identified. Event analysis correct for 3–4 scenarios. Findings address main deficiencies but corrective actions may lack specificity or named ownership.</p></div>
+    <div class="finding-block"><div class="finding-badge amber">Developing · 60–74</div><p class="text-sm mt1">6–7 entries classified; some misclassifications. ALMR partially complete with several gaps. Monitoring effectiveness analysis incomplete. Event analysis correct for 2 scenarios. Findings identified but corrective actions are generic and not FFSI-specific.</p></div>
+    <div class="finding-block"><div class="finding-badge">Needs Improvement · &lt;60</div><p class="text-sm mt1">Fewer than 6 entries classified correctly. ALMR substantially incomplete. Monitoring gaps not identified. Event analysis missing or incorrect. No corrective actions or findings documented. Demonstrates limited understanding of CMMC AU/SI domain requirements.</p></div>
+  </div>
+</div>
+
+</main>
+
+<!-- ══════════ SCORE BAR ══════════ -->
+<div id="score-bar">
+  <div class="sb-stat"><div class="sb-val" id="sb-total">0</div><div class="sb-label">Total Points</div></div>
+  <div class="sb-stat"><div class="sb-val" id="sb-pct">0%</div><div class="sb-label">Percentage</div></div>
+  <div id="sb-rating" class="sb-rating rating-needs">Needs Improvement</div>
+  <div style="flex:1"></div>
+  <div style="font-size:.78rem;color:#607090">CMMC 2.0 · NIST SP 800-171 AU &amp; SI Domains · FFSI Audit Log Exercise</div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════
+//  THEME — light default
+// ═══════════════════════════════════════════════════
+(function(){
+  const saved = localStorage.getItem('ffsi-almr-theme') || 'light';
+  document.documentElement.setAttribute('data-theme', saved);
+  updateThemeBtn(saved);
+})();
+
+function toggleTheme(){
+  const cur = document.documentElement.getAttribute('data-theme');
+  const next = cur === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('ffsi-almr-theme', next);
+  updateThemeBtn(next);
+}
+function updateThemeBtn(theme){
+  const btn = document.getElementById('theme-toggle');
+  if(!btn) return;
+  btn.textContent = theme === 'light' ? '🌙 Dark Mode' : '☀️ Light Mode';
+}
+
+// ═══════════════════════════════════════════════════
+//  DATA
+// ═══════════════════════════════════════════════════
+const LOG_ENTRIES = [
+  {
+    id:'EVT-001', cls:'high',
+    ts:'Oct 3, 2025 · 02:17 AM',
+    sys:'Active Directory / Entra ID', sysCUI: true,
+    desc:'47 failed login attempts against privileged account "sysadmin-prod" — all from IP 91.108.4.201 (Russia)',
+    detail:'Attempts made over 8 minutes. Account lockout triggered at attempt 35. SIEM correlated source IP to known brute-force botnet. No successful authentication.',
+    nist:'3.3.1, 3.5.3, 3.14.6',
+  },
+  {
+    id:'EVT-002', cls:'critical',
+    ts:'Oct 3, 2025 · 02:31 AM',
+    sys:'VPN Platform / Contract Mgmt System', sysCUI: true,
+    desc:'Successful VPN authentication for user "jramirez" from IP 91.108.4.201 (same source as EVT-001) — 14 minutes after brute-force attempt',
+    detail:'jramirez (Logistics Manager) has no prior VPN logins after midnight. Session lasted 22 minutes. Contract Management System accessed; 34 CUI contract files opened.',
+    nist:'3.3.1, 3.3.5, 3.14.7',
+  },
+  {
+    id:'EVT-003', cls:'high',
+    ts:'Oct 7, 2025 · 09:44 AM',
+    sys:'Active Directory', sysCUI: false,
+    desc:'New privileged account "svc-backup-new" created by System Administrator — no corresponding change ticket in ITSM system',
+    detail:'Account created with Domain Admin rights. No approval record found. svc-backup-new has not been used since creation. IT Manager was out of office on Oct 7.',
+    nist:'3.1.5, 3.1.6, 3.3.2',
+  },
+  {
+    id:'EVT-004', cls:'medium',
+    ts:'Oct 9, 2025 · 11:22 AM',
+    sys:'Contract Management System', sysCUI: true,
+    desc:'Contracts Manager downloaded 847 MB of contract data in a single session — 3.2× their 30-day average download volume',
+    detail:'Download occurred over 18 minutes. Files included CUI contract specifications, delivery schedules, and Army end-use statements. User was authenticated with valid credentials. No DLP alert triggered.',
+    nist:'3.1.3, 3.3.1, 3.14.7',
+  },
+  {
+    id:'EVT-005', cls:'high',
+    ts:'Oct 11, 2025 · 06:58 PM',
+    sys:'Firewall Infrastructure', sysCUI: false,
+    desc:'Firewall outbound policy modified after business hours by Network Administrator — rule added allowing unrestricted outbound on port 8080',
+    detail:'Change made at 6:58 PM on a Friday. No change management ticket found. Rule persisted for 61 hours before discovery Monday morning. No unauthorized outbound traffic detected during window.',
+    nist:'3.3.2, 3.4.1, 3.4.5',
+  },
+  {
+    id:'EVT-006', cls:'medium',
+    ts:'Oct 14, 2025 · 10:23 AM',
+    sys:'Microsoft 365 / Contract Mgmt System', sysCUI: true,
+    desc:'Phishing-originated credential compromise — Contracts Manager "mwebb" authenticated from Tor exit node IP 185.220.101.47 (Netherlands)',
+    detail:'This is the FFSI IRP Exercise incident. CUI contract files accessible. SIEM detection at 10:23 AM. 36-minute gap between detection and escalation to IT Manager.',
+    nist:'3.3.5, 3.6.1, 3.14.6',
+  },
+  {
+    id:'EVT-007', cls:'medium',
+    ts:'Oct 19, 2025 · 03:12 PM',
+    sys:'EDR Platform / File Server', sysCUI: true,
+    desc:'EDR alert: USB mass storage device connected to workstation FFSI-WS-041 (Production Manager\'s workstation) — endpoint policy prohibits removable media',
+    detail:'Device connected for 9 minutes. 2.1 GB of data transfer recorded by EDR before USB was blocked. File names include "FFSI_prod_specs_Q1_2026.xlsx" — production specification files tagged CUI.',
+    nist:'3.8.7, 3.8.8, 3.14.6',
+  },
+  {
+    id:'EVT-008', cls:'low',
+    ts:'Oct 22, 2025 · 08:15 AM',
+    sys:'Microsoft 365', sysCUI: false,
+    desc:'Privileged admin account "admin@ffsi.com" used for routine email access and Teams meetings — standard user activity performed under admin credentials',
+    detail:'Account has Global Administrator role. Used daily for non-administrative tasks. No MFA challenge recorded for 3 of 5 logins this month. Violates least privilege policy.',
+    nist:'3.1.5, 3.1.6, 3.5.3',
+  },
+  {
+    id:'EVT-009', cls:'high',
+    ts:'Oct 25, 2025 · 11:07 PM',
+    sys:'Backup Infrastructure', sysCUI: true,
+    desc:'Backup job for Contract Management System failed for the 4th consecutive night — no alert generated until manual check by Cloud Administrator',
+    detail:'Backup failure began Oct 22. SIEM alert rule for backup failures was disabled during a tuning exercise on Oct 21 and never re-enabled. CUI data has no verified backup for 4 days.',
+    nist:'3.3.1, 3.8.9, 3.14.6',
+  },
+  {
+    id:'EVT-010', cls:'medium',
+    ts:'Oct 29, 2025 · 02:00 PM',
+    sys:'SIEM Platform', sysCUI: false,
+    desc:'SIEM log ingestion gap detected — ERP system logs not received for 72-hour period Oct 26–29; root cause: misconfigured syslog forwarder after ERP patch',
+    detail:'ERP system contains FCI. Gap means 3 days of ERP activity is unauditable. ERP admin performed 14 configuration changes during the gap. No compensating control was activated.',
+    nist:'3.3.1, 3.3.5, 3.4.5',
+  },
+];
+
+const ALMR_STATUSES = ['','Closed — No Action','Escalated to IT Manager','Under Investigation','Referred to IRP','Pending Corrective Action','Added to POA&M'];
+const ALMR_ESCALATION = ['','Yes — Escalated','No — Analyst Closed','Pending Review'];
+
+const MON_CONTROLS = [
+  {ctrl:'All CUI systems generating audit logs to SIEM', nist:'3.3.1', status:'active', notes:'M365, AD, Contract Mgmt, VPN currently ingesting. ERP gap found (EVT-010).'},
+  {ctrl:'Audit logs retained minimum 90 days online + 3 years archived', nist:'3.3.1', status:'gap', notes:''},
+  {ctrl:'Privileged account activity individually logged and attributed', nist:'3.3.2', status:'partial', notes:'svc-backup-new created without change ticket (EVT-003).'},
+  {ctrl:'SIEM alert rules reviewed and tuned quarterly', nist:'3.3.5', status:'gap', notes:'Backup alert rule disabled and not re-enabled (EVT-009).'},
+  {ctrl:'Failed login patterns trigger automated alerting', nist:'3.14.6', status:'active', notes:'EVT-001 correctly detected. Correlation with EVT-002 needs review.'},
+  {ctrl:'Removable media connections logged and alerted', nist:'3.8.7', status:'partial', notes:'EDR detected USB in EVT-007 but DLP did not alert on data transfer.'},
+  {ctrl:'After-hours configuration changes require approval', nist:'3.4.5', status:'gap', notes:'EVT-005 firewall change at 6:58 PM with no change ticket.'},
+  {ctrl:'Monthly audit log review conducted and documented', nist:'3.3.1', status:'partial', notes:'This exercise represents the current review. No prior ALMR found on file.'},
+  {ctrl:'VPN access geo-anomaly detection enabled', nist:'3.14.6', status:'active', notes:'EVT-002 detected correctly. Escalation time was 36 minutes for EVT-006.'},
+  {ctrl:'Backup monitoring alerts active for all CUI systems', nist:'3.3.1', status:'gap', notes:'EVT-009: backup alert disabled for 4+ days. No compensating control.'},
+];
+
+const EVENT_SCENARIOS = [
+  {
+    id:'EA-01',
+    badge:'amber',
+    title:'Contracts Manager accesses 500 contract files in 60 minutes',
+    detail:'On October 31, 2025, SIEM records show user "lwilson" (Contracts Manager, Facility B) opening 500 contract files from the Contract Management System between 2:00 PM and 3:00 PM. lwilson\'s typical daily average is 12–15 files. No data exfiltration alert from DLP. lwilson did not submit a work order requiring bulk access. Contract files contain CUI.',
+    nist:'3.1.3, 3.3.5, 3.14.7',
+  },
+  {
+    id:'EA-02',
+    badge:'finding-badge',
+    title:'System Administrator authenticates from two states within 30 minutes',
+    detail:'On October 20, 2025, authentication logs show "kadams" (System Administrator) logging into Active Directory from Chicago, IL at 9:14 AM, then from Phoenix, AZ at 9:42 AM — 28 minutes later, 1,750 miles apart. kadams is not known to travel for work. Both logins were successful. No MFA challenge was triggered for either session. kadams has Domain Admin rights.',
+    nist:'3.5.3, 3.3.5, 3.14.6',
+  },
+  {
+    id:'EA-03',
+    badge:'blue',
+    title:'Firewall configuration changed after business hours with no change ticket',
+    detail:'This is EVT-005 from Activity 1, provided here for deeper classification analysis. The Network Administrator modified a firewall outbound rule at 6:58 PM on a Friday. The rule allowed unrestricted outbound on port 8080. No change management ticket exists. The rule persisted for 61 hours. Port 8080 is commonly used for HTTP proxy traffic and C2 callback channels.',
+    nist:'3.3.2, 3.4.1, 3.4.5',
+  },
+  {
+    id:'EA-04',
+    badge:'teal',
+    title:'Shared account used by multiple employees on file server',
+    detail:'A review of file server authentication logs reveals that the account "ffsi-shared-01" authenticated 47 times in October from 6 different workstations. This account has Modify rights to the shared file repository including a CUI folder. IT Manager confirms 3 different employees use this account. The account has no MFA. Individual actions cannot be attributed.',
+    nist:'3.3.2, 3.1.5, 3.5.1',
+  },
+];
+
+const FINDINGS_DATA = [
+  {id:'ADF-01', cat:'Monitoring Gap',       ph:'Describe the specific monitoring gap — which system, what activity is not monitored, and for how long...'},
+  {id:'ADF-02', cat:'Audit Deficiency',     ph:'Identify the specific audit logging deficiency — missing log source, disabled rule, or unreviewed alerts...'},
+  {id:'ADF-03', cat:'Log Retention Issue',  ph:'Describe the retention concern — which system, what retention period, what the required standard is...'},
+  {id:'ADF-04', cat:'Escalation Weakness',  ph:'Identify the escalation failure — which event, how long it took, what should have happened faster...'},
+  {id:'ADF-05', cat:'Documentation Problem',ph:'Describe the documentation gap — missing ALMR records, change tickets, approval documentation...'},
+  {id:'ADF-06', cat:'Privileged Account',   ph:'Identify the privileged account concern — which account, what the policy violation is, what risk it creates...'},
+];
+
+const DEBRIEF_QS = [
+  'Of the 10 FFSI log entries, which two posed the greatest risk to CUI? What specific combination of factors elevated their risk above the others?',
+  'EVT-001 and EVT-002 are correlated events — a brute-force attempt followed by a successful login from the same IP. What does this correlation reveal, and how should SIEM rules be configured to detect this pattern automatically?',
+  'Which of the 10 events required immediate escalation beyond the Security Analyst to the IT Manager, Compliance Manager, or CIO? What threshold triggers each escalation level?',
+  'A C3PAO assessor requests evidence that FFSI actively monitors its CUI systems. What specific artifacts from this exercise would satisfy that request? Name at least five.',
+  'The backup alert rule was disabled for 4+ days (EVT-009) and nobody noticed until a manual check. What monitoring gap does this reveal, and what control would prevent recurrence?',
+  'How do the monitoring findings in this exercise feed into FFSI\'s Incident Response Plan, Risk Register, and POA&M? Walk through the lifecycle of one finding from detection to remediation documentation.',
+  'Which monitoring deficiency identified in Activity 3 would create the most significant CMMC assessment finding if not corrected before the C3PAO audit? Justify your answer with reference to a specific NIST practice.',
+];
+
+const RUBRIC_ROWS = [
+  {cat:'Event Identification Accuracy (Act 1)', max:30,
+   exc:'All 10 entries correctly classified with specific justification referencing scenario details. CUI impact correctly assessed for all affected systems. Escalation determinations are appropriate and justified.',
+   pro:'8–9 entries correctly classified. Most CUI impact assessments correct. Minor justification gaps. Escalation determinations mostly appropriate.',
+   dev:'6–7 entries classified; some misclassifications of severity or escalation need. CUI impact inconsistently assessed. Justifications vague for several entries.',
+   ni:'Fewer than 6 entries correctly classified. Severity misjudged for critical events (EVT-002, EVT-007). CUI impact not assessed. No justification provided.'},
+  {cat:'ALMR Completion Accuracy (Act 2)', max:30,
+   exc:'All 10 ALMR rows completed with specific, scenario-grounded entries. Severity, escalation, and status fields correctly assigned. Monthly summary addresses overall posture. Review metadata (approver, dates) complete.',
+   pro:'8–9 ALMR rows complete. Minor field omissions. Summary addresses main findings. Review metadata partially complete.',
+   dev:'6–7 rows complete. Several fields contain generic entries rather than scenario-specific content. Summary incomplete or vague.',
+   ni:'Fewer than 6 rows completed. Fields left blank or contain placeholder text. No summary. Would not satisfy C3PAO evidence request.'},
+  {cat:'Monitoring Analysis (Act 3 + Act 4)', max:20,
+   exc:'All 10 monitoring controls assessed with accurate status and specific FFSI-grounded gaps. All 4 event scenarios correctly classified with CUI impact analysis and NIST citations. Risk ratings accurate.',
+   pro:'8–9 controls assessed; 3–4 event scenarios correctly classified. Most gaps FFSI-specific. NIST references present for most findings.',
+   dev:'6–7 controls assessed; 2 event scenarios classified correctly. Gaps identified but not FFSI-specific. Limited NIST references.',
+   ni:'Fewer than 6 controls assessed. Event scenarios misclassified or not analyzed. No NIST references. Risk ratings absent or arbitrary.'},
+  {cat:'Corrective Action Recommendations (Act 5)', max:20,
+   exc:'All 6 finding categories addressed with FFSI-specific content. Corrective actions are specific, feasible, and assigned to named personnel. Priority ratings accurate. Executive summary is clear and assessment-ready.',
+   pro:'5–6 categories addressed. Corrective actions reasonable. Ownership partially assigned. Summary covers main deficiencies.',
+   dev:'3–4 categories addressed. Actions generic rather than FFSI-specific. No ownership. Summary vague.',
+   ni:'Fewer than 3 categories addressed. Corrective actions absent or irrelevant. No summary. Demonstrates limited understanding of AU domain corrective action process.'},
+];
+
+// ═══════════════════════════════════════════════════
+//  BUILD FUNCTIONS
+// ═══════════════════════════════════════════════════
+const PERSONNEL_OPTS = ['CIO','IT Manager','Compliance Manager','Security Analyst','System Administrator','Network Administrator','Cloud Administrator','Help Desk Manager','Contracts Manager'];
+
+function makeSelect(opts, cls=''){
+  return `<select onchange="updateProgress()" class="${cls}">
+    ${opts.map(o=>`<option value="${o}">${o||'— Select —'}</option>`).join('')}
+  </select>`;
+}
+
+function buildLogEntries(){
+  const div = document.getElementById('log-entries-body');
+  LOG_ENTRIES.forEach((e,i) => {
+    const cuiPill = e.sysCUI ? `<span class="pill cui">CUI</span>` : `<span class="pill fci">FCI / Non-CUI</span>`;
+    div.innerHTML += `
+    <div class="log-card ${e.cls}">
+      <div class="log-header">
+        <span class="log-id">${e.id}</span>
+        <div class="log-meta">
+          <div class="log-timestamp">${e.ts} &nbsp;|&nbsp; ${e.sys} &nbsp; ${cuiPill} &nbsp; <span class="nist-tag">${e.nist}</span></div>
+          <div class="log-desc">${e.desc}</div>
+          <div class="log-detail">${e.detail}</div>
+        </div>
+      </div>
+      <div class="log-fields">
+        <div class="lf-col">
+          <label>1. Normal Activity?</label>
+          <div class="yn-group"><button class="yn-btn yes" onclick="ynToggle(this,'yes')">Yes</button><button class="yn-btn no" onclick="ynToggle(this,'no')">No</button></div>
+        </div>
+        <div class="lf-col">
+          <label>2. Suspicious?</label>
+          <div class="yn-group"><button class="yn-btn yes" onclick="ynToggle(this,'yes')">Yes</button><button class="yn-btn no" onclick="ynToggle(this,'no')">No</button></div>
+        </div>
+        <div class="lf-col">
+          <label>3. Investigate?</label>
+          <div class="yn-group"><button class="yn-btn yes" onclick="ynToggle(this,'yes')">Yes</button><button class="yn-btn no" onclick="ynToggle(this,'no')">No</button></div>
+        </div>
+        <div class="lf-col">
+          <label>4. Escalate?</label>
+          <div class="yn-group"><button class="yn-btn yes" onclick="ynToggle(this,'yes')">Yes</button><button class="yn-btn no" onclick="ynToggle(this,'no')">No</button></div>
+        </div>
+        <div class="lf-col">
+          <label>5. CUI Affected?</label>
+          <div class="yn-group"><button class="yn-btn yes" onclick="ynToggle(this,'yes')">Yes</button><button class="yn-btn no" onclick="ynToggle(this,'no')">No</button><button class="yn-btn unc" onclick="ynToggle(this,'unc')">Poss.</button></div>
+        </div>
+      </div>
+      <div style="margin-top:.65rem">
+        <label class="fb-label">Severity &amp; Analysis Notes (cite specific evidence from the log entry):</label>
+        <div class="sev-group" style="margin-bottom:.4rem">
+          <button class="sev-btn crit" onclick="sevToggle(this)">🔴 Critical</button>
+          <button class="sev-btn high" onclick="sevToggle(this)">🟠 High</button>
+          <button class="sev-btn med" onclick="sevToggle(this)">🟡 Medium</button>
+          <button class="sev-btn low" onclick="sevToggle(this)">🟢 Low</button>
+          <button class="sev-btn info" onclick="sevToggle(this)">ℹ Info</button>
+        </div>
+        <textarea rows="2" placeholder="Document your analysis: why is this suspicious or normal? What evidence supports your severity rating? What immediate action, if any, should the analyst take?" oninput="updateProgress()"></textarea>
+      </div>
+    </div>`;
+  });
+}
+
+function buildALMR(){
+  const tb = document.getElementById('almr-body');
+  LOG_ENTRIES.forEach(e => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="mono">${e.id}</td>
+      <td class="pre-fill" style="font-size:.75rem">${e.ts.split(' · ')[0]}<br/>${e.ts.split(' · ')[1]||''}</td>
+      <td class="pre-fill" style="font-size:.75rem">${e.sys}</td>
+      <td><textarea rows="2" placeholder="Concise event description for the ALMR record..." oninput="updateProgress()"></textarea></td>
+      <td>
+        <div class="sev-group" style="flex-direction:column;gap:.25rem">
+          <button class="sev-btn crit" onclick="sevToggle(this)">🔴 Critical</button>
+          <button class="sev-btn high" onclick="sevToggle(this)">🟠 High</button>
+          <button class="sev-btn med" onclick="sevToggle(this)">🟡 Medium</button>
+          <button class="sev-btn low" onclick="sevToggle(this)">🟢 Low</button>
+          <button class="sev-btn info" onclick="sevToggle(this)">ℹ Info</button>
+        </div>
+      </td>
+      <td><textarea rows="3" placeholder="What did the analyst determine? What action was taken? Reference EVT-ID in any related findings..." oninput="updateProgress()"></textarea></td>
+      <td>${makeSelect(ALMR_ESCALATION)}</td>
+      <td>${makeSelect(ALMR_STATUSES)}</td>
+    `;
+    tb.appendChild(tr);
+  });
+}
+
+function buildMonEff(){
+  const tb = document.getElementById('mon-eff-body');
+  MON_CONTROLS.forEach(m => {
+    const statusMap = {active:'mon-active',partial:'mon-partial',gap:'mon-gap'};
+    const labelMap  = {active:'✅ Active',partial:'⚠ Partial',gap:'❌ Gap'};
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td style="font-size:.83rem;color:var(--text)">${m.ctrl}</td>
+      <td><span class="nist-tag">${m.nist}</span></td>
+      <td><span class="mon-badge ${statusMap[m.status]}">${labelMap[m.status]}</span></td>
+      <td><textarea rows="2" placeholder="${m.notes||'Describe any gap, concern, or supporting evidence...'}" oninput="updateProgress()"></textarea></td>
+      <td>
+        <div class="sev-group" style="flex-direction:column;gap:.25rem">
+          <button class="sev-btn crit" onclick="sevToggle(this)">🔴 High</button>
+          <button class="sev-btn med"  onclick="sevToggle(this)">🟡 Medium</button>
+          <button class="sev-btn low"  onclick="sevToggle(this)">🟢 Low</button>
+        </div>
+      </td>
+    `;
+    tb.appendChild(tr);
+  });
+}
+
+function buildEventAnalysis(){
+  const div = document.getElementById('event-analysis-body');
+  EVENT_SCENARIOS.forEach(sc => {
+    div.innerHTML += `
+    <div class="finding-block">
+      <div class="fb-header">
+        <span class="finding-badge ${sc.badge}">${sc.id}</span>
+        <div>
+          <div class="finding-text">${sc.title}</div>
+          <div class="finding-sub">${sc.detail}</div>
+          <div class="finding-sub" style="margin-top:.2rem"><span class="nist-tag">${sc.nist}</span></div>
+        </div>
+      </div>
+      <div class="fb-2col" style="margin-bottom:.6rem">
+        <div>
+          <label class="fb-label">Risk Classification:</label>
+          <div class="sev-group" style="margin-top:.2rem">
+            <button class="sev-btn info" onclick="sevToggle(this)">ℹ Informational</button>
+            <button class="sev-btn low"  onclick="sevToggle(this)">🟢 Low</button>
+            <button class="sev-btn med"  onclick="sevToggle(this)">🟡 Medium</button>
+            <button class="sev-btn high" onclick="sevToggle(this)">🟠 High</button>
+            <button class="sev-btn crit" onclick="sevToggle(this)">🔴 Potential Incident</button>
+          </div>
+        </div>
+        <div>
+          <label class="fb-label">CUI Impact Assessment:</label>
+          <div class="yn-group" style="margin-top:.2rem">
+            <button class="yn-btn yes" onclick="ynToggle(this,'yes')">CUI Confirmed at Risk</button>
+            <button class="yn-btn unc" onclick="ynToggle(this,'unc')">CUI Possibly at Risk</button>
+            <button class="yn-btn no"  onclick="ynToggle(this,'no')">No CUI Impact</button>
+          </div>
+        </div>
+      </div>
+      <div class="fb-2col">
+        <div>
+          <label class="fb-label">Justification (cite evidence, NIST practice, and CMMC implication):</label>
+          <textarea rows="3" placeholder="Explain why this classification level is appropriate. What specific evidence supports the classification? Which NIST 800-171 practice is most relevant?" oninput="updateProgress()"></textarea>
+        </div>
+        <div>
+          <label class="fb-label">Recommended Response Action:</label>
+          <textarea rows="3" placeholder="What specific action should the Security Analyst take? Who should be notified? What is the escalation path? What documentation must be created?" oninput="updateProgress()"></textarea>
+        </div>
+      </div>
+    </div>`;
+  });
+}
+
+function buildFindings(){
+  const tb = document.getElementById('findings-body');
+  const pOpts = ['','Critical — Immediate','High — 7 Days','Medium — 30 Days','Low — 90 Days'];
+  const rOpts = ['','High','Medium','Low'];
+  FINDINGS_DATA.forEach(f => {
+    const tr = document.createElement('tr');
+    const pONames = PERSONNEL_OPTS.map(p=>`<option>${p}</option>`).join('');
+    tr.innerHTML = `
+      <td class="mono" style="font-size:.74rem">${f.id}</td>
+      <td class="pre-fill">${f.cat}</td>
+      <td><textarea rows="2" placeholder="${f.ph}" oninput="updateProgress()"></textarea></td>
+      <td>${makeSelect(rOpts)}</td>
+      <td><textarea rows="2" placeholder="Specific corrective action with measurable outcome..." oninput="updateProgress()"></textarea></td>
+      <td>${makeSelect(pOpts)}</td>
+      <td><select onchange="updateProgress()"><option value="">— Owner —</option>${pONames}</select></td>
+    `;
+    tb.appendChild(tr);
+  });
+}
+
+function buildDebrief(){
+  const div = document.getElementById('debrief-body');
+  DEBRIEF_QS.forEach((q,i) => {
+    div.innerHTML += `
+    <div class="dq-item">
+      <div class="dq-num">${i+1}</div>
+      <div style="flex:1">
+        <div class="dq-text">${q}</div>
+        <div style="margin-top:.45rem"><textarea rows="2" placeholder="Discussion notes / participant responses..." oninput="updateProgress()"></textarea></div>
+      </div>
+    </div>`;
+  });
+}
+
+function buildRubric(){
+  const tb = document.getElementById('rubric-body');
+  RUBRIC_ROWS.forEach(r => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="label-cell" style="font-size:.8rem">${r.cat}</td>
+      <td class="text-sm">${r.exc}</td>
+      <td class="text-sm">${r.pro}</td>
+      <td class="text-sm">${r.dev}</td>
+      <td class="text-sm">${r.ni}</td>
+      <td style="text-align:center;font-weight:700;color:var(--gold)">${r.max}</td>
+      <td><input type="number" class="score-input rubric-score" min="0" max="${r.max}" placeholder="0" oninput="calcRubric()"/></td>
+    `;
+    tb.appendChild(tr);
+  });
+  const tot = document.createElement('tr');
+  tot.className = 'score-total-row';
+  tot.innerHTML = `<td colspan="5" style="font-weight:800;padding:.6rem .75rem">Total</td><td style="text-align:center">100</td><td style="text-align:center" id="rubric-score-total">0/100</td>`;
+  tb.appendChild(tot);
+}
+
+// ═══════════════════════════════════════════════════
+//  INTERACTIONS
+// ═══════════════════════════════════════════════════
+function ynToggle(btn, type){
+  btn.closest('.yn-group').querySelectorAll('.yn-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  updateProgress();
+}
+function sevToggle(btn){
+  btn.closest('.sev-group').querySelectorAll('.sev-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  updateProgress();
+}
+
+// ═══════════════════════════════════════════════════
+//  TABS
+// ═══════════════════════════════════════════════════
+function showTab(id){
+  document.querySelectorAll('.section-card').forEach(c=>c.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  const card = document.getElementById('tab-'+id);
+  if(card) card.classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(b=>{
+    if(b.getAttribute('onclick')&&b.getAttribute('onclick').includes("'"+id+"'"))
+      b.classList.add('active');
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ═══════════════════════════════════════════════════
+//  PROGRESS
+// ═══════════════════════════════════════════════════
+function updateProgress(){
+  let filled=0,total=0;
+  document.querySelectorAll('textarea,select,input[type=text],input[type=number]').forEach(el=>{
+    if(el.closest('#rubric-body')) return;
+    total++;
+    if(el.tagName==='SELECT'&&el.value) filled++;
+    else if(el.tagName==='TEXTAREA'&&el.value.trim().length>6) filled++;
+    else if(el.tagName==='INPUT'&&el.value.trim()) filled++;
+  });
+  const active = document.querySelectorAll('.yn-btn.active,.sev-btn.active').length;
+  const btnTotal = document.querySelectorAll('.yn-group').length + document.querySelectorAll('.sev-group').length;
+  const pct = Math.min(100,Math.round(((filled+active)/(total+btnTotal))*100));
+  document.getElementById('prog-pct').textContent=pct+'%';
+  document.getElementById('prog-fill').style.width=pct+'%';
+}
+
+// ═══════════════════════════════════════════════════
+//  RUBRIC
+// ═══════════════════════════════════════════════════
+function calcRubric(){
+  let total=0;
+  document.querySelectorAll('.rubric-score').forEach(i=>total+=parseInt(i.value)||0);
+  total=Math.min(100,total);
+  const pct=Math.round(total/100*100);
+  document.getElementById('rubric-total').textContent=total;
+  document.getElementById('rubric-pct').textContent=pct+'%';
+  document.getElementById('rubric-score-total').textContent=total+'/100';
+  document.getElementById('sb-total').textContent=total;
+  document.getElementById('sb-pct').textContent=pct+'%';
+  let rating='Needs Improvement',cls='rating-needs';
+  if(pct>=90){rating='Excellent';cls='rating-excellent'}
+  else if(pct>=75){rating='Proficient';cls='rating-proficient'}
+  else if(pct>=60){rating='Developing';cls='rating-developing'}
+  ['rubric-rating-badge','sb-rating'].forEach(id=>{
+    const el=document.getElementById(id);
+    el.textContent=rating;
+    el.className=(id==='rubric-rating-badge'?'rating-badge ':'sb-rating ')+cls;
+  });
+}
+
+// ═══════════════════════════════════════════════════
+//  TIMER
+// ═══════════════════════════════════════════════════
+let timerSecs=1200,timerInt=null,timerOn=false;
+function updateTimerDisplay(){
+  const m=Math.floor(timerSecs/60),s=timerSecs%60;
+  const el=document.getElementById('timer-display');
+  el.textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+  el.className='timer-display';
+  if(timerSecs<=300) el.classList.add('warn');
+  if(timerSecs<=60)  el.classList.add('danger');
+}
+function startTimer(){
+  if(timerOn) return;
+  timerOn=true;
+  document.getElementById('timer-start').style.display='none';
+  document.getElementById('timer-pause').style.display='';
+  timerInt=setInterval(()=>{
+    if(timerSecs>0){timerSecs--;updateTimerDisplay();}
+    else{clearInterval(timerInt);timerOn=false;}
+  },1000);
+}
+function pauseTimer(){
+  clearInterval(timerInt);timerOn=false;
+  document.getElementById('timer-start').style.display='';
+  document.getElementById('timer-pause').style.display='none';
+}
+function resetTimer(){pauseTimer();timerSecs=1200;updateTimerDisplay();}
+
+// ═══════════════════════════════════════════════════
+//  EXPORT
+// ═══════════════════════════════════════════════════
+function exportAnswers(){
+  let out='FFSI — AUDIT LOG & MONITORING REPORT EXERCISE\nExport: '+new Date().toLocaleString()+'\n'+'='.repeat(60)+'\n\n';
+  out+='LOG ENTRY ANALYSIS (Act 1):\n'+'-'.repeat(40)+'\n';
+  LOG_ENTRIES.forEach((e,i)=>{
+    const notes = document.querySelectorAll('#tab-act1 textarea')[i];
+    if(notes&&notes.value.trim()) out+=e.id+': '+notes.value.trim()+'\n';
+  });
+  out+='\nFINDINGS SUMMARY (Act 5):\n'+'-'.repeat(40)+'\n';
+  document.querySelectorAll('#tab-act5 textarea').forEach((el,i)=>{
+    if(el.value.trim()) out+='Finding '+(i+1)+': '+el.value.trim()+'\n';
+  });
+  const blob=new Blob([out],{type:'text/plain'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='FFSI_ALMR_Exercise_Answers.txt';
+  a.click();
+}
+
+// ═══════════════════════════════════════════════════
+//  RESET
+// ═══════════════════════════════════════════════════
+function confirmReset(){
+  if(confirm('Reset all exercise answers? This cannot be undone.')){
+    document.querySelectorAll('textarea').forEach(t=>t.value='');
+    document.querySelectorAll('select').forEach(s=>s.selectedIndex=0);
+    document.querySelectorAll('input[type=text],input[type=number]').forEach(i=>i.value='');
+    document.querySelectorAll('.yn-btn,.sev-btn').forEach(b=>b.classList.remove('active'));
+    calcRubric();updateProgress();
+  }
+}
+
+// ═══════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════
+buildLogEntries();
+buildALMR();
+buildMonEff();
+buildEventAnalysis();
+buildFindings();
+buildDebrief();
+buildRubric();
+updateTimerDisplay();
+</script>
+</body>
+</html>
