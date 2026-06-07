@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FFSI — POA&M Dashboard Exercise</title>
+<style>
+/* ══════════════════════════════════════════════
+   THEME — LIGHT DEFAULT (white/green/black)
+══════════════════════════════════════════════ */
+:root {
+  --bg:          #f4f7f4;
+  --bg-card:     #ffffff;
+  --bg-nav:      #0d1a0d;
+  --bg-nav2:     #162016;
+  --bg-header:   #0d1a0d;
+  --bg-inp:      #f8faf8;
+  --bg-inp-bd:   #b0ccb0;
+  --bg-slate:    #edf4ed;
+  --bg-slate2:   #e0ede0;
+  --text:        #111a11;
+  --text-m:      #3a533a;
+  --text-d:      #6a8a6a;
+  --text-nav:    #c0dcc0;
+  --text-nav-m:  #6a9a6a;
+  --border:      #b8d0b8;
+  --border2:     #a0c0a0;
+  --shadow:      0 1px 8px rgba(0,30,0,.09);
+  --shadow-lg:   0 4px 20px rgba(0,30,0,.13);
+  --g1: #166534; --g2: #15803d; --g3: #22c55e; --g4: #86efac;
+  --g-lt: #f0fdf4;
+  --red: #dc2626; --red-bg: #fef2f2; --red-bd: #fca5a5;
+  --orange: #ea580c; --orange-bg: #fff7ed; --orange-bd: #fdba74;
+  --amber: #ca8a04; --amber-bg: #fefce8; --amber-bd: #fde047;
+  --blue: #1e40af; --blue-bg: #eff6ff; --blue-bd: #93c5fd;
+  --nav-w: 230px;
+}
+[data-theme="dark"] {
+  --bg:          #080e08;
+  --bg-card:     #0f180f;
+  --bg-nav:      #050a05;
+  --bg-nav2:     #0a120a;
+  --bg-header:   #050a05;
+  --bg-inp:      #0a120a;
+  --bg-inp-bd:   #204020;
+  --bg-slate:    #111911;
+  --bg-slate2:   #182018;
+  --text:        #cceecc;
+  --text-m:      #7aaa7a;
+  --text-d:      #4a6a4a;
+  --text-nav:    #b0d0b0;
+  --text-nav-m:  #508050;
+  --border:      #1a3a1a;
+  --border2:     #204020;
+  --shadow:      0 2px 10px rgba(0,0,0,.5);
+  --shadow-lg:   0 4px 24px rgba(0,0,0,.6);
+  --g1: #4ade80; --g2: #22c55e; --g3: #86efac; --g4: #bbf7d0;
+  --g-lt: #0a1a0a;
+  --red:#f87171;--red-bg:#2a0505;--red-bd:#7a1a1a;
+  --orange:#fb923c;--orange-bg:#2a1005;--orange-bd:#7a3010;
+  --amber:#fcd34d;--amber-bg:#1a1505;--amber-bd:#6a5005;
+  --blue:#7aacff;--blue-bg:#0a1020;--blue-bd:#1a3060;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Segoe UI',system-ui,sans-serif;
+  background:var(--bg);color:var(--text);
+  font-size:14px;line-height:1.55;
+  display:flex;flex-direction:column;min-height:100vh;
+  transition:background .25s,color .25s;
+}
+
+/* ══ HEADER ══ */
+#hdr{
+  background:var(--bg-header);
+  border-bottom:2px solid var(--g2);
+  padding:.45rem 1.1rem;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem;
+  position:sticky;top:0;z-index:300;
+  box-shadow:0 2px 8px rgba(0,0,0,.5);
+}
+.hdr-l{display:flex;align-items:center;gap:.65rem}
+.hdr-badge{background:var(--g2);color:#fff;font-weight:800;font-size:.9rem;width:2.2rem;height:2.2rem;border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.hdr-title{font-size:.85rem;font-weight:700;color:#d0eed0;line-height:1.25}
+.hdr-title small{display:block;font-size:.68rem;color:#5a8a5a;font-weight:400}
+.hdr-r{display:flex;align-items:center;gap:.35rem;flex-wrap:wrap}
+.hbtn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);color:#b0d0b0;border-radius:5px;padding:.22rem .65rem;font-size:.74rem;cursor:pointer;transition:background .15s;white-space:nowrap}
+.hbtn:hover{background:rgba(255,255,255,.18);color:#fff}
+#theme-btn{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);color:#4ade80;font-weight:600}
+#theme-btn:hover{background:rgba(34,197,94,.22)}
+
+/* ══ LAYOUT ══ */
+#layout{display:flex;flex:1;min-height:0}
+
+/* ══ LEFT NAV ══ */
+#nav{
+  width:var(--nav-w);flex-shrink:0;
+  background:var(--bg-nav);
+  border-right:1px solid rgba(255,255,255,.05);
+  overflow-y:auto;
+  position:sticky;top:46px;
+  height:calc(100vh - 46px);
+  transition:background .25s;
+}
+.nav-lbl{font-size:.6rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--text-nav-m);padding:.8rem 1rem .25rem}
+.nav-a{
+  display:flex;align-items:center;gap:.45rem;
+  padding:.45rem .9rem;font-size:.76rem;font-weight:500;color:var(--text-nav);
+  cursor:pointer;border-left:3px solid transparent;
+  transition:background .12s,border-color .12s,color .12s;
+}
+.nav-a:hover{background:var(--bg-nav2);color:#e0f0e0}
+.nav-a.active{background:var(--bg-nav2);border-left-color:var(--g3);color:#fff;font-weight:700}
+.nav-pts{margin-left:auto;background:rgba(34,197,94,.18);color:var(--g3);font-size:.62rem;font-weight:800;padding:.06rem .35rem;border-radius:3px;white-space:nowrap}
+.nav-a.active .nav-pts{background:var(--g2);color:#fff}
+/* mini progress in nav */
+#nav-prog-wrap{padding:.65rem 1rem;border-top:1px solid rgba(255,255,255,.05)}
+.nav-prog-bar-bg{background:rgba(255,255,255,.06);border-radius:999px;height:5px;margin:.3rem 0}
+.nav-prog-bar-fill{height:100%;background:var(--g2);border-radius:999px;transition:width .4s}
+.nav-prog-txt{font-size:.68rem;color:var(--text-nav-m);display:flex;justify-content:space-between}
+
+/* ══ CONTENT ══ */
+#content{flex:1;min-width:0;overflow-y:auto;padding:1.25rem 1.5rem 5rem}
+
+/* ══ HERO ══ */
+#hero{
+  background:linear-gradient(135deg,#0d1a0d 0%,#152815 55%,#0a180a 100%);
+  border-radius:10px;padding:1.75rem 1.5rem;margin-bottom:1.25rem;
+  position:relative;overflow:hidden;border:1px solid rgba(34,197,94,.18);
+  box-shadow:var(--shadow-lg);
+}
+#hero::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 75% 40%,rgba(34,197,94,.07) 0%,transparent 60%)}
+#hero::after{content:'';position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(34,197,94,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(34,197,94,.025) 1px,transparent 1px);background-size:48px 48px}
+.hero-ey{font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#4ade80;margin-bottom:.5rem}
+#hero h1{font-size:clamp(1.2rem,3vw,1.9rem);font-weight:800;color:#fff;letter-spacing:-.02em;margin-bottom:.35rem;line-height:1.2}
+#hero h1 em{color:#4ade80;font-style:normal}
+#hero p{font-size:.8rem;color:#608060;max-width:580px;margin-bottom:.9rem}
+.hero-chips{display:flex;flex-wrap:wrap;gap:.35rem}
+.chip{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:999px;padding:.2rem .7rem;font-size:.7rem;font-weight:600;color:#607060}
+.chip.g{background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.3);color:#4ade80}
+.chip.r{background:rgba(220,38,38,.12);border-color:rgba(220,38,38,.3);color:#fca5a5}
+.chip.a{background:rgba(202,138,4,.1);border-color:rgba(202,138,4,.3);color:#fbbf24}
+
+/* ══ DASHBOARD METRICS ══ */
+#metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:.65rem;margin-bottom:1.25rem}
+@media(max-width:750px){#metrics{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:480px){#metrics{grid-template-columns:repeat(2,1fr)}}
+.met-card{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:.75rem .85rem;text-align:center;box-shadow:var(--shadow);border-top:3px solid;transition:background .25s,border-color .25s}
+.met-num{font-size:1.8rem;font-weight:800;line-height:1;margin-bottom:.15rem}
+.met-lbl{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-m)}
+.met-card.total{border-top-color:var(--g2)}.met-card.total .met-num{color:var(--g1)}
+.met-card.open{border-top-color:var(--orange)}.met-card.open .met-num{color:var(--orange)}
+.met-card.closed{border-top-color:var(--g3)}.met-card.closed .met-num{color:var(--g1)}
+.met-card.overdue{border-top-color:var(--red)}.met-card.overdue .met-num{color:var(--red)}
+.met-card.pct{border-top-color:var(--blue)}.met-card.pct .met-num{font-size:1.4rem;color:var(--blue)}
+[data-theme="dark"] .met-card.pct .met-num{color:var(--blue)}
+
+/* ══ RISK DONUT CHARTS ══ */
+#risk-charts{display:grid;grid-template-columns:repeat(4,1fr);gap:.65rem;margin-bottom:1.25rem}
+@media(max-width:650px){#risk-charts{grid-template-columns:repeat(2,1fr)}}
+.risk-chip{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:.75rem;text-align:center;box-shadow:var(--shadow);transition:background .25s}
+.risk-chip-num{font-size:1.5rem;font-weight:800;margin:.15rem 0 .1rem}
+.risk-chip-lbl{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.risk-chip.crit{border-left:4px solid var(--red)}.risk-chip.crit .risk-chip-num{color:var(--red)}
+.risk-chip.high{border-left:4px solid var(--orange)}.risk-chip.high .risk-chip-num{color:var(--orange)}
+.risk-chip.med{border-left:4px solid var(--amber)}.risk-chip.med .risk-chip-num{color:var(--amber)}
+.risk-chip.low{border-left:4px solid var(--g2)}.risk-chip.low .risk-chip-num{color:var(--g1)}
+.risk-chip .risk-chip-lbl{color:var(--text-m)}
+
+/* ══ PROGRESS BAR ══ */
+.prog-container{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:.9rem 1rem;margin-bottom:1.25rem;box-shadow:var(--shadow)}
+.prog-title{font-size:.82rem;font-weight:800;color:var(--text);margin-bottom:.65rem;display:flex;align-items:center;gap:.5rem}
+.prog-row{display:flex;align-items:center;gap:.65rem;margin-bottom:.45rem}
+.prog-row-lbl{font-size:.72rem;color:var(--text-m);width:140px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prog-bar-bg{flex:1;background:var(--bg-slate);border-radius:999px;height:8px;overflow:hidden}
+.prog-bar-fill{height:100%;border-radius:999px;transition:width .5s}
+.prog-pct{font-size:.68rem;font-weight:700;color:var(--text-m);width:30px;text-align:right;flex-shrink:0}
+
+/* ══ SECTION CARDS ══ */
+.sec{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;margin-bottom:1.1rem;box-shadow:var(--shadow);overflow:hidden;transition:background .25s,border-color .25s}
+.sec-hd{display:flex;align-items:center;gap:.65rem;padding:.85rem 1.1rem;cursor:pointer;border-bottom:1px solid transparent;transition:background .12s,border-color .12s;user-select:none}
+.sec-hd:hover{background:var(--bg-slate)}
+.sec-hd.open{border-bottom-color:var(--border)}
+.sec-ico{width:2.2rem;height:2.2rem;border-radius:6px;background:var(--g-lt);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;transition:background .25s}
+.sec-ttl{font-size:.88rem;font-weight:800;color:var(--text);margin-bottom:.06rem}
+.sec-sub{font-size:.7rem;color:var(--text-m)}
+.sec-meta{flex:1}
+.sec-pts{display:inline-block;background:var(--g2);color:#fff;font-size:.65rem;font-weight:700;padding:.1rem .45rem;border-radius:4px;margin-left:.4rem}
+.sec-pts.np{background:var(--bg-slate);color:var(--text-m)}
+.sec-chev{font-size:.8rem;color:var(--text-d);transition:transform .2s;flex-shrink:0}
+.sec-hd.open .sec-chev{transform:rotate(180deg)}
+.sec-bd{padding:1.1rem;display:none}
+.sec-bd.open{display:block}
+
+/* ══ FILTER BAR ══ */
+#filter-bar{
+  display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;
+  background:var(--bg-slate);border:1px solid var(--border);
+  border-radius:7px;padding:.55rem .75rem;margin-bottom:1rem;
+}
+.flt-lbl{font-size:.7rem;font-weight:700;color:var(--text-m)}
+.flt-sel{background:var(--bg-inp);border:1px solid var(--bg-inp-bd);color:var(--text);border-radius:5px;font-size:.76rem;padding:.25rem .5rem;cursor:pointer;transition:border-color .15s}
+.flt-sel:focus{outline:none;border-color:var(--g2)}
+.flt-btn{background:var(--g2);color:#fff;border:none;border-radius:5px;padding:.25rem .65rem;font-size:.74rem;font-weight:600;cursor:pointer}
+.flt-btn:hover{background:var(--g1)}
+
+/* ══ POAM TABLE ══ */
+#poam-table-wrap{overflow-x:auto;margin:.5rem 0}
+#poam-table{width:100%;border-collapse:collapse;font-size:.77rem;min-width:900px}
+#poam-table thead tr{background:var(--bg-slate2)}
+#poam-table thead th{padding:.5rem .65rem;text-align:left;font-weight:700;color:var(--g1);font-size:.68rem;letter-spacing:.05em;text-transform:uppercase;border-bottom:2px solid var(--g2);white-space:nowrap}
+#poam-table tbody tr{border-bottom:1px solid var(--border);transition:background .15s}
+#poam-table tbody tr:hover{background:var(--bg-slate)}
+#poam-table tbody tr.filtered-out{display:none}
+#poam-table tbody td{padding:.45rem .65rem;vertical-align:top;color:var(--text)}
+td.mono{font-family:'Courier New',monospace;font-size:.72rem;color:var(--g1)}
+td.pre-f{color:var(--text-m);font-style:italic;font-size:.74rem}
+.risk-badge{display:inline-block;border-radius:4px;padding:.1rem .42rem;font-size:.68rem;font-weight:800;white-space:nowrap}
+.rb-crit{background:var(--red-bg);border:1px solid var(--red-bd);color:var(--red)}
+.rb-high{background:var(--orange-bg);border:1px solid var(--orange-bd);color:var(--orange)}
+.rb-med{background:var(--amber-bg);border:1px solid var(--amber-bd);color:var(--amber)}
+.rb-low{background:var(--g-lt);border:1px solid var(--g4);color:var(--g1)}
+.status-sel{background:var(--bg-inp);border:1px solid var(--bg-inp-bd);color:var(--text);border-radius:4px;font-size:.73rem;padding:.22rem .4rem;width:100%;cursor:pointer;min-width:110px}
+.status-open{border-left-color:var(--orange)!important}
+.status-ip{border-left-color:var(--amber)!important}
+.status-closed{border-left-color:var(--g3)!important}
+.status-overdue{border-left-color:var(--red)!important}
+
+/* ══ FORMS ══ */
+select,textarea,input[type=text],input[type=date],input[type=number]{
+  background:var(--bg-inp);border:1px solid var(--bg-inp-bd);color:var(--text);
+  border-radius:5px;font-size:.78rem;font-family:inherit;
+  padding:.3rem .5rem;width:100%;transition:border-color .15s,background .25s,color .25s;
+}
+select:focus,textarea:focus,input:focus{outline:none;border-color:var(--g2)}
+textarea{resize:vertical;min-height:46px;line-height:1.45}
+.field-label{font-size:.67rem;font-weight:700;color:var(--text-d);display:block;margin-bottom:.15rem;text-transform:uppercase;letter-spacing:.05em}
+
+/* ══ TOGGLE BUTTONS ══ */
+.yn-g{display:flex;gap:.3rem;flex-wrap:wrap}
+.yn-b{background:var(--bg-slate);border:1px solid var(--border2);color:var(--text-m);border-radius:4px;padding:.18rem .5rem;font-size:.7rem;font-weight:700;cursor:pointer;transition:all .12s;white-space:nowrap}
+.yn-b.y.a{background:var(--g-lt);border-color:var(--g4);color:var(--g1)}
+.yn-b.n.a{background:var(--red-bg);border-color:var(--red-bd);color:var(--red)}
+.yn-b.u.a{background:var(--amber-bg);border-color:var(--amber-bd);color:var(--amber)}
+.yn-b.b.a{background:var(--blue-bg);border-color:var(--blue-bd);color:var(--blue)}
+.sev-g{display:flex;gap:.3rem;flex-wrap:wrap}
+.sev-b{background:var(--bg-slate);border:1px solid var(--border);color:var(--text-m);border-radius:4px;padding:.18rem .5rem;font-size:.7rem;font-weight:700;cursor:pointer;transition:all .12s;white-space:nowrap}
+.sev-b.cr.a{background:var(--red-bg);border-color:var(--red-bd);color:var(--red)}
+.sev-b.hi.a{background:var(--orange-bg);border-color:var(--orange-bd);color:var(--orange)}
+.sev-b.me.a{background:var(--amber-bg);border-color:var(--amber-bd);color:var(--amber)}
+.sev-b.lo.a{background:var(--g-lt);border-color:var(--g4);color:var(--g1)}
+
+/* ══ FINDING CARDS ══ */
+.finding-card{border:1px solid var(--border);border-radius:8px;margin-bottom:.75rem;overflow:hidden;transition:box-shadow .15s}
+.finding-card:hover{box-shadow:var(--shadow-lg)}
+.fc-hdr{display:flex;align-items:flex-start;gap:.65rem;padding:.75rem .9rem;background:var(--bg-slate);border-bottom:1px solid var(--border)}
+.fc-sev{width:1.8rem;height:1.8rem;border-radius:4px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.65rem;flex-shrink:0;color:#fff}
+.fc-sev.crit{background:#dc2626}.fc-sev.high{background:#ea580c}
+.fc-sev.med{background:#ca8a04}.fc-sev.low{background:#16a34a}
+.fc-id{font-family:'Courier New',monospace;font-size:.7rem;color:var(--g1);margin-bottom:.06rem}
+.fc-title{font-weight:700;color:var(--text);font-size:.84rem;margin-bottom:.08rem}
+.fc-desc{font-size:.74rem;color:var(--text-m);line-height:1.4}
+.fc-tags{display:flex;flex-wrap:wrap;gap:.25rem;margin-top:.3rem}
+.fc-tag{display:inline-block;border-radius:3px;padding:.06rem .38rem;font-size:.66rem;font-weight:700;border:1px solid}
+.fc-tag.cui{background:var(--red-bg);border-color:var(--red-bd);color:var(--red)}
+.fc-tag.dom{background:var(--g-lt);border-color:var(--g4);color:var(--g1)}
+.fc-tag.nist{background:var(--blue-bg);border-color:var(--blue-bd);color:var(--blue)}
+.fc-fields{padding:.7rem .9rem;display:grid;grid-template-columns:repeat(5,1fr);gap:.45rem}
+@media(max-width:800px){.fc-fields{grid-template-columns:repeat(2,1fr)}}
+.fc-fields-lbl{font-size:.64rem;font-weight:700;color:var(--text-d);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.13rem;display:block}
+.fc-notes{padding:.5rem .9rem .85rem;display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+@media(max-width:600px){.fc-notes{grid-template-columns:1fr}}
+
+/* ══ MILESTONE TABLE ══ */
+.ms-table{width:100%;border-collapse:collapse;font-size:.77rem}
+.ms-table thead th{padding:.45rem .65rem;text-align:left;font-weight:700;color:var(--g1);font-size:.67rem;letter-spacing:.05em;text-transform:uppercase;border-bottom:2px solid var(--g2);background:var(--bg-slate2)}
+.ms-table tbody tr{border-bottom:1px solid var(--border)}
+.ms-table tbody tr:nth-child(even){background:var(--bg-slate)}
+.ms-table tbody td{padding:.42rem .65rem;vertical-align:top}
+
+/* ══ INFO BOXES ══ */
+.info-box{background:var(--blue-bg);border:1px solid var(--blue-bd);border-radius:6px;padding:.6rem .85rem;font-size:.78rem;color:var(--blue);margin:.55rem 0}
+.alert-box{background:var(--red-bg);border:1px solid var(--red-bd);border-radius:6px;padding:.6rem .85rem;font-size:.78rem;color:var(--red);margin:.55rem 0}
+.green-box{background:var(--g-lt);border:1px solid var(--g4);border-radius:6px;padding:.6rem .85rem;font-size:.78rem;color:var(--g1);margin:.55rem 0}
+.instr{background:var(--bg-slate);border-left:3px solid var(--g2);border-radius:0 5px 5px 0;padding:.6rem .85rem;font-size:.8rem;color:var(--text-m);margin-bottom:.9rem}
+.instr strong{color:var(--g2)}
+
+/* ══ RUBRIC ══ */
+.score-input{background:var(--bg-inp);border:1px solid var(--bg-inp-bd);color:var(--text);border-radius:5px;font-size:.85rem;font-weight:700;width:62px;text-align:center;padding:.25rem}
+.score-total-row{background:var(--bg-slate2)!important}
+.score-total-row td{font-weight:800;color:var(--g1)!important;font-size:.85rem}
+.rb-badge{display:inline-block;padding:.18rem .6rem;border-radius:5px;font-size:.75rem;font-weight:700;letter-spacing:.04em}
+.rb-exc{background:var(--g-lt);border:1px solid var(--g4);color:var(--g1)}
+.rb-pro{background:var(--blue-bg);border:1px solid var(--blue-bd);color:var(--blue)}
+.rb-dev{background:var(--amber-bg);border:1px solid var(--amber-bd);color:var(--amber)}
+.rb-ni{background:var(--red-bg);border:1px solid var(--red-bd);color:var(--red)}
+
+/* ══ INTRO / GLOSS ══ */
+.intro-body{font-size:.82rem;color:var(--text-m);line-height:1.65}
+.intro-body p{margin-bottom:.7rem}
+.intro-body h3{color:var(--g1);font-size:.86rem;font-weight:700;margin:.85rem 0 .35rem}
+.intro-body ul{padding-left:1.2rem;margin-bottom:.7rem}
+.nist-tag{display:inline-block;background:var(--blue-bg);border:1px solid var(--blue-bd);border-radius:4px;padding:.06rem .4rem;font-size:.7rem;font-weight:700;color:var(--blue);font-family:'Courier New',monospace;margin-right:.2rem;transition:background .25s,color .25s}
+.obj-list{display:flex;flex-direction:column;gap:.55rem}
+.obj-item{display:flex;gap:.7rem;align-items:flex-start;background:var(--bg-slate);border-radius:6px;padding:.6rem .8rem;font-size:.8rem;color:var(--text-m)}
+.obj-num{background:var(--g2);color:#fff;font-weight:800;font-size:.74rem;min-width:1.45rem;height:1.45rem;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.gloss-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:.6rem}
+.gloss-item{background:var(--bg-slate);border:1px solid var(--border);border-radius:6px;padding:.6rem .8rem}
+.gloss-term{font-weight:700;color:var(--g1);font-size:.78rem;margin-bottom:.2rem}
+.gloss-def{font-size:.74rem;color:var(--text-m);line-height:1.45}
+
+/* ══ DEBRIEF ══ */
+.dq-list{display:flex;flex-direction:column;gap:.55rem}
+.dq-item{background:var(--bg-slate);border-radius:6px;padding:.65rem .85rem;display:flex;gap:.7rem}
+.dq-num{background:var(--g2);color:#fff;font-weight:800;font-size:.7rem;min-width:1.45rem;height:1.45rem;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.dq-text{font-size:.8rem;color:var(--text-m);line-height:1.5;flex:1}
+
+/* ══ EXEC SUMMARY ══ */
+.exec-q{background:var(--bg-slate);border-radius:7px;padding:.7rem .85rem;margin-bottom:.55rem;border-left:3px solid var(--g2)}
+.exec-q-title{font-size:.79rem;font-weight:700;color:var(--text);margin-bottom:.3rem}
+
+/* ══ SCORE BAR ══ */
+#score-bar{
+  position:fixed;bottom:0;left:var(--nav-w);right:0;
+  background:var(--bg-header);border-top:1px solid rgba(34,197,94,.2);
+  padding:.4rem 1.25rem;display:flex;align-items:center;gap:1.1rem;flex-wrap:wrap;z-index:100;
+}
+.sb-s{display:flex;flex-direction:column;align-items:center}
+.sb-v{font-size:.95rem;font-weight:800;color:#4ade80}
+.sb-l{font-size:.62rem;color:#3a5a3a;text-transform:uppercase;letter-spacing:.06em}
+.sb-r{font-size:.78rem;font-weight:700;padding:.16rem .6rem;border-radius:5px}
+.save-ind{font-size:.68rem;color:#4ade80;opacity:0;transition:opacity .4s}
+.save-ind.show{opacity:1}
+
+/* ══ TWO-COL ══ */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:.55rem}
+@media(max-width:580px){.two-col{grid-template-columns:1fr}}
+
+/* ══ UTILITIES ══ */
+.mt1{margin-top:.65rem}.mt2{margin-top:1rem}
+.text-sm{font-size:.75rem;color:var(--text-m)}
+.hr{border:none;border-top:1px solid var(--border);margin:.9rem 0}
+.sec-h3{font-size:.84rem;color:var(--g1);font-weight:700;margin:.8rem 0 .45rem}
+
+@media(max-width:768px){
+  #nav{display:none}
+  #score-bar{left:0}
+}
+@media print{
+  #nav,#hdr,#score-bar,#filter-bar,#risk-charts{display:none!important}
+  #content{padding:.25rem}
+  .sec-bd{display:block!important}
+  body{background:#fff;color:#000}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div id="hdr">
+  <div class="hdr-l">
+    <div class="hdr-badge">PM</div>
+    <div class="hdr-title">
+      FFSI — POA&amp;M Dashboard Exercise
+      <small>CMMC 2.0 · NIST SP 800-171 · 20 Minutes · Assessment Readiness</small>
+    </div>
+  </div>
+  <div class="hdr-r">
+    <button id="theme-btn" class="hbtn" onclick="toggleTheme()">🌙 Dark Mode</button>
+    <button class="hbtn" onclick="saveAll()">💾 Save</button>
+    <button class="hbtn" onclick="exportSummary()">📤 Export</button>
+    <button class="hbtn" onclick="window.print()">🖨 Print</button>
+    <button class="hbtn" style="border-color:rgba(200,80,80,.35);color:#f99" onclick="confirmReset()">↺ Reset</button>
+  </div>
+</div>
+
+<!-- LAYOUT -->
+<div id="layout">
+
+<!-- LEFT NAV -->
+<nav id="nav">
+  <div class="nav-lbl">Reference</div>
+  <div class="nav-a active" onclick="navGo('sec-hero-anchor')">📋 Introduction</div>
+  <div class="nav-a" onclick="navGo('sec-obj')">🎯 Objectives</div>
+  <div class="nav-a" onclick="navGo('sec-terms')">📖 Key Terms</div>
+
+  <div class="nav-lbl">Dashboard</div>
+  <div class="nav-a" onclick="navGo('sec-dash')">📊 Live Dashboard</div>
+  <div class="nav-a" onclick="navGo('sec-poam')">🗂 POA&amp;M Table <span class="nav-pts">25 pts</span></div>
+
+  <div class="nav-lbl">Activities</div>
+  <div class="nav-a" onclick="navGo('sec-act1')">🔍 Act 1 — Finding Analysis <span class="nav-pts">25 pts</span></div>
+  <div class="nav-a" onclick="navGo('sec-act3')">⚖ Act 3 — Prioritization <span class="nav-pts">20 pts</span></div>
+  <div class="nav-a" onclick="navGo('sec-act4')">📅 Act 4 — Milestones <span class="nav-pts">15 pts</span></div>
+  <div class="nav-a" onclick="navGo('sec-act5')">👤 Act 5 — Ownership <span class="nav-pts">10 pts</span></div>
+  <div class="nav-a" onclick="navGo('sec-act6')">🔒 Act 6 — Closure Evidence</div>
+  <div class="nav-a" onclick="navGo('sec-act7')">💼 Act 7 — Exec Summary <span class="nav-pts">5 pts</span></div>
+
+  <div class="nav-lbl">Assessment</div>
+  <div class="nav-a" onclick="navGo('sec-debrief')">🗣 Debrief</div>
+  <div class="nav-a" onclick="navGo('sec-rubric')">📊 Rubric</div>
+
+  <div id="nav-prog-wrap">
+    <div class="nav-prog-txt"><span id="nav-filled-txt">0 / 0 fields</span><span id="nav-pct-txt">0%</span></div>
+    <div class="nav-prog-bar-bg"><div class="nav-prog-bar-fill" id="nav-prog-fill" style="width:0%"></div></div>
+    <div id="save-ind" class="save-ind">✅ Saved</div>
+  </div>
+</nav>
+
+<!-- CONTENT -->
+<div id="content">
+
+<!-- HERO -->
+<div id="hero" style="margin-bottom:1.25rem">
+  <div id="sec-hero-anchor" style="position:absolute;top:-60px"></div>
+  <div class="hero-ey">📋 CMMC 2.0 · Plan of Action &amp; Milestones</div>
+  <h1>FFSI POA&amp;M<br/><em>Dashboard Exercise</em></h1>
+  <p>Identify cybersecurity deficiencies, assign ownership, establish milestones, track remediation progress, and prepare FFSI for CMMC Level 2 certification — using a live, interactive POA&amp;M Dashboard.</p>
+  <div class="hero-chips">
+    <span class="chip g">NIST SP 800-171</span>
+    <span class="chip g">100 Points · 7 Activities</span>
+    <span class="chip a">⏱ 20 Minutes</span>
+    <span class="chip r">🔴 12 Findings · Multiple Domains</span>
+    <span class="chip">⚠ Fictional — Training Use Only</span>
+  </div>
+</div>
+
+<!-- LIVE METRICS DASHBOARD -->
+<div id="sec-dash" style="scroll-margin-top:60px">
+  <div id="metrics">
+    <div class="met-card total"><div class="met-num" id="m-total">12</div><div class="met-lbl">Total Findings</div></div>
+    <div class="met-card open"><div class="met-num" id="m-open">12</div><div class="met-lbl">Open</div></div>
+    <div class="met-card closed"><div class="met-num" id="m-closed">0</div><div class="met-lbl">Closed</div></div>
+    <div class="met-card overdue"><div class="met-num" id="m-overdue">3</div><div class="met-lbl">Overdue</div></div>
+    <div class="met-card pct"><div class="met-num" id="m-pct">0%</div><div class="met-lbl">Complete</div></div>
+  </div>
+  <div id="risk-charts">
+    <div class="risk-chip crit"><div class="risk-chip-num" id="r-crit">2</div><div class="risk-chip-lbl">Critical</div></div>
+    <div class="risk-chip high"><div class="risk-chip-num" id="r-high">5</div><div class="risk-chip-lbl">High</div></div>
+    <div class="risk-chip med"> <div class="risk-chip-num" id="r-med">4</div><div class="risk-chip-lbl">Medium</div></div>
+    <div class="risk-chip low"> <div class="risk-chip-num" id="r-low">1</div><div class="risk-chip-lbl">Low</div></div>
+  </div>
+  <!-- Domain Progress Bars -->
+  <div class="prog-container">
+    <div class="prog-title">📈 Remediation Progress by CMMC Domain <span style="margin-left:auto;font-size:.74rem;font-weight:400;color:var(--text-d)">(updates as you change finding status below)</span></div>
+    <div id="domain-progress"></div>
+  </div>
+</div>
+
+<!-- POAM TABLE -->
+<div class="sec" id="sec-poam" style="scroll-margin-top:60px">
+  <div class="sec-hd open" onclick="togSec(this)">
+    <div class="sec-ico">🗂</div>
+    <div class="sec-meta">
+      <div class="sec-ttl">POA&amp;M Dashboard Table <span class="sec-pts">25 pts</span></div>
+      <div class="sec-sub">Complete the POA&amp;M — assign owners, corrective actions, due dates, and status for all 12 findings</div>
+    </div>
+    <span class="sec-chev">▼</span>
+  </div>
+  <div class="sec-bd open">
+    <div class="instr"><strong>Instructions:</strong> Complete all white fields for each finding. Pre-filled gray fields are drawn from the assessment data. Status changes update the live dashboard above automatically. Use the filter bar to focus on specific domains, risk levels, or priority tiers.</div>
+
+    <div id="filter-bar">
+      <span class="flt-lbl">Filter:</span>
+      <select class="flt-sel" id="flt-domain" onchange="applyFilters()"><option value="">All Domains</option></select>
+      <select class="flt-sel" id="flt-risk" onchange="applyFilters()"><option value="">All Risk Levels</option><option value="Critical">Critical</option><option value="High">High</option><option value="Medium">Medium</option><option value="Low">Low</option></select>
+      <select class="flt-sel" id="flt-status" onchange="applyFilters()"><option value="">All Statuses</option><option value="Open">Open</option><option value="In Progress">In Progress</option><option value="Closed">Closed</option><option value="Overdue">Overdue</option><option value="Risk Accepted">Risk Accepted</option></select>
+      <select class="flt-sel" id="flt-priority" onchange="applyFilters()"><option value="">All Priorities</option><option value="P1">P1 — Immediate</option><option value="P2">P2 — Short-Term</option><option value="P3">P3 — Long-Term</option></select>
+      <button class="flt-btn" onclick="clearFilters()">Clear</button>
+    </div>
+
+    <div id="poam-table-wrap">
+      <table id="poam-table">
+        <thead>
+          <tr>
+            <th>ID</th><th>Domain</th><th>Finding</th><th>Risk</th><th>Priority</th>
+            <th>Owner</th><th>Corrective Action</th><th>Due Date</th><th>Status</th><th>% Done</th>
+          </tr>
+        </thead>
+        <tbody id="poam-tbody"></tbody>
+      </table>
+    </div>
+
+    <div class="two-col mt1">
+      <div>
+        <label class="field-label">POA&amp;M Approved By:</label>
+        <select onchange="updateProgress()"><option value="">— Select —</option><option>CEO</option><option>CIO</option><option>Compliance Manager</option></select>
+      </div>
+      <div>
+        <label class="field-label">Target Assessment Date:</label>
+        <input type="date" oninput="updateProgress()"/>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ACT 1: FINDING ANALYSIS -->
+<div class="sec" id="sec-act1" style="scroll-margin-top:60px">
+  <div class="sec-hd" onclick="togSec(this)">
+    <div class="sec-ico">🔍</div>
+    <div class="sec-meta">
+      <div class="sec-ttl">Activity 1 — Finding Analysis <span class="sec-pts">25 pts</span></div>
+      <div class="sec-sub">Analyze root cause, risk rating, remediation action, ownership, and target date for all 12 findings</div>
+    </div>
+    <span class="sec-chev">▼</span>
+  </div>
+  <div class="sec-bd">
+    <div class="instr"><strong>Instructions:</strong> For each finding below, analyze the root cause, confirm the risk rating, specify the corrective action, assign a responsible owner, and set a target date. Use the Risk Scoring Calculator and FFSI system context to justify your decisions.</div>
+    <div id="act1-body"></div>
+  </div>
+</div>
+
+<!-- ACT 3: PRIORITIZATION -->
+<div class="sec" id="sec-act3" style="scroll-margin-top:60px">
+  <div class="sec-hd" onclick="togSec(this)">
+    <div class="sec-ico">⚖</div>
+    <div class="sec-meta">
+      <div class="sec-ttl">Activity 3 — Remediation Prioritization <span class="sec-pts">20 pts</span></div>
+      <div class="sec-sub">Classify all 12 findings into P1/P2/P3 tiers and justify each decision</div>
+    </div>
+    <span class="sec-chev">▼</span>
+  </div>
+  <div class="sec-bd">
+    <div class="instr"><strong>Instructions:</strong> Classify each finding into a priority tier. Justify why it belongs in that tier, what the impact to CUI would be if unresolved, and how it affects CMMC assessment readiness.</div>
+    <div id="act3-body"></div>
+  </div>
+</div>
+
+<!-- ACT 4: MILESTONES -->
+<div class="sec" id="sec-act4" style="scroll-margin-top:60px">
+  <div class="sec-hd" onclick="togSec(this)">
+    <div class="sec-ico">📅</div>
+    <div class="sec-meta">
+      <div class="sec-ttl">Activity 4 — Milestone Development <span class="sec-pts">15 pts</span></div>
+      <div class="sec-sub">Establish realistic milestones with responsible parties and target dates</div>
+    </div>
+    <span class="sec-chev">▼</span>
+  </div>
+  <div class="sec-bd">
+    <div class="instr"><strong>Instructions:</strong> For each finding, establish at least one concrete milestone that marks meaningful progress toward remediation. Milestones should be specific, measurable, and dated.</div>
+    <div class="tbl-wrap" style="overflow-x:auto">
+      <table class="ms-table">
+        <thead><tr><th>Finding ID</th><th>Finding Summary</th><th>Milestone Description</th><th>Responsible Party</th><th>Target Date</th><th>Completion Criteria</th></tr></thead>
+        <tbody id="act4-body"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ACT 5: OWNERSHIP -->
+<div class="sec" id="sec-act5" style="scroll-margin-top:60px">
+  <div class="sec-hd" onclick="togSec(this)">
+    <div class="sec-ico">👤</div>
+    <div class="sec-meta">
+      <div class="sec-ttl">Activity 5 — Ownership Assignment <span class="sec-pts">10 pts</span></div>
+      <div class="sec-sub">Assign and justify ownership for each finding</div>
+    </div>
+    <span class="sec-chev">▼</span>
+  </div>
+  <div class="sec-bd">
+    <div class="instr"><strong>Instructions:</strong> For each finding, confirm or revise the owner assignment and provide a specific justification. Include an escalation contact and note any cross-functional dependencies.</div>
+    <div class="tbl-wrap" style="overflow-x:auto">
+      <table class="ms-table">
+        <thead><tr><th>Finding ID</th><th>Domain</th><th>Primary Owner</th><th>Escalation Contact</th><th>Justification for Assignment</th><th>Cross-Functional Dependency?</th></tr></thead>
+        <tbody id="act5-body"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ACT 6: CLOSURE EVIDENCE -->
+<div class="sec" id="sec-act6" style="scroll-margin-top:60px">
+  <div class="sec-hd" onclick="togSec(this)">
+    <div class="sec-ico">🔒</div>
+    <div class="sec-meta">
+      <div class="sec-ttl">Activity 6 — Closure Evidence Review <span class="sec-pts np">Reference</span></div>
+      <div class="sec-sub">Identify required evidence, validation method, and approval authority to close each finding</div>
+    </div>
+    <span class="sec-chev">▼</span>
+  </div>
+  <div class="sec-bd">
+    <div class="instr"><strong>Instructions:</strong> For each finding, identify the specific evidence required to close the POA&amp;M item, how that evidence will be validated, and who has authority to approve closure. Evidence must be sufficient to satisfy a C3PAO assessor.</div>
+    <div id="act6-body"></div>
+  </div>
+</div>
+
+<!-- ACT 7: EXEC SUMMARY -->
+<div class="sec" id="sec-act7" style="scroll-margin-top:60px">
+  <div class="sec-hd" onclick="togSec(this)">
+    <div class="sec-ico">💼</div>
+    <div class="sec-meta">
+      <div class="sec-ttl">Activity 7 — Executive Summary <span class="sec-pts">5 pts</span></div>
+      <div class="sec-sub">Prepare a concise management briefing on FFSI's remediation posture</div>
+    </div>
+    <span class="sec-chev">▼</span>
+  </div>
+  <div class="sec-bd">
+    <div class="instr"><strong>Instructions:</strong> Prepare the executive briefing for FFSI's CEO and CIO. Each response should be specific, data-grounded, and written for a non-technical executive audience.</div>
+    <div id="act7-body"></div>
+  </div>
+</div>
+
+<!-- OBJECTIVES -->
+<div class="sec" id="sec-obj" style="scroll-margin-top:60px">
+  <div class="sec-hd" onclick="togSec(this)">
+    <div class="sec-ico">🎯</div>
+    <div class="sec-meta"><div class="sec-ttl">Learning Objectives <span class="sec-pts np">6 Objectives</span></div><div class="sec-sub">What you will demonstrate upon completing this exercise</div></div>
+    <span class="sec-chev">▼</span>
+  </div>
+  <div class="sec-bd">
+    <div class="intro-body">
+      <h3>Why POA&amp;Ms Are Critical to CMMC Preparation</h3>
+      <p>A Plan of Action &amp; Milestones is the primary mechanism through which a CMMC Level 2 organization demonstrates active management of cybersecurity deficiencies. A C3PAO assessor will request the POA&amp;M as evidence that FFSI knows what its vulnerabilities are, has assigned accountability for each, and is tracking remediation with realistic timelines. An organization without a POA&amp;M has no documented pathway to compliance — and no defense against an assessor's finding of systemic negligence.</p>
+      <h3>How POA&amp;Ms Support Continuous Improvement</h3>
+      <p>NIST practice <span class="nist-tag">3.12.2</span> requires developing and implementing plans of action to correct deficiencies and reduce vulnerabilities. The POA&amp;M is not a one-time artifact — it must be updated continuously as findings are remediated, new vulnerabilities are discovered, and assessment readiness evolves. Assessors will look for version history and evidence of regular review cycles.</p>
+    </div>
+    <div class="obj-list">
+      <div class="obj-item"><div class="obj-num">1</div><div>Explain the purpose of a POA&amp;M within the CMMC Level 2 assessment framework and identify which NIST SP 800-171 practices (3.12.1–3.12.4) establish POA&amp;M obligations for defense contractors.</div></div>
+      <div class="obj-item"><div class="obj-num">2</div><div>Analyze 12 FFSI cybersecurity findings across 10 CMMC domains — determining root cause, risk level, CUI impact, and required corrective action for each.</div></div>
+      <div class="obj-item"><div class="obj-num">3</div><div>Complete a formal POA&amp;M Dashboard with all required fields, including owner, corrective action, target date, milestone, and status — sufficient to satisfy C3PAO evidence requirements.</div></div>
+      <div class="obj-item"><div class="obj-num">4</div><div>Prioritize remediation activities across three tiers (P1/P2/P3) based on risk level, CUI exposure, and CMMC assessment timeline — justifying each classification with specific scenario evidence.</div></div>
+      <div class="obj-item"><div class="obj-num">5</div><div>Assign accountability for each POA&amp;M item to named FFSI personnel, justify ownership decisions, and identify cross-functional dependencies and escalation contacts.</div></div>
+      <div class="obj-item"><div class="obj-num">6</div><div>Prepare an executive POA&amp;M briefing suitable for FFSI leadership — communicating remediation posture, CUI risk, assessment readiness, and resource requirements clearly and concisely.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- KEY TERMS -->
+<div class="sec" id="sec-terms" style="scroll-margin-top:60px">
+  <div class="sec-hd" onclick="togSec(this)">
+    <div class="sec-ico">📖</div>
+    <div class="sec-meta"><div class="sec-ttl">Key Terms <span class="sec-pts np">15-Term Glossary</span></div><div class="sec-sub">Essential vocabulary for POA&amp;M development and CMMC compliance</div></div>
+    <span class="sec-chev">▼</span>
+  </div>
+  <div class="sec-bd">
+    <div class="gloss-grid" id="gloss-grid"></div>
+  </div>
+</div>
+
+<!-- DEBRIEF -->
+<div class="sec" id="sec-debrief" style="scroll-margin-top:60px">
+  <div class="sec-hd" onclick="togSec(this)">
+    <div class="sec-ico">🗣</div>
+    <div class="sec-meta"><div class="sec-ttl">Instructor Debrief Questions <span class="sec-pts np">Discussion</span></div><div class="sec-sub">5–10 minute post-exercise discussion facilitation guide</div></div>
+    <span class="sec-chev">▼</span>
+  </div>
+  <div class="sec-bd">
+    <div class="dq-list" id="debrief-body"></div>
+  </div>
+</div>
+
+<!-- RUBRIC -->
+<div class="sec" id="sec-rubric" style="scroll-margin-top:60px">
+  <div class="sec-hd" onclick="togSec(this)">
+    <div class="sec-ico">📊</div>
+    <div class="sec-meta"><div class="sec-ttl">Facilitator Scoring Rubric <span class="sec-pts np">100 Points</span></div><div class="sec-sub">Enter scores — total and rating update automatically</div></div>
+    <span class="sec-chev">▼</span>
+  </div>
+  <div class="sec-bd">
+    <div class="tbl-wrap">
+      <table class="ms-table">
+        <thead><tr><th>Category</th><th>Excellent</th><th>Proficient</th><th>Developing</th><th>Needs Improvement</th><th>Max</th><th>Score</th></tr></thead>
+        <tbody id="rubric-body"></tbody>
+      </table>
+    </div>
+    <div class="mt1" style="display:flex;gap:1rem;flex-wrap:wrap;align-items:center">
+      <div class="sb-s"><div class="sb-v" id="rubric-total">0</div><div class="sb-l">Total</div></div>
+      <div class="sb-s"><div class="sb-v" id="rubric-pct">0%</div><div class="sb-l">Score</div></div>
+      <div id="rubric-rb" class="rb-badge rb-ni">Needs Improvement</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /content -->
+</div><!-- /layout -->
+
+<!-- SCORE BAR -->
+<div id="score-bar">
+  <div class="sb-s"><div class="sb-v" id="sb-total">0</div><div class="sb-l">Rubric</div></div>
+  <div class="sb-s"><div class="sb-v" id="sb-pct">0%</div><div class="sb-l">Score</div></div>
+  <div id="sb-rating" class="sb-r rb-ni">Needs Improvement</div>
+  <div style="flex:1"></div>
+  <div style="font-size:.7rem;color:#3a5a3a">CMMC 2.0 · NIST SP 800-171 · FFSI POA&amp;M Exercise</div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════
+//  THEME
+// ══════════════════════════════════════════════════════
+(function(){
+  const s=localStorage.getItem('ffsi-poam-theme')||'light';
+  document.documentElement.setAttribute('data-theme',s);
+  updateThemeBtn(s);
+})();
+function toggleTheme(){
+  const c=document.documentElement.getAttribute('data-theme');
+  const n=c==='light'?'dark':'light';
+  document.documentElement.setAttribute('data-theme',n);
+  localStorage.setItem('ffsi-poam-theme',n);
+  updateThemeBtn(n);
+}
+function updateThemeBtn(t){
+  const b=document.getElementById('theme-btn');
+  if(b) b.textContent=t==='light'?'🌙 Dark Mode':'☀️ Light Mode';
+}
+
+// ══════════════════════════════════════════════════════
+//  DATA
+// ══════════════════════════════════════════════════════
+const PERSONNEL=['CEO','CIO','Compliance Manager','Security Analyst','IT Manager',
+  'Network Administrator','System Administrator','Cloud Administrator','Help Desk Manager','Contracts Manager'];
+
+const FINDINGS=[
+  {id:'POA-001',domain:'Access Control',nist:'3.1.5, 3.5.3',risk:'Critical',
+   title:'MFA Not Enforced on Privileged Accounts — Active Directory',
+   desc:'Privileged accounts in Active Directory and Entra ID lack MFA enforcement via Conditional Access. 6 accounts have Domain Admin rights with single-factor authentication only.',
+   cui:true,asset:'Active Directory / Entra ID',owner:'System Administrator',
+   discovery:'Oct 14, 2025',due:'Nov 3, 2025',overdue:true,priority:'P1',
+   action:'Deploy Entra Conditional Access policy requiring MFA for all privileged accounts; enforce via Azure AD role protection.',
+   evidence:'Entra CA policy screenshot; sign-in log showing MFA enforcement; list of admin accounts audited',
+   status:'Open',pct:0},
+  {id:'POA-002',domain:'Vulnerability Management',nist:'3.14.1',risk:'Critical',
+   title:'Critical ERP Server Vulnerability Unpatched — CVE-2025-21333 (CVSS 9.8)',
+   desc:'Remote code execution vulnerability on ERP-01 (CVE-2025-21333) identified in October 2025 scan. Actively exploited in the wild. Patch available but not yet applied.',
+   cui:true,asset:'ERP System (ERP-01)',owner:'ERP Administrator',
+   discovery:'Oct 31, 2025',due:'Nov 3, 2025',overdue:true,priority:'P1',
+   action:'Apply vendor patch during emergency maintenance window; rescan to confirm remediation; update CMP baseline.',
+   evidence:'Nessus scan confirmation (before/after); change request record; updated baseline configuration',
+   status:'Open',pct:10},
+  {id:'POA-003',domain:'Incident Response',nist:'3.6.3',risk:'High',
+   title:'IRP Not Tested Within the Last 12 Months',
+   desc:'FFSI\'s Incident Response Plan has not been tested via tabletop exercise or simulation since November 2023. CMMC requires annual testing with documented results.',
+   cui:true,asset:'Organizational (All CUI Systems)',owner:'Compliance Manager',
+   discovery:'Oct 20, 2025',due:'Dec 15, 2025',overdue:false,priority:'P1',
+   action:'Schedule and conduct tabletop exercise; document participation, scenarios, lessons learned, and IRP updates.',
+   evidence:'Exercise agenda; attendance record; scenario documentation; updated IRP version with lessons learned',
+   status:'Open',pct:25},
+  {id:'POA-004',domain:'Audit & Accountability',nist:'3.3.1, 3.3.5',risk:'High',
+   title:'Security Logs Reviewed Inconsistently — No Documented Monthly ALMR',
+   desc:'Audit log reviews have been conducted ad hoc without documentation. No Audit Log & Monitoring Report (ALMR) exists for any month in 2025. SIEM alert review SLA undefined.',
+   cui:true,asset:'SIEM Platform (SIEM-01)',owner:'Security Analyst',
+   discovery:'Oct 28, 2025',due:'Nov 30, 2025',overdue:false,priority:'P1',
+   action:'Establish monthly ALMR process; document SIEM alert review SLA (15 minutes); complete October and November ALMRs as makeup.',
+   evidence:'Completed October and November ALMRs; SIEM policy document; analyst assignment record',
+   status:'Open',pct:0},
+  {id:'POA-005',domain:'Configuration Management',nist:'3.4.1, 3.4.2',risk:'High',
+   title:'Firewall Baseline Configuration Not Documented in CMP',
+   desc:'The perimeter firewall (FW-EDGE-01) has no documented baseline in the Configuration Management Plan. After-hours rule change in October (EVT-005) exposed the gap.',
+   cui:false,asset:'Firewall (FW-EDGE-01)',owner:'Network Administrator',
+   discovery:'Oct 11, 2025',due:'Nov 28, 2025',overdue:false,priority:'P2',
+   action:'Export current firewall configuration; document as approved baseline in CMP; implement change control requirement for all firewall modifications.',
+   evidence:'CMP updated with FW-EDGE-01 baseline section; firewall config export (dated); CCB change requirement policy',
+   status:'Open',pct:0},
+  {id:'POA-006',domain:'Identification & Authentication',nist:'3.5.3',risk:'High',
+   title:'VPN Gateway MFA Not Configured — All Remote Users',
+   desc:'VPN-GW-01 (Cisco ASA) does not require MFA for remote access. All remote workers — including those accessing CUI systems — authenticate with username/password only.',
+   cui:true,asset:'VPN Gateway (VPN-GW-01)',owner:'Network Administrator',
+   discovery:'Oct 31, 2025',due:'Nov 14, 2025',overdue:false,priority:'P1',
+   action:'Configure Cisco DUO or Azure AD MFA integration for AnyConnect VPN; enforce for all remote sessions; test and document.',
+   evidence:'VPN authentication policy; DUO/MFA configuration screenshot; test login record with MFA prompt',
+   status:'Open',pct:20},
+  {id:'POA-007',domain:'System & Information Integrity',nist:'3.14.6, 3.14.7',risk:'High',
+   title:'SIEM Alert Rule Disabled — Backup Failure Alerts Not Firing',
+   desc:'Backup failure alert rule on SIEM was disabled during tuning on Oct 21 and not re-enabled. CUI backup server (BACKUP-01) failed for 4 consecutive nights before manual discovery.',
+   cui:true,asset:'SIEM Platform / Backup Infrastructure',owner:'Security Analyst',
+   discovery:'Oct 25, 2025',due:'Nov 7, 2025',overdue:false,priority:'P1',
+   action:'Re-enable all disabled SIEM alert rules; implement rule change control process; review all active/disabled rules quarterly.',
+   evidence:'SIEM alert rule configuration export; change management ticket; rule review policy document',
+   status:'Open',pct:50},
+  {id:'POA-008',domain:'Risk Assessment',nist:'3.11.1, 3.11.2',risk:'Medium',
+   title:'Risk Register Not Updated Since Q1 2025',
+   desc:'FFSI\'s Risk Register reflects Q1 2025 assessment data. Multiple new findings from October reviews (phishing incident, VSR, CMP gaps) have not been incorporated.',
+   cui:true,asset:'Risk Register (Organizational)',owner:'Compliance Manager',
+   discovery:'Nov 1, 2025',due:'Dec 1, 2025',overdue:false,priority:'P2',
+   action:'Conduct full Risk Register review; incorporate all October findings; update likelihood/impact scores; present to CIO for approval.',
+   evidence:'Updated Risk Register (dated Q4 2025); CIO approval signature; previous vs. current comparison document',
+   status:'Open',pct:0},
+  {id:'POA-009',domain:'Configuration Management',nist:'3.4.3, 3.4.5',risk:'Medium',
+   title:'Unauthorized Admin Account Created on CUI System (CMS-01)',
+   desc:'Account "svc-admin-temp" created on Contract Management System by System Administrator without CCB approval or change ticket on Oct 22, 2025. Account has local admin rights.',
+   cui:true,asset:'Contract Management System (CMS-01)',owner:'IT Manager',
+   discovery:'Oct 29, 2025',due:'Nov 7, 2025',overdue:false,priority:'P1',
+   action:'Disable unauthorized account immediately; document retroactive incident review; implement account creation monitoring alert in SIEM.',
+   evidence:'Account deletion/disable log; SIEM alert configuration; CCB policy update requiring approval for all CUI system accounts',
+   status:'Open',pct:60},
+  {id:'POA-010',domain:'Maintenance',nist:'3.7.1, 3.7.6',risk:'Medium',
+   title:'Vendor Maintenance Records Incomplete — No CUI System Escort Documentation',
+   desc:'October maintenance report review found 3 vendor maintenance events on CUI systems with no escort documentation. Vendor access was unmonitored and undocumented.',
+   cui:true,asset:'Multiple CUI Systems',owner:'IT Manager',
+   discovery:'Oct 15, 2025',due:'Nov 30, 2025',overdue:false,priority:'P2',
+   action:'Implement vendor escort policy; retroactively document October events via vendor confirmation; require maintenance pre-authorization for all CUI system work.',
+   evidence:'Updated maintenance policy; retroactive documentation for Oct events; vendor pre-authorization form template',
+   status:'Open',pct:0},
+  {id:'POA-011',domain:'Security Assessment',nist:'3.12.1, 3.12.3',risk:'Medium',
+   title:'System Security Plan (SSP) Not Reviewed or Updated in 18 Months',
+   desc:'FFSI\'s SSP was last updated in April 2024. Multiple system changes, new findings, and personnel changes since then have not been reflected. SSP does not match current system state.',
+   cui:true,asset:'SSP (Organizational)',owner:'Compliance Manager',
+   discovery:'Oct 20, 2025',due:'Jan 15, 2026',overdue:false,priority:'P2',
+   action:'Conduct comprehensive SSP review; update all system descriptions, control implementations, and personnel assignments; obtain CIO approval.',
+   evidence:'Updated SSP with version history; change log; CIO approval record; next scheduled review date',
+   status:'Open',pct:5},
+  {id:'POA-012',domain:'System & Comms Protection',nist:'3.13.1, 3.13.3',risk:'Low',
+   title:'Wireless Network Lacks SSID Segmentation — No Guest Isolation',
+   desc:'Current single SSID provides no network segmentation. Guest users can reach corporate network. Wireless Controller redesign (CR-2025-045) approved but not yet implemented.',
+   cui:false,asset:'Wireless Controller (WLAN-CTRL-01)',owner:'Network Administrator',
+   discovery:'Nov 3, 2025',due:'Jan 31, 2026',overdue:false,priority:'P3',
+   action:'Implement three-SSID architecture (Corporate/Production/Guest); enforce VLAN isolation; test guest network isolation prior to go-live.',
+   evidence:'Wireless controller config export; VLAN design document; guest isolation test results; change ticket closure',
+   status:'Open',pct:15},
+];
+
+const GLOSSARY=[
+  {term:'POA&M',def:'Plan of Action & Milestones — a formal document identifying cybersecurity deficiencies, planned corrective actions, resources required, milestones, and scheduled completion dates. Required by NIST 800-171 practice 3.12.2 and reviewed by C3PAO assessors.'},
+  {term:'Finding',def:'A documented cybersecurity deficiency identified during an assessment, audit, scan, or review. Each finding must be entered into the POA&M with a corrective action plan, owner, and target date.'},
+  {term:'Deficiency',def:'A gap between the required security posture (as described in the SSP and NIST 800-171) and the actual implemented state of security controls. Deficiencies are sources of organizational risk and must be tracked until remediated.'},
+  {term:'Corrective Action',def:'The specific technical or administrative measure taken to resolve a deficiency — such as applying a patch, enforcing a policy, or training personnel. Corrective actions must be specific, measurable, and verifiable.'},
+  {term:'Milestone',def:'A discrete, measurable intermediate step toward completing a corrective action. Milestones break large remediation tasks into trackable increments — enabling progress monitoring and early detection of slippage.'},
+  {term:'Risk Rating',def:'A classification (Critical, High, Medium, Low) indicating the severity of a finding based on likelihood, impact, CUI exposure, and exploitability. Risk rating drives remediation priority and timeline.'},
+  {term:'Residual Risk',def:'The risk that remains after all feasible corrective actions and compensating controls have been implemented. Residual risk must be formally accepted by an authorized official and documented in the Risk Register.'},
+  {term:'Remediation',def:'The process of correcting a deficiency through patching, configuration change, policy update, training, or other control improvement. Remediation must be documented, verified, and updated in both the POA&M and SSP.'},
+  {term:'Root Cause',def:'The fundamental reason a deficiency exists — not merely the symptom. Root cause analysis identifies the underlying policy, process, or technical failure that must be addressed to prevent recurrence.'},
+  {term:'Due Date',def:'The target date by which a corrective action or milestone is expected to be completed. Overdue items — past their due date without closure — are a negative indicator of remediation program health during CMMC assessment.'},
+  {term:'Responsible Owner',def:'The named FFSI individual accountable for completing the corrective action by the due date. Ownership must be specific (a named person, not a department) and accepted by the individual assigned.'},
+  {term:'Closure Evidence',def:'The documentation required to close a POA&M item — such as screenshots, scan results, configuration exports, updated policies, or training records — that demonstrates the corrective action was fully implemented.'},
+  {term:'CUI',def:'Controlled Unclassified Information — government data requiring protection under NIST SP 800-171. Findings affecting CUI systems receive elevated risk ratings and priority treatment in the POA&M.'},
+  {term:'Assessment Readiness',def:'The state of having resolved or mitigated all critical and high findings, with documented corrective actions in progress for remaining items, such that a C3PAO assessor would find evidence of active, managed compliance.'},
+  {term:'Continuous Monitoring',def:'The ongoing process of tracking system security posture, reviewing audit logs, conducting periodic scans, and updating the POA&M — ensuring that the security state remains known and controlled between formal assessments.'},
+];
+
+const DEBRIEF_QS=[
+  'Of the 12 FFSI POA&M findings, which three should be remediated first before any CMMC assessment can proceed? What combination of risk level, CUI exposure, and assessor scrutiny drives that prioritization?',
+  'POA-001 (MFA for privileged accounts) and POA-006 (VPN MFA) are both authentication findings. How do you prioritize between them? What factors distinguish their urgency?',
+  'What specific artifacts does a C3PAO assessor look for when reviewing a POA&M? List at least six types of closure evidence and explain what each proves.',
+  'What role should FFSI\'s CEO and CIO play in the POA&M process? What decisions require executive involvement, and why is management accountability critical to CMMC readiness?',
+  'POA-011 (SSP not updated in 18 months) is rated Medium — but many assessors consider an outdated SSP to be one of the most damaging findings. Explain why, and how it undermines the entire assessment.',
+  'What POA&M deficiencies are most commonly cited during CMMC Level 2 assessments? Which of those patterns appear in the FFSI findings, and what systemic issues do they reveal?',
+  'How does the POA&M relate to the SSP, Risk Register, VSR, IRP, and CMP? If POA-009 (unauthorized account) is remediated, which other documents must be updated, and in what sequence?',
+];
+
+const RUBRIC_ROWS=[
+  {cat:'Finding Analysis (Act 1)',max:25,
+   exc:'All 12 findings analyzed with accurate root cause, confirmed risk level, FFSI-specific corrective action, appropriate owner, and justified target date. CUI impact assessed for all findings.',
+   pro:'10–11 findings analyzed. Minor gaps in root cause or owner justification. CUI impact present.',
+   dev:'8–9 findings. Vague root cause or corrective action for several. Some CUI gaps.',
+   ni:'Fewer than 8. Multiple errors in risk rating or owner. CUI not assessed.'},
+  {cat:'POA&M Completion (Act 2 — Table)',max:25,
+   exc:'All 12 POA&M rows complete. Status, owner, action, and date all present. Status choices consistent with finding severity. Completion percentages realistic.',
+   pro:'10–11 rows complete. Minor omissions. Status mostly consistent with analysis.',
+   dev:'7–9 rows complete. Several fields blank or generic.',
+   ni:'Fewer than 7 rows. Widespread incompleteness.'},
+  {cat:'Remediation Prioritization (Act 3)',max:20,
+   exc:'All 12 findings correctly tiered P1/P2/P3. Justification references risk level, CUI exposure, and CMMC timeline. Critical and High findings in P1.',
+   pro:'10–11 correctly tiered. Justifications adequate.',
+   dev:'7–9 correctly tiered. Some misclassifications. Justifications vague.',
+   ni:'Fewer than 7. Major misclassifications. No justification.'},
+  {cat:'Milestone Development (Act 4)',max:15,
+   exc:'All 12 milestones are specific, measurable, and dated. Responsible parties named. Completion criteria defined.',
+   pro:'9–11 milestones present with adequate specificity.',
+   dev:'6–8 milestones. Several lack dates or criteria.',
+   ni:'Fewer than 6. Milestones vague or absent.'},
+  {cat:'Ownership Assignment (Act 5)',max:10,
+   exc:'All 12 owners justified. Escalation contacts identified. Cross-functional dependencies noted.',
+   pro:'9–11 owners justified. Most escalation contacts present.',
+   dev:'6–8 justified. Escalation contacts missing for several.',
+   ni:'Fewer than 6. No justifications.'},
+  {cat:'Executive Summary (Act 7)',max:5,
+   exc:'All 6 questions answered with specific FFSI data. Clear, concise, assessment-ready.',
+   pro:'5–6 answered adequately.',
+   dev:'3–4 answered. Responses vague.',
+   ni:'Fewer than 3. Generic or absent.'},
+];
+
+// ══════════════════════════════════════════════════════
+//  BUILD FUNCTIONS
+// ══════════════════════════════════════════════════════
+function makeOwnerSel(cur){
+  const o=PERSONNEL.map(p=>`<option${p===cur?' selected':''}>${p}</option>`).join('');
+  return `<select onchange="updateAll()" style="font-size:.75rem;min-width:120px"><option value="">— Select —</option>${o}</select>`;
+}
+function riskBadge(r){
+  const m={Critical:'rb-crit',High:'rb-high',Medium:'rb-med',Low:'rb-low'};
+  return `<span class="risk-badge ${m[r]||'rb-low'}">${r}</span>`;
+}
+
+// POA&M TABLE
+function buildPoamTable(){
+  const tbody=document.getElementById('poam-tbody');
+  const domSel=document.getElementById('flt-domain');
+  const domains=[...new Set(FINDINGS.map(f=>f.domain))].sort();
+  domains.forEach(d=>{ const o=document.createElement('option'); o.textContent=d; domSel.appendChild(o); });
+
+  FINDINGS.forEach((f,i)=>{
+    const tr=document.createElement('tr');
+    tr.dataset.id=f.id;tr.dataset.domain=f.domain;tr.dataset.risk=f.risk;tr.dataset.priority=f.priority;
+    const statusOpts=['Open','In Progress','Closed','Overdue','Risk Accepted'].map(s=>`<option${s===f.status?' selected':''}>${s}</option>`).join('');
+    const prioOpts=['P1 — Immediate','P2 — Short-Term','P3 — Long-Term'].map(p=>`<option${p.startsWith(f.priority)?' selected':''}>${p}</option>`).join('');
+    tr.innerHTML=`
+      <td class="mono">${f.id}</td>
+      <td style="font-size:.72rem;font-weight:600;white-space:nowrap">${f.domain}</td>
+      <td style="font-size:.73rem;max-width:200px">${f.title}</td>
+      <td>${riskBadge(f.risk)}</td>
+      <td><select onchange="updateAll()" style="font-size:.72rem;min-width:90px"><option value="">—</option>${prioOpts}</select></td>
+      <td>${makeOwnerSel(f.owner)}</td>
+      <td><textarea rows="2" style="font-size:.72rem;min-width:160px" placeholder="Specific corrective action..." oninput="updateAll()">${f.action}</textarea></td>
+      <td><input type="date" value="${f.due}" style="font-size:.72rem;min-width:110px" oninput="updateAll()"/></td>
+      <td><select class="status-sel" onchange="updateAll();styleStatusRow(this)">${statusOpts}</select></td>
+      <td><input type="number" min="0" max="100" value="${f.pct}" style="font-size:.72rem;width:55px;text-align:center" oninput="updateAll()"/> <span style="font-size:.68rem;color:var(--text-d)">%</span></td>
+    `;
+    tbody.appendChild(tr);
+    styleStatusRow(tr.querySelector('.status-sel'));
+  });
+}
+
+function styleStatusRow(sel){
+  const tr=sel.closest('tr');
+  tr.classList.remove('status-open','status-ip','status-closed','status-overdue');
+  const v=sel.value;
+  if(v==='Open'||v==='Risk Accepted') tr.classList.add('status-open');
+  else if(v==='In Progress') tr.classList.add('status-ip');
+  else if(v==='Closed') tr.classList.add('status-closed');
+  else if(v==='Overdue') tr.classList.add('status-overdue');
+}
+
+// ACT 1: FINDING ANALYSIS
+function buildAct1(){
+  const div=document.getElementById('act1-body');
+  const ownerOpts=PERSONNEL.map(p=>`<option>${p}</option>`).join('');
+  FINDINGS.forEach(f=>{
+    const cuiTag=f.cui?'<span class="fc-tag cui">CUI System</span>':'';
+    div.innerHTML+=`
+    <div class="finding-card">
+      <div class="fc-hdr">
+        <div class="fc-sev ${f.risk.toLowerCase().slice(0,4)}">${f.risk.toUpperCase().slice(0,4)}</div>
+        <div style="flex:1">
+          <div class="fc-id">${f.id} · ${f.domain} · <span class="nist-tag">${f.nist}</span> · Discovered: ${f.discovery}</div>
+          <div class="fc-title">${f.title}</div>
+          <div class="fc-desc">${f.desc}</div>
+          <div class="fc-tags">${cuiTag}<span class="fc-tag dom">${f.domain}</span><span class="fc-tag" style="background:var(--amber-bg);border-color:var(--amber-bd);color:var(--amber)">Due: ${f.due}</span></div>
+        </div>
+      </div>
+      <div class="fc-fields">
+        <div>
+          <span class="fc-fields-lbl">1. Root Cause</span>
+          <div class="sev-g">
+            <button class="sev-b hi" onclick="sevT(this)">Policy Gap</button>
+            <button class="sev-b me" onclick="sevT(this)">Technical Debt</button>
+            <button class="sev-b lo" onclick="sevT(this)">Process Failure</button>
+            <button class="sev-b cr" onclick="sevT(this)">Resource Constraint</button>
+          </div>
+        </div>
+        <div>
+          <span class="fc-fields-lbl">2. Risk Level</span>
+          <div class="sev-g">
+            <button class="sev-b cr" onclick="sevT(this)">Critical</button>
+            <button class="sev-b hi" onclick="sevT(this)">High</button>
+            <button class="sev-b me" onclick="sevT(this)">Medium</button>
+            <button class="sev-b lo" onclick="sevT(this)">Low</button>
+          </div>
+        </div>
+        <div>
+          <span class="fc-fields-lbl">3. CUI Impact?</span>
+          <div class="yn-g">
+            <button class="yn-b y" onclick="ynT(this,'y')">Direct</button>
+            <button class="yn-b u" onclick="ynT(this,'u')">Indirect</button>
+            <button class="yn-b n" onclick="ynT(this,'n')">None</button>
+          </div>
+        </div>
+        <div>
+          <span class="fc-fields-lbl">4. Owner</span>
+          <select onchange="updateProgress()" style="font-size:.74rem"><option value="">— Select —</option>${ownerOpts}</select>
+        </div>
+        <div>
+          <span class="fc-fields-lbl">5. Target Date</span>
+          <input type="date" oninput="updateProgress()"/>
+        </div>
+      </div>
+      <div class="fc-notes">
+        <div>
+          <span class="fc-fields-lbl">Root Cause Analysis (explain the specific reason this deficiency exists at FFSI):</span>
+          <textarea rows="2" placeholder="Why does this finding exist? What policy, process, or technical failure caused it? What must change to prevent recurrence?" oninput="updateProgress()"></textarea>
+        </div>
+        <div>
+          <span class="fc-fields-lbl">Specific Corrective Action (FFSI-grounded, measurable):</span>
+          <textarea rows="2" placeholder="What exactly must FFSI do to close this finding? Name the system, tool, policy, or personnel action required..." oninput="updateProgress()"></textarea>
+        </div>
+      </div>
+    </div>`;
+  });
+}
+
+// ACT 3: PRIORITIZATION
+function buildAct3(){
+  const div=document.getElementById('act3-body');
+  const tiers=[
+    {key:'P1',lbl:'🔴 Priority 1 — Immediate Action (0–30 Days)',desc:'Critical & High findings on CUI systems; findings blocking assessment readiness',col:'var(--red)'},
+    {key:'P2',lbl:'🟠 Priority 2 — Short-Term Action (30–60 Days)',desc:'Medium findings on CUI systems; High findings on non-CUI systems',col:'var(--orange)'},
+    {key:'P3',lbl:'🟢 Priority 3 — Long-Term Action (60–90+ Days)',desc:'Low findings; medium non-CUI findings; process improvements',col:'var(--g2)'},
+  ];
+  tiers.forEach(t=>{
+    div.innerHTML+=`
+    <div style="background:var(--bg-slate);border:1px solid var(--border);border-radius:8px;padding:.85rem;margin-bottom:.75rem;border-left:4px solid ${t.col}">
+      <div style="font-size:.82rem;font-weight:800;color:${t.col};margin-bottom:.3rem">${t.lbl}</div>
+      <div class="text-sm" style="margin-bottom:.55rem">${t.desc}</div>
+      <div class="two-col">
+        <div>
+          <label class="field-label">Finding IDs in this tier + why they belong here:</label>
+          <textarea rows="3" placeholder="List POA IDs (e.g. POA-001, POA-002). Justify why each belongs in this priority tier — reference risk level, CUI exposure, and CMMC assessment timeline impact." oninput="updateProgress()"></textarea>
+        </div>
+        <div>
+          <label class="field-label">CUI Impact &amp; Assessment Readiness Consequences if Unresolved:</label>
+          <textarea rows="3" placeholder="What CUI data is at risk if these findings remain open? Which findings would cause an assessor to score FFSI as non-compliant?" oninput="updateProgress()"></textarea>
+        </div>
+      </div>
+    </div>`;
+  });
+}
+
+// ACT 4: MILESTONES
+function buildAct4(){
+  const tb=document.getElementById('act4-body');
+  const ownerOpts=PERSONNEL.map(p=>`<option>${p}</option>`).join('');
+  FINDINGS.forEach(f=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td class="mono">${f.id}</td>
+      <td style="font-size:.73rem;max-width:150px">${f.title.slice(0,55)}${f.title.length>55?'…':''}</td>
+      <td><textarea rows="2" placeholder="e.g. MFA policy drafted and CIO-approved by Nov 10..." oninput="updateProgress()"></textarea></td>
+      <td><select onchange="updateProgress()" style="font-size:.74rem"><option value="">— Select —</option>${ownerOpts}</select></td>
+      <td><input type="date" oninput="updateProgress()"/></td>
+      <td><textarea rows="2" placeholder="e.g. All privileged accounts require MFA before login; verified by sign-in log review..." oninput="updateProgress()"></textarea></td>
+    `;
+    tb.appendChild(tr);
+  });
+}
+
+// ACT 5: OWNERSHIP
+function buildAct5(){
+  const tb=document.getElementById('act5-body');
+  const ownerOpts=PERSONNEL.map(p=>`<option>${p}</option>`).join('');
+  FINDINGS.forEach(f=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td class="mono">${f.id}</td>
+      <td style="font-size:.72rem">${f.domain}</td>
+      <td><select onchange="updateProgress()" style="font-size:.74rem"><option value="">— Select —</option>${ownerOpts}</select></td>
+      <td><select onchange="updateProgress()" style="font-size:.74rem"><option value="">— Select —</option><option>CEO</option><option>CIO</option><option>Compliance Manager</option><option>IT Manager</option></select></td>
+      <td><textarea rows="2" placeholder="Why is this person the right owner? What authority, expertise, or system access makes them accountable?" oninput="updateProgress()"></textarea></td>
+      <td><div class="yn-g"><button class="yn-b y" onclick="ynT(this,'y')">Yes</button><button class="yn-b n" onclick="ynT(this,'n')">No</button></div></td>
+    `;
+    tb.appendChild(tr);
+  });
+}
+
+// ACT 6: CLOSURE EVIDENCE
+function buildAct6(){
+  const div=document.getElementById('act6-body');
+  const approverOpts=PERSONNEL.map(p=>`<option>${p}</option>`).join('');
+  FINDINGS.forEach(f=>{
+    div.innerHTML+=`
+    <div style="background:var(--bg-slate);border:1px solid var(--border);border-radius:7px;padding:.8rem;margin-bottom:.65rem">
+      <div style="font-size:.8rem;font-weight:700;color:var(--text);margin-bottom:.4rem">${f.id} · ${f.title.slice(0,60)}${f.title.length>60?'…':''}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem">
+        <div>
+          <label class="field-label">1. Required Evidence:</label>
+          <textarea rows="2" placeholder="${f.evidence}" oninput="updateProgress()"></textarea>
+        </div>
+        <div>
+          <label class="field-label">2. Validation Method:</label>
+          <textarea rows="2" placeholder="How will FFSI confirm the evidence is authentic and complete? Who reviews it?" oninput="updateProgress()"></textarea>
+        </div>
+        <div>
+          <label class="field-label">3. Approval Authority:</label>
+          <select onchange="updateProgress()" style="font-size:.74rem"><option value="">— Select —</option>${approverOpts}</select>
+        </div>
+      </div>
+    </div>`;
+  });
+}
+
+// ACT 7: EXEC SUMMARY
+const EXEC_QS=[
+  'How many total findings exist in the FFSI POA&M, and what is the breakdown by risk level (Critical, High, Medium, Low)?',
+  'Which FFSI systems and findings present the greatest risk to CUI — and what is the specific CUI data that could be exposed?',
+  'Which findings are currently overdue, and what impact does that have on FFSI\'s CMMC assessment readiness?',
+  'Which findings must be fully remediated before FFSI can undergo a CMMC Level 2 assessment? What is the minimum bar for assessment readiness?',
+  'What resources — budget, personnel, or tooling — are needed to accelerate remediation of the highest-priority findings?',
+  'Based on the current POA&M, what is FFSI\'s realistic assessment readiness date, and what are the top three risks that could delay that date?',
+];
+function buildAct7(){
+  const div=document.getElementById('act7-body');
+  EXEC_QS.forEach((q,i)=>{
+    div.innerHTML+=`
+    <div class="exec-q">
+      <div class="exec-q-title">Q${i+1}: ${q}</div>
+      <textarea rows="3" placeholder="Provide a 2–3 sentence specific, data-grounded executive response..." oninput="updateProgress()"></textarea>
+    </div>`;
+  });
+}
+
+// GLOSSARY
+function buildGlossary(){
+  const div=document.getElementById('gloss-grid');
+  GLOSSARY.forEach(g=>{
+    div.innerHTML+=`<div class="gloss-item"><div class="gloss-term">${g.term}</div><div class="gloss-def">${g.def}</div></div>`;
+  });
+}
+
+// DEBRIEF
+function buildDebrief(){
+  const div=document.getElementById('debrief-body');
+  DEBRIEF_QS.forEach((q,i)=>{
+    div.innerHTML+=`
+    <div class="dq-item">
+      <div class="dq-num">${i+1}</div>
+      <div class="dq-text">
+        ${q}
+        <div style="margin-top:.4rem"><textarea rows="2" placeholder="Discussion notes / participant responses..." oninput="updateProgress()"></textarea></div>
+      </div>
+    </div>`;
+  });
+}
+
+// RUBRIC
+function buildRubric(){
+  const tb=document.getElementById('rubric-body');
+  RUBRIC_ROWS.forEach(r=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td style="font-weight:700;font-size:.76rem">${r.cat}</td>
+      <td class="text-sm">${r.exc}</td>
+      <td class="text-sm">${r.pro}</td>
+      <td class="text-sm">${r.dev}</td>
+      <td class="text-sm">${r.ni}</td>
+      <td style="text-align:center;font-weight:700;color:var(--g1)">${r.max}</td>
+      <td><input type="number" class="score-input rubric-score" min="0" max="${r.max}" placeholder="0" oninput="calcRubric()"/></td>
+    `;
+    tb.appendChild(tr);
+  });
+  const tot=document.createElement('tr');
+  tot.className='score-total-row';
+  tot.innerHTML=`<td colspan="5" style="font-weight:800;padding:.5rem .65rem">Total</td><td style="text-align:center">100</td><td style="text-align:center" id="rubric-score-total">0/100</td>`;
+  tb.appendChild(tot);
+}
+
+// DOMAIN PROGRESS BARS
+function buildDomainBars(){
+  const div=document.getElementById('domain-progress');
+  div.innerHTML='';
+  const domains=[...new Set(FINDINGS.map(f=>f.domain))];
+  const colors=['#16a34a','#22c55e','#15803d','#166534','#4ade80','#86efac','#a3e635','#34d399','#6ee7b7','#bbf7d0'];
+  domains.forEach((d,i)=>{
+    const findings=FINDINGS.filter(f=>f.domain===d);
+    const rows=document.querySelectorAll('#poam-tbody tr');
+    let totalPct=0;
+    rows.forEach(tr=>{
+      if(tr.dataset.domain===d){
+        const pctInput=tr.querySelector('input[type=number]');
+        if(pctInput) totalPct+=parseInt(pctInput.value)||0;
+      }
+    });
+    const avg=findings.length>0?Math.round(totalPct/findings.length):0;
+    const color=colors[i%colors.length];
+    div.innerHTML+=`
+    <div class="prog-row">
+      <div class="prog-row-lbl" title="${d}">${d}</div>
+      <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:${avg}%;background:${color}"></div></div>
+      <div class="prog-pct">${avg}%</div>
+    </div>`;
+  });
+}
+
+// ══════════════════════════════════════════════════════
+//  LIVE DASHBOARD UPDATE
+// ══════════════════════════════════════════════════════
+function updateDashboard(){
+  const rows=document.querySelectorAll('#poam-tbody tr');
+  let open=0,closed=0,overdue=0,totalPct=0;
+  rows.forEach(tr=>{
+    const statusSel=tr.querySelector('.status-sel');
+    const pctIn=tr.querySelector('input[type=number]');
+    const status=statusSel?statusSel.value:'Open';
+    const pct=pctIn?parseInt(pctIn.value)||0:0;
+    totalPct+=pct;
+    if(status==='Closed') closed++;
+    else if(status==='Overdue') overdue++;
+    else open++;
+  });
+  const total=rows.length;
+  const avgPct=total>0?Math.round(totalPct/total):0;
+  document.getElementById('m-total').textContent=total;
+  document.getElementById('m-open').textContent=open;
+  document.getElementById('m-closed').textContent=closed;
+  document.getElementById('m-overdue').textContent=overdue;
+  document.getElementById('m-pct').textContent=avgPct+'%';
+  buildDomainBars();
+}
+
+function updateAll(){
+  updateDashboard();
+  updateProgress();
+}
+
+// ══════════════════════════════════════════════════════
+//  FILTERS
+// ══════════════════════════════════════════════════════
+function applyFilters(){
+  const domain=document.getElementById('flt-domain').value;
+  const risk=document.getElementById('flt-risk').value;
+  const status=document.getElementById('flt-status').value;
+  const priority=document.getElementById('flt-priority').value;
+  document.querySelectorAll('#poam-tbody tr').forEach(tr=>{
+    let show=true;
+    if(domain && tr.dataset.domain!==domain) show=false;
+    if(risk && tr.dataset.risk!==risk) show=false;
+    if(priority && !tr.querySelector('select').value.startsWith(priority.slice(0,2))) show=false;
+    if(status){
+      const statusSel=tr.querySelector('.status-sel');
+      if(statusSel && statusSel.value!==status) show=false;
+    }
+    tr.classList.toggle('filtered-out',!show);
+  });
+}
+function clearFilters(){
+  ['flt-domain','flt-risk','flt-status','flt-priority'].forEach(id=>{
+    document.getElementById(id).selectedIndex=0;
+  });
+  applyFilters();
+}
+
+// ══════════════════════════════════════════════════════
+//  COLLAPSIBLE SECTIONS
+// ══════════════════════════════════════════════════════
+function togSec(hd){
+  const bd=hd.nextElementSibling;
+  const isOpen=bd.classList.contains('open');
+  hd.classList.toggle('open',!isOpen);
+  bd.classList.toggle('open',!isOpen);
+}
+
+// ══════════════════════════════════════════════════════
+//  NAV
+// ══════════════════════════════════════════════════════
+function navGo(id){
+  const el=document.getElementById(id);
+  if(!el) return;
+  const sec=el.closest('.sec');
+  if(sec){
+    const hd=sec.querySelector('.sec-hd');
+    const bd=sec.querySelector('.sec-bd');
+    if(hd&&bd&&!bd.classList.contains('open')){hd.classList.add('open');bd.classList.add('open');}
+  }
+  el.scrollIntoView({behavior:'smooth',block:'start'});
+  document.querySelectorAll('.nav-a').forEach(n=>n.classList.remove('active'));
+  if(event&&event.currentTarget) event.currentTarget.classList.add('active');
+}
+
+// ══════════════════════════════════════════════════════
+//  TOGGLE BUTTONS
+// ══════════════════════════════════════════════════════
+function ynT(btn,type){
+  btn.closest('.yn-g').querySelectorAll('.yn-b').forEach(b=>b.classList.remove('a'));
+  btn.classList.add('a');updateProgress();
+}
+function sevT(btn){
+  btn.closest('.sev-g').querySelectorAll('.sev-b').forEach(b=>b.classList.remove('a'));
+  btn.classList.add('a');updateProgress();
+}
+
+// ══════════════════════════════════════════════════════
+//  PROGRESS
+// ══════════════════════════════════════════════════════
+function updateProgress(){
+  let f=0,t=0;
+  document.querySelectorAll('textarea,select,input[type=text],input[type=date],input[type=number]').forEach(el=>{
+    if(el.classList.contains('rubric-score')) return;
+    t++;
+    if(el.tagName==='SELECT'&&el.value&&!el.value.startsWith('—')&&el.value!=='') f++;
+    else if(el.tagName==='TEXTAREA'&&el.value.trim().length>6) f++;
+    else if(el.tagName==='INPUT'&&el.value.trim()) f++;
+  });
+  const active=document.querySelectorAll('.yn-b.a,.sev-b.a').length;
+  const bTotal=document.querySelectorAll('.yn-g').length+document.querySelectorAll('.sev-g').length;
+  const pct=Math.min(100,Math.round(((f+active)/(t+bTotal))*100))||0;
+  document.getElementById('nav-pct-txt').textContent=pct+'%';
+  document.getElementById('nav-filled-txt').textContent=f+' / '+t+' fields';
+  document.getElementById('nav-prog-fill').style.width=pct+'%';
+}
+
+// ══════════════════════════════════════════════════════
+//  RUBRIC
+// ══════════════════════════════════════════════════════
+function calcRubric(){
+  let total=0;
+  document.querySelectorAll('.rubric-score').forEach(i=>total+=parseInt(i.value)||0);
+  total=Math.min(100,total);
+  const pct=Math.round(total/100*100);
+  document.getElementById('rubric-total').textContent=total;
+  document.getElementById('rubric-pct').textContent=pct+'%';
+  document.getElementById('rubric-score-total').textContent=total+'/100';
+  document.getElementById('sb-total').textContent=total;
+  document.getElementById('sb-pct').textContent=pct+'%';
+  let rating='Needs Improvement',cls='rb-ni';
+  if(pct>=90){rating='Excellent';cls='rb-exc'}
+  else if(pct>=75){rating='Proficient';cls='rb-pro'}
+  else if(pct>=60){rating='Developing';cls='rb-dev'}
+  ['rubric-rb','sb-rating'].forEach(id=>{
+    const el=document.getElementById(id);
+    el.textContent=rating;
+    el.className=(id==='rubric-rb'?'rb-badge ':'sb-r ')+cls;
+  });
+}
+
+// ══════════════════════════════════════════════════════
+//  LOCALSTORAGE
+// ══════════════════════════════════════════════════════
+const SAVE_KEY='ffsi-poam-v1';
+function saveAll(){
+  const data={};
+  document.querySelectorAll('textarea,select,input[type=text],input[type=date],input[type=number],input[type=number]').forEach((el,i)=>{
+    data['el'+i]={tag:el.tagName,val:el.value};
+  });
+  const toggled=[];
+  document.querySelectorAll('.yn-b,.sev-b').forEach((b,i)=>{if(b.classList.contains('a'))toggled.push(i);});
+  data.__toggled=toggled;
+  localStorage.setItem(SAVE_KEY,JSON.stringify(data));
+  const ind=document.getElementById('save-ind');
+  ind.classList.add('show');
+  setTimeout(()=>ind.classList.remove('show'),1800);
+}
+function loadSaved(){
+  const raw=localStorage.getItem(SAVE_KEY);
+  if(!raw) return;
+  try{
+    const data=JSON.parse(raw);
+    document.querySelectorAll('textarea,select,input[type=text],input[type=date],input[type=number]').forEach((el,i)=>{
+      const d=data['el'+i];
+      if(d) el.value=d.val;
+    });
+    if(data.__toggled){
+      const allBtns=document.querySelectorAll('.yn-b,.sev-b');
+      data.__toggled.forEach(idx=>{if(allBtns[idx])allBtns[idx].classList.add('a');});
+    }
+    document.querySelectorAll('.status-sel').forEach(s=>styleStatusRow(s));
+    updateAll();calcRubric();
+  }catch(e){}
+}
+
+// EXPORT
+function exportSummary(){
+  let out='FFSI — POA&M DASHBOARD EXERCISE\nExport: '+new Date().toLocaleString()+'\n'+'='.repeat(60)+'\n\nPOA&M STATUS SUMMARY\n'+'-'.repeat(40)+'\n';
+  FINDINGS.forEach((f,i)=>{
+    const tr=document.querySelectorAll('#poam-tbody tr')[i];
+    const status=tr?tr.querySelector('.status-sel').value:'Open';
+    const pct=tr?tr.querySelector('input[type=number]').value:'0';
+    out+=`${f.id} | ${f.domain} | ${f.risk} | ${f.priority} | ${status} | ${pct}%\n`;
+  });
+  out+='\nEXECUTIVE SUMMARY (Act 7):\n'+'-'.repeat(40)+'\n';
+  document.querySelectorAll('#sec-act7 textarea').forEach((el,i)=>{
+    if(el.value.trim()) out+='Q'+(i+1)+': '+el.value.trim()+'\n\n';
+  });
+  const blob=new Blob([out],{type:'text/plain'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='FFSI_POAM_Exercise_'+new Date().toISOString().slice(0,10)+'.txt';
+  a.click();
+}
+function confirmReset(){
+  if(confirm('Reset all exercise answers? This cannot be undone.')){
+    document.querySelectorAll('textarea').forEach(t=>t.value='');
+    document.querySelectorAll('select').forEach(s=>s.selectedIndex=0);
+    document.querySelectorAll('input[type=text],input[type=date]').forEach(i=>i.value='');
+    document.querySelectorAll('input[type=number]:not(.rubric-score)').forEach(i=>i.value=i.min||'0');
+    document.querySelectorAll('.rubric-score').forEach(i=>i.value='');
+    document.querySelectorAll('.yn-b,.sev-b').forEach(b=>b.classList.remove('a'));
+    document.querySelectorAll('.status-sel').forEach(s=>{s.selectedIndex=0;styleStatusRow(s);});
+    localStorage.removeItem(SAVE_KEY);
+    calcRubric();updateAll();
+  }
+}
+
+// ══════════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════════
+buildGlossary();
+buildPoamTable();
+buildAct1();
+buildAct3();
+buildAct4();
+buildAct5();
+buildAct6();
+buildAct7();
+buildDebrief();
+buildRubric();
+buildDomainBars();
+loadSaved();
+updateAll();
+</script>
+</body>
+</html>
