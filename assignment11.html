@@ -1,0 +1,1513 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FFSI — Vulnerability Scanning Report Exercise</title>
+<style>
+/* ═══════════════════════════════════════════════
+   THEME — LIGHT DEFAULT (white/green/black)
+═══════════════════════════════════════════════ */
+:root {
+  --bg:          #f5f7f5;
+  --bg-card:     #ffffff;
+  --bg-nav:      #111c11;
+  --bg-nav2:     #1a2e1a;
+  --bg-header:   #111c11;
+  --bg-inp:      #f8faf8;
+  --bg-inp-bd:   #b8ccb8;
+  --bg-slate:    #eef4ee;
+  --bg-slate2:   #e2ede2;
+  --text:        #1a221a;
+  --text-m:      #3a523a;
+  --text-d:      #6a8a6a;
+  --text-nav:    #c8e0c8;
+  --text-nav-m:  #7aaa7a;
+  --border:      #c0d8c0;
+  --border2:     #a8c8a8;
+  --shadow:      0 2px 12px rgba(0,40,0,.10);
+  --shadow-lg:   0 4px 24px rgba(0,40,0,.13);
+  /* greens */
+  --green1:      #166534;
+  --green2:      #15803d;
+  --green3:      #22c55e;
+  --green4:      #86efac;
+  --green-light: #f0fdf4;
+  --accent:      #166534;
+  --accent2:     #15803d;
+  /* severity */
+  --crit-bg:#fef2f2;--crit-bd:#fca5a5;--crit-tx:#991b1b;
+  --high-bg:#fff7ed;--high-bd:#fdba74;--high-tx:#92400e;
+  --med-bg: #fefce8;--med-bd: #fde047;--med-tx: #713f12;
+  --low-bg: #f0fdf4;--low-bd: #86efac;--low-tx: #166534;
+  --info-bg:#eff6ff;--info-bd:#93c5fd;--info-tx:#1e40af;
+  /* pills */
+  --pill-cui-bg:#fef2f2;--pill-cui-bd:#fca5a5;--pill-cui-tx:#991b1b;
+  --pill-fci-bg:#eff6ff;--pill-fci-bd:#93c5fd;--pill-fci-tx:#1e40af;
+  /* rubric */
+  --rb-exc-bg:#f0fdf4;--rb-exc-bd:#86efac;--rb-exc-tx:#166534;
+  --rb-pro-bg:#eff6ff;--rb-pro-bd:#93c5fd;--rb-pro-tx:#1e40af;
+  --rb-dev-bg:#fefce8;--rb-dev-bd:#fde047;--rb-dev-tx:#713f12;
+  --rb-ni-bg: #fef2f2;--rb-ni-bd: #fca5a5;--rb-ni-tx: #991b1b;
+  --nav-w: 240px;
+}
+[data-theme="dark"] {
+  --bg:          #0a0f0a;
+  --bg-card:     #111811;
+  --bg-nav:      #060c06;
+  --bg-nav2:     #0d150d;
+  --bg-header:   #060c06;
+  --bg-inp:      #0d180d;
+  --bg-inp-bd:   #2a4a2a;
+  --bg-slate:    #131f13;
+  --bg-slate2:   #192819;
+  --text:        #d4e8d4;
+  --text-m:      #88aa88;
+  --text-d:      #557055;
+  --text-nav:    #c8e0c8;
+  --text-nav-m:  #6a8a6a;
+  --border:      #1e3a1e;
+  --border2:     #2a4a2a;
+  --shadow:      0 2px 12px rgba(0,0,0,.4);
+  --shadow-lg:   0 4px 24px rgba(0,0,0,.55);
+  --green1:      #22c55e;
+  --green2:      #4ade80;
+  --green3:      #86efac;
+  --green4:      #bbf7d0;
+  --green-light: #0a1a0a;
+  --accent:      #22c55e;
+  --accent2:     #4ade80;
+  --crit-bg:#2a0505;--crit-bd:#cc2222;--crit-tx:#ff8888;
+  --high-bg:#2a1005;--high-bd:#cc5500;--high-tx:#ff9944;
+  --med-bg: #1a150a;--med-bd: #c8a84b;--med-tx: #e0c060;
+  --low-bg: #0a1a0a;--low-bd: #22c55e;--low-tx: #4ade80;
+  --info-bg:#0a1020;--info-bd:#3b82f6;--info-tx:#7aacff;
+  --pill-cui-bg:#2a0d0d;--pill-cui-bd:#6a1a1a;--pill-cui-tx:#f99;
+  --pill-fci-bg:#0d1a2a;--pill-fci-bd:#1a4a6a;--pill-fci-tx:#6ac;
+  --rb-exc-bg:#0d2a0d;--rb-exc-bd:#22c55e;--rb-exc-tx:#4ade80;
+  --rb-pro-bg:#0d1a2a;--rb-pro-bd:#3b82f6;--rb-pro-tx:#7aacff;
+  --rb-dev-bg:#1a150a;--rb-dev-bd:#f59e0b;--rb-dev-tx:#fcd34d;
+  --rb-ni-bg: #2a0d0d;--rb-ni-bd: #ef4444;--rb-ni-tx: #fca5a5;
+}
+
+/* ═══ RESET ═══ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Segoe UI',system-ui,sans-serif;
+  background:var(--bg);color:var(--text);
+  font-size:14px;line-height:1.6;
+  display:flex;flex-direction:column;min-height:100vh;
+  transition:background .25s,color .25s;
+}
+
+/* ═══ TOP HEADER ═══ */
+#top-header{
+  background:var(--bg-header);
+  color:#e0f0e0;
+  padding:.5rem 1rem;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;
+  position:sticky;top:0;z-index:300;
+  border-bottom:2px solid var(--green2);
+  box-shadow:0 2px 8px rgba(0,0,0,.4);
+}
+.hdr-left{display:flex;align-items:center;gap:.75rem}
+.hdr-badge{
+  background:var(--green2);color:#fff;font-weight:800;font-size:.95rem;
+  width:2.3rem;height:2.3rem;border-radius:5px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.hdr-title{font-size:.88rem;font-weight:700;color:#e0f0e0;line-height:1.25}
+.hdr-title small{display:block;font-size:.7rem;color:#7aaa7a;font-weight:400}
+.hdr-right{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap}
+.hdr-btn{
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);
+  color:#c0dcc0;border-radius:5px;padding:.25rem .7rem;font-size:.76rem;cursor:pointer;
+  transition:background .15s;white-space:nowrap;display:flex;align-items:center;gap:.3rem;
+}
+.hdr-btn:hover{background:rgba(255,255,255,.18);color:#fff}
+#theme-toggle{
+  background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.35);
+  color:#4ade80;
+}
+#theme-toggle:hover{background:rgba(34,197,94,.22)}
+
+/* ═══ LAYOUT ═══ */
+#layout{display:flex;flex:1;min-height:0}
+
+/* ═══ LEFT NAV ═══ */
+#left-nav{
+  width:var(--nav-w);flex-shrink:0;
+  background:var(--bg-nav);
+  border-right:1px solid rgba(255,255,255,.06);
+  overflow-y:auto;
+  position:sticky;top:48px;height:calc(100vh - 48px);
+  transition:background .25s;
+}
+.nav-section-label{
+  font-size:.63rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--text-nav-m);padding:.85rem 1rem .3rem;
+}
+.nav-item{
+  display:flex;align-items:center;gap:.5rem;
+  padding:.5rem 1rem;font-size:.78rem;font-weight:500;
+  color:var(--text-nav);cursor:pointer;
+  border-left:3px solid transparent;
+  transition:background .12s,border-color .12s,color .12s;
+  text-decoration:none;
+}
+.nav-item:hover{background:var(--bg-nav2);color:#e0f0e0}
+.nav-item.active{
+  background:var(--bg-nav2);border-left-color:var(--green3);
+  color:#fff;font-weight:700;
+}
+.nav-item .nav-badge{
+  margin-left:auto;background:rgba(34,197,94,.2);
+  color:var(--green3);font-size:.65rem;font-weight:800;
+  padding:.08rem .4rem;border-radius:3px;white-space:nowrap;
+}
+.nav-item.active .nav-badge{background:var(--green2);color:#fff}
+/* progress ring in nav */
+.nav-progress{padding:.75rem 1rem;display:flex;align-items:center;gap:.6rem}
+.prog-ring-wrap{position:relative;width:36px;height:36px;flex-shrink:0}
+.prog-ring-wrap svg{width:36px;height:36px}
+.prog-ring-wrap .pct-text{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-size:.58rem;font-weight:800;color:var(--green3);
+}
+.nav-prog-label{font-size:.72rem;color:var(--text-nav-m);line-height:1.3}
+.nav-prog-label strong{display:block;color:var(--text-nav);font-size:.78rem}
+
+/* ═══ MAIN CONTENT ═══ */
+#content{
+  flex:1;min-width:0;overflow-y:auto;
+  padding:1.5rem 1.75rem 5rem;
+}
+
+/* ═══ HERO ═══ */
+#hero{
+  background:linear-gradient(135deg,#111c11 0%,#1a3320 55%,#0d2010 100%);
+  border-radius:10px;padding:2rem 1.75rem;margin-bottom:1.5rem;
+  position:relative;overflow:hidden;border:1px solid rgba(34,197,94,.2);
+}
+#hero::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse at 80% 40%,rgba(34,197,94,.08) 0%,transparent 60%);
+}
+#hero::after{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:linear-gradient(rgba(34,197,94,.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(34,197,94,.03) 1px,transparent 1px);
+  background-size:40px 40px;
+}
+.hero-eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#4ade80;margin-bottom:.6rem}
+#hero h1{font-size:clamp(1.3rem,3vw,2rem);font-weight:800;color:#fff;letter-spacing:-.02em;margin-bottom:.4rem;line-height:1.2}
+#hero h1 em{color:#4ade80;font-style:normal}
+#hero p{font-size:.84rem;color:#88aa88;max-width:600px;margin-bottom:1rem}
+.hero-chips{display:flex;flex-wrap:wrap;gap:.4rem}
+.chip{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:999px;padding:.22rem .75rem;font-size:.72rem;font-weight:600;color:#88aa88}
+.chip.green{background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.3);color:#4ade80}
+.chip.warn{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.3);color:#fbbf24}
+.chip.red{background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.3);color:#fca5a5}
+
+/* ═══ VULN COUNT DASHBOARD ═══ */
+#vuln-dashboard{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1.5rem;
+}
+@media(max-width:700px){#vuln-dashboard{grid-template-columns:repeat(2,1fr)}}
+.count-card{
+  background:var(--bg-card);border:1px solid var(--border);border-radius:8px;
+  padding:.85rem 1rem;text-align:center;box-shadow:var(--shadow);
+  border-top:3px solid;transition:background .25s,border-color .25s;
+}
+.count-card.crit{border-top-color:#dc2626}
+.count-card.high{border-top-color:#ea580c}
+.count-card.med{border-top-color:#ca8a04}
+.count-card.low{border-top-color:#16a34a}
+.count-num{font-size:2rem;font-weight:800;line-height:1}
+.count-card.crit .count-num{color:#dc2626}
+.count-card.high .count-num{color:#ea580c}
+.count-card.med  .count-num{color:#ca8a04}
+.count-card.low  .count-num{color:#16a34a}
+[data-theme="dark"] .count-card.crit .count-num{color:#f87171}
+[data-theme="dark"] .count-card.high .count-num{color:#fb923c}
+[data-theme="dark"] .count-card.med  .count-num{color:#fcd34d}
+[data-theme="dark"] .count-card.low  .count-num{color:#4ade80}
+.count-label{font-size:.7rem;font-weight:700;color:var(--text-m);text-transform:uppercase;letter-spacing:.06em;margin-top:.2rem}
+
+/* ═══ SECTION CARDS ═══ */
+.sec-card{
+  background:var(--bg-card);border:1px solid var(--border);border-radius:10px;
+  margin-bottom:1.25rem;box-shadow:var(--shadow);
+  transition:background .25s,border-color .25s;overflow:hidden;
+}
+.sec-head{
+  display:flex;align-items:center;gap:.75rem;
+  padding:1rem 1.25rem;cursor:pointer;
+  border-bottom:1px solid transparent;transition:border-color .15s,background .15s;
+  user-select:none;
+}
+.sec-head:hover{background:var(--bg-slate)}
+.sec-head.open{border-bottom-color:var(--border)}
+.sec-icon-wrap{
+  width:2.4rem;height:2.4rem;border-radius:7px;background:var(--green-light);
+  border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;
+  transition:background .25s;
+}
+.sec-title-wrap{flex:1}
+.sec-title{font-size:.95rem;font-weight:800;color:var(--text);margin-bottom:.08rem}
+.sec-sub{font-size:.75rem;color:var(--text-m)}
+.sec-badge{background:var(--green2);color:#fff;font-size:.68rem;font-weight:700;padding:.1rem .5rem;border-radius:4px;margin-left:.5rem}
+.sec-badge.no-pts{background:var(--bg-slate);color:var(--text-m)}
+.sec-chevron{font-size:.85rem;color:var(--text-d);transition:transform .2s;flex-shrink:0}
+.sec-head.open .sec-chevron{transform:rotate(180deg)}
+.sec-body{padding:1.25rem;display:none}
+.sec-body.open{display:block}
+
+/* ═══ TABLES ═══ */
+.tbl-wrap{overflow-x:auto;margin:.75rem 0}
+table{width:100%;border-collapse:collapse;font-size:.8rem}
+thead tr{background:var(--bg-slate2);transition:background .25s}
+thead th{
+  padding:.55rem .7rem;text-align:left;font-weight:700;color:var(--accent);
+  font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;
+  border-bottom:2px solid var(--green2);white-space:nowrap;
+}
+tbody tr{border-bottom:1px solid var(--border)}
+tbody tr:nth-child(even){background:var(--bg-slate)}
+tbody tr:hover{background:var(--bg-slate2)}
+tbody td{padding:.5rem .7rem;color:var(--text);vertical-align:top;transition:background .25s}
+td.pre{color:var(--text-m);font-style:italic;font-size:.76rem}
+td.mono{font-family:'Courier New',monospace;font-size:.76rem;color:var(--accent)}
+td.bold{font-weight:700}
+
+/* ═══ VULN FINDING CARDS ═══ */
+.vuln-card{
+  border:1px solid var(--border);border-radius:8px;margin-bottom:.85rem;
+  overflow:hidden;transition:border-color .15s,box-shadow .15s;
+}
+.vuln-card:hover{box-shadow:var(--shadow)}
+.vc-header{
+  display:flex;align-items:flex-start;gap:.75rem;padding:.85rem 1rem;
+  background:var(--bg-slate);border-bottom:1px solid var(--border);
+}
+.vc-sev{
+  width:1.9rem;height:1.9rem;border-radius:5px;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:.7rem;flex-shrink:0;color:#fff;
+}
+.vc-sev.crit{background:#dc2626}.vc-sev.high{background:#ea580c}
+.vc-sev.med{background:#ca8a04}.vc-sev.low{background:#16a34a}
+.vc-meta{flex:1}
+.vc-id{font-family:'Courier New',monospace;font-size:.72rem;color:var(--accent);margin-bottom:.08rem}
+.vc-title{font-weight:700;color:var(--text);font-size:.88rem;margin-bottom:.1rem}
+.vc-desc{font-size:.77rem;color:var(--text-m);line-height:1.45}
+.vc-tags{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.35rem}
+.vc-tag{
+  display:inline-block;border-radius:4px;padding:.07rem .4rem;
+  font-size:.68rem;font-weight:700;border:1px solid;
+}
+.vc-tag.cui{background:var(--pill-cui-bg);border-color:var(--pill-cui-bd);color:var(--pill-cui-tx)}
+.vc-tag.fci{background:var(--pill-fci-bg);border-color:var(--pill-fci-bd);color:var(--pill-fci-tx)}
+.vc-tag.exploit{background:var(--crit-bg);border-color:var(--crit-bd);color:var(--crit-tx)}
+.vc-tag.patch{background:var(--low-bg);border-color:var(--low-bd);color:var(--low-tx)}
+.vc-tag.no-patch{background:var(--high-bg);border-color:var(--high-bd);color:var(--high-tx)}
+.vc-tag.cvss{background:var(--bg-slate2);border-color:var(--border2);color:var(--text-m);font-family:'Courier New',monospace}
+.vc-fields{padding:.85rem 1rem;display:grid;grid-template-columns:repeat(5,1fr);gap:.5rem}
+@media(max-width:800px){.vc-fields{grid-template-columns:repeat(2,1fr)}}
+.vcf-label{font-size:.67rem;font-weight:700;color:var(--text-d);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.15rem;display:block}
+
+/* ═══ FORM CONTROLS ═══ */
+select,textarea,input[type=text],input[type=number],input[type=date]{
+  background:var(--bg-inp);border:1px solid var(--bg-inp-bd);color:var(--text);
+  border-radius:5px;font-size:.79rem;font-family:inherit;
+  padding:.3rem .5rem;width:100%;transition:border-color .15s,background .25s,color .25s;
+}
+select:focus,textarea:focus,input:focus{outline:none;border-color:var(--green2)}
+textarea{resize:vertical;min-height:46px;line-height:1.45}
+
+/* ═══ TOGGLE BUTTONS ═══ */
+.yn-group{display:flex;gap:.35rem;flex-wrap:wrap}
+.yn-btn{
+  background:var(--bg-slate);border:1px solid var(--border2);
+  color:var(--text-m);border-radius:4px;padding:.18rem .55rem;
+  font-size:.72rem;font-weight:700;cursor:pointer;transition:all .12s;white-space:nowrap;
+}
+.yn-btn.y.active{background:var(--low-bg);border-color:var(--low-bd);color:var(--low-tx)}
+.yn-btn.n.active{background:var(--crit-bg);border-color:var(--crit-bd);color:var(--crit-tx)}
+.yn-btn.u.active{background:var(--med-bg);border-color:var(--med-bd);color:var(--med-tx)}
+.yn-btn.b.active{background:var(--info-bg);border-color:var(--info-bd);color:var(--info-tx)}
+.sev-group{display:flex;gap:.35rem;flex-wrap:wrap}
+.sev-btn{background:var(--bg-slate);border:1px solid var(--border);color:var(--text-m);border-radius:4px;padding:.18rem .55rem;font-size:.72rem;font-weight:700;cursor:pointer;transition:all .12s;white-space:nowrap}
+.sev-btn.crit.active{background:var(--crit-bg);border-color:var(--crit-bd);color:var(--crit-tx)}
+.sev-btn.high.active{background:var(--high-bg);border-color:var(--high-bd);color:var(--high-tx)}
+.sev-btn.med.active {background:var(--med-bg); border-color:var(--med-bd); color:var(--med-tx)}
+.sev-btn.low.active {background:var(--low-bg); border-color:var(--low-bd); color:var(--low-tx)}
+
+/* ═══ RISK CALC ═══ */
+#risk-calc{
+  background:var(--bg-card);border:1px solid var(--border);border-radius:10px;
+  padding:1.25rem;margin-bottom:1.25rem;box-shadow:var(--shadow);
+}
+.rc-title{font-size:.9rem;font-weight:800;color:var(--text);margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem}
+.rc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:.85rem}
+@media(max-width:650px){.rc-grid{grid-template-columns:repeat(2,1fr)}}
+.rc-item label{font-size:.68rem;font-weight:700;color:var(--text-d);display:block;margin-bottom:.2rem;text-transform:uppercase;letter-spacing:.05em}
+.rc-item select{font-size:.79rem}
+.rc-result{
+  background:var(--bg-slate);border-radius:7px;padding:.75rem 1rem;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;
+}
+.rc-score-wrap{display:flex;align-items:center;gap:.75rem}
+.rc-score{font-size:2.2rem;font-weight:800;line-height:1}
+.rc-score.crit{color:#dc2626}.rc-score.high{color:#ea580c}
+.rc-score.med{color:#ca8a04}.rc-score.low{color:#16a34a}
+[data-theme="dark"] .rc-score.crit{color:#f87171}
+[data-theme="dark"] .rc-score.high{color:#fb923c}
+[data-theme="dark"] .rc-score.med{color:#fcd34d}
+[data-theme="dark"] .rc-score.low{color:#4ade80}
+.rc-score-label{font-size:.78rem;color:var(--text-m);line-height:1.4}
+.rc-score-label strong{display:block;font-size:.9rem;color:var(--text)}
+
+/* ═══ PRIORITY TIMELINE ═══ */
+.timeline-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin:.75rem 0}
+@media(max-width:600px){.timeline-strip{grid-template-columns:1fr}}
+.tl-col{
+  background:var(--bg-slate);border:1px solid var(--border);border-radius:8px;padding:.85rem;
+  border-top:3px solid;transition:background .25s;
+}
+.tl-col.immediate{border-top-color:#dc2626}
+.tl-col.short{border-top-color:#ea580c}
+.tl-col.long{border-top-color:#16a34a}
+.tl-head{font-size:.78rem;font-weight:800;margin-bottom:.5rem}
+.tl-col.immediate .tl-head{color:#dc2626}
+.tl-col.short .tl-head{color:#ea580c}
+.tl-col.long .tl-head{color:#16a34a}
+[data-theme="dark"] .tl-col.immediate .tl-head{color:#f87171}
+[data-theme="dark"] .tl-col.short .tl-head{color:#fb923c}
+[data-theme="dark"] .tl-col.long .tl-head{color:#4ade80}
+
+/* ═══ INFO / ALERT ═══ */
+.info-box{background:var(--info-bg);border:1px solid var(--info-bd);border-radius:6px;padding:.65rem .9rem;font-size:.8rem;color:var(--info-tx);margin:.6rem 0}
+.alert-box{background:var(--crit-bg);border:1px solid var(--crit-bd);border-radius:6px;padding:.65rem .9rem;font-size:.8rem;color:var(--crit-tx);margin:.6rem 0}
+.green-box{background:var(--low-bg);border:1px solid var(--low-bd);border-radius:6px;padding:.65rem .9rem;font-size:.8rem;color:var(--low-tx);margin:.6rem 0}
+.amber-box{background:var(--high-bg);border:1px solid var(--high-bd);border-radius:6px;padding:.65rem .9rem;font-size:.8rem;color:var(--high-tx);margin:.6rem 0}
+
+/* ═══ INTRO CONTENT ═══ */
+.intro-body{font-size:.85rem;color:var(--text-m);line-height:1.7}
+.intro-body p{margin-bottom:.75rem}
+.intro-body h3{color:var(--accent);font-size:.88rem;font-weight:700;margin:1rem 0 .4rem}
+.intro-body ul{padding-left:1.3rem;margin-bottom:.75rem}
+.nist-tag{display:inline-block;background:var(--info-bg);border:1px solid var(--info-bd);border-radius:4px;padding:.06rem .42rem;font-size:.72rem;font-weight:700;color:var(--info-tx);font-family:'Courier New',monospace;margin-right:.2rem;transition:background .25s,color .25s}
+.obj-list{display:flex;flex-direction:column;gap:.6rem}
+.obj-item{display:flex;gap:.75rem;align-items:flex-start;background:var(--bg-slate);border-radius:6px;padding:.65rem .85rem;font-size:.83rem;color:var(--text-m);transition:background .25s}
+.obj-num{background:var(--green2);color:#fff;font-weight:800;font-size:.75rem;min-width:1.5rem;height:1.5rem;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.gloss-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:.65rem}
+.gloss-item{background:var(--bg-slate);border:1px solid var(--border);border-radius:6px;padding:.65rem .8rem;transition:background .25s,border-color .25s}
+.gloss-term{font-weight:700;color:var(--accent);font-size:.8rem;margin-bottom:.25rem}
+.gloss-def{font-size:.77rem;color:var(--text-m);line-height:1.45}
+
+/* ═══ RUBRIC ═══ */
+.score-input{background:var(--bg-inp);border:1px solid var(--bg-inp-bd);color:var(--text);border-radius:5px;font-size:.88rem;font-weight:700;width:65px;text-align:center;padding:.28rem}
+.score-total-row{background:var(--bg-slate2)!important}
+.score-total-row td{font-weight:800;color:var(--accent)!important;font-size:.88rem}
+.rating-badge{display:inline-block;padding:.18rem .65rem;border-radius:5px;font-size:.77rem;font-weight:700;letter-spacing:.04em}
+.rating-excellent{background:var(--rb-exc-bg);border:1px solid var(--rb-exc-bd);color:var(--rb-exc-tx)}
+.rating-proficient{background:var(--rb-pro-bg);border:1px solid var(--rb-pro-bd);color:var(--rb-pro-tx)}
+.rating-developing{background:var(--rb-dev-bg);border:1px solid var(--rb-dev-bd);color:var(--rb-dev-tx)}
+.rating-needs{background:var(--rb-ni-bg);border:1px solid var(--rb-ni-bd);color:var(--rb-ni-tx)}
+
+/* ═══ DEBRIEF ═══ */
+.dq-list{display:flex;flex-direction:column;gap:.65rem}
+.dq-item{background:var(--bg-slate);border-radius:6px;padding:.7rem .9rem;display:flex;gap:.75rem;transition:background .25s}
+.dq-num{background:var(--green2);color:#fff;font-weight:800;font-size:.75rem;min-width:1.5rem;height:1.5rem;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.dq-text{font-size:.83rem;color:var(--text-m);line-height:1.5;flex:1}
+
+/* ═══ SCORE BAR ═══ */
+#score-bar{
+  position:fixed;bottom:0;left:var(--nav-w);right:0;
+  background:var(--bg-header);border-top:1px solid rgba(34,197,94,.2);
+  padding:.45rem 1.5rem;
+  display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap;z-index:100;
+}
+.sb-stat{display:flex;flex-direction:column;align-items:center}
+.sb-val{font-size:1rem;font-weight:800;color:#4ade80}
+.sb-label{font-size:.65rem;color:#557055;text-transform:uppercase;letter-spacing:.06em}
+.sb-rating{font-size:.8rem;font-weight:700;padding:.18rem .65rem;border-radius:5px}
+.save-indicator{font-size:.7rem;color:#4ade80;opacity:0;transition:opacity .5s}
+.save-indicator.show{opacity:1}
+
+/* ═══ UTILITIES ═══ */
+.mt1{margin-top:.65rem}.mt2{margin-top:1.1rem}
+.text-sm{font-size:.78rem;color:var(--text-m)}
+.sec-h3{font-size:.88rem;color:var(--accent);font-weight:700;margin:.9rem 0 .5rem}
+.hr{border:none;border-top:1px solid var(--border);margin:1rem 0}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:.65rem}
+@media(max-width:600px){.two-col{grid-template-columns:1fr}}
+.field-label{font-size:.7rem;font-weight:700;color:var(--text-d);display:block;margin-bottom:.18rem;text-transform:uppercase;letter-spacing:.05em}
+.pill{display:inline-block;border-radius:4px;padding:.07rem .4rem;font-size:.7rem;font-weight:600;margin:.1rem}
+.pill.cui{background:var(--pill-cui-bg);border:1px solid var(--pill-cui-bd);color:var(--pill-cui-tx)}
+.pill.fci{background:var(--pill-fci-bg);border:1px solid var(--pill-fci-bd);color:var(--pill-fci-tx)}
+
+/* ═══ MOBILE NAV ═══ */
+@media(max-width:768px){
+  #left-nav{display:none}
+  #score-bar{left:0}
+}
+
+/* ═══ PRINT ═══ */
+@media print{
+  #left-nav,#top-header,#score-bar,#risk-calc{display:none!important}
+  #content{padding:.5rem}
+  .sec-body{display:block!important}
+  body{background:#fff;color:#000}
+}
+</style>
+</head>
+<body>
+
+<!-- ════ TOP HEADER ════ -->
+<div id="top-header">
+  <div class="hdr-left">
+    <div class="hdr-badge">SI</div>
+    <div class="hdr-title">
+      FFSI — Vulnerability Scanning Report Exercise
+      <small>CMMC 2.0 · NIST SP 800-171 SI &amp; RA Domains · 20 Minutes</small>
+    </div>
+  </div>
+  <div class="hdr-right">
+    <button id="theme-toggle" class="hdr-btn" onclick="toggleTheme()">🌙 Dark Mode</button>
+    <button class="hdr-btn" onclick="saveProgress()">💾 Save</button>
+    <button class="hdr-btn" onclick="window.print()">🖨 Print</button>
+    <button class="hdr-btn" onclick="exportReport()">📤 Export</button>
+    <button class="hdr-btn" style="border-color:rgba(200,80,80,.4);color:#f99" onclick="confirmReset()">↺ Reset</button>
+  </div>
+</div>
+
+<!-- ════ LAYOUT ════ -->
+<div id="layout">
+
+<!-- ════ LEFT NAV ════ -->
+<nav id="left-nav">
+  <div class="nav-progress">
+    <div class="prog-ring-wrap">
+      <svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="rgba(34,197,94,.15)" stroke-width="3"/><circle id="prog-ring-circle" cx="18" cy="18" r="15" fill="none" stroke="#22c55e" stroke-width="3" stroke-dasharray="94.25 94.25" stroke-dashoffset="94.25" stroke-linecap="round" transform="rotate(-90 18 18)" style="transition:stroke-dashoffset .5s"/></svg>
+      <div class="pct-text" id="nav-pct">0%</div>
+    </div>
+    <div class="nav-prog-label"><strong id="nav-prog-filled">0 / 0</strong>Fields Complete</div>
+  </div>
+
+  <div class="nav-section-label">Reference</div>
+  <div class="nav-item active" onclick="scrollTo('sec-intro')">📋 Introduction</div>
+  <div class="nav-item" onclick="scrollTo('sec-objectives')">🎯 Objectives</div>
+  <div class="nav-item" onclick="scrollTo('sec-terms')">📖 Key Terms</div>
+
+  <div class="nav-section-label">Activities</div>
+  <div class="nav-item" onclick="scrollTo('sec-act1')">🔍 Act 1 — Vuln Review <span class="nav-badge">30 pts</span></div>
+  <div class="nav-item" onclick="scrollTo('sec-act2')">📊 Act 2 — Asset Criticality <span class="nav-badge">25 pts</span></div>
+  <div class="nav-item" onclick="scrollTo('sec-act3')">📄 Act 3 — VSR Completion <span class="nav-badge">25 pts</span></div>
+  <div class="nav-item" onclick="scrollTo('sec-act4')">⚖ Act 4 — Risk Priority</div>
+  <div class="nav-item" onclick="scrollTo('sec-act5')">🗓 Act 5 — Remediation Plan</div>
+  <div class="nav-item" onclick="scrollTo('sec-act6')">🛡 Act 6 — Risk Acceptance</div>
+  <div class="nav-item" onclick="scrollTo('sec-act7')">💼 Act 7 — Exec Summary <span class="nav-badge">10 pts</span></div>
+
+  <div class="nav-section-label">Assessment</div>
+  <div class="nav-item" onclick="scrollTo('sec-debrief')">🗣 Debrief</div>
+  <div class="nav-item" onclick="scrollTo('sec-rubric')">📊 Rubric</div>
+
+  <div style="padding:.75rem 1rem;margin-top:.5rem">
+    <div id="save-indicator" class="save-indicator">✅ Progress saved</div>
+  </div>
+</nav>
+
+<!-- ════ CONTENT ════ -->
+<div id="content">
+
+<!-- HERO -->
+<div id="hero">
+  <div class="hero-eyebrow">🔍 CMMC 2.0 · System &amp; Information Integrity + Risk Assessment</div>
+  <h1>FFSI Vulnerability Scanning<br/><em>Report Exercise</em></h1>
+  <p>Analyze 10 real vulnerability scan findings from FFSI's October 2025 scan cycle, complete the Vulnerability Scanning Report, prioritize remediation, and prepare an executive briefing — applying NIST SI and RA requirements to protect CUI.</p>
+  <div class="hero-chips">
+    <span class="chip green">NIST 800-171 SI &amp; RA</span>
+    <span class="chip green">100 Points · 7 Activities</span>
+    <span class="chip warn">⏱ 20 Minutes</span>
+    <span class="chip red">🔴 3 Critical CVEs</span>
+    <span class="chip">⚠ Fictional — Training Use Only</span>
+  </div>
+</div>
+
+<!-- VULNERABILITY COUNT DASHBOARD -->
+<div id="vuln-dashboard">
+  <div class="count-card crit"><div class="count-num" id="cnt-crit">3</div><div class="count-label">Critical</div></div>
+  <div class="count-card high"><div class="count-num" id="cnt-high">3</div><div class="count-label">High</div></div>
+  <div class="count-card med"> <div class="count-num" id="cnt-med">3</div><div class="count-label">Medium</div></div>
+  <div class="count-card low"> <div class="count-num" id="cnt-low">1</div><div class="count-label">Low</div></div>
+</div>
+
+<!-- RISK CALCULATOR -->
+<div id="risk-calc">
+  <div class="rc-title">⚙ Risk Scoring Calculator <span style="font-size:.72rem;font-weight:400;color:var(--text-d)">(use to score any vulnerability — Risk = Likelihood × Impact × Asset Criticality)</span></div>
+  <div class="rc-grid">
+    <div class="rc-item">
+      <label>Likelihood</label>
+      <select id="rc-likelihood" onchange="calcRisk()">
+        <option value="1">1 — Unlikely</option>
+        <option value="2">2 — Possible</option>
+        <option value="3" selected>3 — Likely</option>
+        <option value="4">4 — Highly Likely</option>
+        <option value="5">5 — Near Certain</option>
+      </select>
+    </div>
+    <div class="rc-item">
+      <label>Impact (CIA)</label>
+      <select id="rc-impact" onchange="calcRisk()">
+        <option value="1">1 — Negligible</option>
+        <option value="2">2 — Minor</option>
+        <option value="3" selected>3 — Moderate</option>
+        <option value="4">4 — Major</option>
+        <option value="5">5 — Catastrophic</option>
+      </select>
+    </div>
+    <div class="rc-item">
+      <label>Asset Criticality</label>
+      <select id="rc-crit" onchange="calcRisk()">
+        <option value="1">1 — Non-CUI</option>
+        <option value="2" selected>2 — FCI</option>
+        <option value="3">3 — CUI</option>
+      </select>
+    </div>
+    <div class="rc-item">
+      <label>Exploit Available?</label>
+      <select id="rc-exploit" onchange="calcRisk()">
+        <option value="1">No PoC Available</option>
+        <option value="1.25">PoC Available</option>
+        <option value="1.5" selected>Exploited in Wild</option>
+      </select>
+    </div>
+  </div>
+  <div class="rc-result">
+    <div class="rc-score-wrap">
+      <div class="rc-score" id="rc-score">27</div>
+      <div class="rc-score-label"><strong id="rc-label">High Risk</strong>Score × Exploit = Final Risk Rating</div>
+    </div>
+    <div style="font-size:.76rem;color:var(--text-m);max-width:300px"><strong>Scale:</strong> 1–10: Low · 11–20: Medium · 21–40: High · 41+: Critical<br/>All decisions requiring CUI consideration receive +1 priority level.</div>
+  </div>
+</div>
+
+<!-- ════════ SECTION: INTRO ════════ -->
+<div class="sec-card" id="sec-intro">
+  <div class="sec-head open" onclick="toggleSection(this)">
+    <div class="sec-icon-wrap">📋</div>
+    <div class="sec-title-wrap">
+      <div class="sec-title">Introduction — Vulnerability Management &amp; CMMC <span class="sec-badge no-pts">Overview</span></div>
+      <div class="sec-sub">Why vulnerability scanning is critical to CMMC compliance and CUI protection</div>
+    </div>
+    <span class="sec-chevron">▼</span>
+  </div>
+  <div class="sec-body open">
+    <div class="intro-body">
+      <h3>Why Vulnerability Management Is Critical to CMMC Compliance</h3>
+      <p>Unpatched vulnerabilities are the most common initial access vector in defense contractor breaches. NIST SP 800-171 practices <span class="nist-tag">3.14.1</span> and <span class="nist-tag">3.14.2</span> require organizations to identify, report, and correct information system flaws — and to provide protection from malicious code. CMMC Level 2 assessors treat an absent or irregular vulnerability scanning program as a scored deficiency, even if the underlying systems are otherwise well-configured. Scanning must be performed, results must be documented, and remediation must be tracked.</p>
+      <h3>Why Assessors Review Vulnerability Reports</h3>
+      <p>A C3PAO assessor will request the Vulnerability Scanning Report as primary evidence for the SI domain. They will examine scan frequency, scope (are all CUI systems included?), severity findings, remediation timelines, and whether the organization can demonstrate that findings were actually addressed. The VSR is also cross-referenced against the Risk Register, POA&M, and Configuration Management Plan. A scan report that shows critical vulnerabilities with no corresponding remediation entries is a major finding.</p>
+      <h3>How Vulnerabilities Increase Risk to CUI</h3>
+      <p>Every unpatched vulnerability on a CUI system is a potential exfiltration pathway. A critical remote code execution vulnerability on the Contract Management System, for example, could give an attacker full access to Army contract data, production specifications, and delivery schedules. DFARS 252.204-7012 holds FFSI legally responsible for protecting this data — a breach resulting from a known, unpatched vulnerability is not only a security failure but a contractual and regulatory violation.</p>
+      <h3>Why Remediation Must Be Documented</h3>
+      <p>Remediating a vulnerability without documenting the action leaves no audit trail. Assessors cannot verify a patch was applied if there is no dated maintenance record, change request, or configuration update. NIST practice <span class="nist-tag">3.4.3</span> requires tracking and logging system changes — applying a patch is a configuration change that requires documentation. Vulnerabilities that cannot be immediately remediated must be entered into the POA&M with a risk acceptance decision and compensating controls identified.</p>
+      <div class="info-box">📅 <strong>Exercise Scenario:</strong> FFSI's monthly vulnerability scan completed on <strong>October 31, 2025</strong>. The scanner (Tenable Nessus) identified 10 findings across FFSI's CUI environment. The Security Analyst has been assigned to review the results, complete the VSR, and brief the Compliance Manager by end of day. You are the Security Analyst.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ OBJECTIVES ════════ -->
+<div class="sec-card" id="sec-objectives">
+  <div class="sec-head" onclick="toggleSection(this)">
+    <div class="sec-icon-wrap">🎯</div>
+    <div class="sec-title-wrap">
+      <div class="sec-title">Learning Objectives <span class="sec-badge no-pts">6 Objectives</span></div>
+      <div class="sec-sub">What you will be able to do upon completing this exercise</div>
+    </div>
+    <span class="sec-chevron">▼</span>
+  </div>
+  <div class="sec-body">
+    <div class="obj-list">
+      <div class="obj-item"><div class="obj-num">1</div><div>Explain how NIST SP 800-171 SI domain requirements (3.14.1–3.14.7) define the vulnerability management obligations of a CMMC Level 2 defense contractor and what evidence C3PAO assessors examine.</div></div>
+      <div class="obj-item"><div class="obj-num">2</div><div>Interpret 10 realistic vulnerability scan findings — analyzing CVE identifiers, CVSS scores, exploit availability, and CUI system scope — to determine the business and security risk of each finding.</div></div>
+      <div class="obj-item"><div class="obj-num">3</div><div>Assess asset criticality across 10 FFSI systems, determining which assets warrant the highest remediation priority based on CUI exposure, operational impact, and attack surface.</div></div>
+      <div class="obj-item"><div class="obj-num">4</div><div>Complete a formal Vulnerability Scanning Report with all required fields, including risk rating, remediation action, target date, and assigned owner for each finding.</div></div>
+      <div class="obj-item"><div class="obj-num">5</div><div>Develop a three-tier remediation plan (0–30, 30–60, 60–90 days) that sequences vulnerability remediation by risk priority, operational constraints, and CUI impact.</div></div>
+      <div class="obj-item"><div class="obj-num">6</div><div>Prepare an executive vulnerability summary suitable for FFSI leadership briefing — addressing overall posture, CUI risk, assessment readiness, and priority actions before the CMMC assessment.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ KEY TERMS ════════ -->
+<div class="sec-card" id="sec-terms">
+  <div class="sec-head" onclick="toggleSection(this)">
+    <div class="sec-icon-wrap">📖</div>
+    <div class="sec-title-wrap">
+      <div class="sec-title">Key Terms <span class="sec-badge no-pts">15-Term Glossary</span></div>
+      <div class="sec-sub">Essential vocabulary for vulnerability management and CMMC compliance</div>
+    </div>
+    <span class="sec-chevron">▼</span>
+  </div>
+  <div class="sec-body">
+    <div class="gloss-grid" id="gloss-grid"></div>
+  </div>
+</div>
+
+<!-- ════════ ACT 1 ════════ -->
+<div class="sec-card" id="sec-act1">
+  <div class="sec-head open" onclick="toggleSection(this)">
+    <div class="sec-icon-wrap">🔍</div>
+    <div class="sec-title-wrap">
+      <div class="sec-title">Activity 1 — Vulnerability Review &amp; Risk Assessment <span class="sec-badge">30 pts</span></div>
+      <div class="sec-sub">Analyze 10 FFSI scan findings · assign risk level · determine CUI impact · identify owner</div>
+    </div>
+    <span class="sec-chevron">▼</span>
+  </div>
+  <div class="sec-body open">
+    <div class="instr" style="background:var(--bg-slate);border-left:3px solid var(--green2);border-radius:0 6px 6px 0;padding:.65rem .9rem;font-size:.82rem;color:var(--text-m);margin-bottom:1rem"><strong style="color:var(--green2)">Instructions:</strong> For each of the 10 FFSI vulnerability findings below, answer the five analysis questions using the toggle buttons, assign a risk level and severity rating, and provide written analysis in the notes field. Use the Risk Scoring Calculator above to calculate composite risk scores.</div>
+    <div id="act1-body"></div>
+  </div>
+</div>
+
+<!-- ════════ ACT 2 ════════ -->
+<div class="sec-card" id="sec-act2">
+  <div class="sec-head" onclick="toggleSection(this)">
+    <div class="sec-icon-wrap">📊</div>
+    <div class="sec-title-wrap">
+      <div class="sec-title">Activity 2 — Asset Criticality Analysis <span class="sec-badge">25 pts</span></div>
+      <div class="sec-sub">Evaluate CUI presence, business impact, and remediation priority for each affected asset</div>
+    </div>
+    <span class="sec-chevron">▼</span>
+  </div>
+  <div class="sec-body">
+    <div class="instr" style="background:var(--bg-slate);border-left:3px solid var(--green2);border-radius:0 6px 6px 0;padding:.65rem .9rem;font-size:.82rem;color:var(--text-m);margin-bottom:1rem"><strong style="color:var(--green2)">Instructions:</strong> For each FFSI asset affected by scan findings, determine criticality level, confirm CUI presence, assess business impact, and assign remediation priority. Justify all decisions in the notes column. Assets with CUI present automatically receive elevated priority.</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Asset</th><th>Owner</th><th>Criticality</th><th>CUI Present?</th><th>Business Impact if Compromised</th><th>Patch Priority</th><th>Justification</th></tr></thead>
+        <tbody id="act2-body"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ ACT 3 ════════ -->
+<div class="sec-card" id="sec-act3">
+  <div class="sec-head" onclick="toggleSection(this)">
+    <div class="sec-icon-wrap">📄</div>
+    <div class="sec-title-wrap">
+      <div class="sec-title">Activity 3 — Vulnerability Scanning Report Completion <span class="sec-badge">25 pts</span></div>
+      <div class="sec-sub">Complete the formal VSR table for all 10 findings</div>
+    </div>
+    <span class="sec-chevron">▼</span>
+  </div>
+  <div class="sec-body">
+    <div class="instr" style="background:var(--bg-slate);border-left:3px solid var(--green2);border-radius:0 6px 6px 0;padding:.65rem .9rem;font-size:.82rem;color:var(--text-m);margin-bottom:1rem"><strong style="color:var(--green2)">Instructions:</strong> Complete the Vulnerability Scanning Report. Pre-filled gray fields are drawn from the scan data. White fields must be completed by participants. Every field is required — incomplete VSR entries are documentation failures that will generate CMMC assessment findings.</div>
+    <div class="info-box">📋 <strong>VSR Header:</strong> Organization: FFSI &nbsp;|&nbsp; Scan Tool: Tenable Nessus Pro &nbsp;|&nbsp; Scan Date: October 31, 2025 &nbsp;|&nbsp; Reviewer: Security Analyst &nbsp;|&nbsp; NIST: <span class="nist-tag">3.14.1</span> <span class="nist-tag">3.14.2</span> <span class="nist-tag">3.11.2</span></div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Vuln ID</th><th>CVE</th><th>Asset</th><th>CVSS</th><th>Severity</th><th>Risk Rating</th><th>Owner</th><th>Remediation Action</th><th>Target Date</th><th>Status</th></tr></thead>
+        <tbody id="act3-body"></tbody>
+      </table>
+    </div>
+    <div class="two-col mt1">
+      <div>
+        <label class="field-label">VSR Approval — Reviewed and Approved By:</label>
+        <select onchange="updateProgress()"><option value="">— Select approver —</option><option>CIO</option><option>IT Manager</option><option>Compliance Manager</option><option>Security Analyst</option></select>
+      </div>
+      <div>
+        <label class="field-label">Next Scheduled Scan Date:</label>
+        <input type="date" oninput="updateProgress()"/>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ ACT 4 ════════ -->
+<div class="sec-card" id="sec-act4">
+  <div class="sec-head" onclick="toggleSection(this)">
+    <div class="sec-icon-wrap">⚖</div>
+    <div class="sec-title-wrap">
+      <div class="sec-title">Activity 4 — Risk Prioritization <span class="sec-badge no-pts">Classification</span></div>
+      <div class="sec-sub">Categorize all 10 findings by risk tier and document response timeline rationale</div>
+    </div>
+    <span class="sec-chevron">▼</span>
+  </div>
+  <div class="sec-body">
+    <div class="instr" style="background:var(--bg-slate);border-left:3px solid var(--green2);border-radius:0 6px 6px 0;padding:.65rem .9rem;font-size:.82rem;color:var(--text-m);margin-bottom:1rem"><strong style="color:var(--green2)">Instructions:</strong> For each priority tier, list the applicable vulnerability IDs, explain why they belong in that tier, describe the CUI impact, and state the recommended response timeline. Reference CVSS scores and exploit availability to justify your classifications.</div>
+    <div id="act4-body"></div>
+  </div>
+</div>
+
+<!-- ════════ ACT 5 ════════ -->
+<div class="sec-card" id="sec-act5">
+  <div class="sec-head" onclick="toggleSection(this)">
+    <div class="sec-icon-wrap">🗓</div>
+    <div class="sec-title-wrap">
+      <div class="sec-title">Activity 5 — Remediation Planning <span class="sec-badge">10 pts</span></div>
+      <div class="sec-sub">Build a three-tier remediation plan with owners, dates, and verification methods</div>
+    </div>
+    <span class="sec-chevron">▼</span>
+  </div>
+  <div class="sec-body">
+    <div class="instr" style="background:var(--bg-slate);border-left:3px solid var(--green2);border-radius:0 6px 6px 0;padding:.65rem .9rem;font-size:.82rem;color:var(--text-m);margin-bottom:1rem"><strong style="color:var(--green2)">Instructions:</strong> Develop a structured remediation plan across three time horizons. For each action, document the corrective action, responsible party, estimated completion date, and verification method (how will you confirm the vulnerability is resolved?).</div>
+    <div class="timeline-strip">
+      <div class="tl-col immediate">
+        <div class="tl-head">🔴 Immediate — 0 to 30 Days</div>
+        <div class="text-sm" style="margin-bottom:.5rem">Critical &amp; High vulns on CUI systems</div>
+        <div id="rem-immediate"></div>
+      </div>
+      <div class="tl-col short">
+        <div class="tl-head">🟠 Short-Term — 30 to 60 Days</div>
+        <div class="text-sm" style="margin-bottom:.5rem">Remaining High + Medium vulns</div>
+        <div id="rem-short"></div>
+      </div>
+      <div class="tl-col long">
+        <div class="tl-head">🟢 Long-Term — 60 to 90 Days</div>
+        <div class="text-sm" style="margin-bottom:.5rem">Low vulns + process improvements</div>
+        <div id="rem-long"></div>
+      </div>
+    </div>
+    <div class="tbl-wrap mt1">
+      <table>
+        <thead><tr><th>Action ID</th><th>Corrective Action</th><th>Vuln(s) Addressed</th><th>Responsible Party</th><th>Target Date</th><th>Verification Method</th></tr></thead>
+        <tbody id="rem-table-body"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ ACT 6 ════════ -->
+<div class="sec-card" id="sec-act6">
+  <div class="sec-head" onclick="toggleSection(this)">
+    <div class="sec-icon-wrap">🛡</div>
+    <div class="sec-title-wrap">
+      <div class="sec-title">Activity 6 — Risk Acceptance Review <span class="sec-badge no-pts">Analysis</span></div>
+      <div class="sec-sub">Evaluate three scenarios where immediate remediation is not possible</div>
+    </div>
+    <span class="sec-chevron">▼</span>
+  </div>
+  <div class="sec-body">
+    <div class="instr" style="background:var(--bg-slate);border-left:3px solid var(--green2);border-radius:0 6px 6px 0;padding:.65rem .9rem;font-size:.82rem;color:var(--text-m);margin-bottom:1rem"><strong style="color:var(--green2)">Instructions:</strong> For each scenario, determine whether risk acceptance is appropriate, identify compensating controls, specify who must approve the risk acceptance, and document required evidence. Risk acceptance for CUI systems requires CIO or higher approval at FFSI.</div>
+    <div id="act6-body"></div>
+  </div>
+</div>
+
+<!-- ════════ ACT 7 ════════ -->
+<div class="sec-card" id="sec-act7">
+  <div class="sec-head" onclick="toggleSection(this)">
+    <div class="sec-icon-wrap">💼</div>
+    <div class="sec-title-wrap">
+      <div class="sec-title">Activity 7 — Executive Summary <span class="sec-badge">10 pts</span></div>
+      <div class="sec-sub">Prepare a management briefing on FFSI's vulnerability posture</div>
+    </div>
+    <span class="sec-chevron">▼</span>
+  </div>
+  <div class="sec-body">
+    <div class="instr" style="background:var(--bg-slate);border-left:3px solid var(--green2);border-radius:0 6px 6px 0;padding:.65rem .9rem;font-size:.82rem;color:var(--text-m);margin-bottom:1rem"><strong style="color:var(--green2)">Instructions:</strong> Prepare the executive vulnerability briefing for FFSI's CIO and Compliance Manager. Each response should be 2–3 sentences of specific, data-grounded analysis. This summary will be the first thing leadership reads — be direct and assessment-focused.</div>
+    <div id="act7-body"></div>
+  </div>
+</div>
+
+<!-- ════════ DEBRIEF ════════ -->
+<div class="sec-card" id="sec-debrief">
+  <div class="sec-head" onclick="toggleSection(this)">
+    <div class="sec-icon-wrap">🗣</div>
+    <div class="sec-title-wrap">
+      <div class="sec-title">Instructor Debrief Questions <span class="sec-badge no-pts">Discussion</span></div>
+      <div class="sec-sub">5–10 minute post-exercise discussion facilitation guide</div>
+    </div>
+    <span class="sec-chevron">▼</span>
+  </div>
+  <div class="sec-body">
+    <div class="dq-list" id="debrief-body"></div>
+  </div>
+</div>
+
+<!-- ════════ RUBRIC ════════ -->
+<div class="sec-card" id="sec-rubric">
+  <div class="sec-head" onclick="toggleSection(this)">
+    <div class="sec-icon-wrap">📊</div>
+    <div class="sec-title-wrap">
+      <div class="sec-title">Facilitator Scoring Rubric <span class="sec-badge no-pts">100 Points</span></div>
+      <div class="sec-sub">Enter scores per category — total and rating update automatically</div>
+    </div>
+    <span class="sec-chevron">▼</span>
+  </div>
+  <div class="sec-body">
+    <p class="text-sm" style="margin-bottom:.75rem"><strong>Excellent: 90–100 · Proficient: 75–89 · Developing: 60–74 · Needs Improvement: &lt;60</strong></p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Category</th><th>Excellent</th><th>Proficient</th><th>Developing</th><th>Needs Improvement</th><th>Max</th><th>Score</th></tr></thead>
+        <tbody id="rubric-body"></tbody>
+      </table>
+    </div>
+    <div class="mt1" style="display:flex;gap:1.25rem;flex-wrap:wrap;align-items:center">
+      <div class="sb-stat"><div class="sb-val" id="rubric-total">0</div><div class="sb-label">Total</div></div>
+      <div class="sb-stat"><div class="sb-val" id="rubric-pct">0%</div><div class="sb-label">Score</div></div>
+      <div id="rubric-rating-badge" class="rating-badge rating-needs">Needs Improvement</div>
+    </div>
+    <div class="hr"></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.6rem">
+      <div class="gloss-item"><div class="gloss-term" style="color:var(--rb-exc-tx)">Excellent · 90–100</div><p class="text-sm">All 10 findings correctly analyzed. VSR fully complete. Asset criticality accurate. Remediation plan tiered correctly. Risk acceptance decisions justified. Executive summary is clear, specific, and assessment-ready.</p></div>
+      <div class="gloss-item"><div class="gloss-term" style="color:var(--rb-pro-tx)">Proficient · 75–89</div><p class="text-sm">8–9 findings correctly analyzed. VSR mostly complete. Most asset criticality accurate. Remediation plan present with minor gaps. Executive summary addresses main findings.</p></div>
+      <div class="gloss-item"><div class="gloss-term" style="color:var(--rb-dev-tx)">Developing · 60–74</div><p class="text-sm">6–7 findings analyzed. VSR partially complete. Some asset criticality errors. Remediation plan incomplete. Executive summary vague or incomplete.</p></div>
+      <div class="gloss-item"><div class="gloss-term" style="color:var(--rb-ni-tx)">Needs Improvement · &lt;60</div><p class="text-sm">Fewer than 6 findings analyzed. VSR largely incomplete. Asset criticality not assessed. No remediation plan. Executive summary absent. Limited SI domain understanding demonstrated.</p></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /content -->
+</div><!-- /layout -->
+
+<!-- SCORE BAR -->
+<div id="score-bar">
+  <div class="sb-stat"><div class="sb-val" id="sb-total">0</div><div class="sb-label">Rubric Score</div></div>
+  <div class="sb-stat"><div class="sb-val" id="sb-pct">0%</div><div class="sb-label">Percentage</div></div>
+  <div id="sb-rating" class="sb-rating rating-needs">Needs Improvement</div>
+  <div style="flex:1"></div>
+  <div style="font-size:.72rem;color:#557055">CMMC 2.0 · NIST 800-171 SI &amp; RA · FFSI Vulnerability Exercise · Oct 2025</div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════
+//  THEME
+// ══════════════════════════════════════════════════
+(function(){
+  const s = localStorage.getItem('ffsi-vsr-theme') || 'light';
+  document.documentElement.setAttribute('data-theme', s);
+  updateThemeBtn(s);
+})();
+function toggleTheme(){
+  const c = document.documentElement.getAttribute('data-theme');
+  const n = c==='light'?'dark':'light';
+  document.documentElement.setAttribute('data-theme',n);
+  localStorage.setItem('ffsi-vsr-theme',n);
+  updateThemeBtn(n);
+}
+function updateThemeBtn(t){
+  const b=document.getElementById('theme-toggle');
+  if(b) b.textContent = t==='light'?'🌙 Dark Mode':'☀️ Light Mode';
+}
+
+// ══════════════════════════════════════════════════
+//  DATA
+// ══════════════════════════════════════════════════
+const PERSONNEL = ['CIO','IT Manager','System Administrator','Network Administrator',
+  'Cloud Administrator','Security Analyst','Compliance Manager','Help Desk Manager','ERP Administrator'];
+
+const VULNS = [
+  {id:'VSR-001',cve:'CVE-2025-21333',cvss:9.8,sev:'crit',sevLabel:'Critical',
+   asset:'ERP Server (ERP-01)',cui:true,
+   title:'Remote Code Execution via Deserialization Flaw',
+   desc:'Unauthenticated attacker can execute arbitrary code on the ERP server via a Java deserialization vulnerability in the vendor API endpoint. No authentication required.',
+   exploit:true,patch:true,nist:'3.14.1, 3.14.2',owner:'ERP Administrator'},
+  {id:'VSR-002',cve:'CVE-2025-29824',cvss:9.1,sev:'crit',sevLabel:'Critical',
+   asset:'Domain Controller (DC-01)',cui:true,
+   title:'Authentication Bypass — LDAP Null Base DN',
+   desc:'Windows CLFS driver vulnerability allowing privilege escalation to SYSTEM. Actively exploited in ransomware campaigns. Patch is in the October 2025 cumulative update.',
+   exploit:true,patch:true,nist:'3.14.1, 3.5.1',owner:'System Administrator'},
+  {id:'VSR-003',cve:'CVE-2025-20229',cvss:9.1,sev:'crit',sevLabel:'Critical',
+   asset:'VPN Gateway (VPN-GW-01)',cui:true,
+   title:'Unauthenticated Remote Code Execution — Cisco ASA',
+   desc:'Cisco ASA 9.18.x remote code execution via crafted HTTP request. PoC exploit publicly available. Gateway controls all remote access to FFSI CUI systems.',
+   exploit:true,patch:true,nist:'3.14.1, 3.14.2',owner:'Network Administrator'},
+  {id:'VSR-004',cve:'CVE-2025-31200',cvss:8.8,sev:'high',sevLabel:'High',
+   asset:'Contract Management System (CMS-01)',cui:true,
+   title:'SQL Injection — Contract Data Extraction',
+   desc:'Authenticated SQL injection in the contract search API allows extraction of all contract records. Contracts contain CUI including Army end-use statements and production quantities.',
+   exploit:false,patch:true,nist:'3.14.2, 3.13.1',owner:'System Administrator'},
+  {id:'VSR-005',cve:'CVE-2025-24054',cvss:8.1,sev:'high',sevLabel:'High',
+   asset:'File Server — CUI Repository (FS-CUI-01)',cui:true,
+   title:'NTLM Hash Capture via Malicious .library-ms File',
+   desc:'Windows NTLM hash disclosure vulnerability triggered when a user browses to a malicious network share. Captured hashes can be cracked or relayed to authenticate to CUI systems.',
+   exploit:true,patch:true,nist:'3.14.1, 3.5.1',owner:'System Administrator'},
+  {id:'VSR-006',cve:'CVE-2025-26685',cvss:7.5,sev:'high',sevLabel:'High',
+   asset:'Microsoft 365 Tenant',cui:true,
+   title:'MFA Not Enforced — 14 Active Accounts',
+   desc:'Tenable scan identified 14 FFSI M365 accounts without MFA enforcement via Conditional Access policy. Accounts include 3 with access to CUI-adjacent SharePoint sites.',
+   exploit:false,patch:false,nist:'3.5.3, 3.14.6',owner:'Cloud Administrator'},
+  {id:'VSR-007',cve:'CVE-2025-27740',cvss:7.5,sev:'med',sevLabel:'Medium',
+   asset:'Active Directory (DC-01)',cui:true,
+   title:'Kerberoasting Attack Surface — 8 SPNs with Weak Encryption',
+   desc:'Eight service principal names configured with RC4 encryption (MD4 hash). Kerberoasting attack can offline-crack service account passwords. Two SPNs have admin rights.',
+   exploit:false,patch:false,nist:'3.5.1, 3.14.2',owner:'System Administrator'},
+  {id:'VSR-008',cve:'CVE-2025-1234',cvss:6.5,sev:'med',sevLabel:'Medium',
+   asset:'Firewall Infrastructure (FW-EDGE-01)',cui:false,
+   title:'Outdated PAN-OS Firmware — Known CVEs',
+   desc:'PAN-OS version 10.2.4 has 3 known CVEs (CVSS 6.1–6.5). Vendor recommends upgrade to 10.2.9. One CVE involves information disclosure of firewall rule configurations.',
+   exploit:false,patch:true,nist:'3.14.1, 3.4.2',owner:'Network Administrator'},
+  {id:'VSR-009',cve:'CVE-2025-2891',cvss:5.9,sev:'med',sevLabel:'Medium',
+   asset:'Backup Infrastructure (BACKUP-01)',cui:true,
+   title:'Backup Console Exposed — No MFA + Default Admin Account Active',
+   desc:'Veeam backup console accessible on port 9443 without MFA. Default admin account "veeam-admin" remains active with factory password. Backup contains CUI from all servers.',
+   exploit:false,patch:false,nist:'3.5.3, 3.14.2',owner:'Cloud Administrator'},
+  {id:'VSR-010',cve:'CVE-2024-49113',cvss:3.1,sev:'low',sevLabel:'Low',
+   asset:'SIEM Platform (SIEM-01)',cui:false,
+   title:'Information Disclosure — SIEM API Token Logged in Plaintext',
+   desc:'Splunk API authentication tokens appear in plaintext in the splunkd.log file. Tokens rotate every 90 days. Exploitation requires local read access to log directory.',
+   exploit:false,patch:true,nist:'3.14.2, 3.3.1',owner:'Security Analyst'},
+];
+
+const ASSETS_ACT2 = [
+  {name:'ERP Server (ERP-01)',owner:'ERP Administrator',cui:true,vulns:'VSR-001'},
+  {name:'Domain Controller (DC-01)',owner:'System Administrator',cui:true,vulns:'VSR-002, VSR-007'},
+  {name:'VPN Gateway (VPN-GW-01)',owner:'Network Administrator',cui:true,vulns:'VSR-003'},
+  {name:'Contract Mgmt System (CMS-01)',owner:'System Administrator',cui:true,vulns:'VSR-004'},
+  {name:'File Server CUI (FS-CUI-01)',owner:'System Administrator',cui:true,vulns:'VSR-005'},
+  {name:'Microsoft 365 Tenant',owner:'Cloud Administrator',cui:true,vulns:'VSR-006'},
+  {name:'Firewall (FW-EDGE-01)',owner:'Network Administrator',cui:false,vulns:'VSR-008'},
+  {name:'Backup Infrastructure (BACKUP-01)',owner:'Cloud Administrator',cui:true,vulns:'VSR-009'},
+  {name:'SIEM Platform (SIEM-01)',owner:'Security Analyst',cui:false,vulns:'VSR-010'},
+];
+
+const ACT4_TIERS = [
+  {id:'crit',label:'🔴 Critical Priority',color:'var(--crit-tx)',
+   ph:'List VSR IDs (e.g., VSR-001, VSR-002, VSR-003). Why do these belong in the Critical tier? What is the specific CUI impact if exploited? What is the required response timeline?',
+   timeline:'Immediate — patch within 72 hours or implement compensating controls'},
+  {id:'high',label:'🟠 High Priority',color:'var(--high-tx)',
+   ph:'List VSR IDs and justify placement. How does exploit availability and CUI presence factor into this classification?',
+   timeline:'Within 14 days — CCB approval required'},
+  {id:'med',label:'🟡 Medium Priority',color:'var(--med-tx)',
+   ph:'List VSR IDs and justify placement. What distinguishes these from High priority?',
+   timeline:'Within 30 days — standard change process'},
+  {id:'low',label:'🟢 Low Priority',color:'var(--low-tx)',
+   ph:'List VSR IDs and justify. What conditions could elevate a Low finding to Medium?',
+   timeline:'Within 90 days — scheduled maintenance window'},
+];
+
+const REM_ACTIONS = [
+  {id:'RA-001',action:'Apply October 2025 CU to ERP Server — patch CVE-2025-21333 (RCE)',vulns:'VSR-001',owner:'ERP Administrator',target:'Nov 3, 2025',verify:'Rescan + change ticket + Nessus scan confirmation'},
+  {id:'RA-002',action:'Apply Windows October 2025 CU to Domain Controller — patch CVE-2025-29824',vulns:'VSR-002',owner:'System Administrator',target:'Nov 3, 2025',verify:'Windows Update history + rescan'},
+  {id:'RA-003',action:'Upgrade Cisco ASA from 9.18.3 to 9.18.6 — patch CVE-2025-20229 (emergency CR)',vulns:'VSR-003',owner:'Network Administrator',target:'Oct 31, 2025',verify:'ASA version verify + Nessus rescan'},
+  {id:'RA-004',action:'Apply CMS SQL injection patch (vendor bulletin #2025-044)',vulns:'VSR-004',owner:'System Administrator',target:'Nov 14, 2025',verify:'Vendor patch verification + web app rescan'},
+  {id:'RA-005',action:'Apply Windows patch KB5037592 to FS-CUI-01 — remediate NTLM hash disclosure',vulns:'VSR-005',owner:'System Administrator',target:'Nov 7, 2025',verify:'Patch applied confirmation + rescan'},
+  {id:'RA-006',action:'Enforce MFA via Entra Conditional Access for all 14 identified accounts',vulns:'VSR-006',owner:'Cloud Administrator',target:'Nov 14, 2025',verify:'Entra sign-in log review + MFA report'},
+  {id:'RA-007',action:'Configure all SPNs to AES-256 encryption; reset service account passwords',vulns:'VSR-007',owner:'System Administrator',target:'Nov 28, 2025',verify:'AD attributes review + Kerberoast test'},
+  {id:'RA-008',action:'Upgrade PAN-OS to 10.2.9 during scheduled maintenance window',vulns:'VSR-008',owner:'Network Administrator',target:'Nov 30, 2025',verify:'PAN-OS version confirm + rescan'},
+  {id:'RA-009',action:'Enable Veeam MFA; disable default admin account; firewall port 9443 to management VLAN',vulns:'VSR-009',owner:'Cloud Administrator',target:'Nov 14, 2025',verify:'Veeam config review + network scan'},
+  {id:'RA-010',action:'Apply Splunk security patch; configure log rotation to mask API tokens',vulns:'VSR-010',owner:'Security Analyst',target:'Dec 31, 2025',verify:'Splunk log review + patch verification'},
+];
+
+const ACT6_SCENARIOS = [
+  {id:'RA-SCN-01',badge:'bg:#dc2626',
+   title:'ERP Vendor Patch Cannot Be Applied — Production System Active 24/7',
+   detail:'FFSI\'s ERP system operates in a 24/7 production environment. The Facilities Manager has confirmed that the ERP cannot be taken offline for patching until the Army contract delivery cycle completes on December 15, 2025. CVE-2025-21333 (CVSS 9.8) remains unpatched for 45 days.',
+   nist:'3.14.1, 3.12.2'},
+  {id:'RA-SCN-02',badge:'bg:#ea580c',
+   title:'Legacy Application Requires Unsupported Windows Server 2012 R2',
+   detail:'FFSI\'s production monitoring application (used on the manufacturing floor) runs only on Windows Server 2012 R2 — extended support ended October 2023. The application vendor has discontinued the product. Replacement is planned for Q2 2026 but is 6+ months away.',
+   nist:'3.14.1, 3.4.2'},
+  {id:'RA-SCN-03',badge:'bg:#ca8a04',
+   title:'Wireless Controller Firmware Update Requires Full Network Outage',
+   detail:'Upgrading the Cisco Catalyst 9800 wireless controller firmware (3 versions behind) requires a complete wireless network outage across all FFSI facilities for 4–6 hours. Operations leadership has declined three proposed maintenance windows due to production schedule conflicts.',
+   nist:'3.14.1, 3.4.3'},
+];
+
+const EXEC_QUESTIONS = [
+  'How many critical vulnerabilities were identified, and what is their aggregate risk to FFSI\'s CUI systems?',
+  'Which FFSI systems present the greatest security risk based on this scan cycle?',
+  'Which specific vulnerabilities directly affect systems containing CUI, and what data is at risk?',
+  'Which findings require immediate remediation before the CMMC Level 2 assessment?',
+  'What residual risks remain after the proposed remediation plan is fully implemented?',
+  'Based on this scan cycle, is FFSI adequately prepared for a CMMC Level 2 assessment? What are the critical gaps?',
+];
+
+const DEBRIEF_QS = [
+  'Of the 10 FFSI scan findings, which single vulnerability posed the greatest risk to CUI? Explain using CVSS score, exploit availability, and specific CUI data at risk.',
+  'VSR-003 (VPN Gateway RCE, CVSS 9.1) and VSR-006 (M365 MFA gap, CVSS 7.5) both affect CUI access. How do you prioritize between a technical vulnerability with a patch and a configuration gap without a patch?',
+  'When is risk acceptance appropriate for a CMMC contractor? What specific conditions must be met before the CIO can sign a risk acceptance decision for a Critical-severity finding on a CUI system?',
+  'A C3PAO assessor arrives and requests evidence that FFSI\'s vulnerability management program is operational. List the specific artifacts they would examine and explain what each demonstrates.',
+  'How does the Vulnerability Scanning Report feed into the FFSI SSP, Risk Register, POA&M, and Configuration Management Plan? If VSR-007 is remediated, which other documents must be updated?',
+  'What vulnerability management weaknesses do C3PAO assessors most commonly identify in defense contractor environments? Which of those weaknesses does this FFSI scan cycle reveal?',
+  'NIST 800-171 practice 3.14.1 requires identifying and correcting "flaws in a timely manner." What does "timely" mean for FFSI? Who decides, how is the decision documented, and what does an assessor expect to see?',
+];
+
+const GLOSSARY = [
+  {term:'Vulnerability',def:'A weakness in a system, software, or configuration that could be exploited by a threat actor to gain unauthorized access, execute code, or exfiltrate data. Vulnerabilities exist in software code, configurations, and processes.'},
+  {term:'Vulnerability Scan',def:'An automated assessment that probes systems for known vulnerabilities by comparing system characteristics against a database of CVEs and configuration weaknesses. FFSI uses Tenable Nessus for monthly scans.'},
+  {term:'Vulnerability Scanning Report (VSR)',def:'The formal document produced after a vulnerability scan — recording each finding\'s CVE, CVSS score, severity, affected asset, CUI status, remediation action, responsible owner, and target date. Primary CMMC SI domain evidence artifact.'},
+  {term:'CVE',def:'Common Vulnerabilities and Exposures — a standardized identifier (e.g., CVE-2025-21333) assigned by MITRE to publicly known vulnerabilities. CVE IDs enable consistent reference across tools, reports, and databases.'},
+  {term:'CVSS',def:'Common Vulnerability Scoring System — a 0–10 numerical score representing the severity of a vulnerability. CVSS v3.1 scores: Critical (9.0–10.0), High (7.0–8.9), Medium (4.0–6.9), Low (0.1–3.9).'},
+  {term:'Risk Rating',def:'An organization-specific composite score — combining CVSS severity, exploitability, asset criticality, and CUI exposure — used to prioritize remediation. FFSI\'s risk calculator multiplies likelihood × impact × asset criticality × exploit factor.'},
+  {term:'Remediation',def:'The process of addressing a vulnerability — through patching, configuration change, software upgrade, or removal of vulnerable component. Remediation must be documented with a target date and verification method.'},
+  {term:'Patch Management',def:'The systematic process of identifying, acquiring, testing, and deploying software patches to address known vulnerabilities. NIST 800-171 practice 3.14.1 requires organizations to identify and correct system flaws in a timely manner.'},
+  {term:'False Positive',def:'A vulnerability finding reported by a scanner that does not actually exist — typically because the scanner detected a version string but the patch was already applied via backporting. False positives must be documented and suppressed.'},
+  {term:'Exploitability',def:'The practical likelihood that a vulnerability can be successfully used by an attacker — considering whether exploit code is publicly available, whether exploitation requires authentication, and whether active exploitation in the wild has been confirmed.'},
+  {term:'Threat',def:'Any circumstance or event with the potential to adversely impact organizational systems — including ransomware, nation-state actors, and insider threats. Vulnerability management reduces the attack surface available to threats.'},
+  {term:'Asset Criticality',def:'A classification of how important an asset is to FFSI operations and security — based on CUI presence, business function, connectivity to other systems, and the potential impact if compromised. CUI systems are always Critical.'},
+  {term:'Residual Risk',def:'The risk that remains after all feasible remediation actions and compensating controls have been implemented. Residual risk must be formally accepted by an authorized official and documented in the Risk Register.'},
+  {term:'Risk Acceptance',def:'A formal management decision to acknowledge and accept a vulnerability risk rather than remediate it — due to operational constraints, cost, or unavailability of a patch. Risk acceptance requires named approver, compensating controls, and POA&M entry.'},
+  {term:'CUI',def:'Controlled Unclassified Information — government data requiring protection under NIST SP 800-171. Any vulnerability on a system containing CUI receives elevated priority. CUI exposure triggers DFARS 252.204-7012 breach notification obligations.'},
+];
+
+const RUBRIC_ROWS = [
+  {cat:'Vulnerability Analysis (Act 1)', max:30,
+   exc:'All 10 findings correctly analyzed. Risk levels accurate. CUI impact assessed for all findings. Exploit availability factored into analysis. Owners correctly identified.',
+   pro:'8–9 findings analyzed. Risk levels mostly correct. CUI impact present but may miss nuance for 1–2 findings.',
+   dev:'6–7 findings. Some risk level errors. CUI impact incomplete. Owners not fully assigned.',
+   ni:'Fewer than 6 analyzed. Multiple risk level errors. CUI impact absent. Owners not assigned.'},
+  {cat:'Risk Prioritization (Act 4)', max:25,
+   exc:'All 10 findings correctly tiered. Justification cites CVSS, exploit availability, and CUI impact. Response timelines correct. Critical findings correctly identified.',
+   pro:'8–9 correctly tiered. Most justifications adequate. 1–2 timeline errors.',
+   dev:'6–7 correctly tiered. Justifications vague. Some misclassifications. Timelines incomplete.',
+   ni:'Fewer than 6 correctly tiered. Major misclassifications. No justification. No timelines.'},
+  {cat:'VSR Completion Accuracy (Act 3)', max:25,
+   exc:'All 10 VSR rows complete with specific, scenario-grounded entries. Risk ratings consistent with Act 1. Remediation actions specific. Dates set. Approver and next scan date completed.',
+   pro:'8–9 rows complete. Minor gaps. Remediation actions adequate. Minor inconsistency with Act 1.',
+   dev:'6–7 rows. Several fields blank or generic. Inconsistent with Act 1 analysis.',
+   ni:'Fewer than 6 rows. Major incompleteness. Generic or placeholder entries. No approver or dates.'},
+  {cat:'Remediation Planning (Act 5)', max:10,
+   exc:'Remediation plan complete. Actions tiered correctly. Responsible parties named. Dates set. Verification methods specific and testable.',
+   pro:'Plan mostly complete. 1–2 actions missing owner or verification. Dates generally correct.',
+   dev:'Plan partial. Some actions in wrong tier. Several owners or verifications missing.',
+   ni:'Plan absent or minimal. No tiering. No owners. No verification methods.'},
+  {cat:'Executive Summary (Act 7)', max:10,
+   exc:'All 6 questions answered with specific FFSI data. Summary is clear, concise, and assessment-ready. CMMC readiness addressed honestly.',
+   pro:'5–6 questions answered with adequate specificity. Assessment readiness addressed.',
+   dev:'3–4 questions. Answers vague or generic. Assessment readiness not addressed.',
+   ni:'Fewer than 3 questions. Answers absent or disconnected from FFSI scenario.'},
+];
+
+// ══════════════════════════════════════════════════
+//  BUILD FUNCTIONS
+// ══════════════════════════════════════════════════
+function ynT(btn,type){ btn.closest('.yn-group').querySelectorAll('.yn-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); updateProgress(); }
+function sevT(btn){ btn.closest('.sev-group').querySelectorAll('.sev-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); updateProgress(); }
+
+function buildAct1(){
+  const div = document.getElementById('act1-body');
+  const ownerOpts = PERSONNEL.map(p=>`<option>${p}</option>`).join('');
+  VULNS.forEach(v => {
+    const cuiPill = v.cui ? '<span class="vc-tag cui">CUI System</span>' : '<span class="vc-tag fci">Non-CUI</span>';
+    const exploitPill = v.exploit ? '<span class="vc-tag exploit">⚡ Exploited in Wild</span>' : '';
+    const patchPill = v.patch ? '<span class="vc-tag patch">✅ Patch Available</span>' : '<span class="vc-tag no-patch">⚠ No Patch</span>';
+    div.innerHTML += `
+    <div class="vuln-card">
+      <div class="vc-header">
+        <div class="vc-sev ${v.sev}">${v.sevLabel.toUpperCase().slice(0,4)}</div>
+        <div class="vc-meta">
+          <div class="vc-id">${v.id} · ${v.cve} · CVSS ${v.cvss} · <span class="nist-tag">${v.nist}</span></div>
+          <div class="vc-title">${v.title}</div>
+          <div class="vc-desc"><strong>Asset:</strong> ${v.asset} &nbsp;·&nbsp; ${v.desc}</div>
+          <div class="vc-tags">${cuiPill}${exploitPill}${patchPill}</div>
+        </div>
+      </div>
+      <div class="vc-fields">
+        <div class="vcf-col">
+          <span class="vcf-label">1. Risk Level</span>
+          <div class="sev-group">
+            <button class="sev-btn crit" onclick="sevT(this)">🔴 Crit</button>
+            <button class="sev-btn high" onclick="sevT(this)">🟠 High</button>
+            <button class="sev-btn med"  onclick="sevT(this)">🟡 Med</button>
+            <button class="sev-btn low"  onclick="sevT(this)">🟢 Low</button>
+          </div>
+        </div>
+        <div class="vcf-col">
+          <span class="vcf-label">2. Business Impact</span>
+          <div class="sev-group">
+            <button class="sev-btn crit" onclick="sevT(this)">Critical</button>
+            <button class="sev-btn high" onclick="sevT(this)">High</button>
+            <button class="sev-btn med"  onclick="sevT(this)">Medium</button>
+            <button class="sev-btn low"  onclick="sevT(this)">Low</button>
+          </div>
+        </div>
+        <div class="vcf-col">
+          <span class="vcf-label">3. CUI Impact?</span>
+          <div class="yn-group">
+            <button class="yn-btn y" onclick="ynT(this,'y')">Yes</button>
+            <button class="yn-btn n" onclick="ynT(this,'n')">No</button>
+            <button class="yn-btn u" onclick="ynT(this,'u')">Possible</button>
+          </div>
+        </div>
+        <div class="vcf-col">
+          <span class="vcf-label">4. Remediation Priority</span>
+          <div class="sev-group">
+            <button class="sev-btn crit" onclick="sevT(this)">Immediate</button>
+            <button class="sev-btn high" onclick="sevT(this)">14 Days</button>
+            <button class="sev-btn med"  onclick="sevT(this)">30 Days</button>
+            <button class="sev-btn low"  onclick="sevT(this)">90 Days</button>
+          </div>
+        </div>
+        <div class="vcf-col">
+          <span class="vcf-label">5. Responsible Owner</span>
+          <select onchange="updateProgress()" style="font-size:.76rem"><option value="">— Select —</option>${ownerOpts}</select>
+        </div>
+      </div>
+      <div style="padding:.5rem 1rem .85rem;display:grid;grid-template-columns:1fr 1fr;gap:.5rem">
+        <div>
+          <span class="vcf-label">Risk Analysis Notes (cite CVSS, exploit status, CUI data at risk):</span>
+          <textarea rows="2" placeholder="Why is this the correct risk level? What CUI data is at risk if exploited? What is the exploitability context?" oninput="updateProgress()"></textarea>
+        </div>
+        <div>
+          <span class="vcf-label">Recommended Immediate Action:</span>
+          <textarea rows="2" placeholder="What specific action should FFSI take first for this finding? Who should take it?" oninput="updateProgress()"></textarea>
+        </div>
+      </div>
+    </div>`;
+  });
+}
+
+function buildAct2(){
+  const tb = document.getElementById('act2-body');
+  const critOpts = ['','Mission Critical','High','Medium','Low'];
+  const priorOpts = ['','P1 — Immediate','P2 — 14 Days','P3 — 30 Days','P4 — 90 Days'];
+  ASSETS_ACT2.forEach(a => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="bold" style="white-space:nowrap">${a.name}<br/><span style="font-size:.7rem;color:var(--text-d);font-weight:400">Affected: ${a.vulns}</span></td>
+      <td class="pre">${a.owner}</td>
+      <td><select onchange="updateProgress()" style="font-size:.76rem">${critOpts.map(o=>`<option>${o}</option>`).join('')}</select></td>
+      <td><div class="yn-group"><button class="yn-btn y" onclick="ynT(this,'y')">${a.cui?'Yes ✓':'Yes'}</button><button class="yn-btn n" onclick="ynT(this,'n')">${!a.cui?'No ✓':'No'}</button></div></td>
+      <td><textarea rows="2" placeholder="What is the business impact if this asset is compromised? CUI exfiltration? Operational disruption? Contract risk?" oninput="updateProgress()"></textarea></td>
+      <td><select onchange="updateProgress()" style="font-size:.76rem">${priorOpts.map(o=>`<option>${o}</option>`).join('')}</select></td>
+      <td><textarea rows="2" placeholder="Justify your criticality and priority decisions — reference CUI scope, CVSS, and business impact..." oninput="updateProgress()"></textarea></td>
+    `;
+    tb.appendChild(tr);
+  });
+}
+
+function buildAct3(){
+  const tb = document.getElementById('act3-body');
+  const riskOpts = ['','Critical','High','Medium','Low'];
+  const statusOpts = ['','Open','In Progress','Remediated','Risk Accepted','False Positive'];
+  VULNS.forEach(v => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="mono">${v.id}</td>
+      <td class="mono" style="font-size:.72rem">${v.cve}</td>
+      <td class="pre" style="font-size:.75rem;white-space:nowrap">${v.asset.split(' (')[0]}</td>
+      <td class="bold" style="text-align:center">${v.cvss}</td>
+      <td><span style="font-size:.72rem;font-weight:700;padding:.1rem .4rem;border-radius:3px;background:${v.sev==='crit'?'var(--crit-bg)':v.sev==='high'?'var(--high-bg)':v.sev==='med'?'var(--med-bg)':'var(--low-bg)'};color:${v.sev==='crit'?'var(--crit-tx)':v.sev==='high'?'var(--high-tx)':v.sev==='med'?'var(--med-tx)':'var(--low-tx)'}">${v.sevLabel}</span></td>
+      <td><select onchange="updateProgress()" style="font-size:.76rem">${riskOpts.map(o=>`<option>${o}</option>`).join('')}</select></td>
+      <td><select onchange="updateProgress()" style="font-size:.76rem"><option value="">— Owner —</option>${PERSONNEL.map(p=>`<option>${p}</option>`).join('')}</select></td>
+      <td><textarea rows="2" placeholder="Specific remediation action..." oninput="updateProgress()"></textarea></td>
+      <td><input type="date" oninput="updateProgress()"/></td>
+      <td><select onchange="updateProgress()" style="font-size:.76rem">${statusOpts.map(o=>`<option>${o}</option>`).join('')}</select></td>
+    `;
+    tb.appendChild(tr);
+  });
+}
+
+function buildAct4(){
+  const div = document.getElementById('act4-body');
+  ACT4_TIERS.forEach(t => {
+    div.innerHTML += `
+    <div style="background:var(--bg-slate);border:1px solid var(--border);border-radius:8px;padding:.9rem 1rem;margin-bottom:.75rem;border-left:4px solid ${t.id==='crit'?'var(--crit-tx)':t.id==='high'?'var(--high-tx)':t.id==='med'?'var(--med-tx)':'var(--low-tx)'}">
+      <div style="font-size:.85rem;font-weight:800;color:${t.id==='crit'?'var(--crit-tx)':t.id==='high'?'var(--high-tx)':t.id==='med'?'var(--med-tx)':'var(--low-tx)'};margin-bottom:.4rem">${t.label}</div>
+      <div class="text-sm" style="margin-bottom:.5rem">Expected Response Timeline: <strong>${t.timeline}</strong></div>
+      <div class="two-col">
+        <div>
+          <span class="field-label">Vulnerability IDs in this tier + Why they belong here:</span>
+          <textarea rows="3" placeholder="${t.ph}" oninput="updateProgress()"></textarea>
+        </div>
+        <div>
+          <span class="field-label">CUI Impact &amp; Recommended Response Actions:</span>
+          <textarea rows="3" placeholder="Describe the specific CUI data at risk in this tier. What actions are required? What is the escalation path?" oninput="updateProgress()"></textarea>
+        </div>
+      </div>
+    </div>`;
+  });
+}
+
+function buildAct5(){
+  ['immediate','short','long'].forEach(tier => {
+    const div = document.getElementById('rem-'+tier);
+    const items = tier==='immediate'?['VSR-001 (ERP RCE)','VSR-002 (DC Privilege Esc)','VSR-003 (VPN RCE) — Emergency CR']:
+                  tier==='short'?['VSR-004 (CMS SQL Injection)','VSR-005 (NTLM Hash)','VSR-006 (M365 MFA)','VSR-009 (Backup Console)']:
+                  ['VSR-007 (Kerberoasting)','VSR-008 (Firewall FW)','VSR-010 (SIEM Token)'];
+    items.forEach(i => {
+      div.innerHTML += `<div style="font-size:.75rem;color:var(--text-m);padding:.2rem 0;border-bottom:1px solid var(--border)">${i}</div>`;
+    });
+    div.innerHTML += `<div style="margin-top:.5rem"><textarea rows="3" placeholder="Additional notes for ${tier}-term actions: constraints, dependencies, rollback considerations..." oninput="updateProgress()"></textarea></div>`;
+  });
+
+  const tb = document.getElementById('rem-table-body');
+  REM_ACTIONS.forEach(r => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="mono">${r.id}</td>
+      <td><textarea rows="2" oninput="updateProgress()">${r.action}</textarea></td>
+      <td class="pre">${r.vulns}</td>
+      <td><select onchange="updateProgress()" style="font-size:.76rem"><option value="${r.owner}">${r.owner}</option>${PERSONNEL.filter(p=>p!==r.owner).map(p=>`<option>${p}</option>`).join('')}</select></td>
+      <td><input type="text" value="${r.target}" oninput="updateProgress()"/></td>
+      <td><textarea rows="2" oninput="updateProgress()">${r.verify}</textarea></td>
+    `;
+    tb.appendChild(tr);
+  });
+}
+
+function buildAct6(){
+  const div = document.getElementById('act6-body');
+  ACT6_SCENARIOS.forEach(sc => {
+    const approverOpts = PERSONNEL.map(p=>`<option>${p}</option>`).join('');
+    div.innerHTML += `
+    <div style="background:var(--bg-slate);border:1px solid var(--border);border-radius:8px;padding:1rem 1.1rem;margin-bottom:.85rem">
+      <div style="display:flex;align-items:flex-start;gap:.75rem;margin-bottom:.65rem">
+        <span style="${sc.badge};color:#fff;font-size:.7rem;font-weight:700;padding:.15rem .55rem;border-radius:4px;white-space:nowrap;flex-shrink:0;font-family:'Courier New',monospace">${sc.id}</span>
+        <div>
+          <div style="font-size:.88rem;font-weight:700;color:var(--text);margin-bottom:.1rem">${sc.title}</div>
+          <div style="font-size:.78rem;color:var(--text-m);line-height:1.5">${sc.detail}</div>
+          <div style="margin-top:.2rem"><span class="nist-tag">${sc.nist}</span></div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.55rem">
+        <div>
+          <span class="field-label">1. Can risk be accepted?</span>
+          <div class="yn-group" style="margin-bottom:.4rem">
+            <button class="yn-btn y" onclick="ynT(this,'y')">Yes — With Conditions</button>
+            <button class="yn-btn u" onclick="ynT(this,'u')">Conditional</button>
+            <button class="yn-btn n" onclick="ynT(this,'n')">No — Must Remediate</button>
+          </div>
+          <span class="field-label">2. Compensating Controls:</span>
+          <textarea rows="2" placeholder="What technical or administrative controls reduce the risk while the vulnerability remains unpatched? (network segmentation, monitoring, access restriction...)" oninput="updateProgress()"></textarea>
+        </div>
+        <div>
+          <span class="field-label">3. Approval Authority:</span>
+          <select onchange="updateProgress()" style="font-size:.78rem;margin-bottom:.4rem"><option value="">— Select approver —</option>${approverOpts}</select>
+          <span class="field-label">4. Required Documentation:</span>
+          <textarea rows="2" placeholder="What documents must FFSI create and retain? (Risk acceptance memo, POA&M entry, compensating control description, monitoring plan, review date...)" oninput="updateProgress()"></textarea>
+        </div>
+      </div>
+    </div>`;
+  });
+}
+
+function buildAct7(){
+  const div = document.getElementById('act7-body');
+  EXEC_QUESTIONS.forEach((q,i) => {
+    div.innerHTML += `
+    <div style="background:var(--bg-slate);border-radius:7px;padding:.75rem .9rem;margin-bottom:.65rem;border-left:3px solid var(--green2)">
+      <div style="font-size:.82rem;font-weight:700;color:var(--text);margin-bottom:.35rem">Q${i+1}: ${q}</div>
+      <textarea rows="3" placeholder="Provide a 2–3 sentence specific, data-grounded response for FFSI leadership..." oninput="updateProgress()"></textarea>
+    </div>`;
+  });
+}
+
+function buildDebrief(){
+  const div = document.getElementById('debrief-body');
+  DEBRIEF_QS.forEach((q,i) => {
+    div.innerHTML += `
+    <div class="dq-item">
+      <div class="dq-num">${i+1}</div>
+      <div class="dq-text">
+        ${q}
+        <div style="margin-top:.4rem"><textarea rows="2" placeholder="Discussion notes / participant responses..." oninput="updateProgress()"></textarea></div>
+      </div>
+    </div>`;
+  });
+}
+
+function buildGlossary(){
+  const div = document.getElementById('gloss-grid');
+  GLOSSARY.forEach(g => {
+    div.innerHTML += `<div class="gloss-item"><div class="gloss-term">${g.term}</div><div class="gloss-def">${g.def}</div></div>`;
+  });
+}
+
+function buildRubric(){
+  const tb = document.getElementById('rubric-body');
+  RUBRIC_ROWS.forEach(r => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="bold" style="font-size:.78rem">${r.cat}</td>
+      <td class="text-sm">${r.exc}</td>
+      <td class="text-sm">${r.pro}</td>
+      <td class="text-sm">${r.dev}</td>
+      <td class="text-sm">${r.ni}</td>
+      <td style="text-align:center;font-weight:700;color:var(--accent)">${r.max}</td>
+      <td><input type="number" class="score-input rubric-score" min="0" max="${r.max}" placeholder="0" oninput="calcRubric()"/></td>
+    `;
+    tb.appendChild(tr);
+  });
+  const tot = document.createElement('tr');
+  tot.className='score-total-row';
+  tot.innerHTML=`<td colspan="5" style="font-weight:800;padding:.55rem .7rem">Total</td><td style="text-align:center">100</td><td style="text-align:center" id="rubric-score-total">0/100</td>`;
+  tb.appendChild(tot);
+}
+
+// ══════════════════════════════════════════════════
+//  COLLAPSIBLE SECTIONS
+// ══════════════════════════════════════════════════
+function toggleSection(head){
+  const body = head.nextElementSibling;
+  const isOpen = body.classList.contains('open');
+  head.classList.toggle('open', !isOpen);
+  body.classList.toggle('open', !isOpen);
+}
+
+// ══════════════════════════════════════════════════
+//  NAV SCROLL
+// ══════════════════════════════════════════════════
+function scrollTo(id){
+  const el = document.getElementById(id);
+  if(!el) return;
+  // open the section
+  const head = el.querySelector('.sec-head');
+  const body = el.querySelector('.sec-body');
+  if(head && body && !body.classList.contains('open')){
+    head.classList.add('open');
+    body.classList.add('open');
+  }
+  el.scrollIntoView({behavior:'smooth',block:'start'});
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+}
+
+// ══════════════════════════════════════════════════
+//  RISK CALCULATOR
+// ══════════════════════════════════════════════════
+function calcRisk(){
+  const l = parseFloat(document.getElementById('rc-likelihood').value);
+  const i = parseFloat(document.getElementById('rc-impact').value);
+  const c = parseFloat(document.getElementById('rc-crit').value);
+  const e = parseFloat(document.getElementById('rc-exploit').value);
+  const score = Math.round(l * i * c * e);
+  const el = document.getElementById('rc-score');
+  const lb = document.getElementById('rc-label');
+  el.textContent = score;
+  let level = 'Low Risk', cls='low';
+  if(score>40){level='Critical Risk';cls='crit'}
+  else if(score>20){level='High Risk';cls='high'}
+  else if(score>10){level='Medium Risk';cls='med'}
+  el.className='rc-score '+cls;
+  lb.textContent = level;
+}
+
+// ══════════════════════════════════════════════════
+//  PROGRESS
+// ══════════════════════════════════════════════════
+function updateProgress(){
+  let f=0,t=0;
+  document.querySelectorAll('textarea,select,input[type=text],input[type=number],input[type=date]').forEach(el=>{
+    if(el.closest('#rubric-body')) return;
+    t++;
+    if(el.tagName==='SELECT'&&el.value&&!el.value.startsWith('—')&&el.value!=='') f++;
+    else if(el.tagName==='TEXTAREA'&&el.value.trim().length>6) f++;
+    else if(el.tagName==='INPUT'&&el.value.trim()) f++;
+  });
+  const active=document.querySelectorAll('.yn-btn.active,.sev-btn.active').length;
+  const bTotal=document.querySelectorAll('.yn-group').length+document.querySelectorAll('.sev-group').length;
+  const pct=Math.min(100,Math.round(((f+active)/(t+bTotal))*100))||0;
+  document.getElementById('nav-pct').textContent=pct+'%';
+  document.getElementById('nav-prog-filled').textContent=f+' / '+t;
+  const circ=document.getElementById('prog-ring-circle');
+  const circumference=94.25;
+  circ.style.strokeDashoffset=circumference-(pct/100)*circumference;
+}
+
+// ══════════════════════════════════════════════════
+//  RUBRIC CALC
+// ══════════════════════════════════════════════════
+function calcRubric(){
+  let total=0;
+  document.querySelectorAll('.rubric-score').forEach(i=>total+=parseInt(i.value)||0);
+  total=Math.min(100,total);
+  const pct=Math.round(total/100*100);
+  document.getElementById('rubric-total').textContent=total;
+  document.getElementById('rubric-pct').textContent=pct+'%';
+  document.getElementById('rubric-score-total').textContent=total+'/100';
+  document.getElementById('sb-total').textContent=total;
+  document.getElementById('sb-pct').textContent=pct+'%';
+  let rating='Needs Improvement',cls='rating-needs';
+  if(pct>=90){rating='Excellent';cls='rating-excellent'}
+  else if(pct>=75){rating='Proficient';cls='rating-proficient'}
+  else if(pct>=60){rating='Developing';cls='rating-developing'}
+  ['rubric-rating-badge','sb-rating'].forEach(id=>{
+    const el=document.getElementById(id);
+    el.textContent=rating;
+    el.className=(id==='rubric-rating-badge'?'rating-badge ':'sb-rating ')+cls;
+  });
+}
+
+// ══════════════════════════════════════════════════
+//  LOCALSTORAGE SAVE / LOAD
+// ══════════════════════════════════════════════════
+const SAVE_KEY = 'ffsi-vsr-exercise-v1';
+function saveProgress(){
+  const data = {};
+  document.querySelectorAll('textarea,select,input').forEach((el,i)=>{
+    data['el-'+i]={tag:el.tagName,val:el.value};
+  });
+  const btns={};
+  document.querySelectorAll('.yn-btn.active,.sev-btn.active,.dec-btn.active').forEach(b=>{
+    btns[b.textContent.trim()+'|'+b.parentElement.dataset.save] = true;
+  });
+  // simpler — save all toggled buttons by index
+  const toggled=[];
+  document.querySelectorAll('.yn-btn,.sev-btn').forEach((b,i)=>{
+    if(b.classList.contains('active')) toggled.push(i);
+  });
+  data.__toggled = toggled;
+  localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+  const ind = document.getElementById('save-indicator');
+  ind.classList.add('show');
+  setTimeout(()=>ind.classList.remove('show'),2000);
+}
+function loadProgress(){
+  const raw = localStorage.getItem(SAVE_KEY);
+  if(!raw) return;
+  try{
+    const data = JSON.parse(raw);
+    document.querySelectorAll('textarea,select,input').forEach((el,i)=>{
+      const d = data['el-'+i];
+      if(d) el.value=d.val;
+    });
+    if(data.__toggled){
+      const allBtns = document.querySelectorAll('.yn-btn,.sev-btn');
+      data.__toggled.forEach(idx=>{
+        if(allBtns[idx]) allBtns[idx].classList.add('active');
+      });
+    }
+    updateProgress();calcRubric();
+  }catch(e){}
+}
+
+// ══════════════════════════════════════════════════
+//  EXPORT
+// ══════════════════════════════════════════════════
+function exportReport(){
+  let out='FFSI — VULNERABILITY SCANNING REPORT EXERCISE\nExport: '+new Date().toLocaleString()+'\n'+'='.repeat(60)+'\n\n';
+  out+='EXECUTIVE SUMMARY (Act 7):\n'+'-'.repeat(40)+'\n';
+  document.querySelectorAll('#sec-act7 textarea').forEach((el,i)=>{if(el.value.trim()) out+='Q'+(i+1)+': '+el.value.trim()+'\n\n';});
+  const blob=new Blob([out],{type:'text/plain'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='FFSI_VSR_Exercise_'+new Date().toISOString().slice(0,10)+'.txt';
+  a.click();
+}
+function confirmReset(){
+  if(confirm('Reset all exercise answers? This cannot be undone.')){
+    document.querySelectorAll('textarea').forEach(t=>t.value='');
+    document.querySelectorAll('select').forEach(s=>s.selectedIndex=0);
+    document.querySelectorAll('input[type=text],input[type=number],input[type=date]').forEach(i=>i.value='');
+    document.querySelectorAll('.yn-btn,.sev-btn').forEach(b=>b.classList.remove('active'));
+    localStorage.removeItem(SAVE_KEY);
+    calcRubric();updateProgress();
+  }
+}
+
+// ══════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════
+buildGlossary();
+buildAct1();
+buildAct2();
+buildAct3();
+buildAct4();
+buildAct5();
+buildAct6();
+buildAct7();
+buildDebrief();
+buildRubric();
+calcRisk();
+loadProgress();
+updateProgress();
+</script>
+</body>
+</html>
