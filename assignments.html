@@ -5,39 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Practical Exercises in Understanding and Implementing CMMC</title>
     <style>
-        /* --- CSS Custom Variables for Theme Control --- */
         :root {
             --bg-primary: #ffffff;
-            --bg-secondary: #f9fafb;
+            --bg-secondary: #f4f4f4;
             --bg-card-front: #ffffff;
-            --bg-card-back: #006633;
-            --text-primary: #111827;
-            --text-secondary: #4b5563;
+            --text-primary: #111111;
+            --text-secondary: #555555;
             --text-light: #ffffff;
-            --brand-green: #006633;
-            --brand-green-hover: #004d26;
-            --border-color: #e5e7eb;
-            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --brand-green: #1a7a3c;
+            --brand-green-hover: #145e2e;
+            --brand-green-light: #e8f5ed;
+            --brand-green-mid: #2e9e52;
+            --border-color: #d9d9d9;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.10);
+            --shadow-hover: 0 8px 28px rgba(26,122,60,0.18);
             --transition-speed: 0.4s;
         }
 
         [data-theme="dark"] {
-            --bg-primary: #111827;
-            --bg-secondary: #1f2937;
-            --bg-card-front: #1f2937;
-            --bg-card-back: #006633;
-            --text-primary: #f3f4f6;
-            --text-secondary: #9ca3af;
-            --border-color: #374151;
+            --bg-primary: #0f0f0f;
+            --bg-secondary: #1a1a1a;
+            --bg-card-front: #1c1c1c;
+            --text-primary: #f0f0f0;
+            --text-secondary: #999999;
+            --border-color: #2e2e2e;
+            --brand-green-light: rgba(26,122,60,0.2);
         }
 
-        /* --- Global Reset & Base Styles --- */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -45,235 +41,244 @@
             color: var(--text-primary);
             transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
             line-height: 1.5;
-            padding-bottom: 60px;
+            padding-bottom: 80px;
         }
 
-        /* --- Header Banner --- */
+        /* --- Header --- */
         header {
-            background-color: var(--bg-secondary);
-            border-bottom: 1px solid var(--border-color);
-            padding: 20px 40px;
+            background-color: #111111;
+            border-bottom: 3px solid var(--brand-green);
+            padding: 0 40px;
+            height: 62px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.35);
         }
 
-        .brand-zone {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        .brand-zone { display: flex; align-items: center; gap: 12px; }
+
+        .brand-shield {
+            width: 34px; height: 34px;
+            background: var(--brand-green);
+            border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
         }
 
-        .brand-icon {
-            font-size: 1.5rem;
-            color: var(--brand-green);
-        }
+        .brand-shield svg { width: 20px; height: 20px; fill: #fff; }
 
-        .brand-text {
-            font-weight: 700;
-            font-size: 1.1rem;
-            letter-spacing: 0.5px;
-        }
+        .brand-text { font-weight: 700; font-size: 1rem; letter-spacing: 0.3px; color: #ffffff; }
+        .brand-sub { font-size: 0.7rem; color: #888; letter-spacing: 0.08em; text-transform: uppercase; display: block; margin-top: 1px; }
 
         .theme-toggle-btn {
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-            border: 1px solid var(--border-color);
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: var(--shadow-sm);
+            background: transparent; color: #ccc;
+            border: 1px solid #333;
+            padding: 7px 14px; border-radius: 6px;
+            cursor: pointer; font-weight: 500; font-size: 0.82rem;
+            display: flex; align-items: center; gap: 7px;
             transition: all 0.2s ease;
         }
+        .theme-toggle-btn:hover { border-color: var(--brand-green); color: #fff; background: rgba(26,122,60,0.15); }
 
-        .theme-toggle-btn:hover {
-            border-color: var(--brand-green);
-            color: var(--brand-green);
-        }
-
-        /* --- Main Layout Frame --- */
-        main {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-
+        /* --- Hero --- */
         .hero-section {
+            background: linear-gradient(135deg, #111111 0%, #1a3320 100%);
+            padding: 52px 40px 44px;
             text-align: center;
-            margin-bottom: 50px;
+            position: relative;
+            overflow: hidden;
         }
-
+        .hero-section::before {
+            content: ''; position: absolute; inset: 0;
+            background:
+                repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.02) 39px, rgba(255,255,255,0.02) 40px),
+                repeating-linear-gradient(90deg, transparent, transparent 79px, rgba(255,255,255,0.02) 79px, rgba(255,255,255,0.02) 80px);
+            pointer-events: none;
+        }
+        .hero-eyebrow {
+            display: inline-block;
+            background: rgba(26,122,60,0.35); border: 1px solid rgba(26,122,60,0.6);
+            color: #86efac; font-size: 0.7rem; font-weight: 700;
+            letter-spacing: 0.12em; text-transform: uppercase;
+            padding: 4px 14px; border-radius: 20px; margin-bottom: 16px; position: relative;
+        }
         .hero-section h1 {
-            font-size: 2.25rem;
-            font-weight: 800;
-            color: var(--text-primary);
-            margin-bottom: 12px;
-            letter-spacing: -0.5px;
+            font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 800;
+            color: #ffffff; letter-spacing: -0.02em; line-height: 1.25;
+            max-width: 780px; margin: 0 auto 14px; position: relative;
         }
+        .hero-section h1 em { font-style: normal; color: #4ade80; }
+        .hero-section p { color: #aaaaaa; font-size: 0.95rem; max-width: 600px; margin: 0 auto; position: relative; }
 
-        .hero-section p {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-            max-width: 700px;
-            margin: 0 auto;
+        /* --- Main --- */
+        main { max-width: 1280px; margin: 0 auto; padding: 44px 24px; }
+
+        .section-label { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
+        .section-label-text { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-secondary); white-space: nowrap; }
+        .section-label-line { flex: 1; height: 1px; background: var(--border-color); }
+
+        /* --- Featured Card --- */
+        .featured-wrapper { margin-bottom: 40px; }
+
+        .featured-card {
+            display: flex; align-items: stretch;
+            background: var(--bg-card-front);
+            border: 2px solid var(--brand-green);
+            border-radius: 12px; overflow: hidden;
+            box-shadow: 0 4px 20px rgba(26,122,60,0.12);
+            transition: box-shadow 0.25s ease, transform 0.25s ease;
+            text-decoration: none; color: inherit;
         }
+        .featured-card:hover { box-shadow: 0 8px 36px rgba(26,122,60,0.24); transform: translateY(-2px); }
 
-        /* --- 3D Flippable Configuration --- */
+        .featured-stripe {
+            width: 6px; flex-shrink: 0;
+            background: linear-gradient(180deg, #4ade80 0%, var(--brand-green) 100%);
+        }
+        .featured-body { padding: 26px 28px; flex: 1; }
+
+        .featured-badge {
+            display: inline-flex; align-items: center; gap: 5px;
+            background: var(--brand-green); color: #fff;
+            font-size: 0.67rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;
+            padding: 3px 10px; border-radius: 20px; margin-bottom: 10px;
+        }
+        .featured-body h2 { font-size: 1.2rem; font-weight: 800; color: var(--text-primary); line-height: 1.3; margin-bottom: 8px; letter-spacing: -0.01em; }
+        .featured-body h2 span { color: var(--brand-green); }
+        .featured-body p { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 18px; max-width: 680px; }
+
+        .featured-cta {
+            display: inline-flex; align-items: center; gap: 7px;
+            background: var(--brand-green); color: #fff;
+            font-size: 0.82rem; font-weight: 700;
+            padding: 9px 20px; border-radius: 6px;
+            transition: background 0.2s ease, box-shadow 0.2s ease;
+            text-decoration: none;
+        }
+        .featured-cta:hover { background: var(--brand-green-hover); box-shadow: 0 4px 14px rgba(26,122,60,0.4); }
+        .featured-cta svg { width: 13px; height: 13px; fill: #fff; }
+
+        .featured-aside {
+            width: 140px; background: var(--brand-green-light);
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+            padding: 20px; border-left: 1px dashed rgba(26,122,60,0.3); flex-shrink: 0;
+        }
+        .featured-aside-icon {
+            width: 52px; height: 52px;
+            background: rgba(26,122,60,0.12); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .featured-aside-icon svg { width: 26px; height: 26px; fill: var(--brand-green); }
+        .featured-aside-label { font-size: 0.68rem; color: var(--text-secondary); text-align: center; text-transform: uppercase; letter-spacing: 0.07em; line-height: 1.4; }
+
+        /* --- Exercise Grid --- */
         .exercise-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 30px;
-            perspective: 1000px;
+            gap: 24px;
+            perspective: 1200px;
         }
 
-        .card-container {
-            height: 280px;
-            position: relative;
-            cursor: pointer;
-        }
+        /* --- Flip Cards --- */
+        .card-container { height: 280px; position: relative; cursor: pointer; }
 
         .card-inner {
-            width: 100%;
-            height: 100%;
-            position: absolute;
+            width: 100%; height: 100%; position: absolute;
             transform-style: preserve-3d;
             transition: transform var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
             border-radius: 12px;
             box-shadow: var(--shadow-md);
         }
-
-        .card-container.is-flipped .card-inner {
-            transform: rotateY(180deg);
-        }
+        .card-container:hover .card-inner { box-shadow: var(--shadow-hover); }
+        .card-container.is-flipped .card-inner { transform: rotateY(180deg); }
 
         .card-face {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            border-radius: 12px;
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            border: 1px solid var(--border-color);
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; border-radius: 12px;
+            padding: 22px 22px 20px;
+            display: flex; flex-direction: column; justify-content: space-between;
         }
 
+        /* Front */
         .card-front {
             background-color: var(--bg-card-front);
-            color: var(--text-primary);
-            transition: background-color var(--transition-speed) ease;
+            border: 1.5px solid var(--border-color);
+            transition: border-color 0.25s ease, background-color var(--transition-speed) ease;
         }
+        .card-container:hover .card-front { border-color: var(--brand-green); }
 
-        .card-header-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
+        .card-front-top {
+            position: absolute; top: 0; left: 0; right: 0; height: 4px;
+            background: linear-gradient(90deg, var(--brand-green) 0%, #4ade80 100%);
+            border-radius: 12px 12px 0 0;
         }
+        .card-header-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-top: 6px; }
 
         .exercise-badge {
-            background-color: rgba(0, 102, 51, 0.1);
-            color: var(--brand-green);
-            padding: 4px 10px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            border-radius: 50px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            background-color: var(--brand-green-light); color: var(--brand-green);
+            padding: 3px 10px; font-size: 0.72rem; font-weight: 700;
+            border-radius: 50px; text-transform: uppercase; letter-spacing: 0.05em;
+            border: 1px solid rgba(26,122,60,0.2);
         }
+        [data-theme="dark"] .exercise-badge { background-color: rgba(26,122,60,0.25); color: #4ade80; border-color: rgba(74,222,128,0.2); }
 
-        [data-theme="dark"] .exercise-badge {
-            background-color: rgba(0, 102, 51, 0.3);
-            color: #22c55e;
-        }
+        .action-indicator { font-size: 0.78rem; color: var(--text-secondary); display: flex; align-items: center; gap: 4px; opacity: 0.75; }
 
-        .action-indicator {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
+        .card-title { font-size: 1.05rem; font-weight: 700; line-height: 1.38; color: var(--text-primary); margin-top: 6px; flex: 1; }
 
-        .card-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            line-height: 1.35;
-            color: var(--text-primary);
-            margin-top: 10px;
-        }
+        .card-hint { font-size: 0.8rem; color: var(--brand-green); font-weight: 600; display: flex; align-items: center; gap: 5px; margin-top: auto; padding-top: 8px; }
+        [data-theme="dark"] .card-hint { color: #4ade80; }
 
-        .card-hint {
-            font-size: 0.85rem;
-            color: var(--brand-green);
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            margin-top: auto;
-        }
-
-        [data-theme="dark"] .card-hint {
-            color: #22c55e;
-        }
-
+        /* Back */
         .card-back {
-            background-color: var(--bg-card-back);
-            color: var(--text-light);
+            background-color: #111111; color: #ffffff;
             transform: rotateY(180deg);
-            border: none;
+            border: 1.5px solid #2a2a2a;
+            position: relative; overflow: hidden;
         }
-
-        .card-description {
-            font-size: 0.95rem;
-            line-height: 1.5;
-            overflow-y: auto;
-            padding-right: 4px;
-            margin-bottom: 16px;
+        .card-back::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg, var(--brand-green) 0%, #4ade80 100%);
         }
-
-        .card-description::-webkit-scrollbar {
-            width: 4px;
+        .card-back-num {
+            position: absolute; top: 14px; right: 16px;
+            font-size: 2.5rem; font-weight: 900; color: rgba(255,255,255,0.05);
+            line-height: 1; letter-spacing: -0.04em;
+            pointer-events: none; user-select: none;
         }
-        .card-description::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 2px;
-        }
+        .card-description { font-size: 0.88rem; line-height: 1.6; color: #cccccc; overflow-y: auto; padding-right: 4px; flex: 1; padding-top: 12px; }
+        .card-description::-webkit-scrollbar { width: 3px; }
+        .card-description::-webkit-scrollbar-thumb { background: rgba(26,122,60,0.5); border-radius: 2px; }
 
         .launch-btn {
-            background-color: #ffffff;
-            color: var(--brand-green);
-            border: none;
-            padding: 10px 16px;
-            border-radius: 6px;
-            font-weight: 700;
-            text-decoration: none;
-            text-align: center;
-            font-size: 0.9rem;
-            transition: background-color 0.2s ease, transform 0.2s ease;
-            box-shadow: var(--shadow-sm);
-            display: block;
-            margin-top: auto;
-        }
-
-        .launch-btn:hover {
-            background-color: #f3f4f6;
-            transform: translateY(-1px);
-        }
-
-        footer {
-            text-align: center;
-            margin-top: 80px;
-            padding-top: 24px;
-            border-top: 1px solid var(--border-color);
-            color: var(--text-secondary);
+            background-color: var(--brand-green); color: #ffffff;
+            border: none; padding: 10px 16px; border-radius: 7px;
+            font-weight: 700; text-decoration: none; text-align: center;
             font-size: 0.85rem;
+            transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 2px 8px rgba(26,122,60,0.4);
+            display: block; margin-top: 14px; letter-spacing: 0.02em;
+        }
+        .launch-btn:hover { background-color: var(--brand-green-mid); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(26,122,60,0.55); }
+
+        /* --- Footer --- */
+        footer { text-align: center; margin-top: 80px; padding-top: 24px; border-top: 1px solid var(--border-color); color: var(--text-secondary); font-size: 0.82rem; }
+        footer strong { color: var(--brand-green); }
+
+        /* --- Responsive --- */
+        @media (max-width: 700px) {
+            header { padding: 0 16px; }
+            .hero-section { padding: 40px 16px 32px; }
+            main { padding: 28px 14px; }
+            .featured-aside { display: none; }
+            .exercise-grid { grid-template-columns: 1fr; }
+        }
+        @media (min-width: 701px) and (max-width: 960px) {
+            .exercise-grid { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
 </head>
@@ -281,24 +286,70 @@
 
     <header>
         <div class="brand-zone">
-            <span class="brand-icon">🛡</span>
-            <span class="brand-text">CMMC 2.0 Workshop Portal</span>
+            <div class="brand-shield">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
+                </svg>
+            </div>
+            <div>
+                <span class="brand-text">CMMC 2.0 Workshop Portal</span>
+                <span class="brand-sub">Moraine Valley Community College</span>
+            </div>
         </div>
         <button class="theme-toggle-btn" id="themeToggle" aria-label="Toggle visual interface theme">
-            <span id="themeIcon">☀️</span> <span id="themeText">Light Mode</span>
+            <span id="themeIcon">🌙</span>
+            <span id="themeText">Dark Mode</span>
         </button>
     </header>
 
+    <div class="hero-section">
+        <div class="hero-eyebrow">CMMC 2.0 · Level 2 Training Exercises</div>
+        <h1>Practical Exercises in Understanding and <em>Implementing CMMC</em> in an Organization</h1>
+        <p>Select a module card below to view requirements. All tasks resolve to links inside the current directory.</p>
+    </div>
+
     <main>
-        <section class="hero-section">
-            <h1>Practical Exercises in Understanding and Implementing CMMC in an Organization</h1>
-            <p>Select a module card below to view requirements. All tasks resolve to links inside the current directory.</p>
-        </section>
+
+        <!-- Featured Case Study -->
+        <div class="featured-wrapper">
+            <div class="section-label">
+                <span class="section-label-text">Reference Document — Start Here</span>
+                <div class="section-label-line"></div>
+            </div>
+            <a href="ffsi.html" target="_blank" class="featured-card">
+                <div class="featured-stripe"></div>
+                <div class="featured-body">
+                    <div class="featured-badge">★ Featured Case Study</div>
+                    <h2>Federal Food Services Inc. — <span>CMMC 2.0 Level 2 Audit Scenario</span></h2>
+                    <p>Fictional Training Case Study. This case study is used with all the assignments on this page. Open this document first to establish full scenario context before beginning any exercise.</p>
+                    <span class="featured-cta">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/>
+                        </svg>
+                        Open Case Study
+                    </span>
+                </div>
+                <div class="featured-aside">
+                    <div class="featured-aside-icon">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z"/>
+                        </svg>
+                    </div>
+                    <span class="featured-aside-label">Fictional DoD Contractor Scenario</span>
+                </div>
+            </a>
+        </div>
+
+        <!-- Exercises -->
+        <div class="section-label">
+            <span class="section-label-text">Exercises (12)</span>
+            <div class="section-label-line"></div>
+        </div>
 
         <div class="exercise-grid" id="exercisesGrid"></div>
 
         <footer>
-            <p>© 2026 CMMC Faculty Development Training Workspace. Built using white, emerald green, and black accents.</p>
+            <p>© 2026 <strong>CMMC Faculty Development Training Workspace</strong> · Moraine Valley Community College · NSF ATE-Funded Program</p>
         </footer>
     </main>
 
@@ -315,18 +366,12 @@
             { title: "Building and Maintaining a CMMC Configuration Management Plan", desc: "Develop explicit baselines, tracking mechanics, and control parameters regulating unexpected deviations from established software and hardware states." },
             { title: "Implementing a CMMC Incident Response Plan (IRP)", desc: "Draft operational notification chains, classification tiers, and recovery procedures to isolate threats and mitigate vector impact." },
             { title: "Constructing a CMMC Vulnerability Report", desc: "Analyze technical environments for security flaws and configuration defects to prioritize urgent remediation actions across assets." },
-            { title: "Constructing the Plan of Action & Milestones (POA&M) Dashboard", desc: "Design remediation tracking modules evaluating current implementation delays, assigning assets, and projecting correction dates." },
-            { title: "Completing a CMMC Security Assessment Report (SAR)", desc: "Compile final audit feedback detailing testing methods, performance metrics, and compliance statuses for authorization readiness." }
+            { title: "Constructing the Plan of Action & Milestones (POA&M) Dashboard", desc: "Design remediation tracking modules evaluating current implementation delays, assigning assets, and projecting correction dates." }
         ];
 
-        // Slice to exactly 12 items and use continuous clean indexing
         const finalExercises = exercisesData.slice(0, 12).map((item, index) => {
             const num = index + 1;
-            return {
-                ...item,
-                id: num,
-                url: `./assignment${num}.html` // Local directory relative path structure
-            };
+            return { ...item, id: num, url: `./assignment${num}.html` };
         });
 
         const grid = document.getElementById('exercisesGrid');
@@ -336,22 +381,23 @@
             card.className = 'card-container';
             card.setAttribute('role', 'button');
             card.setAttribute('tabindex', '0');
+            card.setAttribute('aria-label', `Exercise ${ex.id}: ${ex.title}`);
 
             card.innerHTML = `
                 <div class="card-inner">
                     <div class="card-face card-front">
+                        <div class="card-front-top"></div>
                         <div class="card-header-meta">
                             <span class="exercise-badge">Exercise ${ex.id}</span>
-                            <span class="action-indicator">🔄 Flip</span>
+                            <span class="action-indicator">↺ Flip</span>
                         </div>
                         <h2 class="card-title">${ex.title}</h2>
-                        <div class="card-hint">View Details ➔</div>
+                        <div class="card-hint">View Details &nbsp;&rarr;</div>
                     </div>
                     <div class="card-face card-back">
-                        <div class="card-description">
-                            <p>${ex.desc}</p>
-                        </div>
-                        <a href="${ex.url}" class="launch-btn" onclick="event.stopPropagation();">Launch Assignment</a>
+                        <div class="card-back-num">${String(ex.id).padStart(2,'0')}</div>
+                        <div class="card-description"><p>${ex.desc}</p></div>
+                        <a href="${ex.url}" class="launch-btn" onclick="event.stopPropagation();">Launch Assignment &rarr;</a>
                     </div>
                 </div>
             `;
@@ -367,13 +413,14 @@
             grid.appendChild(card);
         });
 
-        // --- Theme Egnine ---
+        // Theme engine — defaults to light
         const themeBtn = document.getElementById('themeToggle');
+        let darkMode = false;
         themeBtn.addEventListener('click', () => {
-            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-            document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
-            document.getElementById('themeIcon').textContent = isDark ? '☀️' : '🌙';
-            document.getElementById('themeText').textContent = isDark ? 'Light Mode' : 'Dark Mode';
+            darkMode = !darkMode;
+            document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light');
+            document.getElementById('themeIcon').textContent = darkMode ? '☀️' : '🌙';
+            document.getElementById('themeText').textContent = darkMode ? 'Light Mode' : 'Dark Mode';
         });
     </script>
 </body>
