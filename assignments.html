@@ -1,642 +1,380 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CMMC 2.0 Level 2 Training — Course Portal</title>
-  <style>
-    /* ── Design tokens (matches assignments.html palette) ─────────────────── */
-    :root {
-      --bg:          #ffffff;
-      --surface:     #f4f9f6;
-      --border:      #d1e8db;
-      --green:       #10b981;   /* emerald */
-      --green-dark:  #059669;
-      --green-light: #d1fae5;
-      --black:       #111827;
-      --text:        #1f2937;
-      --muted:       #6b7280;
-      --accent-btn:  #f59e0b;   /* amber — FFSI card CTA standout */
-      --accent-btn-h:#d97706;
-      --ffsi-bg:     #fffbeb;
-      --ffsi-border: #fde68a;
-      --shadow-sm:   0 1px 3px rgba(0,0,0,.10);
-      --shadow-md:   0 4px 16px rgba(0,0,0,.12);
-      --shadow-lg:   0 8px 32px rgba(0,0,0,.15);
-      --radius:      12px;
-      --transition:  .22s ease;
-    }
-    [data-theme="dark"] {
-      --bg:          #0f1a14;
-      --surface:     #162010;
-      --border:      #1f3828;
-      --green:       #34d399;
-      --green-dark:  #10b981;
-      --green-light: #064e3b;
-      --black:       #f9fafb;
-      --text:        #e5e7eb;
-      --muted:       #9ca3af;
-      --accent-btn:  #fbbf24;
-      --accent-btn-h:#f59e0b;
-      --ffsi-bg:     #1c1505;
-      --ffsi-border: #78350f;
-      --shadow-sm:   0 1px 3px rgba(0,0,0,.40);
-      --shadow-md:   0 4px 16px rgba(0,0,0,.45);
-      --shadow-lg:   0 8px 32px rgba(0,0,0,.55);
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practical Exercises in Understanding and Implementing CMMC</title>
+    <style>
+        /* --- CSS Custom Variables for Theme Control --- */
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f9fafb;
+            --bg-card-front: #ffffff;
+            --bg-card-back: #006633;
+            --text-primary: #111827;
+            --text-secondary: #4b5563;
+            --text-light: #ffffff;
+            --brand-green: #006633;
+            --brand-green-hover: #004d26;
+            --border-color: #e5e7eb;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --transition-speed: 0.4s;
+        }
 
-    /* ── Reset & base ─────────────────────────────────────────────────────── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      transition: background var(--transition), color var(--transition);
-    }
+        [data-theme="dark"] {
+            --bg-primary: #111827;
+            --bg-secondary: #1f2937;
+            --bg-card-front: #1f2937;
+            --bg-card-back: #006633;
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --border-color: #374151;
+        }
 
-    /* ── Top bar ──────────────────────────────────────────────────────────── */
-    .topbar {
-      background: var(--black);
-      color: #fff;
-      padding: 10px 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: var(--shadow-sm);
-    }
-    [data-theme="dark"] .topbar { background: #050d08; }
-    .topbar-brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 700;
-      font-size: .95rem;
-      letter-spacing: .5px;
-    }
-    .topbar-brand .shield { font-size: 1.3rem; }
-    .topbar-badge {
-      background: var(--green);
-      color: #fff;
-      font-size: .7rem;
-      font-weight: 700;
-      padding: 2px 8px;
-      border-radius: 20px;
-      letter-spacing: .6px;
-    }
-    .theme-toggle {
-      background: none;
-      border: 1.5px solid rgba(255,255,255,.35);
-      color: #fff;
-      font-size: .8rem;
-      padding: 5px 14px;
-      border-radius: 20px;
-      cursor: pointer;
-      transition: border-color var(--transition), background var(--transition);
-      white-space: nowrap;
-    }
-    .theme-toggle:hover { border-color: var(--green); background: rgba(16,185,129,.15); }
+        /* --- Global Reset & Base Styles --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-    /* ── Hero / header ────────────────────────────────────────────────────── */
-    .hero {
-      background: linear-gradient(135deg, #0f4c2a 0%, #166534 50%, #14532d 100%);
-      color: #fff;
-      text-align: center;
-      padding: 60px 24px 52px;
-      position: relative;
-      overflow: hidden;
-    }
-    .hero::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-    }
-    .hero-icon { font-size: 3.2rem; display: block; margin-bottom: 16px; }
-    .hero h1 {
-      font-size: clamp(1.4rem, 4vw, 2.2rem);
-      font-weight: 800;
-      line-height: 1.25;
-      margin-bottom: 12px;
-      text-shadow: 0 2px 8px rgba(0,0,0,.3);
-    }
-    .hero p {
-      font-size: 1rem;
-      color: rgba(255,255,255,.82);
-      max-width: 620px;
-      margin: 0 auto;
-      line-height: 1.6;
-    }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+            line-height: 1.5;
+            padding-bottom: 60px;
+        }
 
-    /* ── Main content wrapper ─────────────────────────────────────────────── */
-    .main {
-      max-width: 1140px;
-      margin: 0 auto;
-      padding: 40px 20px 60px;
-    }
+        /* --- Header Banner --- */
+        header {
+            background-color: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease;
+        }
 
-    /* ── Section labels ───────────────────────────────────────────────────── */
-    .section-label {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: .78rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1.2px;
-      color: var(--muted);
-      margin-bottom: 16px;
-    }
-    .section-label::before {
-      content: '';
-      flex: none;
-      width: 28px;
-      height: 2px;
-      background: var(--green);
-      border-radius: 2px;
-    }
+        .brand-zone {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-    /* ══════════════════════════════════════════════════════════════════════
-       FFSI CASE STUDY CARD — Featured / hero card
-    ══════════════════════════════════════════════════════════════════════ */
-    .ffsi-card {
-      background: var(--ffsi-bg);
-      border: 2px solid var(--ffsi-border);
-      border-radius: 16px;
-      padding: 32px 36px;
-      margin-bottom: 48px;
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      gap: 24px;
-      align-items: center;
-      box-shadow: 0 4px 24px rgba(245,158,11,.18);
-      position: relative;
-      overflow: hidden;
-      transition: box-shadow var(--transition), transform var(--transition);
-      cursor: pointer;
-      text-decoration: none;
-    }
-    .ffsi-card:hover {
-      box-shadow: 0 8px 40px rgba(245,158,11,.30);
-      transform: translateY(-2px);
-    }
-    .ffsi-card::after {
-      content: 'FOUNDATION DOCUMENT';
-      position: absolute;
-      top: 14px;
-      right: -28px;
-      background: var(--accent-btn);
-      color: #fff;
-      font-size: .65rem;
-      font-weight: 800;
-      letter-spacing: 1px;
-      padding: 4px 40px;
-      transform: rotate(45deg);
-      transform-origin: center;
-    }
+        .brand-icon {
+            font-size: 1.5rem;
+            color: var(--brand-green);
+        }
 
-    .ffsi-icon-wrap {
-      width: 72px;
-      height: 72px;
-      background: var(--accent-btn);
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2rem;
-      box-shadow: 0 4px 12px rgba(245,158,11,.35);
-      flex-shrink: 0;
-    }
+        .brand-text {
+            font-weight: 700;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+        }
 
-    .ffsi-body {}
-    .ffsi-pretitle {
-      font-size: .72rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1.1px;
-      color: #92400e;
-      margin-bottom: 6px;
-    }
-    [data-theme="dark"] .ffsi-pretitle { color: #fcd34d; }
-    .ffsi-title {
-      font-size: clamp(1.05rem, 2.5vw, 1.35rem);
-      font-weight: 800;
-      color: #78350f;
-      line-height: 1.3;
-      margin-bottom: 6px;
-    }
-    [data-theme="dark"] .ffsi-title { color: #fef3c7; }
-    .ffsi-subtitle {
-      font-size: .88rem;
-      color: #92400e;
-      opacity: .85;
-      line-height: 1.5;
-    }
-    [data-theme="dark"] .ffsi-subtitle { color: #fcd34d; opacity: .8; }
+        .theme-toggle-btn {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s ease;
+        }
 
-    .ffsi-cta {
-      background: var(--accent-btn);
-      color: #fff;
-      border: none;
-      font-size: .9rem;
-      font-weight: 700;
-      padding: 14px 26px;
-      border-radius: 10px;
-      cursor: pointer;
-      white-space: nowrap;
-      box-shadow: 0 4px 14px rgba(245,158,11,.45);
-      transition: background var(--transition), box-shadow var(--transition), transform var(--transition);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      letter-spacing: .2px;
-      flex-shrink: 0;
-    }
-    .ffsi-cta:hover {
-      background: var(--accent-btn-h);
-      box-shadow: 0 6px 20px rgba(245,158,11,.55);
-      transform: translateY(-1px);
-    }
-    .ffsi-cta .arrow { font-style: normal; transition: transform .15s ease; }
-    .ffsi-card:hover .ffsi-cta .arrow { transform: translateX(3px); }
+        .theme-toggle-btn:hover {
+            border-color: var(--brand-green);
+            color: var(--brand-green);
+        }
 
-    /* ── Assignment cards grid ────────────────────────────────────────────── */
-    .cards-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
-      gap: 22px;
-    }
+        /* --- Main Layout Frame --- */
+        main {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
 
-    .card {
-      background: var(--surface);
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius);
-      padding: 26px 24px 22px;
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-      transition: box-shadow var(--transition), transform var(--transition), border-color var(--transition);
-      cursor: pointer;
-      text-decoration: none;
-      position: relative;
-      overflow: hidden;
-    }
-    .card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 3px;
-      background: var(--green);
-      opacity: 0;
-      transition: opacity var(--transition);
-    }
-    .card:hover {
-      box-shadow: var(--shadow-lg);
-      transform: translateY(-3px);
-      border-color: var(--green);
-    }
-    .card:hover::before { opacity: 1; }
+        .hero-section {
+            text-align: center;
+            margin-bottom: 50px;
+        }
 
-    .card-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      margin-bottom: 14px;
-    }
-    .card-icon {
-      width: 48px;
-      height: 48px;
-      background: var(--green-light);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.35rem;
-      flex-shrink: 0;
-    }
-    [data-theme="dark"] .card-icon { background: rgba(16,185,129,.15); }
-    .card-num {
-      font-size: .72rem;
-      font-weight: 700;
-      color: var(--green);
-      background: var(--green-light);
-      border-radius: 20px;
-      padding: 3px 10px;
-      letter-spacing: .5px;
-    }
-    [data-theme="dark"] .card-num { background: rgba(16,185,129,.15); }
+        .hero-section h1 {
+            font-size: 2.25rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
 
-    .card-title {
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: var(--black);
-      line-height: 1.3;
-      margin-bottom: 8px;
-    }
-    .card-acronym {
-      display: inline-block;
-      font-size: .7rem;
-      font-weight: 800;
-      letter-spacing: 1px;
-      color: var(--green-dark);
-      background: var(--green-light);
-      padding: 2px 8px;
-      border-radius: 4px;
-      margin-bottom: 10px;
-      text-transform: uppercase;
-    }
-    [data-theme="dark"] .card-acronym { background: rgba(16,185,129,.15); color: var(--green); }
+        .hero-section p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
 
-    .card-desc {
-      font-size: .87rem;
-      color: var(--muted);
-      line-height: 1.55;
-      flex: 1;
-      margin-bottom: 18px;
-    }
+        /* --- 3D Flippable Configuration --- */
+        .exercise-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            perspective: 1000px;
+        }
 
-    .card-domains {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-      margin-bottom: 18px;
-    }
-    .domain-tag {
-      font-size: .67rem;
-      font-weight: 600;
-      color: var(--green-dark);
-      background: var(--green-light);
-      border-radius: 4px;
-      padding: 2px 7px;
-      letter-spacing: .3px;
-    }
-    [data-theme="dark"] .domain-tag { background: rgba(16,185,129,.12); color: #34d399; }
+        .card-container {
+            height: 280px;
+            position: relative;
+            cursor: pointer;
+        }
 
-    .card-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-top: 1px solid var(--border);
-      padding-top: 14px;
-      margin-top: auto;
-    }
-    .card-meta {
-      font-size: .75rem;
-      color: var(--muted);
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .launch-btn {
-      background: var(--green);
-      color: #fff;
-      border: none;
-      font-size: .8rem;
-      font-weight: 700;
-      padding: 8px 18px;
-      border-radius: 7px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: background var(--transition), box-shadow var(--transition);
-      letter-spacing: .2px;
-    }
-    .launch-btn:hover {
-      background: var(--green-dark);
-      box-shadow: 0 3px 10px rgba(16,185,129,.35);
-    }
+        .card-inner {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            transform-style: preserve-3d;
+            transition: transform var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+        }
 
-    /* ── Info strip ───────────────────────────────────────────────────────── */
-    .info-strip {
-      background: var(--surface);
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius);
-      padding: 18px 24px;
-      margin-top: 40px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      font-size: .85rem;
-      color: var(--muted);
-    }
-    .info-strip .info-icon { font-size: 1.2rem; flex-shrink: 0; }
+        .card-container.is-flipped .card-inner {
+            transform: rotateY(180deg);
+        }
 
-    /* ── Footer ───────────────────────────────────────────────────────────── */
-    .footer {
-      text-align: center;
-      padding: 24px;
-      font-size: .78rem;
-      color: var(--muted);
-      border-top: 1px solid var(--border);
-    }
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border: 1px solid var(--border-color);
+        }
 
-    /* ── Responsive ───────────────────────────────────────────────────────── */
-    @media (max-width: 700px) {
-      .ffsi-card {
-        grid-template-columns: 1fr;
-        text-align: center;
-        gap: 16px;
-      }
-      .ffsi-icon-wrap { margin: 0 auto; }
-      .ffsi-cta { width: 100%; justify-content: center; }
-      .ffsi-card::after { display: none; }
-    }
-  </style>
+        .card-front {
+            background-color: var(--bg-card-front);
+            color: var(--text-primary);
+            transition: background-color var(--transition-speed) ease;
+        }
+
+        .card-header-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .exercise-badge {
+            background-color: rgba(0, 102, 51, 0.1);
+            color: var(--brand-green);
+            padding: 4px 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            border-radius: 50px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        [data-theme="dark"] .exercise-badge {
+            background-color: rgba(0, 102, 51, 0.3);
+            color: #22c55e;
+        }
+
+        .action-indicator {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            line-height: 1.35;
+            color: var(--text-primary);
+            margin-top: 10px;
+        }
+
+        .card-hint {
+            font-size: 0.85rem;
+            color: var(--brand-green);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: auto;
+        }
+
+        [data-theme="dark"] .card-hint {
+            color: #22c55e;
+        }
+
+        .card-back {
+            background-color: var(--bg-card-back);
+            color: var(--text-light);
+            transform: rotateY(180deg);
+            border: none;
+        }
+
+        .card-description {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            overflow-y: auto;
+            padding-right: 4px;
+            margin-bottom: 16px;
+        }
+
+        .card-description::-webkit-scrollbar {
+            width: 4px;
+        }
+        .card-description::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+        }
+
+        .launch-btn {
+            background-color: #ffffff;
+            color: var(--brand-green);
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-weight: 700;
+            text-decoration: none;
+            text-align: center;
+            font-size: 0.9rem;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+            box-shadow: var(--shadow-sm);
+            display: block;
+            margin-top: auto;
+        }
+
+        .launch-btn:hover {
+            background-color: #f3f4f6;
+            transform: translateY(-1px);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 80px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+    </style>
 </head>
 <body>
 
-  <!-- ── Top navigation bar ──────────────────────────────────────────────── -->
-  <nav class="topbar">
-    <div class="topbar-brand">
-      <span class="shield">🛡</span>
-      CMMC 2.0 Training Portal
-      <span class="topbar-badge">Level 2</span>
-    </div>
-    <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()">🌙 Dark Mode</button>
-  </nav>
-
-  <!-- ── Hero header ─────────────────────────────────────────────────────── -->
-  <header class="hero">
-    <span class="hero-icon">🏛</span>
-    <h1>CMMC 2.0 Level 2 Audit Training<br>Course Portal</h1>
-    <p>Interactive exercises in understanding and implementing the Cybersecurity Maturity Model Certification. Select the case study first, then launch any audit assignment below.</p>
-  </header>
-
-  <!-- ── Main content ────────────────────────────────────────────────────── -->
-  <main class="main">
-
-    <!-- FFSI Case Study Card -->
-    <div class="section-label">Start Here — Foundation Case Study</div>
-
-    <a class="ffsi-card" href="ffsi.html" target="_blank" rel="noopener">
-      <div class="ffsi-icon-wrap">🏢</div>
-      <div class="ffsi-body">
-        <div class="ffsi-pretitle">Required Reading · All Assignments</div>
-        <div class="ffsi-title">Federal Food Services Inc. — CMMC 2.0 Level 2 Audit Scenario</div>
-        <div class="ffsi-subtitle">Fictional Training Case Study &nbsp;·&nbsp; NIST SP 800-171 Rev 2 &nbsp;·&nbsp; DoD Defense Industrial Base</div>
-      </div>
-      <button class="ffsi-cta" tabindex="-1" onclick="event.stopPropagation(); window.open('ffsi.html','_blank')">
-        Open Case Study <span class="arrow">→</span>
-      </button>
-    </a>
-
-    <!-- Assignment Cards -->
-    <div class="section-label">Audit Assignment Exercises</div>
-
-    <div class="cards-grid">
-
-      <!-- 1 — ACM -->
-      <a class="card" href="ACM.html" target="_blank" rel="noopener">
-        <div class="card-header">
-          <div class="card-icon">🔐</div>
-          <span class="card-num">01</span>
+    <header>
+        <div class="brand-zone">
+            <span class="brand-icon">🛡</span>
+            <span class="brand-text">CMMC 2.0 Workshop Portal</span>
         </div>
-        <div class="card-title">Access Control Matrix</div>
-        <span class="card-acronym">ACM</span>
-        <p class="card-desc">Map user roles and system access rights against CMMC practice requirements. Identify privilege gaps and document least-privilege enforcement for CUI systems.</p>
-        <div class="card-domains">
-          <span class="domain-tag">AC — Access Control</span>
-          <span class="domain-tag">IA — Identification & Auth</span>
-        </div>
-        <div class="card-footer">
-          <span class="card-meta">📋 Document Group 1</span>
-          <button class="launch-btn" tabindex="-1">Launch ↗</button>
-        </div>
-      </a>
+        <button class="theme-toggle-btn" id="themeToggle" aria-label="Toggle visual interface theme">
+            <span id="themeIcon">☀️</span> <span id="themeText">Light Mode</span>
+        </button>
+    </header>
 
-      <!-- 2 — IRP -->
-      <a class="card" href="IRP.html" target="_blank" rel="noopener">
-        <div class="card-header">
-          <div class="card-icon">🚨</div>
-          <span class="card-num">02</span>
-        </div>
-        <div class="card-title">Incident Response Plan Review</div>
-        <span class="card-acronym">IRP</span>
-        <p class="card-desc">Evaluate the organization's incident response procedures against CMMC IR practices. Assess detection, containment, eradication, and reporting capabilities.</p>
-        <div class="card-domains">
-          <span class="domain-tag">IR — Incident Response</span>
-          <span class="domain-tag">AU — Audit & Accountability</span>
-        </div>
-        <div class="card-footer">
-          <span class="card-meta">📋 Document Group 2</span>
-          <button class="launch-btn" tabindex="-1">Launch ↗</button>
-        </div>
-      </a>
+    <main>
+        <section class="hero-section">
+            <h1>Practical Exercises in Understanding and Implementing CMMC in an Organization</h1>
+            <p>Select a module card below to view requirements. All tasks resolve to links inside the current directory.</p>
+        </section>
 
-      <!-- 3 — ALMR -->
-      <a class="card" href="ALMR.html" target="_blank" rel="noopener">
-        <div class="card-header">
-          <div class="card-icon">📜</div>
-          <span class="card-num">03</span>
-        </div>
-        <div class="card-title">Audit Log Management Review</div>
-        <span class="card-acronym">ALMR</span>
-        <p class="card-desc">Review audit logging configurations, retention policies, and log review practices. Verify alignment with AU domain practices and identify monitoring gaps.</p>
-        <div class="card-domains">
-          <span class="domain-tag">AU — Audit & Accountability</span>
-          <span class="domain-tag">SI — System Integrity</span>
-        </div>
-        <div class="card-footer">
-          <span class="card-meta">📋 Document Group 3</span>
-          <button class="launch-btn" tabindex="-1">Launch ↗</button>
-        </div>
-      </a>
+        <div class="exercise-grid" id="exercisesGrid"></div>
 
-      <!-- 4 — CMP -->
-      <a class="card" href="CMP.html" target="_blank" rel="noopener">
-        <div class="card-header">
-          <div class="card-icon">⚙️</div>
-          <span class="card-num">04</span>
-        </div>
-        <div class="card-title">Configuration Management Plan</div>
-        <span class="card-acronym">CMP</span>
-        <p class="card-desc">Document system baselines, change control processes, and patch management workflows. Assess CM domain compliance for CUI-processing systems.</p>
-        <div class="card-domains">
-          <span class="domain-tag">CM — Configuration Mgmt</span>
-          <span class="domain-tag">SI — System Integrity</span>
-        </div>
-        <div class="card-footer">
-          <span class="card-meta">📋 Document Group 4</span>
-          <button class="launch-btn" tabindex="-1">Launch ↗</button>
-        </div>
-      </a>
+        <footer>
+            <p>© 2026 CMMC Faculty Development Training Workspace. Built using white, emerald green, and black accents.</p>
+        </footer>
+    </main>
 
-      <!-- 5 — VSR -->
-      <a class="card" href="VSR.html" target="_blank" rel="noopener">
-        <div class="card-header">
-          <div class="card-icon">🔍</div>
-          <span class="card-num">05</span>
-        </div>
-        <div class="card-title">Vendor / Supply Chain Risk Review</div>
-        <span class="card-acronym">VSR</span>
-        <p class="card-desc">Analyze third-party and supplier cybersecurity posture. Evaluate contractual flow-down requirements, CUI access controls, and SCRM program maturity.</p>
-        <div class="card-domains">
-          <span class="domain-tag">SR — Supply Chain Risk</span>
-          <span class="domain-tag">CM — Configuration Mgmt</span>
-        </div>
-        <div class="card-footer">
-          <span class="card-meta">📋 Document Group 5</span>
-          <button class="launch-btn" tabindex="-1">Launch ↗</button>
-        </div>
-      </a>
+    <script>
+        const exercisesData = [
+            { title: "CMMC Role Assignment and Governance Exercise", desc: "Map organizational administrative structures against core CMMC operational frameworks. Establish accountability matrices and review leadership mandates." },
+            { title: "CMMC Ecosystem Workforce Planning", desc: "Architect human capital development pipelines aligned to maturity benchmarks. Project security awareness mandates and plan long-term talent profiles." },
+            { title: "CMMC Asset Inventory and Categorization", desc: "Discover, classify, and track physical and logical elements interacting with critical datasets. Construct technical inventory registers for specialized processing tiers." },
+            { title: "Building a CMMC System Security Plan (SSP)", desc: "Author formal security boundary profiles detailing technical operations, implementation scopes, and boundary architectures protecting complex environments." },
+            { title: "Building a CMMC Maintenance Report", desc: "Formulate technical logging architectures tracking infrastructure alterations, equipment upkeep, and operational maintenance processes." },
+            { title: "Performing a CMMC Applicability Study", desc: "Execute systematic review routines cross-referencing organizational infrastructure with standard framework controls to isolate irrelevant rules and clarify high-impact criteria." },
+            { title: "Constructing a CMMC Access Control Matrix", desc: "Map granular privilege schemas establishing role-based parameters, identity validation processes, and context-dependent rules for data access." },
+            { title: "Building a CMMC Audit Log & Monitoring Report", desc: "Engineer automated capture routines recording technical system interactions, system exceptions, and security events for data forensics." },
+            { title: "Building and Maintaining a CMMC Configuration Management Plan", desc: "Develop explicit baselines, tracking mechanics, and control parameters regulating unexpected deviations from established software and hardware states." },
+            { title: "Implementing a CMMC Incident Response Plan (IRP)", desc: "Draft operational notification chains, classification tiers, and recovery procedures to isolate threats and mitigate vector impact." },
+            { title: "Constructing a CMMC Vulnerability Report", desc: "Analyze technical environments for security flaws and configuration defects to prioritize urgent remediation actions across assets." },
+            { title: "Constructing the Plan of Action & Milestones (POA&M) Dashboard", desc: "Design remediation tracking modules evaluating current implementation delays, assigning assets, and projecting correction dates." },
+            { title: "Completing a CMMC Security Assessment Report (SAR)", desc: "Compile final audit feedback detailing testing methods, performance metrics, and compliance statuses for authorization readiness." }
+        ];
 
-      <!-- 6 — POA&M Dashboard -->
-      <a class="card" href="POAM.html" target="_blank" rel="noopener">
-        <div class="card-header">
-          <div class="card-icon">📊</div>
-          <span class="card-num">06</span>
-        </div>
-        <div class="card-title">POA&amp;M Dashboard</div>
-        <span class="card-acronym">POA&amp;M</span>
-        <p class="card-desc">Build and prioritize a Plan of Action &amp; Milestones from identified gaps. Assign remediation owners, timelines, and risk ratings across all 14 CMMC domains.</p>
-        <div class="card-domains">
-          <span class="domain-tag">CA — Assessment</span>
-          <span class="domain-tag">RA — Risk Assessment</span>
-          <span class="domain-tag">All 14 Domains</span>
-        </div>
-        <div class="card-footer">
-          <span class="card-meta">📋 Document Group 6</span>
-          <button class="launch-btn" tabindex="-1">Launch ↗</button>
-        </div>
-      </a>
+        // Slice to exactly 12 items and use continuous clean indexing
+        const finalExercises = exercisesData.slice(0, 12).map((item, index) => {
+            const num = index + 1;
+            return {
+                ...item,
+                id: num,
+                url: `./assignment${num}.html` // Local directory relative path structure
+            };
+        });
 
-    </div><!-- /cards-grid -->
+        const grid = document.getElementById('exercisesGrid');
 
-    <!-- Info strip -->
-    <div class="info-strip">
-      <span class="info-icon">ℹ️</span>
-      <span>All assignments are grounded in the <strong>FFSI fictional case study</strong> above. Open it in a separate tab and keep it available while completing any exercise. Each tool includes NIST SP 800-171 Rev 2 practice citations and an auto-scoring rubric.</span>
-    </div>
+        finalExercises.forEach(ex => {
+            const card = document.createElement('div');
+            card.className = 'card-container';
+            card.setAttribute('role', 'button');
+            card.setAttribute('tabindex', '0');
 
-  </main>
+            card.innerHTML = `
+                <div class="card-inner">
+                    <div class="card-face card-front">
+                        <div class="card-header-meta">
+                            <span class="exercise-badge">Exercise ${ex.id}</span>
+                            <span class="action-indicator">🔄 Flip</span>
+                        </div>
+                        <h2 class="card-title">${ex.title}</h2>
+                        <div class="card-hint">View Details ➔</div>
+                    </div>
+                    <div class="card-face card-back">
+                        <div class="card-description">
+                            <p>${ex.desc}</p>
+                        </div>
+                        <a href="${ex.url}" class="launch-btn" onclick="event.stopPropagation();">Launch Assignment</a>
+                    </div>
+                </div>
+            `;
 
-  <!-- ── Footer ──────────────────────────────────────────────────────────── -->
-  <footer class="footer">
-    © 2026 CMMC Faculty Development Training Workspace · Built with emerald green, amber &amp; white accents · sands-mvcc.github.io/CMMC/
-  </footer>
+            card.addEventListener('click', () => card.classList.toggle('is-flipped'));
+            card.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    card.classList.toggle('is-flipped');
+                }
+            });
 
-  <script>
-    // ── Theme logic (default: light, persisted in localStorage) ───────────
-    const btn = document.getElementById('themeBtn');
+            grid.appendChild(card);
+        });
 
-    function applyTheme(dark) {
-      document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
-      btn.textContent = dark ? '☀️ Light Mode' : '🌙 Dark Mode';
-    }
-
-    function toggleTheme() {
-      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-      localStorage.setItem('cmmc-theme', isDark ? 'light' : 'dark');
-      applyTheme(!isDark);
-    }
-
-    // Default is light; only go dark if user explicitly chose dark
-    const saved = localStorage.getItem('cmmc-theme');
-    applyTheme(saved === 'dark');
-  </script>
+        // --- Theme Egnine ---
+        const themeBtn = document.getElementById('themeToggle');
+        themeBtn.addEventListener('click', () => {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+            document.getElementById('themeIcon').textContent = isDark ? '☀️' : '🌙';
+            document.getElementById('themeText').textContent = isDark ? 'Light Mode' : 'Dark Mode';
+        });
+    </script>
 </body>
 </html>
