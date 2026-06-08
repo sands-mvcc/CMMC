@@ -1,51 +1,365 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Practical Exercises in Understanding and Implementing CMMC</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Practical Exercises in Understanding and Implementing CMMC</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
+<style>
+        /* --- CSS Custom Variables for Theme Control --- */
         /* Theme variables matching your custom palette */
-        :root {
-            --bg-primary: #ffffff;
-            --text-primary: #111827;
-            --text-secondary: #4b5563;
+:root {
+--bg-primary: #ffffff;
+            --bg-secondary: #f9fafb;
+            --bg-card-front: #ffffff;
+            --bg-card-back: #006633;
+--text-primary: #111827;
+--text-secondary: #4b5563;
+            --text-light: #ffffff;
+            --brand-green: #006633;
+            --brand-green-hover: #004d26;
             --accent-green: #10b981;
             --accent-dark: #064e3b;
             --card-bg: #ffffff;
-            --border-color: #e5e7eb;
-        }
+--border-color: #e5e7eb;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --transition-speed: 0.4s;
+}
 
-        [data-theme="dark"] {
-            --bg-primary: #111827;
+[data-theme="dark"] {
+--bg-primary: #111827;
+            --bg-secondary: #1f2937;
+            --bg-card-front: #1f2937;
+            --bg-card-back: #006633;
+            --text-primary: #f3f4f6;
             --text-primary: #f9fafb;
-            --text-secondary: #9ca3af;
+--text-secondary: #9ca3af;
             --card-bg: #1f2937;
-            --border-color: #374151;
+--border-color: #374151;
+}
+
+        /* --- Global Reset & Base Styles --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
-        body {
+body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             background-color: var(--bg-primary);
             color: var(--text-primary);
-            transition: background-color 0.3s, color 0.3s;
+            transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+            line-height: 1.5;
+            padding-bottom: 60px;
         }
-    </style>
+
+        /* --- Header Banner --- */
+        header {
+            background-color: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease;
+        }
+
+        .brand-zone {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon {
+            font-size: 1.5rem;
+            color: var(--brand-green);
+        }
+
+        .brand-text {
+            font-weight: 700;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+        }
+
+        .theme-toggle-btn {
+background-color: var(--bg-primary);
+color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s ease;
+        }
+
+        .theme-toggle-btn:hover {
+            border-color: var(--brand-green);
+            color: var(--brand-green);
+        }
+
+        /* --- Main Layout Frame --- */
+        main {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .hero-section {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .hero-section h1 {
+            font-size: 2.25rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .hero-section p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* --- 3D Flippable Configuration --- */
+        .exercise-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            perspective: 1000px;
+        }
+
+        .card-container {
+            height: 280px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .card-inner {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            transform-style: preserve-3d;
+            transition: transform var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .card-container.is-flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border: 1px solid var(--border-color);
+        }
+
+        .card-front {
+            background-color: var(--bg-card-front);
+            color: var(--text-primary);
+            transition: background-color var(--transition-speed) ease;
+        }
+
+        .card-header-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .exercise-badge {
+            background-color: rgba(0, 102, 51, 0.1);
+            color: var(--brand-green);
+            padding: 4px 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            border-radius: 50px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        [data-theme="dark"] .exercise-badge {
+            background-color: rgba(0, 102, 51, 0.3);
+            color: #22c55e;
+        }
+
+        .action-indicator {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            line-height: 1.35;
+            color: var(--text-primary);
+            margin-top: 10px;
+        }
+
+        .card-hint {
+            font-size: 0.85rem;
+            color: var(--brand-green);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: auto;
+        }
+
+        [data-theme="dark"] .card-hint {
+            color: #22c55e;
+        }
+
+        .card-back {
+            background-color: var(--bg-card-back);
+            color: var(--text-light);
+            transform: rotateY(180deg);
+            border: none;
+        }
+
+        .card-description {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            overflow-y: auto;
+            padding-right: 4px;
+            margin-bottom: 16px;
+        }
+
+        .card-description::-webkit-scrollbar {
+            width: 4px;
+        }
+        .card-description::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+        }
+
+        .launch-btn {
+            background-color: #ffffff;
+            color: var(--brand-green);
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-weight: 700;
+            text-decoration: none;
+            text-align: center;
+            font-size: 0.9rem;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+            box-shadow: var(--shadow-sm);
+            display: block;
+            margin-top: auto;
+        }
+
+        .launch-btn:hover {
+            background-color: #f3f4f6;
+            transform: translateY(-1px);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 80px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            transition: background-color 0.3s, color 0.3s;
+}
+</style>
 </head>
+<body>
 <body class="min-h-screen font-sans antialiased flex flex-col justify-between">
 
+    <header>
+        <div class="brand-zone">
+            <span class="brand-icon">🛡</span>
+            <span class="brand-text">CMMC 2.0 Workshop Portal</span>
     <header class="border-b border-[var(--border-color)] px-6 py-4 flex justify-between items-center bg-[var(--card-bg)] shadow-sm">
         <div class="flex items-center space-x-3">
             <span class="text-2xl text-[var(--accent-green)]"><i class="fa-solid fa-shield-halved"></i></span>
             <span class="font-bold text-lg tracking-wide">CMMC 2.0 Workshop Portal</span>
-        </div>
+</div>
+        <button class="theme-toggle-btn" id="themeToggle" aria-label="Toggle visual interface theme">
+            <span id="themeIcon">☀️</span> <span id="themeText">Light Mode</span>
         <button id="themeToggle" class="cursor-pointer flex items-center space-x-2 bg-[var(--border-color)] hover:opacity-90 text-[var(--text-primary)] px-4 py-2 rounded-full text-sm font-medium transition-all">
             <span id="themeIcon"><i class="fa-solid fa-sun"></i></span>
             <span id="themeText">Light Mode</span>
-        </button>
-    </header>
+</button>
+</header>
 
+    <main>
+        <section class="hero-section">
+            <h1>Practical Exercises in Understanding and Implementing CMMC in an Organization</h1>
+            <p>Select a module card below to view requirements. All tasks resolve to links inside the current directory.</p>
+        </section>
+
+        <div class="exercise-grid" id="exercisesGrid"></div>
+
+        <footer>
+            <p>© 2026 CMMC Faculty Development Training Workspace. Built using white, emerald green, and black accents.</p>
+        </footer>
+    </main>
+
+    <script>
+        const exercisesData = [
+            { title: "CMMC Role Assignment and Governance Exercise", desc: "Map organizational administrative structures against core CMMC operational frameworks. Establish accountability matrices and review leadership mandates." },
+            { title: "CMMC Ecosystem Workforce Planning", desc: "Architect human capital development pipelines aligned to maturity benchmarks. Project security awareness mandates and plan long-term talent profiles." },
+            { title: "CMMC Asset Inventory and Categorization", desc: "Discover, classify, and track physical and logical elements interacting with critical datasets. Construct technical inventory registers for specialized processing tiers." },
+            { title: "Building a CMMC System Security Plan (SSP)", desc: "Author formal security boundary profiles detailing technical operations, implementation scopes, and boundary architectures protecting complex environments." },
+            { title: "Building a CMMC Maintenance Report", desc: "Formulate technical logging architectures tracking infrastructure alterations, equipment upkeep, and operational maintenance processes." },
+            { title: "Performing a CMMC Applicability Study", desc: "Execute systematic review routines cross-referencing organizational infrastructure with standard framework controls to isolate irrelevant rules and clarify high-impact criteria." },
+            { title: "Constructing a CMMC Access Control Matrix", desc: "Map granular privilege schemas establishing role-based parameters, identity validation processes, and context-dependent rules for data access." },
+            { title: "Building a CMMC Audit Log & Monitoring Report", desc: "Engineer automated capture routines recording technical system interactions, system exceptions, and security events for data forensics." },
+            { title: "Building and Maintaining a CMMC Configuration Management Plan", desc: "Develop explicit baselines, tracking mechanics, and control parameters regulating unexpected deviations from established software and hardware states." },
+            { title: "Implementing a CMMC Incident Response Plan (IRP)", desc: "Draft operational notification chains, classification tiers, and recovery procedures to isolate threats and mitigate vector impact." },
+            { title: "Constructing a CMMC Vulnerability Report", desc: "Analyze technical environments for security flaws and configuration defects to prioritize urgent remediation actions across assets." },
+            { title: "Constructing the Plan of Action & Milestones (POA&M) Dashboard", desc: "Design remediation tracking modules evaluating current implementation delays, assigning assets, and projecting correction dates." },
+            { title: "Completing a CMMC Security Assessment Report (SAR)", desc: "Compile final audit feedback detailing testing methods, performance metrics, and compliance statuses for authorization readiness." }
+        ];
+
+        // Slice to exactly 12 items and use continuous clean indexing
+        const finalExercises = exercisesData.slice(0, 12).map((item, index) => {
+            const num = index + 1;
+            return {
+                ...item,
+                id: num,
+                url: `./assignment${num}.html` // Local directory relative path structure
+            };
+        });
+
+        const grid = document.getElementById('exercisesGrid');
+
+        finalExercises.forEach(ex => {
+            const card = document.createElement('div');
+            card.className = 'card-container';
+            card.setAttribute('role', 'button');
+            card.setAttribute('tabindex', '0');
+
+            card.innerHTML = `
+                <div class="card-inner">
+                    <div class="card-face card-front">
+                        <div class="card-header-meta">
+                            <span class="exercise-badge">Exercise ${ex.id}</span>
+                            <span class="action-indicator">🔄 Flip</span>
     <main class="max-w-6xl mx-auto px-6 py-12 flex-grow w-full">
         <div class="text-center mb-10">
             <h1 class="text-4xl font-extrabold tracking-tight mb-4 text-[var(--text-primary)]">
@@ -62,7 +376,13 @@
                     <div class="flex items-center space-x-4 relative z-10">
                         <div class="p-4 bg-emerald-800 text-[var(--accent-green)] rounded-lg text-3xl group-hover:bg-[var(--accent-green)] group-hover:text-emerald-900 transition-colors duration-300 shadow-inner">
                             <i class="fa-solid fa-briefcase"></i>
-                        </div>
+</div>
+                        <h2 class="card-title">${ex.title}</h2>
+                        <div class="card-hint">View Details ➔</div>
+                    </div>
+                    <div class="card-face card-back">
+                        <div class="card-description">
+                            <p>${ex.desc}</p>
                         <div class="text-left flex-grow">
                             <div class="inline-block bg-[var(--accent-green)] text-emerald-950 text-xs font-bold px-2.5 py-0.5 rounded-full mb-1.5 uppercase tracking-wider shadow-sm">
                                 Core Resource
@@ -76,8 +396,9 @@
                         </div>
                         <div class="text-white text-xl group-hover:translate-x-1.5 transition-transform duration-300 pr-2">
                             <i class="fa-solid fa-chevron-right"></i>
-                        </div>
-                    </div>
+</div>
+                        <a href="${ex.url}" class="launch-btn" onclick="event.stopPropagation();">Launch Assignment</a>
+</div>
                 </a>
             </div>
             </div>
@@ -107,7 +428,8 @@
                 <div>
                     <h3 class="text-lg font-bold mb-2">Module 3: SSP & POAM Development</h3>
                     <p class="text-sm text-[var(--text-secondary)] mb-4">Draft sections of the System Security Plan and track deficiencies using a structured Plan of Action and Milestones framework.</p>
-                </div>
+</div>
+            `;
                 <a href="assignment3.html" class="inline-flex items-center text-sm font-semibold text-[var(--accent-green)] hover:underline">
                     View Assignment <i class="fa-solid fa-arrow-right ml-1.5 text-xs"></i>
                 </a>
@@ -115,10 +437,18 @@
         </div>
     </main>
 
+            card.addEventListener('click', () => card.classList.toggle('is-flipped'));
+            card.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    card.classList.toggle('is-flipped');
+                }
+            });
     <footer class="border-t border-[var(--border-color)] text-center py-6 bg-[var(--card-bg)] text-xs text-[var(--text-secondary)]">
         <p>&copy; 2026 CMMC Faculty Development Training Workspace. Built using white, emerald green, and black accents.</p>
     </footer>
 
+            grid.appendChild(card);
     <script>
         const themeToggleBtn = document.getElementById('themeToggle');
         const themeIcon = document.getElementById('themeIcon');
@@ -144,8 +474,16 @@
                 localStorage.setItem('theme', 'light');
                 updateThemeUI(false);
             }
-        });
+});
 
+        // --- Theme Egnine ---
+        const themeBtn = document.getElementById('themeToggle');
+        themeBtn.addEventListener('click', () => {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+            document.getElementById('themeIcon').textContent = isDark ? '☀️' : '🌙';
+            document.getElementById('themeText').textContent = isDark ? 'Light Mode' : 'Dark Mode';
+        });
         function updateThemeUI(isDark) {
             if (isDark) {
                 themeIcon.innerHTML = '<i class="fa-solid fa-moon text-indigo-400"></i>';
@@ -155,6 +493,6 @@
                 themeText.textContent = 'Light Mode';
             }
         }
-    </script>
+</script>
 </body>
 </html>
