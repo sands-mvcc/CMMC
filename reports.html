@@ -1,211 +1,454 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CMMC Documents and Reports</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CMMC Documentation and Assessment Workbench</title>
+<style>
+:root{
+  --bg:#f3f5f9; --surface:#ffffff; --surface-2:#eef2f8; --ink:#14213d; --ink-2:#4b5875; --line:#d6dce8;
+  --brand:#0047AB; --brand-2:#003a8c; --accent:#00a86b;
+  --ok:#00905c; --warn:#b7791f; --bad:#c0392b; --none:#8a93a6; --rev:#0047AB;
+  --cell-p:#0047AB; --cell-s:#c9daf3; --cell-p-ink:#fff;
+  --head-bg:#003a8c; --focus:#ffbf47;
+  --serif: Charter, "Bitstream Charter", "Sitka Text", Cambria, Georgia, serif;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+[data-theme="dark"]{
+  --bg:#0e1626; --surface:#152039; --surface-2:#1c2a48; --ink:#e6ebf5; --ink-2:#a8b3cb; --line:#2b3a5c;
+  --brand:#5b9bf5; --brand-2:#3f7fe0; --accent:#2fcf8f;
+  --ok:#2fcf8f; --warn:#e3a843; --bad:#f0736a; --none:#6f7b93; --rev:#5b9bf5;
+  --cell-p:#5b9bf5; --cell-s:#2a3f66; --cell-p-ink:#0e1626;
+  --head-bg:#0f1d38;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.num{font-variant-numeric:tabular-nums}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+a{color:var(--brand)}
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f4f4f4; /* Neutral background to pop the green/black theme */
-            min-height: 100vh;
-            padding: 20px;
-        }
+.top{background:var(--head-bg);color:#fff;border-bottom:4px solid #00a86b}
+.top-in{max-width:1320px;margin:0 auto;padding:24px 24px 20px;display:flex;flex-wrap:wrap;gap:16px 28px;align-items:flex-end;justify-content:space-between}
+.top h1{font-family:var(--serif);font-weight:600;font-size:2rem;line-height:1.12;margin:0;letter-spacing:-.01em}
+.top .org{margin:6px 0 0;font-size:1.02rem;opacity:.95}
+.top .meta{margin:4px 0 0;font-size:.86rem;opacity:.8;display:flex;flex-wrap:wrap;gap:4px 14px}
+.badge-top{display:inline-block;background:#ffd75e;color:#2a2100;font-size:.78rem;font-weight:700;padding:2px 10px;border-radius:999px;margin-bottom:8px}
+.actions{display:flex;flex-wrap:wrap;gap:8px}
+.hbtn{background:transparent;border:1px solid rgba(255,255,255,.5);color:#fff;border-radius:7px;padding:7px 12px;cursor:pointer;font-size:.88rem}
+.hbtn:hover{background:rgba(255,255,255,.12)}
 
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            border-top: 10px solid #2e7d32; /* Professor Sands Theme Green */
-        }
+main{max-width:1320px;margin:0 auto;padding:22px 24px 60px}
+h2{font-family:var(--serif);font-weight:600;font-size:1.4rem;margin:0 0 4px}
+h3{font-size:1rem;margin:0 0 8px}
+.lede{color:var(--ink-2);margin:0 0 16px;max-width:80ch}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 20px}
+.muted{color:var(--ink-2)}
+.small{font-size:.85rem}
+section{margin-bottom:34px}
+.sec-head{display:flex;flex-wrap:wrap;gap:10px 20px;align-items:flex-end;justify-content:space-between;margin-bottom:14px}
+.sec-head .lede{margin:0}
 
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding-bottom: 20px;
-            border-bottom: 3px solid #000;
-        }
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:7px;padding:7px 13px;cursor:pointer;font-weight:600;font-size:.9rem}
+.btn:hover{background:var(--surface-2)}
+.btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
 
-        .header h1 {
-            color: #000;
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
+/* Engagement */
+details.eng{margin-bottom:18px}
+details.eng summary{cursor:pointer;font-weight:600;color:var(--brand);padding:4px 0}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px 16px;margin-top:10px}
+.field{margin-bottom:8px}
+.field label{display:block;font-size:.84rem;font-weight:600;margin-bottom:4px}
+input[type=text],input[type=search],input[type=date],select,textarea{background:var(--surface);border:1px solid var(--line);border-radius:7px;padding:7px 10px;width:100%}
+textarea{min-height:56px;resize:vertical}
+.check{display:flex;align-items:center;gap:8px;font-weight:600;font-size:.9rem}
+.check input{width:18px;height:18px}
 
-        .dod-badge {
-            display: inline-block;
-            background: #2e7d32;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 25px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-bottom: 20px;
-        }
+/* KPIs */
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--line);border-radius:10px;background:var(--surface);margin-bottom:26px;overflow:hidden}
+.kpi{padding:14px 18px;border-right:1px solid var(--line)}
+.kpi:last-child{border-right:0}
+.kpi b{display:block;font-family:var(--serif);font-size:1.8rem;font-weight:600;line-height:1.1}
+.kpi span{font-size:.86rem;color:var(--ink-2)}
+.meter{height:7px;background:var(--surface-2);border-radius:4px;overflow:hidden;margin-top:6px}
+.meter i{display:block;height:100%;background:var(--accent)}
 
-        .documents-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
-            gap: 25px;
-            margin-bottom: 40px;
-        }
+/* Lifecycle map */
+.map{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.phase{padding:16px 14px 18px;border-right:1px solid var(--line);position:relative;display:flex;flex-direction:column;gap:8px}
+.phase:last-child{border-right:0}
+.phase:not(:last-child)::after{content:"";position:absolute;right:-9px;top:26px;width:16px;height:16px;background:var(--surface);border-top:1px solid var(--line);border-right:1px solid var(--line);transform:rotate(45deg);z-index:1}
+.phase-head{display:flex;gap:10px;align-items:baseline;margin-bottom:4px}
+.phase-num{font-family:var(--serif);font-size:1.9rem;font-weight:600;color:var(--brand);line-height:1}
+.phase-head h3{margin:0;font-size:.98rem}
+.phase-head p{margin:0;font-size:.8rem;color:var(--ink-2)}
+.node{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:1px solid var(--line);border-left:6px solid var(--sc);background:var(--surface);border-radius:8px;padding:9px 10px;cursor:pointer}
+.node:hover{background:var(--surface-2)}
+.node b{display:block;font-size:.9rem;line-height:1.25}
+.node span{font-size:.78rem;color:var(--ink-2)}
+.node.planned{border-style:dashed;border-left:6px dashed var(--none);background:transparent;cursor:default}
+.node.planned b{font-weight:600;color:var(--ink-2)}
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:.84rem;margin-top:10px;align-items:center}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{display:inline-block;width:12px;height:12px;border-radius:3px;background:var(--pc)}
+.sw.dash{background:none;border:2px dashed var(--none)}
 
-        .document-card {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 1px solid #ddd;
-            display: flex;
-            flex-direction: column;
-        }
+/* Library */
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px}
+.toolbar input[type=search]{flex:1;min-width:220px}
+.toolbar select{width:auto}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 12px;cursor:pointer;font-size:.85rem;font-weight:600;color:var(--ink-2)}
+.chip[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:#fff}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{border:0;background:var(--surface);padding:6px 12px;cursor:pointer;font-weight:600;font-size:.86rem;color:var(--ink-2)}
+.seg button[aria-pressed="true"]{background:var(--brand);color:#fff}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:18px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 18px 16px;display:flex;flex-direction:column;gap:10px;border-top:5px solid var(--sc)}
+.card.flash{box-shadow:0 0 0 3px var(--focus)}
+.card-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.card .phase-lbl{font-size:.8rem;color:var(--ink-2)}
+.card h3{font-family:var(--serif);font-size:1.18rem;font-weight:600;margin:2px 0 0;line-height:1.25}
+.card p{margin:0;font-size:.9rem;color:var(--ink-2)}
+.fams{display:flex;flex-wrap:wrap;gap:4px}
+.fam{font-size:.74rem;font-weight:700;padding:1px 7px;border-radius:5px}
+.fam.p{background:var(--cell-p);color:var(--cell-p-ink)}
+.fam.s{background:var(--cell-s);color:var(--ink)}
+.reqs{font-size:.8rem;color:var(--ink-2)}
+.live{font-size:.82rem;color:var(--ok);font-weight:600}
+.card-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.links{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto;padding-top:10px;border-top:1px solid var(--line)}
+.lnk{display:inline-flex;align-items:center;gap:6px;text-decoration:none;font-weight:600;font-size:.88rem;padding:8px 14px;border-radius:7px;border:1px solid var(--line);color:var(--ink);background:var(--surface)}
+.lnk:hover{background:var(--surface-2)}
+.lnk.tool{background:var(--brand);border-color:var(--brand);color:#fff}
+.lnk.tool:hover{background:var(--brand-2)}
+.lnk .miss{font-size:.72rem;background:var(--bad);color:#fff;border-radius:999px;padding:0 6px}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:1px 9px;border-radius:999px;font-size:.78rem;font-weight:600;white-space:nowrap;color:var(--pc);background:color-mix(in srgb,var(--pc) 13%,transparent);border:1px solid color-mix(in srgb,var(--pc) 30%,transparent)}
 
-        .document-card:hover {
-            transform: translateY(-5px);
-            border-color: #2e7d32;
-            box-shadow: 0 12px 30px rgba(46, 125, 50, 0.15);
-        }
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table.tbl{width:100%;border-collapse:collapse;font-size:.9rem}
+.tbl th,.tbl td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--line);vertical-align:middle}
+.tbl th{background:var(--surface-2);font-weight:600;font-size:.84rem;color:var(--ink-2);white-space:nowrap}
+.tbl tbody tr:last-child td{border-bottom:0}
+.tbl input,.tbl select{padding:5px 8px}
 
-        .document-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: #000;
-            margin-bottom: 8px;
-        }
+/* Coverage */
+table.cov{border-collapse:separate;border-spacing:3px;font-size:.84rem}
+table.cov th,table.cov td{padding:0;border:0}
+table.cov thead th{font-size:.78rem;font-weight:700;color:var(--ink-2);text-align:center;padding:0 2px 4px;white-space:nowrap}
+table.cov thead th small{display:block;font-weight:400;font-size:.72rem}
+table.cov tbody th{text-align:left;font-weight:600;padding-right:12px;white-space:nowrap}
+table.cov tbody tr.planned th{font-weight:500;color:var(--ink-2);font-style:italic}
+.cc{display:flex;align-items:center;justify-content:center;width:44px;height:28px;border-radius:5px;background:var(--surface-2);font-size:.72rem;font-weight:700}
+.cc.p{background:var(--cell-p);color:var(--cell-p-ink)}
+.cc.s{background:var(--cell-s);color:var(--ink)}
+tr.planned .cc.p{background:transparent;border:2px dashed var(--cell-p);color:var(--ink)}
+tr.planned .cc.s{background:transparent;border:2px dashed var(--cell-s)}
+.cc.gap{background:color-mix(in srgb,var(--bad) 16%,transparent);color:var(--bad)}
+.cc.cov{background:color-mix(in srgb,var(--ok) 16%,transparent);color:var(--ok)}
+tr.sum th{padding-top:6px}
 
-        .document-actions {
-            margin-top: 20px;
-            padding-top: 15px;
-            border-top: 1px solid #eee;
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--surface);padding:10px 18px;border-radius:8px;font-size:.9rem;opacity:0;pointer-events:none;transition:opacity .2s}
+#toast.show{opacity:1}
+.foot{max-width:1320px;margin:0 auto;padding:0 24px 40px;color:var(--ink-2);font-size:.84rem}
 
-        /* Themed Buttons */
-        .link-btn {
-            text-decoration: none;
-            padding: 10px 18px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            border: 2px solid transparent;
-            cursor: pointer;
-        }
+@media (max-width:1100px){
+  .map{grid-template-columns:1fr}
+  .phase{border-right:0;border-bottom:1px solid var(--line)}
+  .phase:last-child{border-bottom:0}
+  .phase:not(:last-child)::after{right:auto;left:30px;top:auto;bottom:-9px;transform:rotate(135deg)}
+  .phase .nodes{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
+  .grid4{grid-template-columns:1fr 1fr}
+}
+@media (max-width:720px){
+  .kpis{grid-template-columns:repeat(2,1fr)}
+  .kpi:nth-child(2){border-right:0}
+  .kpi:nth-child(-n+2){border-bottom:1px solid var(--line)}
+  .grid4,.card-row{grid-template-columns:1fr}
+  .cards{grid-template-columns:1fr}
+  .top h1{font-size:1.55rem}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+.phase .nodes{display:flex;flex-direction:column;gap:8px}
 
-        /* Document Button - Black Theme */
-        .btn-doc {
-            background: #000;
-            color: #fff;
-        }
-
-        .btn-doc:hover {
-            background: #333;
-        }
-
-        /* Tool Button - Green Theme */
-        .btn-tool {
-            background: #2e7d32;
-            color: #fff;
-        }
-
-        .btn-tool:hover {
-            background: #1b5e20;
-        }
-
-        .search-filter {
-            margin-bottom: 30px;
-            display: flex;
-            gap: 15px;
-            align-items: center;
-        }
-
-        .search-input {
-            flex: 1;
-            padding: 12px 20px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-        }
-
-        /* Existing details and grid layout logic preserved */
-        .document-detail { display: none; margin-top: 30px; background: #fff; padding: 30px; border-radius: 15px; border: 2px solid #2e7d32; position: relative; }
-        .document-detail.active { display: block; }
-        .close-btn { position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; border: none; background: none; }
-    </style>
+#printReport{display:none}
+@media print{
+  html[data-theme]{--bg:#fff;--surface:#fff;--surface-2:#f1f3f7;--ink:#111;--ink-2:#444;--line:#ccc;--brand:#0047AB;--cell-p:#0047AB;--cell-s:#c9daf3;--cell-p-ink:#fff;--bad:#c0392b;--ok:#00905c}
+  body{background:#fff;font-size:10pt}
+  .app,#toast{display:none!important}
+  #printReport{display:block}
+  #printReport h1{font-family:var(--serif);font-size:18pt;margin:0 0 4px}
+  #printReport h2{font-size:13pt;margin:16px 0 6px}
+  #printReport .cc{width:32px;height:20px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="dod-badge">Cybersecurity & AI Training Portal</div>
-            <h1>CMMC Documentation & Interactive Tools</h1>
-            <p>Access required CMMC 2.0 compliance documents and interactive simulation tools for workforce development.</p>
-        </div>
-
-        <div class="search-filter">
-            <input type="text" class="search-input" placeholder="Search by document or requirement..." id="searchInput">
-        </div>
-
-        <div class="documents-grid" id="documentsGrid">
-            </div>
-
-        <div class="document-detail" id="documentDetail">
-            <button class="close-btn" onclick="closeDetail()">&times;</button>
-            <div id="detailContent"></div>
-        </div>
+<div class="app">
+  <header class="top">
+    <div class="top-in">
+      <div>
+        <span class="badge-top">Cybersecurity and AI Training Portal</span>
+        <h1>CMMC Documentation and Assessment Workbench</h1>
+        <p class="org" id="hdrOrg"></p>
+        <p class="meta" id="hdrMeta"></p>
+      </div>
+      <div class="actions">
+        <button class="hbtn" data-action="check-links">Check links</button>
+        <button class="hbtn" data-action="export-json">Export tracker</button>
+        <button class="hbtn" data-action="import-json">Import tracker</button>
+        <button class="hbtn" data-action="print">Print status report</button>
+        <button class="hbtn" id="themeBtn" aria-pressed="false">Dark mode</button>
+        <input type="file" id="importFile" accept="application/json,.json" hidden>
+      </div>
     </div>
+  </header>
 
-    <script>
-        const documents = [
-            { id: 'ssp', title: 'System Security Plan (SSP)', level: 2, filename: 'ssp.html', toolname: 'SSP_tool.html', tags: ['Required', 'NIST 800-171'], preview: 'Comprehensive blueprint of the organization’s cybersecurity posture.' },
-            { id: 'poam', title: 'Plan of Action & Milestones (POA&M)', level: 2, filename: 'POAM.html', toolname: 'POAM_tool.html', tags: ['Remediation', 'Active'], preview: 'Tracking and remediating security control gaps.' },
-            { id: 'asset-inventory', title: 'Asset Inventory & Categorization', level: 1, filename: 'asset.html', toolname: 'Asset_tool.html', tags: ['Scoping', 'Inventory'], preview: 'Inventory of all hardware, software, and CUI assets.' },
-            { id: 'sar', title: 'Security Assessment Report (SAR)', level: 2, filename: 'sar.html', toolname: 'SAR_tool.html', tags: ['C3PAO', 'Audit'], preview: 'Results of the formal security control assessment.' },
-            { id: 'irp', title: 'Incident Response Plan (IRP)', level: 2, filename: 'irp.html', toolname: 'IRP_tool.html', tags: ['NIST 800-61', 'Response'], preview: 'Procedures for detecting and recovering from breaches.' },
-            { id: 'access-matrix', title: 'Access Control Matrix', level: 2, filename: 'acm.html', toolname: 'ACM_tool.html', tags: ['Least Privilege', 'Access'], preview: 'Role-based permission framework for CUI systems.' },
-            { id: 'audit-log', title: 'Audit Log & Monitoring Report', level: 2, filename: 'almr.html', toolname: 'ALMR_tool.html', tags: ['SIEM', 'Monitoring'], preview: 'Continuous monitoring and event logging strategies.' },
-            { id: 'config-mgmt', title: 'Configuration Management Plan', level: 2, filename: 'cmp.html', toolname: 'CMP_tool.html', tags: ['Baselines', 'Change Control'], preview: 'Maintaining secure system configurations.' },
-            { id: 'vuln-scan', title: 'Vulnerability Scan Reports', level: 2, filename: 'vsr.html', toolname: 'VSR_tool.html', tags: ['Scanning', 'Proactive'], preview: 'Documentation of regular vulnerability assessments.' },
-            { id: 'sprs-score', title: 'SPRS Submission Score', level: 2, filename: 'sss.html', toolname: 'SSS_tool.html', tags: ['DoD', 'Compliance'], preview: 'Official self-assessment score submitted to the DoD.' },
-            { id: 'maintenance', title: 'Maintenance Report', level: 1, filename: 'maintenance.html', toolname: 'Maintenance_tool.html', tags: ['Lifecycle', 'Operations'], preview: 'Logs of system patching and lifecycle maintenance.' }
-        ];
+  <main>
+    <details class="eng box" id="engBox">
+      <summary>Engagement details</summary>
+      <div class="grid4">
+        <div class="field"><label for="e_org">Organization being assessed</label><input type="text" id="e_org" data-eng="org"></div>
+        <div class="field"><label for="e_lead">Team lead</label><input type="text" id="e_lead" data-eng="lead"></div>
+        <div class="field"><label for="e_type">Assessment type</label><select id="e_type" data-eng="type"><option>Level 2 C3PAO assessment</option><option>Level 2 self-assessment</option><option>Mock assessment (training)</option></select></div>
+        <div class="field"><label for="e_date">Assessment date</label><input type="date" id="e_date" data-eng="date"></div>
+      </div>
+      <label class="check" style="margin-top:6px"><input type="checkbox" id="e_gaps" data-eng="showGaps"> Show artifacts the portal doesn't have yet</label>
+    </details>
 
-        function renderDocuments() {
-            const grid = document.getElementById('documentsGrid');
-            const search = document.getElementById('searchInput').value.toLowerCase();
+    <div class="kpis" id="kpis"></div>
 
-            grid.innerHTML = documents
-                .filter(d => d.title.toLowerCase().includes(search))
-                .map(doc => `
-                <div class="document-card">
-                    <div class="document-title">${doc.title}</div>
-                    <p style="font-size: 0.9rem; color: #555; margin-bottom: 15px;">${doc.preview}</p>
-                    <div class="document-actions">
-                        <a href="${doc.filename}" class="link-btn btn-doc">📄 Open Document</a>
-                        <a href="${doc.toolname}" class="link-btn btn-tool">🛠️ Open Tool</a>
-                    </div>
-                </div>
-            `).join('');
-        }
+    <section aria-labelledby="mapTitle">
+      <div class="sec-head">
+        <div><h2 id="mapTitle">Engagement lifecycle</h2><p class="lede">Artifacts in the order an assessment team builds and uses them. Select one to jump to its card.</p></div>
+      </div>
+      <div class="map" id="map"></div>
+      <div class="legend" id="mapLegend"></div>
+    </section>
 
-        document.getElementById('searchInput').addEventListener('input', renderDocuments);
-        renderDocuments();
-    </script>
+    <section aria-labelledby="libTitle">
+      <div class="sec-head">
+        <div><h2 id="libTitle">Artifact library</h2><p class="lede">Each artifact has a completed sample to study and an interactive workbench to practice in. Status and owner changes save in this browser.</p></div>
+        <div class="seg" role="group" aria-label="View"><button data-view="cards" aria-pressed="true">Cards</button><button data-view="table" aria-pressed="false">Tracker table</button></div>
+      </div>
+      <div class="toolbar">
+        <label class="sr" for="q">Search artifacts</label>
+        <input type="search" id="q" placeholder="Search title, family, or requirement such as 3.7.5">
+        <label class="sr" for="fFam">Requirement family</label>
+        <select id="fFam"></select>
+        <label class="sr" for="fStat">Status</label>
+        <select id="fStat"></select>
+      </div>
+      <div class="chips" id="phaseChips" role="group" aria-label="Filter by phase" style="margin-bottom:14px"></div>
+      <div id="library"></div>
+    </section>
+
+    <section aria-labelledby="covTitle">
+      <div class="sec-head">
+        <div><h2 id="covTitle">Requirement family coverage</h2><p class="lede">Which artifacts give primary evidence (dark) or supporting evidence (light) for each of the 14 Level 2 families. The bottom row shows families with no primary artifact yet.</p></div>
+      </div>
+      <div class="box"><div class="tbl-wrap" style="border:0" id="coverage"></div><div class="legend" id="covLegend"></div></div>
+    </section>
+  </main>
+  <footer class="foot"><p>Prepared for CMMC Level 2 training. Tracker data stays in this browser unless you export it. On the same website, the workbenches share this browser storage, so their saved data appears on the cards.</p></footer>
+</div>
+<div id="toast" role="status" aria-live="polite"></div>
+<div id="printReport"></div>
+
+<script>
+(function(){
+'use strict';
+const STORE='cmmc-portal-v1',THEME='cmmc-portal-theme';
+const FAMS=[['AC','Access Control',22],['AT','Awareness and Training',3],['AU','Audit and Accountability',9],['CM','Configuration Management',9],['IA','Identification and Authentication',11],['IR','Incident Response',3],['MA','Maintenance',6],['MP','Media Protection',9],['PS','Personnel Security',2],['PE','Physical Protection',6],['RA','Risk Assessment',3],['CA','Security Assessment',4],['SC','System and Communications Protection',16],['SI','System and Information Integrity',7]];
+const PHASES=[['scope','Scope','Define what is in the assessment'],['document','Document','Describe how requirements are met'],['evidence','Operate','Produce the evidence'],['remediate','Remediate and score','Track gaps and score them'],['assess','Assess','Formal results']];
+const STATUS=['Not started','Draft','In review','Final'];
+const STATUS_VAR={'Not started':'--none','Draft':'--warn','In review':'--rev','Final':'--ok'};
+const STATUS_W={'Not started':0,'Draft':1/3,'In review':2/3,'Final':1};
+const ALL_S=Object.fromEntries(FAMS.map(f=>[f[0],'s']));
+
+const ARTS=[
+  {id:'asset',title:'Asset Inventory and Categorization',phase:'scope',file:'asset.html',tool:'Asset_tool.html',owner:'Prepared by the organization',desc:'Every asset sorted into CUI, security protection, risk managed, specialized, and out-of-scope categories.',reqs:['CM.L2-3.4.1','Level 2 Scoping Guide'],fam:{CM:'p',CA:'s'},store:'cmmc-aicr-v2',sum:s=>`${s.assets.length} asset records and ${(s.esps||[]).length} service providers saved`},
+  {id:'ssp',title:'System Security Plan',phase:'document',file:'ssp.html',tool:'SSP_tool.html',owner:'Prepared by the organization',desc:'How each of the 110 requirements is implemented, with the system boundary and environment.',reqs:['CA.L2-3.12.4'],fam:Object.assign({},ALL_S,{CA:'p'})},
+  {id:'acm',title:'Access Control Matrix',phase:'document',file:'acm.html',tool:'ACM_tool.html',owner:'Prepared by the organization',desc:'Roles, people, and the access each has to CUI and security assets, with least-privilege checks.',reqs:['AC.L2-3.1.1','AC.L2-3.1.2','AC.L2-3.1.4','AC.L2-3.1.5','AC.L2-3.1.6','AC.L2-3.1.7','IA.L2-3.5.3'],fam:{AC:'p',IA:'p',PS:'s'},store:'cmmc-acm-v2',sum:s=>`${s.users.length} people and ${s.roles.length} roles saved`},
+  {id:'cmp',title:'Configuration Management Plan',phase:'document',file:'cmp.html',tool:'CMP_tool.html',owner:'Prepared by the organization',desc:'Baselines, change control, least functionality, and software restrictions.',reqs:['CM.L2-3.4.1','CM.L2-3.4.2','CM.L2-3.4.3','CM.L2-3.4.6','CM.L2-3.4.8'],fam:{CM:'p',SI:'s',MA:'s'}},
+  {id:'irp',title:'Incident Response Plan',phase:'document',file:'irp.html',tool:'IRP_tool.html',owner:'Prepared by the organization',desc:'How incidents are detected, reported, contained, and recovered from, including DoD reporting.',reqs:['IR.L2-3.6.1','IR.L2-3.6.2','IR.L2-3.6.3'],fam:{IR:'p',AU:'s'}},
+  {id:'almr',title:'Audit Log and Monitoring Report',phase:'evidence',file:'almr.html',tool:'ALMR_tool.html',owner:'Prepared by the organization',desc:'What is logged, how logs are reviewed and protected, and how alerts are handled.',reqs:['AU.L2-3.3.1','AU.L2-3.3.2','AU.L2-3.3.5','SI.L2-3.14.6','SI.L2-3.14.7'],fam:{AU:'p',SI:'s',AC:'s'}},
+  {id:'vsr',title:'Vulnerability Scan Reports',phase:'evidence',file:'vsr.html',tool:'VSR_tool.html',owner:'Prepared by the organization',desc:'Scan results, remediation of findings, and flaw correction timelines.',reqs:['RA.L2-3.11.2','RA.L2-3.11.3','SI.L2-3.14.1'],fam:{RA:'p',SI:'p'}},
+  {id:'maint',title:'System Maintenance Report',phase:'evidence',file:'maintenance.html',tool:'Maintenance_tool.html',owner:'Prepared by the organization',desc:'Work order log covering tools, remote sessions, off-site sanitization, and escorted vendors.',reqs:['MA.L2-3.7.1','MA.L2-3.7.2','MA.L2-3.7.3','MA.L2-3.7.4','MA.L2-3.7.5','MA.L2-3.7.6'],fam:{MA:'p',MP:'s'},store:'cmmc-mr-v2',sum:s=>`${s.records.length} work orders saved`},
+  {id:'poam',title:'Plan of Action and Milestones',phase:'remediate',file:'POAM.html',tool:'POAM_tool.html',owner:'Prepared by the organization',desc:'Open gaps, remediation milestones, and closeout. Only some requirements may be carried on a POA&M.',reqs:['CA.L2-3.12.2','32 CFR 170.21'],fam:{CA:'p',RA:'s'}},
+  {id:'sprs',title:'SPRS Score',phase:'remediate',file:'sss.html',tool:'SSS_tool.html',owner:'Entered by the organization in SPRS',desc:'The NIST SP 800-171 DoD Assessment Methodology score, from 110 down to as low as -203.',reqs:['DFARS 252.204-7019','DFARS 252.204-7020'],fam:{CA:'s'}},
+  {id:'sar',title:'Security Assessment Report',phase:'assess',file:'sar.html',tool:'SAR_tool.html',owner:'Produced by the C3PAO',desc:'Assessment results for each requirement, MET or NOT MET, with the evidence examined.',reqs:['CA.L2-3.12.1','32 CFR 170.17'],fam:{CA:'p'}}
+];
+const PLANNED=[
+  {id:'net',title:'Network diagram and CUI data flow',phase:'scope',fam:{SC:'p',CA:'s',AC:'s'}},
+  {id:'crm',title:'Service provider responsibility matrix',phase:'document',fam:{CA:'s',SC:'s'}},
+  {id:'pol',title:'Policies and procedures',phase:'document',fam:Object.assign({},ALL_S)},
+  {id:'ra',title:'Risk assessment',phase:'document',fam:{RA:'p'}},
+  {id:'at',title:'Awareness training records',phase:'evidence',fam:{AT:'p'}},
+  {id:'mp',title:'Media protection and sanitization log',phase:'evidence',fam:{MP:'p'}},
+  {id:'pe',title:'Physical access and visitor logs',phase:'evidence',fam:{PE:'p'}},
+  {id:'ps',title:'Personnel screening and separation records',phase:'evidence',fam:{PS:'p'}},
+  {id:'aff',title:'Senior official affirmation',phase:'assess',fam:{CA:'s'}}
+];
+
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pill=(t,v)=>`<span class="pill" style="--pc:var(${v})">${esc(t)}</span>`;
+const fmt=v=>v?new Date(v+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'';
+const phaseName=id=>(PHASES.find(p=>p[0]===id)||['',''])[1];
+
+function seed(){return {version:1,eng:{org:'ACME Technology Services Corporation',lead:'',type:'Mock assessment (training)',date:'',showGaps:true},tracker:Object.fromEntries(ARTS.map(a=>[a.id,{status:'Not started',owner:'',due:'',reviewed:'',notes:''}]))};}
+let state;
+function load(){try{const r=localStorage.getItem(STORE);if(r){const s=JSON.parse(r);if(s&&s.tracker)return norm(s);}}catch(e){}return seed();}
+function norm(s){const b=seed();s.eng=Object.assign({},b.eng,s.eng||{});ARTS.forEach(a=>{s.tracker[a.id]=Object.assign({},b.tracker[a.id],s.tracker[a.id]||{});if(!STATUS.includes(s.tracker[a.id].status))s.tracker[a.id].status='Not started';});return s;}
+function save(){try{localStorage.setItem(STORE,JSON.stringify(state));}catch(e){}}
+const tr=id=>state.tracker[id];
+
+function liveSummary(a){
+  if(!a.store)return '';
+  try{const raw=localStorage.getItem(a.store);if(!raw)return '';return a.sum(JSON.parse(raw));}catch(e){return '';}
+}
+const links={};
+
+/* ---------- Coverage math ---------- */
+function coverage(){
+  const prim=new Set();ARTS.forEach(a=>Object.entries(a.fam).forEach(([f,v])=>{if(v==='p')prim.add(f);}));
+  const covered=FAMS.filter(f=>prim.has(f[0])).reduce((t,f)=>t+f[2],0);
+  return {prim,covered,gaps:FAMS.filter(f=>!prim.has(f[0]))};
+}
+
+/* ---------- Render ---------- */
+const ui={q:'',fam:'all',stat:'all',phase:'all',view:'cards'};
+function renderHeader(){
+  $('#hdrOrg').textContent=state.eng.org||'Organization not set';
+  const d=daysTo();
+  $('#hdrMeta').innerHTML=`<span>${esc(state.eng.type)}</span>${state.eng.lead?`<span>Team lead: ${esc(state.eng.lead)}</span>`:''}${state.eng.date?`<span>Assessment ${esc(fmt(state.eng.date))}</span>`:''}`;
+}
+function daysTo(){if(!state.eng.date)return null;return Math.ceil((Date.parse(state.eng.date+'T12:00:00')-Date.now())/864e5);}
+function renderKPIs(){
+  const final=ARTS.filter(a=>tr(a.id).status==='Final').length,rev=ARTS.filter(a=>tr(a.id).status==='In review').length;
+  const ready=Math.round(ARTS.reduce((t,a)=>t+STATUS_W[tr(a.id).status],0)/ARTS.length*100);
+  const cov=coverage(),d=daysTo();
+  $('#kpis').innerHTML=
+    `<div class="kpi"><b class="num">${ready}%</b><span>Documentation readiness</span><div class="meter" role="img" aria-label="${ready} percent"><i style="width:${ready}%"></i></div></div>`+
+    `<div class="kpi"><b class="num">${final}<span style="font-size:1rem;color:var(--ink-2)"> / ${ARTS.length}</span></b><span>Artifacts final, ${rev} in review</span></div>`+
+    `<div class="kpi"><b class="num">${cov.covered}<span style="font-size:1rem;color:var(--ink-2)"> / 110</span></b><span>Requirements in a family with a primary artifact</span></div>`+
+    `<div class="kpi"><b class="num">${d==null?'\u2013':d<0?'Past':d}</b><span>${d==null?'Set an assessment date in engagement details':d<0?'Assessment date has passed':d===1?'Day to assessment':'Days to assessment'}</span></div>`;
+}
+function renderMap(){
+  $('#map').innerHTML=PHASES.map(([id,name,sub],i)=>{
+    const built=ARTS.filter(a=>a.phase===id),planned=state.eng.showGaps?PLANNED.filter(p=>p.phase===id):[];
+    return `<div class="phase"><div class="phase-head"><span class="phase-num">${i+1}</span><div><h3>${esc(name)}</h3><p>${esc(sub)}</p></div></div><div class="nodes">${built.map(a=>{const s=tr(a.id).status;return `<button class="node" style="--sc:var(${STATUS_VAR[s]})" data-jump="${a.id}"><div><b>${esc(a.title)}</b><span>${esc(s)}${tr(a.id).owner?', '+esc(tr(a.id).owner):''}</span></div></button>`;}).join('')}${planned.map(p=>`<div class="node planned"><div><b>${esc(p.title)}</b><span>Not in the portal yet</span></div></div>`).join('')}</div></div>`;}).join('');
+  $('#mapLegend').innerHTML=STATUS.map(s=>`<span><i class="sw" style="--pc:var(${STATUS_VAR[s]})"></i>${s}</span>`).join('')+(state.eng.showGaps?'<span><i class="sw dash"></i>Artifact the portal is missing</span>':'');
+}
+function famChips(a){return `<div class="fams">${FAMS.filter(f=>a.fam[f[0]]).sort((x,y)=>(a.fam[x[0]]==='p'?0:1)-(a.fam[y[0]]==='p'?0:1)).map(f=>`<span class="fam ${a.fam[f[0]]}" title="${esc(f[1])}: ${a.fam[f[0]]==='p'?'primary':'supporting'} evidence">${f[0]}</span>`).join('')}</div>`;}
+function linkBtn(href,label,cls){const m=links[href]===false;return `<a class="lnk ${cls||''}" href="${esc(href)}">${label}${m?' <span class="miss">Missing</span>':''}</a>`;}
+function filtered(){
+  const q=ui.q.toLowerCase().trim();
+  return ARTS.filter(a=>(ui.phase==='all'||a.phase===ui.phase)&&(ui.fam==='all'||a.fam[ui.fam])&&(ui.stat==='all'||tr(a.id).status===ui.stat)&&(!q||[a.title,a.desc,a.owner,a.reqs.join(' '),Object.keys(a.fam).join(' '),FAMS.filter(f=>a.fam[f[0]]).map(f=>f[1]).join(' '),phaseName(a.phase)].join(' ').toLowerCase().includes(q)));
+}
+function renderLibrary(){
+  $('#fFam').innerHTML='<option value="all">All families</option>'+FAMS.map(f=>`<option value="${f[0]}" ${ui.fam===f[0]?'selected':''}>${f[0]} ${esc(f[1])}</option>`).join('');
+  $('#fStat').innerHTML='<option value="all">All statuses</option>'+STATUS.map(s=>`<option ${ui.stat===s?'selected':''}>${s}</option>`).join('');
+  $('#phaseChips').innerHTML=[['all','All phases']].concat(PHASES.map(p=>[p[0],p[1]])).map(([id,l])=>`<button class="chip" data-phase="${id}" aria-pressed="${ui.phase===id}">${esc(l)}</button>`).join('');
+  document.querySelectorAll('[data-view]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.view===ui.view)));
+  const list=filtered();
+  if(!list.length){$('#library').innerHTML='<p class="muted box">No artifacts match. Clear the search or choose another filter.</p>';return;}
+  if(ui.view==='cards'){
+    $('#library').innerHTML=`<div class="cards">${list.map(a=>{const t=tr(a.id),live=liveSummary(a);return `<article class="card" id="card-${a.id}" style="--sc:var(${STATUS_VAR[t.status]})">
+      <div class="card-top"><div><span class="phase-lbl">${PHASES.findIndex(p=>p[0]===a.phase)+1}. ${esc(phaseName(a.phase))}</span><h3>${esc(a.title)}</h3></div>${pill(t.status,STATUS_VAR[t.status])}</div>
+      <p>${esc(a.desc)}</p>
+      ${famChips(a)}
+      <div class="reqs">${esc(a.reqs.join(', '))}</div>
+      <div class="reqs"><b>${esc(a.owner)}</b></div>
+      ${live?`<div class="live">${esc(live)} in this browser</div>`:''}
+      <div class="card-row"><div class="field"><label for="st-${a.id}">Status</label><select id="st-${a.id}" data-tr="${a.id}" data-k="status">${STATUS.map(s=>`<option ${t.status===s?'selected':''}>${s}</option>`).join('')}</select></div><div class="field"><label for="ow-${a.id}">Owner</label><input type="text" id="ow-${a.id}" data-tr="${a.id}" data-k="owner" value="${esc(t.owner)}"></div></div>
+      <div class="links">${linkBtn(a.file,'Read the sample')}${linkBtn(a.tool,'Open the workbench','tool')}</div></article>`;}).join('')}</div>`;
+  }else{
+    $('#library').innerHTML=`<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Artifact</th><th>Phase</th><th>Status</th><th>Owner</th><th>Due</th><th>Last reviewed</th><th>Notes</th><th>Open</th></tr></thead><tbody>${list.map(a=>{const t=tr(a.id);return `<tr><td><b>${esc(a.title)}</b><div class="muted small">${esc(a.owner)}</div></td><td class="small">${esc(phaseName(a.phase))}</td><td><label class="sr" for="tst-${a.id}">Status</label><select id="tst-${a.id}" data-tr="${a.id}" data-k="status">${STATUS.map(s=>`<option ${t.status===s?'selected':''}>${s}</option>`).join('')}</select></td><td><label class="sr" for="tow-${a.id}">Owner</label><input type="text" id="tow-${a.id}" data-tr="${a.id}" data-k="owner" value="${esc(t.owner)}"></td><td><label class="sr" for="tdu-${a.id}">Due</label><input type="date" id="tdu-${a.id}" data-tr="${a.id}" data-k="due" value="${esc(t.due)}"></td><td><label class="sr" for="trv-${a.id}">Last reviewed</label><input type="date" id="trv-${a.id}" data-tr="${a.id}" data-k="reviewed" value="${esc(t.reviewed)}"></td><td><label class="sr" for="tno-${a.id}">Notes</label><input type="text" id="tno-${a.id}" data-tr="${a.id}" data-k="notes" value="${esc(t.notes)}"></td><td style="white-space:nowrap">${linkBtn(a.file,'Sample')} ${linkBtn(a.tool,'Workbench','tool')}</td></tr>`;}).join('')}</tbody></table></div>`;
+  }
+}
+function coverageTable(forPrint){
+  const cov=coverage(),rows=ARTS.map(a=>({a,planned:false})).concat((state.eng.showGaps||forPrint)?PLANNED.map(p=>({a:p,planned:true})):[]);
+  let h=`<table class="cov"><thead><tr><th></th>${FAMS.map(f=>`<th title="${esc(f[1])}">${f[0]}<small>${f[2]}</small></th>`).join('')}</tr></thead><tbody>`;
+  rows.forEach(({a,planned})=>{h+=`<tr class="${planned?'planned':''}"><th>${esc(a.title)}${planned?' (planned)':''}</th>${FAMS.map(f=>{const v=a.fam[f[0]];return `<td><span class="cc ${v||''}" title="${esc(a.title)}: ${v==='p'?'primary':v==='s'?'supporting':'no'} evidence for ${esc(f[1])}">${v==='p'?'P':v==='s'?'S':''}</span></td>`;}).join('')}</tr>`;});
+  h+=`<tr class="sum"><th>Primary artifact in the portal</th>${FAMS.map(f=>cov.prim.has(f[0])?`<td><span class="cc cov" title="${esc(f[1])} has a primary artifact">Yes</span></td>`:`<td><span class="cc gap" title="${esc(f[1])}: ${f[2]} requirements without a primary artifact">Gap</span></td>`).join('')}</tr></tbody></table>`;
+  return h;
+}
+function renderCoverage(){
+  const cov=coverage();
+  $('#coverage').innerHTML=coverageTable(false);
+  $('#covLegend').innerHTML=`<span><i class="sw" style="--pc:var(--cell-p)"></i>Primary evidence</span><span><i class="sw" style="--pc:var(--cell-s)"></i>Supporting evidence</span>${state.eng.showGaps?'<span><i class="sw dash"></i>Planned artifact</span>':''}<span class="small muted">The number under each family is its count of Level 2 requirements.</span><span class="small"><b class="flag" style="color:var(--bad)">${110-cov.covered} requirements</b> sit in families with no primary artifact: ${cov.gaps.map(g=>`${g[0]} (${g[2]})`).join(', ')}.</span>`;
+}
+function fillEng(){
+  $('#e_org').value=state.eng.org;$('#e_lead').value=state.eng.lead;$('#e_type').value=state.eng.type;$('#e_date').value=state.eng.date;$('#e_gaps').checked=!!state.eng.showGaps;
+}
+function render(){renderHeader();renderKPIs();renderMap();renderLibrary();renderCoverage();}
+
+/* ---------- Actions ---------- */
+function download(name,text,type){const b=new Blob([text],{type});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),500);}
+async function checkLinks(){
+  if(location.protocol==='file:'){toast('Link checking works once the portal is on a web server');return;}
+  toast('Checking links\u2026');
+  const urls=ARTS.flatMap(a=>[a.file,a.tool]);let missing=0;
+  await Promise.all(urls.map(async u=>{try{const r=await fetch(u,{method:'HEAD',cache:'no-store'});links[u]=r.ok;if(!r.ok)missing++;}catch(e){links[u]=null;}}));
+  renderLibrary();toast(missing?`${missing} file${missing>1?'s are':' is'} missing from the site`:'All sample and workbench files were found');
+}
+function buildReport(){
+  const cov=coverage();
+  $('#printReport').innerHTML=`<h1>CMMC Documentation Status</h1><p><b>${esc(state.eng.org)}</b><br>${esc(state.eng.type)}${state.eng.date?', assessment '+esc(fmt(state.eng.date)):''}${state.eng.lead?'. Team lead: '+esc(state.eng.lead):''}. Printed ${new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})}.</p>
+  <h2>Artifacts</h2><table class="tbl"><thead><tr><th>Phase</th><th>Artifact</th><th>Status</th><th>Owner</th><th>Due</th><th>Last reviewed</th><th>Notes</th></tr></thead><tbody>${ARTS.map(a=>{const t=tr(a.id);return `<tr><td>${esc(phaseName(a.phase))}</td><td>${esc(a.title)}</td><td>${esc(t.status)}</td><td>${esc(t.owner)}</td><td>${esc(fmt(t.due))}</td><td>${esc(fmt(t.reviewed))}</td><td>${esc(t.notes)}</td></tr>`;}).join('')}</tbody></table>
+  <h2>Family coverage</h2>${coverageTable(true)}<p>${110-cov.covered} of 110 requirements are in families without a primary artifact: ${cov.gaps.map(g=>g[1]+' ('+g[2]+')').join(', ')}.</p>`;
+}
+let tt;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2600);}
+function setTheme(t){document.documentElement.setAttribute('data-theme',t);const b=$('#themeBtn');b.textContent=t==='dark'?'Light mode':'Dark mode';b.setAttribute('aria-pressed',String(t==='dark'));try{localStorage.setItem(THEME,t);}catch(e){}}
+
+document.addEventListener('click',e=>{
+  const t=e.target.closest('button');if(!t)return;
+  const a=t.dataset.action;
+  if(a==='check-links'){checkLinks();return;}
+  if(a==='export-json'){download('cmmc-portal-tracker.json',JSON.stringify(state,null,2),'application/json');toast('Tracker exported');return;}
+  if(a==='import-json'){$('#importFile').click();return;}
+  if(a==='print'){buildReport();window.print();return;}
+  if(t.dataset.view){ui.view=t.dataset.view;renderLibrary();return;}
+  if(t.dataset.phase){ui.phase=t.dataset.phase;renderLibrary();return;}
+  if(t.dataset.jump){
+    ui.view='cards';ui.phase='all';ui.fam='all';ui.stat='all';ui.q='';$('#q').value='';renderLibrary();
+    const c=document.getElementById('card-'+t.dataset.jump);
+    if(c){c.scrollIntoView({block:'center',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});c.classList.add('flash');setTimeout(()=>c.classList.remove('flash'),1600);const s=c.querySelector('select');if(s)s.focus({preventScroll:true});}
+  }
+});
+document.addEventListener('input',e=>{
+  const t=e.target;
+  if(t.id==='q'){ui.q=t.value;renderLibrary();return;}
+  if(t.dataset.tr&&t.tagName==='INPUT'&&t.type==='text'){tr(t.dataset.tr)[t.dataset.k]=t.value;save();if(t.dataset.k==='owner')renderMap();return;}
+  if(t.dataset.eng&&t.type==='text'){state.eng[t.dataset.eng]=t.value;save();renderHeader();}
+});
+document.addEventListener('change',e=>{
+  const t=e.target;
+  if(t.id==='fFam'){ui.fam=t.value;renderLibrary();return;}
+  if(t.id==='fStat'){ui.stat=t.value;renderLibrary();return;}
+  if(t.dataset.tr&&(t.tagName==='SELECT'||t.type==='date')){tr(t.dataset.tr)[t.dataset.k]=t.value;save();renderKPIs();renderMap();if(t.tagName==='SELECT')renderLibrary();return;}
+  if(t.dataset.eng){state.eng[t.dataset.eng]=t.type==='checkbox'?t.checked:t.value;save();render();}
+});
+$('#importFile').addEventListener('change',e=>{
+  const f=e.target.files[0];if(!f)return;const r=new FileReader();
+  r.onload=()=>{try{const s=JSON.parse(r.result);if(!s||!s.tracker)throw 0;state=norm(s);save();fillEng();render();toast('Tracker imported');}catch(err){toast('That file isn\u2019t an exported tracker. Choose a JSON file saved from this portal.');}e.target.value='';};
+  r.readAsText(f);
+});
+$('#themeBtn').addEventListener('click',()=>setTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark'));
+window.addEventListener('beforeprint',buildReport);
+window.addEventListener('storage',()=>renderLibrary());
+
+let saved='light';try{saved=localStorage.getItem(THEME)||'light';}catch(e){}
+setTheme(saved);
+state=load();
+fillEng();
+render();
+})();
+</script>
 <script src="assistant.js" defer></script>
 </body>
 </html>
