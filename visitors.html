@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Physical Access and Visitor Logs – ACME CMMC Workbench</title>
+<style>
+:root{
+  --bg:#f3f5f9; --surface:#ffffff; --surface-2:#eef2f8; --ink:#14213d; --ink-2:#4b5875; --line:#d6dce8;
+  --brand:#0047AB; --brand-2:#003a8c; --accent:#00a86b;
+  --ok:#00905c; --warn:#b7791f; --bad:#c0392b; --doc:#4a6fa5; --none:#8a93a6;
+  --c-cui:#b4232c; --c-spa:#0047AB; --c-crma:#b7791f; --c-sa:#6b46c1; --c-oos:#6b7280; --c-ext:#0e7c86;
+  --head-bg:#003a8c; --focus:#ffbf47;
+  --serif: Charter, "Bitstream Charter", "Sitka Text", Cambria, Georgia, serif;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+[data-theme="dark"]{
+  --bg:#0e1626; --surface:#152039; --surface-2:#1c2a48; --ink:#e6ebf5; --ink-2:#a8b3cb; --line:#2b3a5c;
+  --brand:#5b9bf5; --brand-2:#3f7fe0; --accent:#2fcf8f;
+  --ok:#2fcf8f; --warn:#e3a843; --bad:#f0736a; --doc:#8fadde; --none:#6f7b93;
+  --c-cui:#f07575; --c-spa:#5b9bf5; --c-crma:#e3a843; --c-sa:#ad90f2; --c-oos:#9aa3b2; --c-ext:#3cc4cf;
+  --head-bg:#0f1d38;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.num{font-variant-numeric:tabular-nums}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.top{background:var(--head-bg);color:#fff;border-bottom:4px solid #00a86b}
+.top-in{max-width:1360px;margin:0 auto;padding:22px 24px 18px;display:flex;flex-wrap:wrap;gap:16px 28px;align-items:flex-end;justify-content:space-between}
+.top h1{font-family:var(--serif);font-weight:600;font-size:1.85rem;line-height:1.15;margin:0;letter-spacing:-.01em}
+.top .org{margin:6px 0 0;font-size:1.02rem;opacity:.95}
+.top .meta{margin:4px 0 0;font-size:.86rem;opacity:.8;display:flex;flex-wrap:wrap;gap:4px 14px}
+.training{display:inline-block;background:#ffd75e;color:#2a2100;font-size:.78rem;font-weight:700;padding:2px 10px;border-radius:999px;margin-bottom:8px}
+.actions{display:flex;flex-wrap:wrap;gap:8px}
+.hbtn{background:transparent;border:1px solid rgba(255,255,255,.5);color:#fff;border-radius:7px;padding:7px 12px;cursor:pointer;font-size:.88rem;text-decoration:none}
+.hbtn:hover{background:rgba(255,255,255,.12)}
+
+.tabs{position:sticky;top:0;z-index:20;background:var(--surface);border-bottom:1px solid var(--line)}
+.tabs-in{max-width:1360px;margin:0 auto;padding:0 16px;display:flex;gap:2px;overflow-x:auto}
+.tab{background:none;border:0;border-bottom:3px solid transparent;padding:13px 14px 11px;cursor:pointer;color:var(--ink-2);font-weight:600;white-space:nowrap}
+.tab[aria-selected="true"]{color:var(--brand);border-bottom-color:var(--brand)}
+.tab .badge{display:inline-block;min-width:20px;padding:0 6px;margin-left:6px;border-radius:999px;background:var(--bad);color:#fff;font-size:.75rem;line-height:19px;text-align:center}
+
+main{max-width:1360px;margin:0 auto;padding:22px 24px 60px}
+[role="tabpanel"][hidden]{display:none}
+h2{font-family:var(--serif);font-weight:600;font-size:1.35rem;margin:0 0 4px}
+h3{font-size:1rem;margin:0 0 10px}
+.lede{color:var(--ink-2);margin:0 0 16px;max-width:82ch}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 20px}
+.muted{color:var(--ink-2)}
+.small{font-size:.85rem}
+.flag{color:var(--bad);font-weight:700}
+.okc{color:var(--ok);font-weight:600}
+.warnc{color:var(--warn);font-weight:700}
+
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:7px;padding:7px 13px;cursor:pointer;font-weight:600;font-size:.9rem}
+.btn:hover{background:var(--surface-2)}
+.btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn.primary:hover{background:var(--brand-2)}
+.btn.danger{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 45%,transparent)}
+.btn.link{border:0;background:none;color:var(--brand);padding:0;font-weight:600}
+.btn.sm{padding:4px 9px;font-size:.82rem}
+
+.kpis{display:grid;border:1px solid var(--line);border-radius:10px;background:var(--surface);margin-bottom:20px;overflow:hidden}
+.kpi{padding:14px 18px;border-right:1px solid var(--line)}
+.kpi:last-child{border-right:0}
+.kpi b{display:block;font-family:var(--serif);font-size:1.7rem;font-weight:600;line-height:1.1}
+.kpi b small{font-size:1rem;color:var(--ink-2);font-weight:400}
+.kpi>span{font-size:.86rem;color:var(--ink-2)}
+.dash{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:20px;align-items:start}
+.dash.even{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.stack{display:grid;gap:20px;align-content:start}
+.meter{height:8px;background:var(--surface-2);border-radius:4px;overflow:hidden;min-width:60px}
+.meter i{display:block;height:100%;background:var(--accent)}
+.meter.low i{background:var(--bad)}
+.meter.mid i{background:var(--warn)}
+.hyg{display:grid;grid-template-columns:minmax(0,1fr) 120px minmax(56px,auto);gap:10px;align-items:center;margin:9px 0;font-size:.9rem}
+.hyg .meter{min-width:0}
+.bar-row{display:grid;grid-template-columns:minmax(110px,200px) minmax(0,1fr) 76px;gap:10px;align-items:center;margin:7px 0;font-size:.88rem}
+.bar-track{height:14px;background:var(--surface-2);border-radius:4px;overflow:hidden;display:flex}
+.bar-track i{display:block;height:100%}
+.ready{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+.ready b{font-family:var(--serif);font-size:2.2rem;font-weight:600;line-height:1}
+.ready .meter{flex:1;height:10px}
+.donut{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.dleg{display:grid;gap:4px;min-width:180px;flex:1}
+.dleg div{display:grid;grid-template-columns:14px minmax(0,1fr) auto;gap:8px;align-items:center;font-size:.86rem}
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:.84rem;margin-top:10px;align-items:center}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{display:inline-block;width:12px;height:12px;border-radius:3px;background:var(--pc)}
+
+.pill{display:inline-flex;align-items:center;gap:5px;padding:1px 9px;border-radius:999px;font-size:.78rem;font-weight:600;white-space:nowrap;color:var(--pc);background:color-mix(in srgb,var(--pc) 13%,transparent);border:1px solid color-mix(in srgb,var(--pc) 30%,transparent)}
+.pills{display:flex;flex-wrap:wrap;gap:4px}
+
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.tile{border:1px solid var(--line);border-top:5px solid var(--pc);border-radius:10px;padding:12px 14px;background:var(--surface);text-align:left;display:flex;flex-direction:column;gap:6px;cursor:pointer}
+.tile:hover{background:var(--surface-2)}
+.tile code{font-size:.8rem;font-weight:700;color:var(--brand)}
+.tile h3{margin:0;font-size:.98rem}
+.tile .muted{font-size:.8rem}
+
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table.tbl{width:100%;border-collapse:collapse;font-size:.9rem}
+.tbl th,.tbl td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl th{background:var(--surface-2);font-weight:600;font-size:.84rem;color:var(--ink-2);white-space:nowrap}
+.tbl th button{background:none;border:0;padding:0;font-weight:600;color:inherit;cursor:pointer}
+.tbl tbody tr:last-child td{border-bottom:0}
+.compact td,.compact th{padding:7px 10px}
+tr.click{cursor:pointer}
+tr.click:hover td{background:var(--surface-2)}
+
+.grid-mx{border-collapse:separate;border-spacing:3px;font-size:.84rem}
+.grid-mx th{font-size:.8rem;font-weight:700;color:var(--ink-2);padding:2px 6px;white-space:nowrap;text-align:center;vertical-align:bottom}
+.grid-mx tbody th{text-align:left;font-weight:600;color:var(--ink);padding-right:10px}
+.grid-mx tbody th small{display:block;font-weight:400;color:var(--ink-2);font-size:.75rem}
+.cellbtn{min-width:92px;height:34px;border-radius:6px;border:1px solid color-mix(in srgb,var(--pc) 40%,transparent);cursor:pointer;font-weight:700;font-size:.78rem;background:color-mix(in srgb,var(--pc) 16%,transparent);color:var(--pc);padding:0 8px;white-space:nowrap}
+.cellbtn.empty{background:repeating-linear-gradient(135deg,transparent 0 5px,color-mix(in srgb,var(--pc) 14%,transparent) 5px 8px)}
+.cellbtn:hover{filter:brightness(1.05);box-shadow:0 0 0 2px var(--pc)}
+
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px}
+.toolbar input[type=search]{flex:1;min-width:200px}
+input[type=text],input[type=search],input[type=number],input[type=date],select,textarea{background:var(--surface);border:1px solid var(--line);border-radius:7px;padding:7px 10px;width:100%}
+textarea{min-height:64px;resize:vertical}
+.toolbar select{width:auto}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 12px;cursor:pointer;font-size:.85rem;font-weight:600;color:var(--ink-2)}
+.chip[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:#fff}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{border:0;background:var(--surface);padding:5px 11px;cursor:pointer;font-weight:600;font-size:.84rem;color:var(--ink-2)}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--brand);color:#fff}
+
+.field{margin-bottom:10px}
+.field label,.field .lbl{display:block;font-size:.84rem;font-weight:600;margin-bottom:4px}
+.field .hint{font-size:.8rem;color:var(--ink-2);margin-top:3px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:4px 16px}
+.full{grid-column:1/-1}
+.check{display:flex;align-items:center;gap:8px;font-weight:600;font-size:.9rem;margin:4px 0}
+.check input{width:18px;height:18px;flex:none}
+.multibox{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:2px 14px;border:1px solid var(--line);border-radius:8px;padding:8px 12px}
+.multibox .check{font-weight:500}
+
+.finding{display:grid;grid-template-columns:80px minmax(0,1fr) auto;gap:12px;padding:13px 16px;border-bottom:1px solid var(--line);align-items:start}
+.finding:last-child{border-bottom:0}
+.finding h4{margin:0 0 3px;font-size:.95rem}
+.finding p{margin:0;font-size:.88rem;color:var(--ink-2)}
+.finding .ref{font-size:.8rem;color:var(--ink-2);margin-top:4px}
+.finding.dismissed{opacity:.55}
+.f-actions{display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+
+.ck{display:grid;grid-template-columns:170px minmax(0,1fr) 100px 140px minmax(160px,240px);gap:12px;padding:11px 14px;border-bottom:1px solid var(--line);align-items:center}
+.ck:last-child{border-bottom:0}
+.ck code{font-size:.82rem;color:var(--brand);font-weight:600}
+
+dialog{border:0;border-radius:12px;padding:0;width:min(760px,calc(100% - 28px));max-height:calc(100vh - 40px);background:var(--surface);color:var(--ink);box-shadow:0 18px 50px rgba(0,0,0,.3)}
+dialog::backdrop{background:rgba(8,18,40,.55)}
+.dlg-head{padding:16px 22px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.dlg-head h2{font-size:1.2rem;margin:0}
+.dlg-body{padding:18px 22px;overflow-y:auto;max-height:calc(100vh - 190px)}
+.dlg-foot{padding:14px 22px;border-top:1px solid var(--line);display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+.dlg-foot .spacer{flex:1}
+.x{border:0;background:none;font-size:1.5rem;cursor:pointer;color:var(--ink-2);line-height:1}
+.dlg-findings{margin-top:12px;padding:12px 14px;border:1px solid color-mix(in srgb,var(--bad) 35%,transparent);border-radius:8px;background:color-mix(in srgb,var(--bad) 7%,transparent);font-size:.86rem}
+.dlg-findings ul{margin:6px 0 0;padding-left:18px}
+[data-k][hidden]{display:none}
+
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--surface);padding:10px 18px;border-radius:8px;font-size:.9rem;opacity:0;pointer-events:none;transition:opacity .2s;z-index:60;max-width:90vw}
+#toast.show{opacity:1}
+.foot{max-width:1360px;margin:0 auto;padding:0 24px 40px;color:var(--ink-2);font-size:.84rem}
+
+@media (max-width:1060px){.dash,.dash.even{grid-template-columns:1fr}}
+@media (max-width:860px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))!important}.kpi{border-bottom:1px solid var(--line)}.ck{grid-template-columns:1fr 1fr}.ck>div:nth-child(2){grid-column:1/-1;order:-1}}
+@media (max-width:640px){.grid2{grid-template-columns:1fr}.finding{grid-template-columns:1fr}.f-actions{flex-direction:row;align-items:center}.bar-row{grid-template-columns:100px minmax(0,1fr) 60px}.top h1{font-size:1.5rem}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+#printReport{display:none}
+@media print{
+  html[data-theme]{--bg:#fff;--surface:#fff;--surface-2:#f1f3f7;--ink:#111;--ink-2:#444;--line:#ccc;--brand:#0047AB;--ok:#00905c;--warn:#b7791f;--bad:#c0392b;--doc:#4a6fa5;--none:#8a93a6;--c-cui:#b4232c;--c-spa:#0047AB;--c-crma:#b7791f;--c-sa:#6b46c1;--c-oos:#6b7280;--c-ext:#0e7c86}
+  body{background:#fff;font-size:10pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .app,#toast,dialog{display:none!important}
+  #printReport{display:block}
+  #printReport h1{font-family:var(--serif);font-size:18pt;margin:0 0 4px}
+  #printReport h2{font-size:13pt;margin:18px 0 6px;page-break-after:avoid}
+  #printReport table.tbl{font-size:8.5pt}
+  #printReport tr{page-break-inside:avoid}
+  #printReport svg{max-width:100%;height:auto}
+  .cui-banner{text-align:center;font-weight:700;letter-spacing:.04em;border:2px solid #111;padding:3px;margin:0 0 10px}
+}
+
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="top-in">
+      <div>
+        <span class="training">Training tool – fictional data</span>
+        <h1 id="ttl">Physical Access and Visitor Logs</h1>
+        <p class="org" id="hdrOrg"></p>
+        <p class="meta" id="hdrMeta"></p>
+      </div>
+      <div class="actions">
+        <a class="hbtn" href="reports.html">Back to workbench</a>
+        <button class="hbtn" data-action="export-json">Export JSON</button>
+        <button class="hbtn" data-action="import-json">Import JSON</button>
+        <button class="hbtn" data-action="export-csv">Export CSV</button>
+        <button class="hbtn" data-action="print">Print report</button>
+        <button class="hbtn" id="themeBtn" aria-pressed="false">Dark mode</button>
+        <input type="file" id="importFile" accept="application/json,.json" hidden>
+      </div>
+    </div>
+  </header>
+  <nav class="tabs" aria-label="Sections"><div class="tabs-in" role="tablist" id="tablist"></div></nav>
+  <main id="panels"></main>
+  <footer class="foot"><p id="footText"></p></footer>
+</div>
+
+<dialog id="genDlg" aria-labelledby="genTitle">
+  <form id="genForm" novalidate>
+    <div class="dlg-head"><h2 id="genTitle">Edit</h2><button type="button" class="x" data-close aria-label="Close">&times;</button></div>
+    <div class="dlg-body"><div class="grid2" id="genFields"></div><div id="genFindings"></div></div>
+    <div class="dlg-foot">
+      <button type="button" class="btn danger" id="genDelete">Delete</button>
+      <span class="spacer"></span>
+      <button type="button" class="btn" data-close>Cancel</button>
+      <button type="submit" class="btn primary" id="genSave">Save</button>
+    </div>
+  </form>
+</dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+<div id="printReport"></div>
+<script>
+(function(){
+const PEOPLE=[['p01','Maria Gonzalez'],['p02','James Whitfield'],['p03','Priya Natarajan'],['p04','Raymond Lawrence'],['p05','Daniel Ortiz'],['p06','Kevin Brooks'],['p07','Alicia Torres'],['p08','Linda Park'],['p09','Tom Reyes'],['p10','Sarah Kim'],['p11','Jenna Lee'],['p12','Mark Davidson'],['p13','Carlos Mendez']];
+const DEPARTED=['p12'];
+const who=u=>(PEOPLE.find(p=>p[0]===u)||[null,''])[1];
+const AREAS=[
+  {id:'lobby',name:'Lobby and reception',x:20,y:300,w:200,h:150},
+  {id:'office',name:'Open office',x:220,y:300,w:320,h:150},
+  {id:'cuiroom',name:'Contracts room',x:20,y:20,w:250,h:170},
+  {id:'server',name:'Server room',x:270,y:20,w:150,h:95},
+  {id:'copy',name:'Copy room',x:270,y:115,w:150,h:75},
+  {id:'break',name:'Break room',x:420,y:20,w:120,h:170},
+  {id:'mech',name:'Mechanical room',x:540,y:20,w:300,h:110},
+  {id:'warehouse',name:'Warehouse',x:540,y:130,w:300,h:320}];
+const WINDOW=60;
+function glyph(k,fg){
+  if(k==='reader')return `<rect x="7" y="3" width="8" height="15" rx="1.5" fill="none" stroke="${fg}" stroke-width="1.6"/><path d="M9.5 7h3" stroke="${fg}" stroke-width="1.6"/><circle cx="11" cy="13" r="1.4" fill="${fg}"/>`;
+  if(k==='camera')return `<rect x="3" y="7" width="11" height="8" rx="2" fill="none" stroke="${fg}" stroke-width="1.6"/><path d="M14 10l5-2.5v7L14 12" fill="none" stroke="${fg}" stroke-width="1.6" stroke-linejoin="round"/>`;
+  return `<rect x="5.5" y="10" width="11" height="8.5" rx="1.5" fill="none" stroke="${fg}" stroke-width="1.6"/><path d="M8 10V7.5a3 3 0 0 1 6 0V10" fill="none" stroke="${fg}" stroke-width="1.6"/>`;
+}
+const legendGlyph=k=>`<svg width="20" height="20" viewBox="0 0 22 22" aria-hidden="true">${glyph(k,'var(--ink)')}</svg>`;
+const AOPT=AREAS.map(a=>[a.id,a.name]);
+const area=id=>AREAS.find(a=>a.id===id)||{name:id};
+const ctl=(S,id)=>S.areas[id]||{};
+const view={room:null};
+
+function plan(S,F,h,interactive){
+  const since=h.daysAgo(WINDOW),vis=S.visits.filter(v=>v.date>=since);
+  let s=`<svg viewBox="0 0 860 474" style="width:100%;height:auto;display:block;background:var(--surface-2);border-radius:10px" role="group" aria-label="ACME headquarters floor plan">`;
+  s+=`<rect x="10" y="10" width="840" height="450" rx="6" fill="var(--surface)" stroke="var(--ink-2)" stroke-width="4"/>`;
+  s+=`<rect x="20" y="190" width="520" height="110" fill="var(--surface-2)" opacity="0.6"/><text x="280" y="250" text-anchor="middle" font-size="12" letter-spacing="3" fill="var(--ink-2)">CORRIDOR</text>`;
+  AREAS.forEach(a=>{const c=ctl(S,a.id),cui=c.cui,v=vis.filter(x=>x.area===a.id),bad=v.filter(x=>cui&&!x.escort).length,sel=view.room===a.id;
+    s+=`<g ${interactive?`data-cact="room" data-room="${a.id}" tabindex="0" role="button" aria-label="${h.esc(a.name)}${cui?', CUI area':''}, ${v.length} visits in ${WINDOW} days${bad?', '+bad+' unescorted':''}" style="cursor:pointer"`:''}>`;
+    s+=`<rect x="${a.x}" y="${a.y}" width="${a.w}" height="${a.h}" fill="${cui?'var(--c-cui)':'var(--brand)'}" fill-opacity="${cui?0.1:0.035}" stroke="${sel?'var(--focus)':'var(--ink-2)'}" stroke-width="${sel?5:2}"/>`;
+    if(cui)s+=`<rect x="${a.x+5}" y="${a.y+5}" width="${a.w-10}" height="${a.h-10}" fill="none" stroke="var(--c-cui)" stroke-width="1.5" stroke-dasharray="6 4"/>`;
+    s+=`<text x="${a.x+12}" y="${a.y+24}" font-size="13" font-weight="700" fill="var(--ink)">${h.esc(a.name)}</text>`;
+    if(cui)s+=`<text x="${a.x+12}" y="${a.y+39}" font-size="10" font-weight="700" letter-spacing="1" fill="var(--c-cui)">CUI AREA</text>`;
+    ['reader','camera','lock'].forEach((k,i)=>{const on=!!c[k],fg=on?'#fff':'var(--none)';s+=`<g transform="translate(${a.x+12+i*27} ${a.y+a.h-32})"><rect width="22" height="22" rx="5" fill="${on?'var(--ok)':'var(--surface)'}" stroke="${on?'none':'var(--line)'}"/>${glyph(k,fg)}<title>${k==='reader'?'Badge reader':k==='camera'?'Camera':'Locked door'}: ${on?'yes':'no'}</title></g>`;});
+    if(v.length)s+=`<g transform="translate(${a.x+a.w-22} ${a.y+22})">${bad?'<circle r="20" fill="none" stroke="var(--bad)" stroke-width="2" stroke-dasharray="3 3"/>':''}<circle r="14" fill="${bad?'var(--bad)':'var(--brand)'}"/><text y="5" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">${v.length}</text><title>${v.length} visits${bad?', '+bad+' unescorted':''}</title></g>`;
+    s+='</g>';});
+  s+=`<rect x="85" y="454" width="80" height="14" fill="var(--surface-2)"/><text x="125" y="466" text-anchor="middle" font-size="11" font-weight="700" fill="var(--ink-2)">Main entrance</text>`;
+  s+=`<rect x="780" y="454" width="60" height="14" fill="var(--surface-2)"/><text x="810" y="466" text-anchor="middle" font-size="11" font-weight="700" fill="var(--ink-2)">Dock</text></svg>`;
+  return s;
+}
+
+window.CONFIG={
+  key:'cmmc-pe-v1',title:'Physical Access and Visitor Logs',
+  meta:['CMMC Level 2 evidence','PE.L2-3.10.1 through PE.L2-3.10.6'],
+  csv:'visits',blank:['visits'],
+  blankNote:'A blank workbook clears the visitor log but keeps badges, sites, and the floor plan controls.',
+  entities:{
+    visits:{label:'visit',plural:'visits',prefix:'VIS-',pad:4,start:2000,sort:'date',sortDir:-1,required:'name',
+      fields:[{k:'name',label:'Visitor name',type:'text'},{k:'company',label:'Company',type:'text'},{k:'date',label:'Date',type:'date',def:(S,h)=>h.todayISO()},{k:'id',label:'Log entry',type:'text',ph:'Leave blank to assign'},{k:'area',label:'Area visited',type:'select',opts:AOPT,def:'lobby'},{k:'purpose',label:'Purpose',type:'text'},{k:'host',label:'Host',type:'select',opts:PEOPLE},{k:'escort',label:'Escorted by',type:'select',opts:[['','Not escorted']].concat(PEOPLE)},{k:'in',label:'Time in',type:'text',ph:'09:15'},{k:'out',label:'Time out',type:'text',ph:'11:40'},{k:'badge',label:'Visitor badge',type:'text'},{k:'idChecked',label:'Photo ID checked',type:'check',def:true},{k:'notes',label:'Notes',type:'textarea',full:true}],
+      columns:[['id','Entry'],['date','Date'],['name','Visitor',(r,S,h)=>`${h.esc(r.name)}<div class="muted small">${h.esc(r.company)}</div>`],['area','Area',(r,S,h)=>`${h.esc(area(r.area).name)}${ctl(S,r.area).cui?' '+h.pill('CUI','--c-cui'):''}`],['escort','Escort',(r,S,h)=>r.escort?h.esc(who(r.escort)):(ctl(S,r.area).cui?'<span class="flag">None</span>':'<span class="muted">None</span>')],['time','Time',(r,S,h)=>`${h.esc(r.in)} to ${r.out?h.esc(r.out):'<span class="flag">no sign-out</span>'}`],['purpose','Purpose']]},
+    badges:{label:'access device',plural:'badges and keys',prefix:'B-',pad:3,required:'holder',
+      fields:[{k:'id',label:'Device ID',type:'text',ph:'Leave blank to assign'},{k:'type',label:'Type',type:'select',opts:['Badge','Key','Combination'],def:'Badge'},{k:'holder',label:'Holder',type:'select',opts:[['','Spare (no holder)']].concat(PEOPLE)},{k:'issued',label:'Issued',type:'date'},{k:'status',label:'Status',type:'select',opts:['Active','Returned','Lost','Deactivated'],def:'Active'},{k:'areas',label:'Areas it opens',type:'multi',opts:AOPT},{k:'changed',label:'Combination or lock last changed',type:'date',when:v=>v.type!=='Badge'},{k:'notes',label:'Notes',type:'textarea',full:true}],
+      columns:[['id','Device'],['type','Type'],['holder','Holder',(r,S,h)=>r.holder?`${h.esc(who(r.holder))}${DEPARTED.includes(r.holder)?' <span class="flag">(departed)</span>':''}`:'<span class="muted">Spare</span>'],['areas','Opens',(r,S,h)=>h.esc((r.areas||[]).map(a=>area(a).name).join(', '))],['status','Status',(r,S,h)=>h.pill(r.status,r.status==='Active'?'--brand':r.status==='Lost'?'--bad':'--none')],['issued','Issued']]},
+    sites:{label:'alternate work site',plural:'alternate work sites',prefix:'AWS-',pad:2,required:'person',
+      fields:[{k:'person',label:'Person',type:'select',opts:PEOPLE},{k:'id',label:'Site ID',type:'text',ph:'Leave blank to assign'},{k:'location',label:'Location',type:'text',def:'Home office'},{k:'agreement',label:'Telework agreement signed',type:'check'},{k:'reviewed',label:'Safeguards last reviewed',type:'date'},{k:'controls',label:'Safeguards in place',type:'textarea',full:true}],
+      columns:[['id','Site'],['person','Person',(r,S,h)=>h.esc(who(r.person))],['location','Location'],['agreement','Agreement',r=>r.agreement?'<span class="okc">Signed</span>':'<span class="flag">Missing</span>'],['reviewed','Last reviewed'],['controls','Safeguards']]}
+  },
+  tabs:[
+    {id:'visits',label:'Visitor log',entity:'visits',heading:'Visitor log',filter:'area',filterLabel:'areas',lede:'Every visitor, with host, escort, area, and times. Visitors in CUI areas must be escorted and monitored the whole time.'},
+    {id:'badges',label:'Badges and keys',entity:'badges',heading:'Physical access devices',filter:'status',filterLabel:'statuses',lede:'Badges, keys, and combinations. Collect or deactivate them when people leave, and change combinations when holders change.'},
+    {id:'facility',label:'Facility controls',render:(S,F,h)=>`<h2>Facility controls</h2><p class="lede">Which areas hold CUI and how each is protected. Changes here update the floor plan and the findings.</p><div class="tbl-wrap"><table class="tbl"><thead><tr><th>Area</th><th>Holds CUI</th><th>Badge reader</th><th>Camera</th><th>Locked door</th></tr></thead><tbody>${AREAS.map(a=>{const c=ctl(S,a.id);return `<tr><td><b>${h.esc(a.name)}</b></td>${['cui','reader','camera','lock'].map(k=>`<td><label class="check"><input type="checkbox" data-cch="ctl" data-area="${a.id}" data-k="${k}" ${c[k]?'checked':''}><span class="sr">${h.esc(a.name)} ${k}</span></label></td>`).join('')}</tr>`;}).join('')}</tbody></table></div>`},
+    {id:'sites',label:'Alternate work sites',entity:'sites',heading:'Alternate work sites',lede:'Homes and other locations where staff handle CUI. Each needs the same safeguarding expectations in writing.'}
+  ],
+  seed(h){
+    const V=(n,days,name,company,area,purpose,host,escort,tin,tout,idc,notes)=>({uid:'v'+n,id:'VIS-'+n,date:h.daysAgo(days),name,company,area,purpose,host,escort,in:tin,out:tout,badge:'V-'+(n%20+1),idChecked:idc,notes:notes||''});
+    const B=(id,type,holder,status,areas,issued,changed,notes)=>({uid:'b_'+id,id,type,holder,status,areas,issued:h.daysAgo(issued),changed:changed==null?'':h.daysAgo(changed),notes:notes||''});
+    const office=['lobby','office','break'],cuiA=office.concat(['cuiroom','copy']),it=cuiA.concat(['server','mech']);
+    return{
+      org:{preparedBy:'Sarah Kim, facilities coordinator',version:'1.0'},
+      areas:{lobby:{camera:true,lock:true,reader:true},office:{camera:true,reader:false,lock:false},cuiroom:{cui:true,reader:true,camera:true,lock:true},server:{cui:true,reader:true,camera:true,lock:true},copy:{cui:true,reader:false,camera:false,lock:false},break:{},mech:{lock:true},warehouse:{camera:true,reader:true,lock:true}},
+      visits:[
+        V(2001,45,'Gary Fuentes','Local Printer Repair','copy','Printer repair (WO-1007)','p09','','10:05','12:30',true,'Worked alone while the host was in a meeting.'),
+        V(2002,30,'Mike Hanley','Dell Technologies','server','Server diagnostics (WO-1010)','p05','p05','08:30','11:15',true),
+        V(2003,28,'Night cleaning crew','Sparkle Janitorial','cuiroom','Nightly cleaning','p10','','19:00','21:30',false,'Crew has a shared door code. No escort after hours.'),
+        V(2004,21,'Elena Ruiz','C3PAO pre-assessment team','cuiroom','Readiness walkthrough','p04','p04','09:00','15:30',true),
+        V(2005,14,'Andre Wallace','City fire marshal','office','Annual fire inspection','p10','p10','13:00','14:10',true),
+        V(2006,10,'Courier','FastFreight','lobby','Package delivery','p11','','10:40','',false),
+        V(2007,9,'Paul Chen','Border HVAC Services','mech','HVAC maintenance','p10','p10','07:45','10:20',true),
+        V(2008,6,'Kim Jensen','Job candidate','lobby','Interview','p11','p11','14:00','15:00',true),
+        V(2009,4,'Robert Diaz','US Army contracting office','cuiroom','Contract kickoff meeting','p08','p08','09:30','12:00',true),
+        V(2010,2,'Dock driver','Lone Star Freight','warehouse','Uniform shipment pickup','p10','','08:10','08:55',true),
+        V(2011,1,'Marcus Hill','Lone Star Managed IT','server','Firewall cable replacement','p05','p06','16:00','',true,'Still signed in at the end of the day.')
+      ],
+      badges:[
+        B('B-001','Badge','p01','Active',cuiA,900),B('B-002','Badge','p02','Active',cuiA,1500),B('B-004','Badge','p04','Active',it,2000),B('B-005','Badge','p05','Active',it,1300),
+        B('B-007','Badge','p07','Active',office.concat(['server']),600),B('B-008','Badge','p08','Active',cuiA,2400),B('B-010','Badge','p10','Active',office.concat(['mech','warehouse']),800),
+        B('B-012','Badge','p12','Active',cuiA,1900,null,'Holder left the company five months ago.'),
+        B('B-013','Badge','p13','Active',cuiA,45),
+        B('B-020','Badge','','Lost',office.concat(['warehouse']),400,null,'Spare badge reported missing; never deactivated.'),
+        B('K-001','Key','p05','Active',['server'],1300,900),
+        B('C-001','Combination','p04','Active',['cuiroom'],2000,700,'Safe combination. Last changed before Mark Davidson left.')
+      ],
+      sites:[
+        {uid:'s1',id:'AWS-01',person:'p01',location:'Home office, El Paso',agreement:false,reviewed:'',controls:'Company laptop over VPN. Works from the kitchen table.'},
+        {uid:'s2',id:'AWS-02',person:'p08',location:'Home office, Las Cruces',agreement:true,reviewed:h.daysAgo(400),controls:'Locked home office, no printing of CUI.'},
+        {uid:'s3',id:'AWS-03',person:'p04',location:'Home office, El Paso',agreement:true,reviewed:h.daysAgo(60),controls:'Locked room, shredder, privacy screen.'}
+      ]};
+  },
+  validate(S,h){
+    const out=[];
+    S.visits.forEach(v=>{const c=ctl(S,v.area),o={ent:'visits',uid:v.uid};
+      if(c.cui&&!v.escort)out.push(Object.assign({key:'esc:'+v.uid,sev:'High',title:`${v.name} was unescorted in the ${area(v.area).name.toLowerCase()}`,detail:`${v.company}, ${h.fmt(v.date)}. Visitors in CUI areas must be escorted and their activity monitored.${v.notes?' '+v.notes:''}`,ctl:['PE.L2-3.10.3']},o));
+      if(!v.out&&h.ageDays(v.date)>=0)out.push(Object.assign({key:'out:'+v.uid,sev:'Medium',title:`${v.name} never signed out`,detail:`Visit on ${h.fmt(v.date)}. Without a time out, the log cannot show who was in the building.`,ctl:['PE.L2-3.10.4']},o));
+      if(!v.idChecked)out.push(Object.assign({key:'id:'+v.uid,sev:'Low',title:`${v.name}: identity not checked`,detail:'Check photo ID before issuing a visitor badge.',ctl:['PE.L2-3.10.3']},o));
+    });
+    S.badges.forEach(b=>{const o={ent:'badges',uid:b.uid};
+      if(b.status==='Active'&&DEPARTED.includes(b.holder))out.push(Object.assign({key:'dep:'+b.uid,sev:'High',title:`${b.id} still active for ${who(b.holder)}, who has left`,detail:'Collect or deactivate access devices as part of every separation.',ctl:['PE.L2-3.10.5','PS.L2-3.9.2']},o));
+      if(b.status==='Lost')out.push(Object.assign({key:'lost:'+b.uid,sev:'High',title:`${b.id} is lost and has not been deactivated`,detail:'Deactivate a lost badge immediately and record when it was done.',ctl:['PE.L2-3.10.5']},o));
+      if(b.type!=='Badge'&&b.status==='Active'&&b.changed){const lastDep=h.daysAgo(150);if(b.changed<lastDep&&(b.areas||[]).some(a=>ctl(S,a).cui))out.push(Object.assign({key:'combo:'+b.uid,sev:'Medium',title:`${b.id} not changed since a holder of CUI-area access left`,detail:`Last changed ${h.fmt(b.changed)}. Change keys and combinations when people with knowledge of them depart.`,ctl:['PE.L2-3.10.5']},o));}
+    });
+    S.sites.forEach(s=>{const o={ent:'sites',uid:s.uid};
+      if(!s.agreement)out.push(Object.assign({key:'agr:'+s.uid,sev:'Medium',title:`${who(s.person)} works with CUI at home without a telework agreement`,detail:'Define and enforce safeguarding requirements for alternate work sites.',ctl:['PE.L2-3.10.6']},o));
+      if(h.ageDays(s.reviewed)>365)out.push(Object.assign({key:'rev:'+s.uid,sev:'Low',title:`${s.id}: safeguards not reviewed in a year`,detail:s.reviewed?`Last reviewed ${h.fmt(s.reviewed)}.`:'No review recorded.',ctl:['PE.L2-3.10.6']},o));
+    });
+    AREAS.forEach(a=>{const c=ctl(S,a.id);if(!c.cui)return;
+      if(!c.reader&&!c.lock)out.push({key:'acc:'+a.id,sev:'High',title:`The ${a.name.toLowerCase()} holds CUI but has no access control`,detail:'Anyone in the building can walk in. Add a badge reader or lock, or move the CUI.',ctl:['PE.L2-3.10.1'],tab:'facility'});
+      if(!c.camera)out.push({key:'cam:'+a.id,sev:'Low',title:`The ${a.name.toLowerCase()} is not monitored`,detail:'Protect and monitor the physical facility where CUI is handled.',ctl:['PE.L2-3.10.2'],tab:'facility'});
+    });
+    if(S.visits.length&&h.ageDays(S.visits.reduce((m,v)=>v.date>m?v.date:m,''))>14)out.push({key:'gap',sev:'Low',title:'No visitor log entries in the last two weeks',detail:'Check that the log is still being kept.',ctl:['PE.L2-3.10.4'],tab:'visits'});
+    return out;
+  },
+  dashboard(S,F,h){
+    const since=h.daysAgo(WINDOW),vis=S.visits.filter(v=>v.date>=since);
+    const unesc=vis.filter(v=>ctl(S,v.area).cui&&!v.escort).length;
+    const days=[...Array(30)].map((_,i)=>h.daysAgo(29-i));
+    const room=view.room?AREAS.find(a=>a.id===view.room):null;
+    let detail='<p class="muted small">Select a room on the floor plan to see its controls and recent visitors.</p>';
+    if(room){const c=ctl(S,room.id),rv=S.visits.filter(v=>v.area===room.id).sort((a,b)=>b.date.localeCompare(a.date));
+      detail=`<h3 style="margin-bottom:4px">${h.esc(room.name)} ${c.cui?h.pill('CUI area','--c-cui'):''}</h3><div class="pills" style="margin-bottom:8px">${h.pill('Badge reader: '+(c.reader?'yes':'no'),c.reader?'--ok':c.cui?'--bad':'--none')}${h.pill('Camera: '+(c.camera?'yes':'no'),c.camera?'--ok':c.cui?'--warn':'--none')}${h.pill('Lock: '+(c.lock?'yes':'no'),c.lock?'--ok':c.cui?'--bad':'--none')}</div>${rv.length?`<table class="tbl compact"><tbody>${rv.slice(0,6).map(v=>`<tr class="click" tabindex="0" data-edit="visits:${v.uid}"><td class="num" style="white-space:nowrap">${h.esc(h.fmt(v.date))}</td><td><b>${h.esc(v.name)}</b><div class="muted small">${h.esc(v.company)}</div></td><td>${v.escort?h.esc(who(v.escort)):(c.cui?'<span class="flag">No escort</span>':'<span class="muted">No escort</span>')}</td></tr>`).join('')}</tbody></table>`:'<p class="muted small">No visitors recorded.</p>'}`;}
+    return h.kpis([[vis.length,`Visits in the last ${WINDOW} days`],[`<span class="${unesc?'flag':''}">${unesc}</span>`,'Unescorted visits to CUI areas'],[S.visits.filter(v=>!v.out).length,'Visitors never signed out'],[S.badges.filter(b=>(b.status==='Active'&&DEPARTED.includes(b.holder))||b.status==='Lost').length,'Live badges that should be off']])+
+    `<div class="dash"><div class="box"><h3>Headquarters floor plan</h3>${plan(S,F,h,true)}<div class="legend"><span><i class="sw" style="--pc:var(--c-cui)"></i>CUI area</span><span><i class="sw" style="--pc:var(--ok)"></i>Control in place</span><span>${legendGlyph('reader')}Badge reader</span><span>${legendGlyph('camera')}Camera</span><span>${legendGlyph('lock')}Locked door</span><span><i class="sw" style="--pc:var(--brand);border-radius:50%"></i>Visits in ${WINDOW} days</span><span><i class="sw" style="--pc:var(--bad);border-radius:50%"></i>Includes an unescorted visit</span></div></div>
+    <div class="stack"><div class="box">${detail}</div>
+      <div class="box"><h3>Visitors per day, last 30 days</h3>${(()=>{const mx=Math.max(1,...days.map(d=>S.visits.filter(v=>v.date===d).length));return `<svg viewBox="0 0 420 120" style="width:100%;height:auto" role="img" aria-label="Visitors per day">${days.map((d,i)=>{const n=S.visits.filter(v=>v.date===d).length,b=S.visits.filter(v=>v.date===d&&ctl(S,v.area).cui&&!v.escort).length,x=6+i*13.8,hh=n/mx*80;return `<rect x="${x}" y="${92-hh}" width="10" height="${hh}" rx="3" fill="var(${b?'--bad':'--brand'})"><title>${h.fmt(d)}: ${n}</title></rect>${i%5===4?`<text x="${x+5}" y="110" text-anchor="middle" font-size="9" fill="var(--ink-2)">${new Date(d+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'})}</text>`:''}`;}).join('')}</svg>`;})()}<p class="muted small" style="margin:4px 0 0">Red bars include an unescorted visit to a CUI area.</p></div>
+      <div class="box"><h3 style="display:flex;justify-content:space-between">Highest-priority findings <button class="btn link small" data-goto="find">All findings</button></h3>${h.topFindings(F)}</div></div></div>`;
+  },
+  onAction(act,el,S,api){if(act==='room'){view.room=view.room===el.dataset.room?null:el.dataset.room;api.render();const g=document.querySelector(`[data-cact="room"][data-room="${el.dataset.room}"]`);if(g)g.focus();}},
+  onInput(name,el,S,api){if(name==='ctl'){const a=el.dataset.area;S.areas[a]=S.areas[a]||{};S.areas[a][el.dataset.k]=el.checked;api.save();api.render('facility');}},
+  printExtra(S,F,h){return `<h2>Floor plan</h2>${plan(S,F,h,false)}`;},
+  controls:[
+    ['PE.L2-3.10.1','Limit physical access to systems, equipment, and operating environments to authorized individuals.'],
+    ['PE.L2-3.10.2','Protect and monitor the physical facility and support infrastructure.'],
+    ['PE.L2-3.10.3','Escort visitors and monitor visitor activity.'],
+    ['PE.L2-3.10.4','Maintain audit logs of physical access.'],
+    ['PE.L2-3.10.5','Control and manage physical access devices.'],
+    ['PE.L2-3.10.6','Enforce safeguarding measures for CUI at alternate work sites.']]
+};
+})();
+
+</script>
+<script>
+(function(){
+'use strict';
+const C=window.CONFIG,DAY=864e5,THEME='cmmc-suite-theme',SUMMARY='cmmc-summary-v1';
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const iso=d=>new Date(d).toISOString().slice(0,10);
+const todayISO=()=>iso(Date.now());
+const daysAgo=n=>iso(Date.now()-n*DAY);
+const daysAhead=n=>iso(Date.now()+n*DAY);
+const ageDays=v=>v?Math.floor((Date.now()-Date.parse(v+'T12:00:00'))/DAY):Infinity;
+const untilDays=v=>v?Math.ceil((Date.parse(v+'T12:00:00')-Date.now())/DAY):null;
+const fmt=v=>v?new Date(v+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'';
+const longDate=()=>new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+const pill=(t,v)=>`<span class="pill" style="--pc:var(${v})">${esc(t)}</span>`;
+const SEV_VAR={High:'--bad',Medium:'--warn',Low:'--doc'},SEV_ORDER={High:0,Medium:1,Low:2};
+const sevPill=s=>pill(s,SEV_VAR[s]);
+const newId=()=>Math.random().toString(36).slice(2,10);
+const strip=s=>String(s==null?'':s).replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
+const optList=(o,S)=>(typeof o==='function'?o(S):(o||[])).map(x=>Array.isArray(x)?x:[x,x]);
+
+function kpis(a){return `<div class="kpis" style="grid-template-columns:repeat(${a.length},minmax(0,1fr))">${a.map(k=>`<div class="kpi"><b class="num">${k[0]}</b><span>${k[1]}</span>${k[2]||''}</div>`).join('')}</div>`;}
+function meter(label,x,y,ref){const p=y?Math.round(x/y*100):100;return `<div class="hyg"><span>${label}${ref?` <span class="muted small">${esc(ref)}</span>`:''}</span><div class="meter ${p<60?'low':p<90?'mid':''}" role="img" aria-label="${x} of ${y}"><i style="width:${p}%"></i></div><span class="num small" style="text-align:right">${x}/${y}</span></div>`;}
+function bars(rows){const max=Math.max(1,...rows.map(r=>r.total!=null?r.total:r.value));return rows.map(r=>{const segs=r.segs||[{value:r.value,color:r.color||'--brand'}];return `<div class="bar-row"><span>${r.label}</span><div class="bar-track" role="img" aria-label="${esc(strip(r.label))}: ${esc(r.aria||segs.map(s=>s.value).join(', '))}">${segs.map(s=>`<i style="width:${s.value/max*100}%;background:var(${s.color})" title="${esc(s.title||'')}"></i>`).join('')}</div><span class="num small" style="text-align:right">${r.note!=null?r.note:r.value}</span></div>`;}).join('');}
+function donut(segs,center,sub){const R=49,Cc=2*Math.PI*R,tot=segs.reduce((t,s)=>t+s.value,0);let cum=0;const arcs=tot?segs.filter(s=>s.value>0).map(s=>{const len=s.value/tot*Cc;const o=`<circle cx="75" cy="75" r="${R}" fill="none" stroke="var(${s.color})" stroke-width="22" stroke-dasharray="${len.toFixed(2)} ${(Cc-len).toFixed(2)}" stroke-dashoffset="${(-cum).toFixed(2)}" transform="rotate(-90 75 75)"><title>${esc(s.label)}: ${s.value}</title></circle>`;cum+=len;return o;}).join(''):'';return `<div class="donut"><svg viewBox="0 0 150 150" width="150" height="150" role="img" aria-label="${esc(segs.map(s=>s.label+' '+s.value).join(', '))}"><circle cx="75" cy="75" r="${R}" fill="none" stroke="var(--surface-2)" stroke-width="22"/>${arcs}<text x="75" y="78" text-anchor="middle" font-size="25" font-weight="700" fill="var(--ink)" font-family="Charter, Georgia, serif">${esc(center)}</text><text x="75" y="96" text-anchor="middle" font-size="10.5" fill="var(--ink-2)">${esc(sub||'')}</text></svg><div class="dleg">${segs.map(s=>`<div><i class="sw" style="--pc:var(${s.color})"></i><span>${esc(s.label)}</span><b class="num">${s.value}</b></div>`).join('')}</div></div>`;}
+function topFindings(F,n){return F.length?`<table class="tbl compact"><tbody>${F.slice(0,n||6).map(f=>`<tr><td style="width:84px">${sevPill(f.sev)}</td><td>${esc(f.title)}</td></tr>`).join('')}</tbody></table>`:'<p class="muted small">No open findings.</p>';}
+const h={esc,iso,todayISO,daysAgo,daysAhead,ageDays,untilDays,fmt,pill,sevPill,newId,kpis,meter,bars,donut,strip,topFindings,optList};
+
+let state;
+const ui={q:{},f:{},sort:{},sev:'all',showDismissed:false};
+const TABS=[{id:'dash',label:'Dashboard'}].concat(C.tabs).concat([{id:'find',label:'Findings',badge:true},{id:'ck',label:'Requirements'},{id:'set',label:'Settings'}]);
+
+function seed(){const s=C.seed(h);s.org=Object.assign({name:'ACME Technology Services Corporation',preparedBy:'',version:'1.0'},s.org||{});s.checklist=s.checklist||{};s.dismissed=s.dismissed||[];s.settings=Object.assign({cuiBanner:true},s.settings||{});return s;}
+function norm(s){const b=seed();Object.keys(b).forEach(k=>{if(s[k]==null||(Array.isArray(b[k])&&!Array.isArray(s[k])))s[k]=b[k];});s.org=Object.assign({},b.org,s.org);s.settings=Object.assign({},b.settings,s.settings);Object.keys(C.entities).forEach(k=>s[k].forEach(r=>{r.uid=r.uid||newId();}));return s;}
+function load(){try{const r=localStorage.getItem(C.key);if(r){const s=JSON.parse(r);if(s&&s.org)return norm(s);}}catch(e){}return seed();}
+function save(){try{localStorage.setItem(C.key,JSON.stringify(state));}catch(e){}}
+function validate(){const out=C.validate(state,h)||[];out.sort((a,b)=>SEV_ORDER[a.sev]-SEV_ORDER[b.sev]);return out;}
+const active=F=>F.filter(f=>!state.dismissed.includes(f.key));
+function writeSummary(F){try{const all=JSON.parse(localStorage.getItem(SUMMARY)||'{}');const c={High:0,Medium:0,Low:0};F.forEach(f=>c[f.sev]++);all[C.key]={title:C.title,high:c.High,medium:c.Medium,low:c.Low,updated:todayISO()};localStorage.setItem(SUMMARY,JSON.stringify(all));}catch(e){}}
+
+/* ---------- Build ---------- */
+function shell(t){
+  if(t.entity){const E=C.entities[t.entity];
+    return `<h2>${esc(t.heading||t.label)}</h2><p class="lede">${t.lede||''}</p><div class="toolbar"><label class="sr" for="q-${t.id}">Search</label><input type="search" id="q-${t.id}" data-q="${t.id}" placeholder="Search ${esc(E.plural||E.label+'s')}">${t.filter?`<label class="sr" for="f-${t.id}">Filter</label><select id="f-${t.id}" data-f="${t.id}"></select>`:''}<button class="btn primary" data-new="${t.entity}">Add ${esc(E.label)}</button></div>${t.above?`<div id="above-${t.id}"></div>`:''}<div class="tbl-wrap"><table class="tbl" id="tbl-${t.id}"></table></div><p class="muted small" id="cnt-${t.id}"></p>`;}
+  if(t.id==='find')return `<h2>Findings</h2><p class="lede">Checks run whenever a record changes. Dismiss a finding once it is resolved or formally accepted.</p><div class="toolbar"><div class="chips" id="sevChips" role="group" aria-label="Filter by severity"></div><label class="check" style="margin-left:auto"><input type="checkbox" id="showDismissed"> Show dismissed</label></div><div class="box" style="padding:0" id="findList"></div>`;
+  if(t.id==='ck')return `<h2>Requirements</h2><p class="lede">${esc(C.ckLede||'The requirements this artifact provides evidence for. The open column counts automatic findings that touch each one. Set the result after examining the evidence.')}</p><div class="box" style="margin-bottom:16px"><div class="ready"><b class="num" id="ckPct">0%</b><div class="meter"><i id="ckBar" style="width:0"></i></div></div><p class="muted small" style="margin:0" id="ckSummary"></p></div><div class="box" style="padding:0" id="checklist"></div>`;
+  if(t.id==='set')return `<h2>Settings</h2><p class="lede">Changes save automatically.</p><div class="box" style="margin-bottom:16px"><div class="grid2" id="orgForm"></div></div><div class="box"><label class="check" style="margin-bottom:14px"><input type="checkbox" id="cuiBanner"> Add CUI banner marking to printed reports</label><div style="display:flex;flex-wrap:wrap;gap:10px"><button class="btn" data-action="load-sample">Load sample data</button><button class="btn danger" data-action="start-blank">Start blank</button></div><p class="muted small" style="margin:10px 0 0">${esc(C.blankNote||'A blank workbook clears the records so students can build them from a scenario.')}</p></div>`;
+  return `<div id="c-${t.id}"></div>`;
+}
+function build(){
+  document.title=C.title+' \u2013 ACME CMMC Workbench';
+  $('#ttl').textContent=C.title;
+  $('#tablist').innerHTML=TABS.map((t,i)=>`<button class="tab" role="tab" id="t-${t.id}" aria-controls="p-${t.id}" aria-selected="${i===0}" tabindex="${i===0?0:-1}">${esc(t.label)}${t.badge?'<span class="badge" id="findBadge">0</span>':''}</button>`).join('');
+  $('#panels').innerHTML=TABS.map((t,i)=>`<section role="tabpanel" id="p-${t.id}" aria-labelledby="t-${t.id}" ${i?'hidden':''}>${shell(t)}</section>`).join('');
+  $('#footText').textContent=C.foot||'Prepared for CMMC Level 2 training with the ACME case study. A real version of this record is usually handled as CUI. Data stays in this browser unless you export it.';
+}
+
+/* ---------- Tables ---------- */
+function fmtVal(E,k,v){const f=E.fields.find(x=>x.k===k);if(!f)return esc(v);if(f.type==='date')return v?esc(fmt(v)):'<span class="muted">\u2013</span>';if(f.type==='check')return v?'Yes':'<span class="muted">No</span>';if(f.type==='select'){const o=optList(f.opts,state).find(o=>String(o[0])===String(v));return esc(o?o[1]:v);}return esc(v);}
+function cellOf(E,r,c){return c[2]?c[2](r,state,h):fmtVal(E,c[0],r[c[0]]);}
+function renderEntity(t,F){
+  const E=C.entities[t.entity],rows=state[t.entity];
+  if(t.filter){const fld=E.fields.find(f=>f.k===t.filter);const cur=ui.f[t.id]||'all';$('#f-'+t.id).innerHTML=`<option value="all">All ${esc((t.filterLabel||fld.label).toLowerCase())}</option>`+optList(fld.opts,state).filter(o=>o[0]!=='').map(([v,l])=>`<option value="${esc(v)}" ${String(cur)===String(v)?'selected':''}>${esc(l)}</option>`).join('');}
+  if(t.above)$('#above-'+t.id).innerHTML=t.above(state,F,h);
+  const fc={};F.forEach(f=>{if(f.uid)fc[f.uid]=(fc[f.uid]||0)+1;});
+  const q=(ui.q[t.id]||'').toLowerCase();
+  let list=rows.filter(r=>(!t.filter||!ui.f[t.id]||ui.f[t.id]==='all'||String(r[t.filter])===String(ui.f[t.id]))&&(!q||strip(E.columns.map(c=>cellOf(E,r,c)).join(' ')+' '+(r.notes||'')).toLowerCase().includes(q)));
+  const so=ui.sort[t.id]||{k:E.sort||E.columns[0][0],dir:E.sortDir||1};
+  const val=(r,k)=>{if(k==='_f')return fc[r.uid]||0;const c=E.columns.find(c=>c[0]===k)||[k];if(c[3])return c[3](r,state);const v=r[k];if(v!=null&&typeof v!=='object')return typeof v==='string'?v.toLowerCase():v;return strip(cellOf(E,r,c)).toLowerCase();};
+  list.sort((a,b)=>{const x=val(a,so.k),y=val(b,so.k);return(x>y?1:x<y?-1:0)*so.dir;});
+  const ar=k=>so.k===k?(so.dir>0?' \u25B2':' \u25BC'):'';
+  const cols=E.columns.concat([['_f','Findings']]);
+  $('#tbl-'+t.id).innerHTML=`<thead><tr>${cols.map(c=>`<th aria-sort="${so.k===c[0]?(so.dir>0?'ascending':'descending'):'none'}"><button data-sort="${t.id}|${c[0]}">${esc(c[1])}${ar(c[0])}</button></th>`).join('')}</tr></thead><tbody>`+
+    (list.length?list.map(r=>`<tr class="click" tabindex="0" data-edit="${t.entity}:${esc(r.uid)}">${E.columns.map((c,i)=>`<td>${i===0?'<b>'+cellOf(E,r,c)+'</b>':cellOf(E,r,c)}</td>`).join('')}<td>${fc[r.uid]?`<span class="flag">${fc[r.uid]}</span>`:'<span class="muted">0</span>'}</td></tr>`).join(''):`<tr><td colspan="${cols.length}" class="muted">${rows.length?'No records match. Clear the search or filter.':'No records yet. Use the Add button to create one.'}</td></tr>`)+'</tbody>';
+  $('#cnt-'+t.id).textContent=`Showing ${list.length} of ${rows.length}.`;
+}
+
+/* ---------- Findings and requirements ---------- */
+function renderFindings(all){
+  const act=active(all);
+  $('#sevChips').innerHTML=['all','High','Medium','Low'].map(s=>`<button class="chip" data-sev="${s}" aria-pressed="${ui.sev===s}">${s==='all'?'All severities':s} <span class="num">(${(s==='all'?act:act.filter(f=>f.sev===s)).length})</span></button>`).join('');
+  const list=all.filter(f=>(ui.sev==='all'||f.sev===ui.sev)&&(ui.showDismissed||!state.dismissed.includes(f.key)));
+  $('#findList').innerHTML=list.length?list.map(f=>{const d=state.dismissed.includes(f.key);return `<div class="finding${d?' dismissed':''}"><div>${sevPill(f.sev)}</div><div><h4>${esc(f.title)}</h4><p>${esc(f.detail)}</p><div class="ref">${esc((f.ctl||[]).join(', '))}</div></div><div class="f-actions">${f.ent&&f.uid?`<button class="btn sm" data-edit="${f.ent}:${esc(f.uid)}">Open record</button>`:''}${f.tab?`<button class="btn sm" data-goto="${f.tab}">Open ${esc((TABS.find(t=>t.id===f.tab)||{label:''}).label.toLowerCase())}</button>`:''}<button class="btn link small" data-dismiss="${esc(f.key)}">${d?'Restore':'Dismiss'}</button></div></div>`;}).join(''):'<p class="muted" style="padding:16px">No findings match this filter.</p>';
+}
+const CK=['Not reviewed','Met','Not Met','N/A'];
+function renderChecklist(F){
+  let met=0,nm=0,na=0;
+  $('#checklist').innerHTML=`<div class="ck" style="background:var(--surface-2);font-size:.82rem;font-weight:600;color:var(--ink-2)"><div>Requirement</div><div>Statement</div><div>Open</div><div>Result</div><div>Evidence</div></div>`+C.controls.map(([c,t])=>{
+    const s=state.checklist[c]||{s:'Not reviewed',n:''};if(s.s==='Met')met++;if(s.s==='Not Met')nm++;if(s.s==='N/A')na++;
+    const n=F.filter(f=>(f.ctl||[]).includes(c)).length,id=c.replace(/[^a-z0-9]/gi,'_');
+    return `<div class="ck"><div><code>${esc(c)}</code></div><div class="small">${esc(t)}</div><div>${n?`<span class="flag">${n} finding${n>1?'s':''}</span>`:'<span class="okc">None</span>'}</div><div><label class="sr" for="ck-${id}">Result</label><select id="ck-${id}" data-ck="${esc(c)}">${CK.map(x=>`<option ${s.s===x?'selected':''}>${x}</option>`).join('')}</select></div><div><label class="sr" for="ckn-${id}">Evidence</label><input type="text" id="ckn-${id}" data-ckn="${esc(c)}" value="${esc(s.n)}" placeholder="Where is the evidence?"></div></div>`;}).join('');
+  const d=C.controls.length-na,p=d?Math.round(met/d*100):0;
+  $('#ckPct').textContent=p+'%';$('#ckBar').style.width=p+'%';
+  $('#ckSummary').textContent=`${met} met, ${nm} not met, ${na} not applicable, ${C.controls.length-met-nm-na} not yet reviewed.`;
+}
+function fillSettings(){
+  const f=[['name','Organization name'],['preparedBy','Prepared by'],['version','Document version']].concat(C.settings||[]);
+  $('#orgForm').innerHTML=f.map(([k,l,t,hint])=>`<div class="field"><label for="o-${k}">${esc(l)}</label><input type="${t||'text'}" id="o-${k}" data-org="${k}" value="${esc(state.org[k])}">${hint?`<div class="hint">${esc(hint)}</div>`:''}</div>`).join('');
+  $('#cuiBanner').checked=!!state.settings.cuiBanner;
+}
+
+/* ---------- Render ---------- */
+function render(skip){
+  const all=validate(),F=active(all);
+  $('#hdrOrg').textContent=state.org.name;
+  $('#hdrMeta').innerHTML=(C.meta||[]).map(m=>`<span>${esc(m)}</span>`).join('')+`<span>${esc(longDate())}</span>`;
+  if(skip!=='dash')$('#c-dash').innerHTML=C.dashboard(state,F,h,api);
+  C.tabs.forEach(t=>{if(t.entity)renderEntity(t,F);else if(t.render&&skip!==t.id)$('#c-'+t.id).innerHTML=t.render(state,F,h,api);});
+  renderFindings(all);renderChecklist(F);
+  const b=$('#findBadge');b.textContent=F.length;b.hidden=!F.length;
+  writeSummary(F);
+  if(C.afterRender)C.afterRender(state,F,h,api);
+}
+function commit(){save();render();}
+
+/* ---------- Dialog ---------- */
+let gen={kind:null,uid:null};
+function fieldHTML(f,v){
+  const id='g_'+f.k,cls=`field${f.full||f.type==='multi'||f.type==='textarea'?' full':''}`;
+  if(f.type==='check')return `<div class="${cls}" data-k="${f.k}"><label class="check" style="margin-top:22px"><input type="checkbox" id="${id}" ${v?'checked':''}> ${esc(f.label)}</label></div>`;
+  if(f.type==='multi')return `<div class="${cls}" data-k="${f.k}"><span class="lbl">${esc(f.label)}</span><div class="multibox">${optList(f.opts,state).map(([val,lab])=>`<label class="check"><input type="checkbox" name="${id}" value="${esc(val)}" ${(v||[]).includes(val)?'checked':''}> ${esc(lab)}</label>`).join('')}</div></div>`;
+  if(f.type==='select')return `<div class="${cls}" data-k="${f.k}"><label for="${id}">${esc(f.label)}</label><select id="${id}">${optList(f.opts,state).map(([val,lab])=>`<option value="${esc(val)}" ${String(v)===String(val)?'selected':''}>${esc(lab)}</option>`).join('')}</select>${f.hint?`<div class="hint">${esc(f.hint)}</div>`:''}</div>`;
+  if(f.type==='textarea')return `<div class="${cls}" data-k="${f.k}"><label for="${id}">${esc(f.label)}</label><textarea id="${id}">${esc(v)}</textarea></div>`;
+  return `<div class="${cls}" data-k="${f.k}"><label for="${id}">${esc(f.label)}</label><input type="${f.type}" id="${id}" value="${esc(v)}" ${f.ph?`placeholder="${esc(f.ph)}"`:''} ${f.type==='number'?'step="any"':''}>${f.hint?`<div class="hint">${esc(f.hint)}</div>`:''}</div>`;
+}
+function collect(E){const v={};E.fields.forEach(f=>{const id='g_'+f.k;if(f.type==='check')v[f.k]=$('#'+id).checked;else if(f.type==='multi')v[f.k]=[...document.querySelectorAll(`input[name="${id}"]:checked`)].map(i=>i.value);else if(f.type==='number'){const x=$('#'+id).value.trim();v[f.k]=x===''?'':Number(x);}else v[f.k]=$('#'+id).value.trim();});return v;}
+function syncVisibility(){const E=C.entities[gen.kind];if(!E)return;const v=collect(E);E.fields.forEach(f=>{if(f.when){const el=document.querySelector(`#genFields [data-k="${f.k}"]`);if(el)el.hidden=!f.when(v);}});}
+function nextId(E,list){let max=E.start||0;list.forEach(x=>{const m=String(x.id||'').match(/(\d+)$/);if(m)max=Math.max(max,+m[1]);});return E.prefix+String(max+1).padStart(E.pad||3,'0');}
+function openEntity(kind,uid,preset){
+  const E=C.entities[kind],item=uid?state[kind].find(x=>x.uid===uid):null;
+  gen={kind,uid:item?item.uid:null};
+  $('#genTitle').textContent=item?`Edit ${item.id||E.label}`:`Add ${E.label}`;
+  $('#genSave').textContent='Save '+E.label;$('#genDelete').textContent='Delete '+E.label;
+  $('#genFields').innerHTML=E.fields.map(f=>{let v=item?item[f.k]:(preset&&preset[f.k]!=null?preset[f.k]:(typeof f.def==='function'?f.def(state,h):f.def));if(v==null)v=f.type==='multi'?[]:(f.type==='check'?false:'');return fieldHTML(f,v);}).join('');
+  $('#genDelete').hidden=!item;
+  const F=item?active(validate()).filter(f=>f.uid===uid):[];
+  $('#genFindings').innerHTML=(item&&E.extra?E.extra(item,state,h):'')+(F.length?`<div class="dlg-findings"><b>Open findings</b><ul>${F.map(f=>`<li><b>${f.sev}:</b> ${esc(f.title)}. ${esc(f.detail)}</li>`).join('')}</ul></div>`:'');
+  syncVisibility();$('#genDlg').showModal();
+  setTimeout(()=>{const first=$('#genFields input:not([type=checkbox]),#genFields select');if(first)first.focus();},30);
+}
+const api={save,commit,render,toast,openEntity,ui,get state(){return state;},selectTab};
+
+/* ---------- Export, print ---------- */
+function download(name,text,type){const b=new Blob([text],{type});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),500);}
+const slug=()=>C.title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+function exportCSV(){
+  const key=C.csv||Object.keys(C.entities)[0],E=C.entities[key],cell=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
+  const lines=[E.columns.map(c=>cell(c[1])).join(',')].concat(state[key].map(r=>E.columns.map(c=>cell(strip(cellOf(E,r,c)))).join(',')));
+  download('acme-'+slug()+'.csv',lines.join('\r\n'),'text/csv');toast('Exported '+(E.plural||E.label+'s')+' as CSV');
+}
+function buildReport(){
+  const F=active(validate()),banner=state.settings.cuiBanner?'<div class="cui-banner">CUI</div>':'';
+  let s=banner+`<h1>${esc(C.title)}</h1><p><b>${esc(state.org.name)}</b>. ${esc((C.meta||[]).join('. '))}. ${state.org.preparedBy?'Prepared by '+esc(state.org.preparedBy)+'. ':''}Version ${esc(state.org.version)}, printed ${esc(longDate())}.</p>`;
+  if(C.printExtra)s+=C.printExtra(state,F,h);
+  C.tabs.filter(t=>t.entity).forEach(t=>{const E=C.entities[t.entity];s+=`<h2>${esc(t.heading||t.label)}</h2><table class="tbl"><thead><tr>${E.columns.map(c=>`<th>${esc(c[1])}</th>`).join('')}</tr></thead><tbody>${state[t.entity].map(r=>`<tr>${E.columns.map(c=>`<td>${cellOf(E,r,c)}</td>`).join('')}</tr>`).join('')}</tbody></table>`;});
+  s+=`<h2>Open findings (${F.length})</h2><table class="tbl"><thead><tr><th>Severity</th><th>Finding</th><th>Requirements</th></tr></thead><tbody>${F.map(f=>`<tr><td>${f.sev}</td><td><b>${esc(f.title)}</b><br>${esc(f.detail)}</td><td>${esc((f.ctl||[]).join(', '))}</td></tr>`).join('')}</tbody></table>`;
+  s+=`<h2>Requirements</h2><table class="tbl"><thead><tr><th>Requirement</th><th>Statement</th><th>Result</th><th>Evidence</th></tr></thead><tbody>${C.controls.map(([c,t])=>{const x=state.checklist[c]||{s:'Not reviewed',n:''};return `<tr><td>${esc(c)}</td><td>${esc(t)}</td><td>${esc(x.s)}</td><td>${esc(x.n)}</td></tr>`;}).join('')}</tbody></table>`;
+  $('#printReport').innerHTML=s+banner.replace('margin:0 0 10px','margin-top:14px');
+}
+let tt;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2600);}
+function setTheme(t){document.documentElement.setAttribute('data-theme',t);const b=$('#themeBtn');b.textContent=t==='dark'?'Light mode':'Dark mode';b.setAttribute('aria-pressed',String(t==='dark'));try{localStorage.setItem(THEME,t);}catch(e){}}
+function selectTab(id){document.querySelectorAll('[role=tab]').forEach(t=>{const on=t.id==='t-'+id;t.setAttribute('aria-selected',String(on));t.tabIndex=on?0:-1;document.getElementById(t.getAttribute('aria-controls')).hidden=!on;});window.scrollTo({top:0});}
+
+/* ---------- Events ---------- */
+document.addEventListener('click',e=>{
+  const t=e.target.closest('button,tr[data-edit],[data-cact],[data-edit]');if(!t)return;
+  if(t.getAttribute('role')==='tab'){selectTab(t.id.slice(2));return;}
+  if(t.dataset.goto){selectTab(t.dataset.goto);return;}
+  if(t.hasAttribute('data-close')){t.closest('dialog').close();return;}
+  if(t.dataset.edit){const i=t.dataset.edit.indexOf(':');openEntity(t.dataset.edit.slice(0,i),t.dataset.edit.slice(i+1));return;}
+  if(t.dataset.new){openEntity(t.dataset.new,null);return;}
+  if(t.dataset.sort){const [tab,k]=t.dataset.sort.split('|');const cur=ui.sort[tab]||{};ui.sort[tab]={k,dir:cur.k===k?-(cur.dir||1):1};render();return;}
+  if(t.dataset.sev){ui.sev=t.dataset.sev;renderFindings(validate());return;}
+  if(t.dataset.dismiss){const k=t.dataset.dismiss,i=state.dismissed.indexOf(k);if(i>=0)state.dismissed.splice(i,1);else state.dismissed.push(k);commit();toast(i>=0?'Finding restored':'Finding dismissed');return;}
+  if(t.dataset.cact&&C.onAction){C.onAction(t.dataset.cact,t,state,api,h);return;}
+  const a=t.dataset.action;
+  if(a==='export-json'){download('acme-'+slug()+'.json',JSON.stringify(state,null,2),'application/json');toast('Exported as JSON');return;}
+  if(a==='import-json'){$('#importFile').click();return;}
+  if(a==='export-csv'){exportCSV();return;}
+  if(a==='print'){buildReport();window.print();return;}
+  if(a==='load-sample'){if(confirm('Replace everything with the ACME sample data?')){state=seed();save();fillSettings();render();toast('Sample data loaded');}return;}
+  if(a==='start-blank'){if(confirm('Clear the records? Settings stay.')){(C.blank||[]).forEach(k=>{state[k]=Array.isArray(state[k])?[]:{};});if(C.onBlank)C.onBlank(state,h);state.dismissed=[];state.checklist={};save();fillSettings();render();toast('Blank workbook ready');}return;}
+});
+document.addEventListener('keydown',e=>{
+  const t=e.target;
+  if((e.key==='Enter'||e.key===' ')&&t.matches&&t.matches('tr[data-edit],[data-edit][tabindex]:not(button),[data-cact][tabindex]:not(button)')){e.preventDefault();t.click();return;}
+  if(t.getAttribute&&t.getAttribute('role')==='tab'&&(e.key==='ArrowRight'||e.key==='ArrowLeft')){const tabs=[...document.querySelectorAll('[role=tab]')];let i=tabs.indexOf(t)+(e.key==='ArrowRight'?1:-1);i=(i+tabs.length)%tabs.length;tabs[i].focus();selectTab(tabs[i].id.slice(2));}
+});
+document.addEventListener('input',e=>{
+  const t=e.target;if(t.closest('#genDlg'))return;
+  if(t.dataset.q){ui.q[t.dataset.q]=t.value;const tab=C.tabs.find(x=>x.id===t.dataset.q);renderEntity(tab,active(validate()));return;}
+  if(t.dataset.org){state.org[t.dataset.org]=t.type==='number'?(parseFloat(t.value)||0):t.value;save();render();return;}
+  if(t.dataset.ckn){const c=t.dataset.ckn;state.checklist[c]=Object.assign({s:'Not reviewed',n:''},state.checklist[c],{n:t.value});save();return;}
+  if(t.dataset.cin&&C.onInput){C.onInput(t.dataset.cin,t,state,api,h);return;}
+});
+document.addEventListener('change',e=>{
+  const t=e.target;
+  if(t.closest('#genDlg')){syncVisibility();return;}
+  if(t.dataset.f){ui.f[t.dataset.f]=t.value;render();return;}
+  if(t.dataset.ck){const c=t.dataset.ck;state.checklist[c]=Object.assign({s:'Not reviewed',n:''},state.checklist[c],{s:t.value});save();return;}
+  if(t.id==='cuiBanner'){state.settings.cuiBanner=t.checked;save();return;}
+  if(t.id==='showDismissed'){ui.showDismissed=t.checked;renderFindings(validate());return;}
+  if(t.dataset.cch&&C.onInput){C.onInput(t.dataset.cch,t,state,api,h);return;}
+});
+$('#genForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const E=C.entities[gen.kind],v=collect(E);
+  E.fields.forEach(f=>{if(f.when&&!f.when(v))v[f.k]=f.off!=null?f.off:(f.type==='check'?false:'');});
+  if(E.required&&!v[E.required]){toast('Fill in '+E.fields.find(f=>f.k===E.required).label.toLowerCase());$('#g_'+E.required).focus();return;}
+  const list=state[gen.kind];
+  if(!v.id)v.id=gen.uid?list.find(x=>x.uid===gen.uid).id:nextId(E,list);
+  if(gen.uid)Object.assign(list.find(x=>x.uid===gen.uid),v);else list.push(Object.assign({uid:newId()},v));
+  $('#genDlg').close();commit();toast(v.id+' saved');
+});
+$('#genDelete').addEventListener('click',()=>{
+  const list=state[gen.kind],item=list.find(x=>x.uid===gen.uid);if(!item||!confirm(`Delete ${item.id}?`))return;
+  state[gen.kind]=list.filter(x=>x.uid!==gen.uid);
+  if(C.onDelete)C.onDelete(gen.kind,item,state);
+  $('#genDlg').close();commit();toast(item.id+' deleted');
+});
+$('#importFile').addEventListener('change',e=>{
+  const f=e.target.files[0];if(!f)return;const r=new FileReader();
+  r.onload=()=>{try{const s=JSON.parse(r.result);if(!s||!s.org)throw 0;state=norm(s);save();fillSettings();render();toast('Imported');}catch(err){toast('That file isn\u2019t an export from this tool. Choose a JSON file saved here.');}e.target.value='';};
+  r.readAsText(f);
+});
+$('#themeBtn').addEventListener('click',()=>setTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark'));
+window.addEventListener('beforeprint',buildReport);
+
+let saved='light';try{saved=localStorage.getItem(THEME)||'light';}catch(e){}
+build();setTheme(saved);
+state=load();
+fillSettings();
+render();
+})();
+
+</script>
+<script src="assistant.js" defer></script>
+</body>
+</html>
