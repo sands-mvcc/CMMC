@@ -215,7 +215,7 @@ tr.sum th{padding-top:6px}
         <div class="field"><label for="e_type">Assessment type</label><select id="e_type" data-eng="type"><option>Level 2 C3PAO assessment</option><option>Level 2 self-assessment</option><option>Mock assessment (training)</option></select></div>
         <div class="field"><label for="e_date">Assessment date</label><input type="date" id="e_date" data-eng="date"></div>
       </div>
-      <label class="check" style="margin-top:6px"><input type="checkbox" id="e_gaps" data-eng="showGaps"> Show artifacts the portal doesn't have yet</label>
+      <label class="check" style="margin-top:6px" hidden><input type="checkbox" id="e_gaps" data-eng="showGaps"> Show artifacts the portal doesn't have yet</label>
     </details>
 
     <div class="kpis" id="kpis"></div>
@@ -275,23 +275,22 @@ const ARTS=[
   {id:'acm',title:'Access Control Matrix',phase:'document',file:'acm.html',tool:'ACM_tool.html',owner:'Prepared by the organization',desc:'Roles, people, and the access each has to CUI and security assets, with least-privilege checks.',reqs:['AC.L2-3.1.1','AC.L2-3.1.2','AC.L2-3.1.4','AC.L2-3.1.5','AC.L2-3.1.6','AC.L2-3.1.7','IA.L2-3.5.3'],fam:{AC:'p',IA:'p',PS:'s'},store:'cmmc-acm-v2',sum:s=>`${s.users.length} people and ${s.roles.length} roles saved`},
   {id:'cmp',title:'Configuration Management Plan',phase:'document',file:'cmp.html',tool:'CMP_tool.html',owner:'Prepared by the organization',desc:'Baselines, change control, least functionality, and software restrictions.',reqs:['CM.L2-3.4.1','CM.L2-3.4.2','CM.L2-3.4.3','CM.L2-3.4.6','CM.L2-3.4.8'],fam:{CM:'p',SI:'s',MA:'s'}},
   {id:'irp',title:'Incident Response Plan',phase:'document',file:'irp.html',tool:'IRP_tool.html',owner:'Prepared by the organization',desc:'How incidents are detected, reported, contained, and recovered from, including DoD reporting.',reqs:['IR.L2-3.6.1','IR.L2-3.6.2','IR.L2-3.6.3'],fam:{IR:'p',AU:'s'}},
+  {id:'service',title:'Service Provider Responsibility Matrix',phase:'document',file:'service.html',tool:null,single:'Open the tool',owner:'Prepared by the organization',desc:'Every cloud provider and MSP that touches CUI or security assets, FedRAMP status, and who meets each requirement family.',reqs:['Level 2 Scoping Guide','DFARS 252.204-7012','32 CFR 170.19','AC.L2-3.1.20'],fam:{CA:'s',AC:'s',SC:'s'},store:'cmmc-esp-v1',sum:s=>''},
+  {id:'policies',title:'Policies and Procedures',phase:'document',file:'policies.html',tool:null,single:'Open the tool',owner:'Prepared by the organization',desc:'The approved policy and procedure for each of the 14 families, with review dates and staff acknowledgement.',reqs:['CA.L2-3.12.4','AT.L2-3.2.1'],fam:Object.assign({},ALL_S),store:'cmmc-pol-v1',sum:s=>''},
+  {id:'risk',title:'Risk Assessment',phase:'document',file:'risk.html',tool:null,single:'Open the tool',owner:'Prepared by the organization',desc:'Risk register with an interactive 5 by 5 heat map, treatments, and assessment and scanning cadence.',reqs:['RA.L2-3.11.1','RA.L2-3.11.2','RA.L2-3.11.3','CA.L2-3.12.2'],fam:{RA:'p',CA:'s'},store:'cmmc-risk-v1',sum:s=>''},
   {id:'almr',title:'Audit Log and Monitoring Report',phase:'evidence',file:'almr.html',tool:'ALMR_tool.html',owner:'Prepared by the organization',desc:'What is logged, how logs are reviewed and protected, and how alerts are handled.',reqs:['AU.L2-3.3.1','AU.L2-3.3.2','AU.L2-3.3.5','SI.L2-3.14.6','SI.L2-3.14.7'],fam:{AU:'p',SI:'s',AC:'s'}},
   {id:'vsr',title:'Vulnerability Scan Reports',phase:'evidence',file:'vsr.html',tool:'VSR_tool.html',owner:'Prepared by the organization',desc:'Scan results, remediation of findings, and flaw correction timelines.',reqs:['RA.L2-3.11.2','RA.L2-3.11.3','SI.L2-3.14.1'],fam:{RA:'p',SI:'p'}},
   {id:'maint',title:'System Maintenance Report',phase:'evidence',file:'maintenance.html',tool:'Maintenance_tool.html',owner:'Prepared by the organization',desc:'Work order log covering tools, remote sessions, off-site sanitization, and escorted vendors.',reqs:['MA.L2-3.7.1','MA.L2-3.7.2','MA.L2-3.7.3','MA.L2-3.7.4','MA.L2-3.7.5','MA.L2-3.7.6'],fam:{MA:'p',MP:'s'},store:'cmmc-mr-v2',sum:s=>`${s.records.length} work orders saved`},
+  {id:'training',title:'Awareness Training Records',phase:'evidence',file:'training.html',tool:null,single:'Open the tool',owner:'Prepared by the organization',desc:'Who has completed awareness, insider threat, and role-based training, in a person-by-course matrix.',reqs:['AT.L2-3.2.1','AT.L2-3.2.2','AT.L2-3.2.3'],fam:{AT:'p'},store:'cmmc-at-v1',sum:s=>''},
+  {id:'media',title:'Media Protection and Sanitization Log',phase:'evidence',file:'media.html',tool:null,single:'Open the tool',owner:'Prepared by the organization',desc:'Media inventory, NIST SP 800-88 sanitization records, and chain of custody for media in transport.',reqs:['MP.L2-3.8.1','MP.L2-3.8.3','MP.L2-3.8.5','MP.L2-3.8.6','MP.L2-3.8.9'],fam:{MP:'p',MA:'s'},store:'cmmc-mp-v1',sum:s=>''},
+  {id:'visitors',title:'Physical Access and Visitor Logs',phase:'evidence',file:'visitors.html',tool:null,single:'Open the tool',owner:'Prepared by the organization',desc:'Visitor log, badges and keys, alternate work sites, and an interactive floor plan of ACME headquarters.',reqs:['PE.L2-3.10.1','PE.L2-3.10.3','PE.L2-3.10.4','PE.L2-3.10.5','PE.L2-3.10.6'],fam:{PE:'p'},store:'cmmc-pe-v1',sum:s=>''},
+  {id:'personnel',title:'Personnel Screening and Separation Records',phase:'evidence',file:'Personnel.html',tool:null,single:'Open the tool',owner:'Prepared by the organization',desc:'Screening before access, and the checklist that protects CUI when people leave or change jobs.',reqs:['PS.L2-3.9.1','PS.L2-3.9.2'],fam:{PS:'p',PE:'s'},store:'cmmc-ps-v1',sum:s=>''},
   {id:'poam',title:'Plan of Action and Milestones',phase:'remediate',file:'POAM.html',tool:'POAM_tool.html',owner:'Prepared by the organization',desc:'Open gaps, remediation milestones, and closeout. Only some requirements may be carried on a POA&M.',reqs:['CA.L2-3.12.2','32 CFR 170.21'],fam:{CA:'p',RA:'s'}},
   {id:'sprs',title:'SPRS Score',phase:'remediate',file:'sss.html',tool:'SSS_tool.html',owner:'Entered by the organization in SPRS',desc:'The NIST SP 800-171 DoD Assessment Methodology score, from 110 down to as low as -203.',reqs:['DFARS 252.204-7019','DFARS 252.204-7020'],fam:{CA:'s'}},
-  {id:'sar',title:'Security Assessment Report',phase:'assess',file:'sar.html',tool:'SAR_tool.html',owner:'Produced by the C3PAO',desc:'Assessment results for each requirement, MET or NOT MET, with the evidence examined.',reqs:['CA.L2-3.12.1','32 CFR 170.17'],fam:{CA:'p'}}
+  {id:'sar',title:'Security Assessment Report',phase:'assess',file:'sar.html',tool:'SAR_tool.html',owner:'Produced by the C3PAO',desc:'Assessment results for each requirement, MET or NOT MET, with the evidence examined.',reqs:['CA.L2-3.12.1','32 CFR 170.17'],fam:{CA:'p'}},
+  {id:'senior',title:'Senior Official Affirmation',phase:'assess',file:'senior.html',tool:null,single:'Open the affirmation',owner:'Prepared by the organization',desc:'The affirming official, status timeline, POA&M closeout deadline, and a readiness gate that pulls findings from every tool.',reqs:['32 CFR 170.22','32 CFR 170.21'],fam:{CA:'s'},store:'cmmc-aff-v1',sum:s=>''},
 ];
-const PLANNED=[
-  {id:'crm',title:'Service provider responsibility matrix',phase:'document',fam:{CA:'s',SC:'s'}},
-  {id:'pol',title:'Policies and procedures',phase:'document',fam:Object.assign({},ALL_S)},
-  {id:'ra',title:'Risk assessment',phase:'document',fam:{RA:'p'}},
-  {id:'at',title:'Awareness training records',phase:'evidence',fam:{AT:'p'}},
-  {id:'mp',title:'Media protection and sanitization log',phase:'evidence',fam:{MP:'p'}},
-  {id:'pe',title:'Physical access and visitor logs',phase:'evidence',fam:{PE:'p'}},
-  {id:'ps',title:'Personnel screening and separation records',phase:'evidence',fam:{PS:'p'}},
-  {id:'aff',title:'Senior official affirmation',phase:'assess',fam:{CA:'s'}}
-];
+const PLANNED=[];
 
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -308,7 +307,10 @@ const tr=id=>state.tracker[id];
 
 function liveSummary(a){
   if(!a.store)return '';
-  try{const raw=localStorage.getItem(a.store);if(!raw)return '';return a.sum(JSON.parse(raw));}catch(e){return '';}
+  let txt='';
+  try{const raw=localStorage.getItem(a.store);if(raw)txt=a.sum(JSON.parse(raw));}catch(e){}
+  try{const f=(JSON.parse(localStorage.getItem('cmmc-summary-v1')||'{}'))[a.store];if(f){const n=f.high+f.medium+f.low;txt=(txt?txt+'. ':'')+(n?`${n} open finding${n>1?'s':''}${f.high?`, ${f.high} high`:''}`:'No open findings');}}catch(e){}
+  return txt;
 }
 const links={};
 
@@ -380,7 +382,7 @@ function coverageTable(forPrint){
 function renderCoverage(){
   const cov=coverage();
   $('#coverage').innerHTML=coverageTable(false);
-  $('#covLegend').innerHTML=`<span><i class="sw" style="--pc:var(--cell-p)"></i>Primary evidence</span><span><i class="sw" style="--pc:var(--cell-s)"></i>Supporting evidence</span>${state.eng.showGaps?'<span><i class="sw dash"></i>Planned artifact</span>':''}<span class="small muted">The number under each family is its count of Level 2 requirements.</span><span class="small"><b class="flag" style="color:var(--bad)">${110-cov.covered} requirements</b> sit in families with no primary artifact: ${cov.gaps.map(g=>`${g[0]} (${g[2]})`).join(', ')}.</span>`;
+  $('#covLegend').innerHTML=`<span><i class="sw" style="--pc:var(--cell-p)"></i>Primary evidence</span><span><i class="sw" style="--pc:var(--cell-s)"></i>Supporting evidence</span>${state.eng.showGaps?'<span><i class="sw dash"></i>Planned artifact</span>':''}<span class="small muted">The number under each family is its count of Level 2 requirements.</span>${cov.gaps.length?`<span class="small"><b class="flag" style="color:var(--bad)">${110-cov.covered} requirements</b> sit in families with no primary artifact: ${cov.gaps.map(g=>`${g[0]} (${g[2]})`).join(', ')}.</span>`:'<span class="small" style="color:var(--ok);font-weight:700">Every family has at least one primary artifact.</span>'}`;
 }
 function fillEng(){
   $('#e_org').value=state.eng.org;$('#e_lead').value=state.eng.lead;$('#e_type').value=state.eng.type;$('#e_date').value=state.eng.date;$('#e_gaps').checked=!!state.eng.showGaps;
@@ -400,7 +402,7 @@ function buildReport(){
   const cov=coverage();
   $('#printReport').innerHTML=`<h1>CMMC Documentation Status</h1><p><b>${esc(state.eng.org)}</b><br>${esc(state.eng.type)}${state.eng.date?', assessment '+esc(fmt(state.eng.date)):''}${state.eng.lead?'. Team lead: '+esc(state.eng.lead):''}. Printed ${new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})}.</p>
   <h2>Artifacts</h2><table class="tbl"><thead><tr><th>Phase</th><th>Artifact</th><th>Status</th><th>Owner</th><th>Due</th><th>Last reviewed</th><th>Notes</th></tr></thead><tbody>${ARTS.map(a=>{const t=tr(a.id);return `<tr><td>${esc(phaseName(a.phase))}</td><td>${esc(a.title)}</td><td>${esc(t.status)}</td><td>${esc(t.owner)}</td><td>${esc(fmt(t.due))}</td><td>${esc(fmt(t.reviewed))}</td><td>${esc(t.notes)}</td></tr>`;}).join('')}</tbody></table>
-  <h2>Family coverage</h2>${coverageTable(true)}<p>${110-cov.covered} of 110 requirements are in families without a primary artifact: ${cov.gaps.map(g=>g[1]+' ('+g[2]+')').join(', ')}.</p>`;
+  <h2>Family coverage</h2>${coverageTable(true)}<p>${cov.gaps.length?`${110-cov.covered} of 110 requirements are in families without a primary artifact: ${cov.gaps.map(g=>g[1]+' ('+g[2]+')').join(', ')}.`:'Every family has at least one primary artifact.'}</p>`;
 }
 let tt;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2600);}
 function setTheme(t){document.documentElement.setAttribute('data-theme',t);const b=$('#themeBtn');b.textContent=t==='dark'?'Light mode':'Dark mode';b.setAttribute('aria-pressed',String(t==='dark'));try{localStorage.setItem(THEME,t);}catch(e){}}
