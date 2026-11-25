@@ -270,6 +270,7 @@ const ALL_S=Object.fromEntries(FAMS.map(f=>[f[0],'s']));
 
 const ARTS=[
   {id:'asset',title:'Asset Inventory and Categorization',phase:'scope',file:'asset.html',tool:'Asset_tool.html',owner:'Prepared by the organization',desc:'Every asset sorted into CUI, security protection, risk managed, specialized, and out-of-scope categories.',reqs:['CM.L2-3.4.1','Level 2 Scoping Guide'],fam:{CM:'p',CA:'s'},store:'cmmc-aicr-v2',sum:s=>`${s.assets.length} asset records and ${(s.esps||[]).length} service providers saved`},
+  {id:'net',title:'Network Diagram and CUI Data Flow',phase:'scope',file:'network.html',tool:null,single:'Open the diagram',owner:'Prepared by the organization',desc:'Zones, devices, the assessment boundary, firewall rules, and every path CUI takes, with animated flows and a scoping challenge.',reqs:['SC.L2-3.13.1','SC.L2-3.13.5','SC.L2-3.13.6','SC.L2-3.13.8','SC.L2-3.13.11','CA.L2-3.12.4','Level 2 Scoping Guide'],fam:{SC:'p',CA:'s',AC:'s'},store:'cmmc-net-v1',sum:s=>`${(s.found||[]).length} of 10 scoping problems found`},
   {id:'ssp',title:'System Security Plan',phase:'document',file:'ssp.html',tool:'SSP_tool.html',owner:'Prepared by the organization',desc:'How each of the 110 requirements is implemented, with the system boundary and environment.',reqs:['CA.L2-3.12.4'],fam:Object.assign({},ALL_S,{CA:'p'})},
   {id:'acm',title:'Access Control Matrix',phase:'document',file:'acm.html',tool:'ACM_tool.html',owner:'Prepared by the organization',desc:'Roles, people, and the access each has to CUI and security assets, with least-privilege checks.',reqs:['AC.L2-3.1.1','AC.L2-3.1.2','AC.L2-3.1.4','AC.L2-3.1.5','AC.L2-3.1.6','AC.L2-3.1.7','IA.L2-3.5.3'],fam:{AC:'p',IA:'p',PS:'s'},store:'cmmc-acm-v2',sum:s=>`${s.users.length} people and ${s.roles.length} roles saved`},
   {id:'cmp',title:'Configuration Management Plan',phase:'document',file:'cmp.html',tool:'CMP_tool.html',owner:'Prepared by the organization',desc:'Baselines, change control, least functionality, and software restrictions.',reqs:['CM.L2-3.4.1','CM.L2-3.4.2','CM.L2-3.4.3','CM.L2-3.4.6','CM.L2-3.4.8'],fam:{CM:'p',SI:'s',MA:'s'}},
@@ -282,7 +283,6 @@ const ARTS=[
   {id:'sar',title:'Security Assessment Report',phase:'assess',file:'sar.html',tool:'SAR_tool.html',owner:'Produced by the C3PAO',desc:'Assessment results for each requirement, MET or NOT MET, with the evidence examined.',reqs:['CA.L2-3.12.1','32 CFR 170.17'],fam:{CA:'p'}}
 ];
 const PLANNED=[
-  {id:'net',title:'Network diagram and CUI data flow',phase:'scope',fam:{SC:'p',CA:'s',AC:'s'}},
   {id:'crm',title:'Service provider responsibility matrix',phase:'document',fam:{CA:'s',SC:'s'}},
   {id:'pol',title:'Policies and procedures',phase:'document',fam:Object.assign({},ALL_S)},
   {id:'ra',title:'Risk assessment',phase:'document',fam:{RA:'p'}},
@@ -365,9 +365,9 @@ function renderLibrary(){
       <div class="reqs"><b>${esc(a.owner)}</b></div>
       ${live?`<div class="live">${esc(live)} in this browser</div>`:''}
       <div class="card-row"><div class="field"><label for="st-${a.id}">Status</label><select id="st-${a.id}" data-tr="${a.id}" data-k="status">${STATUS.map(s=>`<option ${t.status===s?'selected':''}>${s}</option>`).join('')}</select></div><div class="field"><label for="ow-${a.id}">Owner</label><input type="text" id="ow-${a.id}" data-tr="${a.id}" data-k="owner" value="${esc(t.owner)}"></div></div>
-      <div class="links">${linkBtn(a.file,'Read the sample')}${linkBtn(a.tool,'Open the workbench','tool')}</div></article>`;}).join('')}</div>`;
+      <div class="links">${a.tool?linkBtn(a.file,'Read the sample')+linkBtn(a.tool,'Open the workbench','tool'):linkBtn(a.file,a.single||'Open','tool')}</div></article>`;}).join('')}</div>`;
   }else{
-    $('#library').innerHTML=`<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Artifact</th><th>Phase</th><th>Status</th><th>Owner</th><th>Due</th><th>Last reviewed</th><th>Notes</th><th>Open</th></tr></thead><tbody>${list.map(a=>{const t=tr(a.id);return `<tr><td><b>${esc(a.title)}</b><div class="muted small">${esc(a.owner)}</div></td><td class="small">${esc(phaseName(a.phase))}</td><td><label class="sr" for="tst-${a.id}">Status</label><select id="tst-${a.id}" data-tr="${a.id}" data-k="status">${STATUS.map(s=>`<option ${t.status===s?'selected':''}>${s}</option>`).join('')}</select></td><td><label class="sr" for="tow-${a.id}">Owner</label><input type="text" id="tow-${a.id}" data-tr="${a.id}" data-k="owner" value="${esc(t.owner)}"></td><td><label class="sr" for="tdu-${a.id}">Due</label><input type="date" id="tdu-${a.id}" data-tr="${a.id}" data-k="due" value="${esc(t.due)}"></td><td><label class="sr" for="trv-${a.id}">Last reviewed</label><input type="date" id="trv-${a.id}" data-tr="${a.id}" data-k="reviewed" value="${esc(t.reviewed)}"></td><td><label class="sr" for="tno-${a.id}">Notes</label><input type="text" id="tno-${a.id}" data-tr="${a.id}" data-k="notes" value="${esc(t.notes)}"></td><td style="white-space:nowrap">${linkBtn(a.file,'Sample')} ${linkBtn(a.tool,'Workbench','tool')}</td></tr>`;}).join('')}</tbody></table></div>`;
+    $('#library').innerHTML=`<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Artifact</th><th>Phase</th><th>Status</th><th>Owner</th><th>Due</th><th>Last reviewed</th><th>Notes</th><th>Open</th></tr></thead><tbody>${list.map(a=>{const t=tr(a.id);return `<tr><td><b>${esc(a.title)}</b><div class="muted small">${esc(a.owner)}</div></td><td class="small">${esc(phaseName(a.phase))}</td><td><label class="sr" for="tst-${a.id}">Status</label><select id="tst-${a.id}" data-tr="${a.id}" data-k="status">${STATUS.map(s=>`<option ${t.status===s?'selected':''}>${s}</option>`).join('')}</select></td><td><label class="sr" for="tow-${a.id}">Owner</label><input type="text" id="tow-${a.id}" data-tr="${a.id}" data-k="owner" value="${esc(t.owner)}"></td><td><label class="sr" for="tdu-${a.id}">Due</label><input type="date" id="tdu-${a.id}" data-tr="${a.id}" data-k="due" value="${esc(t.due)}"></td><td><label class="sr" for="trv-${a.id}">Last reviewed</label><input type="date" id="trv-${a.id}" data-tr="${a.id}" data-k="reviewed" value="${esc(t.reviewed)}"></td><td><label class="sr" for="tno-${a.id}">Notes</label><input type="text" id="tno-${a.id}" data-tr="${a.id}" data-k="notes" value="${esc(t.notes)}"></td><td style="white-space:nowrap">${a.tool?linkBtn(a.file,'Sample')+' '+linkBtn(a.tool,'Workbench','tool'):linkBtn(a.file,'Open','tool')}</td></tr>`;}).join('')}</tbody></table></div>`;
   }
 }
 function coverageTable(forPrint){
@@ -392,7 +392,7 @@ function download(name,text,type){const b=new Blob([text],{type});const u=URL.cr
 async function checkLinks(){
   if(location.protocol==='file:'){toast('Link checking works once the portal is on a web server');return;}
   toast('Checking links\u2026');
-  const urls=ARTS.flatMap(a=>[a.file,a.tool]);let missing=0;
+  const urls=ARTS.flatMap(a=>[a.file,a.tool]).filter(Boolean);let missing=0;
   await Promise.all(urls.map(async u=>{try{const r=await fetch(u,{method:'HEAD',cache:'no-store'});links[u]=r.ok;if(!r.ok)missing++;}catch(e){links[u]=null;}}));
   renderLibrary();toast(missing?`${missing} file${missing>1?'s are':' is'} missing from the site`:'All sample and workbench files were found');
 }
